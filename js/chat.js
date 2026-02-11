@@ -8,6 +8,7 @@ let isBotTyping = false;
 let voiceOutputEnabled = true;
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Chat Module v2.1 Initialized. Using Gemini 1.5 Flash.");
     loadBotData();
     autoResizeInput();
 });
