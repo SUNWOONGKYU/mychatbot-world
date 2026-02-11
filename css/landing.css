@@ -212,15 +212,15 @@
 .templates-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: var(--space-4);
-    margin-top: var(--space-12);
+    gap: var(--space-3);
+    margin-top: var(--space-8);
 }
 
 .template-card {
     background: white;
     border: 2px solid var(--gray-100);
-    border-radius: var(--radius-2xl);
-    padding: var(--space-6);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
     text-align: center;
     cursor: pointer;
     transition: all var(--transition-base);
@@ -228,33 +228,29 @@
 
 .template-card:hover {
     border-color: var(--primary-300);
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-lg), 0 0 20px rgba(99, 102, 241, 0.1);
 }
 
 .template-icon {
-    font-size: 2.5rem;
-    margin-bottom: var(--space-3);
-}
-
-.template-card h4 {
-    font-size: var(--font-size-base);
-    font-weight: 700;
+    font-size: 2rem;
     margin-bottom: var(--space-2);
 }
 
+.template-card h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+}
+
 .template-card p {
-    font-size: var(--font-size-xs);
+    font-size: 0.7rem;
     color: var(--gray-500);
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .template-categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-    justify-content: center;
-    margin-top: var(--space-3);
+    display: none;
 }
 
 .template-tag {
@@ -264,6 +260,7 @@
     padding: 2px 8px;
     border-radius: var(--radius-full);
 }
+
 
 /* === Skills === */
 .skills-section {
