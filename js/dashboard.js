@@ -58,7 +58,9 @@ function openMyPage() {
 
 // Summary cards
 function renderSummary() {
-  const bots = MCW.storage.getBots();
+  const user = MCW.user.getCurrentUser();
+  if (!user) return;
+  const bots = MCW.storage.getBots().filter(b => b.ownerId === user.id);
   let totalChats = 0;
   let totalMessages = 0;
 
@@ -76,27 +78,35 @@ function renderSummary() {
 
 // Bot list
 function renderBotList() {
-  let bots = MCW.storage.getBots();
+  const user = MCW.user.getCurrentUser();
+  if (!user) return;
 
-  // Auto-create Sample Bot (If list is empty or first time)
-  if (bots.length === 0 || !localStorage.getItem('mcw_sample_initialized')) {
+  let allBots = MCW.storage.getBots();
+  let userBots = allBots.filter(b => b.ownerId === user.id);
+
+  // Auto-create Sample Bot for NEW USER
+  if (userBots.length === 0 && !localStorage.getItem(`mcw_sample_init_${user.id}`)) {
     if (typeof createSunnyBot === 'function') {
-      console.log("Initializing Sample SunnyBot...");
+      console.log("Initializing Sample SunnyBot for user:", user.id);
       createSunnyBot(true); // Silent creation
-      localStorage.setItem('mcw_sample_initialized', 'true');
-      bots = MCW.storage.getBots(); // Re-fetch
+      localStorage.setItem(`mcw_sample_init_${user.id}`, 'true');
+      // Full reload to ensure all components (stats, summary) refresh with new data
+      location.reload();
+      return;
     }
   }
 
   const grid = document.getElementById('botGrid');
   const empty = document.getElementById('botEmpty');
 
-  if (bots.length === 0) {
+  if (userBots.length === 0) {
     empty.style.display = 'block';
+    grid.innerHTML = '';
     return;
   }
 
   empty.style.display = 'none';
+  const bots = userBots; // Use filtered list for rendering
   const templateIcons = {
     smallbiz: '🏪', realtor: '🏠', lawyer: '⚖️', accountant: '📋', medical: '🏥',
     insurance: '🛡️', politician: '🏛️', instructor: '🎓', freelancer: '💻', consultant: '💼'
@@ -471,10 +481,12 @@ function confirmInstallSkill(botId, botName) {
 
 // Stats (Real Data)
 function renderStats() {
+  const user = MCW.user.getCurrentUser();
+  if (!user) return;
   const chart = document.getElementById('barChart');
   if (!chart) return;
 
-  const bots = MCW.storage.getBots();
+  const bots = MCW.storage.getBots().filter(b => b.ownerId === user.id);
 
   // Calculate last 7 days
   const dates = [];
