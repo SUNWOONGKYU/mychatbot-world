@@ -274,6 +274,11 @@ const MCW = {
   },
 
 
+  // ─── Utilities ───
+  getQRCodeURL(url, size = 200) {
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;
+  },
+
   // ─── Skills Marketplace Data ───
   skills: [
     { id: 'stats-dashboard', name: '통계 대시보드', icon: '📊', category: '분석', description: '일일/주간/월간 대화 통계, 인기 질문 TOP 10', isFree: true, installs: 1234, rating: 4.8 },

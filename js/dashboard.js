@@ -3,37 +3,40 @@
  * Dashboard JavaScript
  */
 document.addEventListener('DOMContentLoaded', () => {
-    renderSummary();
-    renderBotList();
-    renderSkillMarketplace();
-    renderStats();
+  renderSummary();
+  renderBotList();
+  renderSkillMarketplace();
+  renderStats();
 });
 
 // Summary cards
 function renderSummary() {
-    const bots = MCW.getBots();
-    const stats = MCW.getStats();
-    document.getElementById('totalBots').textContent = bots.length;
-    document.getElementById('totalChats').textContent = stats.totalConversations || 0;
-    document.getElementById('totalMessages').textContent = stats.totalMessages || 0;
-    document.getElementById('avgRating').textContent = stats.avgRating || '-';
+  const bots = MCW.storage.getBots();
+  const stats = {};
+  document.getElementById('totalBots').textContent = bots.length;
+  document.getElementById('totalChats').textContent = stats.totalConversations || 0;
+  document.getElementById('totalMessages').textContent = stats.totalMessages || 0;
+  document.getElementById('avgRating').textContent = stats.avgRating || '-';
 }
 
 // Bot list
 function renderBotList() {
-    const bots = MCW.getBots();
-    const grid = document.getElementById('botGrid');
-    const empty = document.getElementById('botEmpty');
+  const bots = MCW.storage.getBots();
+  const grid = document.getElementById('botGrid');
+  const empty = document.getElementById('botEmpty');
 
-    if (bots.length === 0) {
-        empty.style.display = 'block';
-        return;
-    }
+  if (bots.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
 
-    empty.style.display = 'none';
-    const templateIcons = { politician: '🏛️', youtuber: '🎬', ceo: '💼', instructor: '🎓', restaurant: '🍽️' };
+  empty.style.display = 'none';
+  const templateIcons = {
+    smallbiz: '🏪', realtor: '🏠', lawyer: '⚖️', accountant: '📋', medical: '🏥',
+    insurance: '🛡️', politician: '🏛️', instructor: '🎓', freelancer: '💻', consultant: '💼'
+  };
 
-    grid.innerHTML = bots.map(bot => `
+  grid.innerHTML = bots.map(bot => `
     <div class="bot-card">
       <div class="bot-card-header">
         <div class="bot-card-avatar">${templateIcons[bot.templateId] || '🤖'}</div>
@@ -58,29 +61,29 @@ function renderBotList() {
 
 function editBot(id) { alert('수정 기능은 준비 중입니다.'); }
 function shareBot(username) {
-    const url = `${window.location.origin}/bot/${username}`;
-    navigator.clipboard?.writeText(url).then(() => alert('URL이 복사되었습니다!'));
+  const url = `${window.location.origin}/bot/${username}`;
+  navigator.clipboard?.writeText(url).then(() => alert('URL이 복사되었습니다!'));
 }
 function deleteBot(id) {
-    if (!confirm('이 챗봇을 삭제하시겠습니까?')) return;
-    MCW.deleteBot(id);
-    renderBotList();
-    renderSummary();
+  if (!confirm('이 챗봇을 삭제하시겠습니까?')) return;
+  MCW.storage.deleteBot(id);
+  renderBotList();
+  renderSummary();
 }
 
 // Skill marketplace
 let currentSkillFilter = 'all';
 function renderSkillMarketplace(filter) {
-    filter = filter || currentSkillFilter;
-    currentSkillFilter = filter;
-    const grid = document.getElementById('skillMarketGrid');
-    if (!grid) return;
+  filter = filter || currentSkillFilter;
+  currentSkillFilter = filter;
+  const grid = document.getElementById('skillMarketGrid');
+  if (!grid) return;
 
-    const skills = filter === 'all'
-        ? MCW.skills
-        : MCW.skills.filter(s => s.category === filter);
+  const skills = filter === 'all'
+    ? MCW.skills
+    : MCW.skills.filter(s => s.category === filter);
 
-    grid.innerHTML = skills.map(s => `
+  grid.innerHTML = skills.map(s => `
     <div class="skill-market-card">
       <div class="skill-market-header">
         <span class="skill-market-icon">${s.icon}</span>
@@ -100,28 +103,28 @@ function renderSkillMarketplace(filter) {
 }
 
 function filterSkills(cat) {
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent === (cat === 'all' ? '전체' : cat));
-    });
-    renderSkillMarketplace(cat);
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === (cat === 'all' ? '전체' : cat));
+  });
+  renderSkillMarketplace(cat);
 }
 
 function installSkill(id, btn) {
-    btn.textContent = '✅ 설치됨';
-    btn.classList.add('installed');
-    btn.disabled = true;
+  btn.textContent = '✅ 설치됨';
+  btn.classList.add('installed');
+  btn.disabled = true;
 }
 
 // Stats (mock data for MVP)
 function renderStats() {
-    const chart = document.getElementById('barChart');
-    if (!chart) return;
+  const chart = document.getElementById('barChart');
+  if (!chart) return;
 
-    const days = ['월', '화', '수', '목', '금', '토', '일'];
-    const values = [12, 19, 8, 25, 15, 30, 22];
-    const max = Math.max(...values);
+  const days = ['월', '화', '수', '목', '금', '토', '일'];
+  const values = [12, 19, 8, 25, 15, 30, 22];
+  const max = Math.max(...values);
 
-    chart.innerHTML = days.map((day, i) => `
+  chart.innerHTML = days.map((day, i) => `
     <div class="bar-item">
       <div class="bar-value">${values[i]}</div>
       <div class="bar" style="height: ${(values[i] / max) * 120}px"></div>
@@ -129,17 +132,17 @@ function renderStats() {
     </div>
   `).join('');
 
-    // Top questions
-    const questions = document.getElementById('topQuestions');
-    if (!questions) return;
-    const topQ = [
-        { q: '영업시간이 어떻게 되나요?', count: 45 },
-        { q: '가격이 어떻게 되나요?', count: 38 },
-        { q: '예약은 어떻게 하나요?', count: 31 },
-        { q: '위치가 어디인가요?', count: 24 },
-        { q: '배달도 되나요?', count: 18 }
-    ];
-    questions.innerHTML = topQ.map((q, i) => `
+  // Top questions
+  const questions = document.getElementById('topQuestions');
+  if (!questions) return;
+  const topQ = [
+    { q: '영업시간이 어떻게 되나요?', count: 45 },
+    { q: '가격이 어떻게 되나요?', count: 38 },
+    { q: '예약은 어떻게 하나요?', count: 31 },
+    { q: '위치가 어디인가요?', count: 24 },
+    { q: '배달도 되나요?', count: 18 }
+  ];
+  questions.innerHTML = topQ.map((q, i) => `
     <div class="top-question-item">
       <div class="top-question-rank">${i + 1}</div>
       <div class="top-question-text">${q.q}</div>
