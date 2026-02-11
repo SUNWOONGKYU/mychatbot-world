@@ -187,9 +187,70 @@ function filterSkills(cat) {
 }
 
 function installSkill(id, btn) {
-  btn.textContent = '✅ 설치됨';
-  btn.classList.add('installed');
-  btn.disabled = true;
+  // Open Bot Selection Modal
+  const bots = MCW.storage.getBots();
+  if (bots.length === 0) {
+    alert('설치할 챗봇이 없습니다. 먼저 챗봇을 만들어주세요!');
+    return;
+  }
+
+  document.getElementById('selectedSkillId').value = id;
+  const grid = document.getElementById('botSelectGrid');
+
+  const templateIcons = {
+    smallbiz: '🏪', realtor: '🏠', lawyer: '⚖️', accountant: '📋', medical: '🏥',
+    insurance: '🛡️', politician: '🏛️', instructor: '🎓', freelancer: '💻', consultant: '💼'
+  };
+
+  grid.innerHTML = bots.map(bot => {
+    // Check if already installed
+    const installed = MCW.storage.getInstalledSkills(bot.id).find(s => s.id === id);
+    return `
+    <div class="bot-select-item" onclick="confirmInstallSkill('${bot.id}', '${bot.botName}')">
+      <div class="bot-select-avatar">${templateIcons[bot.templateId] || '🤖'}</div>
+      <div class="bot-select-name">${bot.botName}</div>
+      ${installed ? '<span style="margin-left:auto; font-size:0.8rem; color:#aaa;">설치됨</span>' : ''}
+    </div>
+  `}).join('');
+
+  document.getElementById('botSelectModal').classList.add('active');
+}
+
+function closeBotSelectModal() {
+  document.getElementById('botSelectModal').classList.remove('active');
+}
+
+function confirmInstallSkill(botId, botName) {
+  const skillId = document.getElementById('selectedSkillId').value;
+  const skill = MCW.storage.getSkill(skillId);
+
+  // Check if already installed
+  const installed = MCW.storage.getInstalledSkills(botId).find(s => s.id === skillId);
+  if (installed) {
+    alert('이미 설치된 스킬입니다.');
+    return;
+  }
+
+  MCW.storage.installSkill(botId, skill);
+  closeBotSelectModal();
+
+  // Show Toast
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: #10b981; color: white; padding: 12px 24px; border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 2000; font-weight: 600;
+        animation: slideUp 0.3s ease-out;
+    `;
+  toast.textContent = `✅ ${botName}에게 [${skill.name}] 스킬이 설치되었습니다!`;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+
+  // Refresh UI if needed (e.g., mark button as installed in global list? No, because it's per bot)
 }
 
 // Stats (Real Data)

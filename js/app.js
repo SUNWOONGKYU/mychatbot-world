@@ -84,6 +84,9 @@ const MCW = {
     uninstallSkill(botId, skillId) {
       const skills = this.getInstalledSkills(botId).filter(s => s.id !== skillId);
       localStorage.setItem(`mcw_skills_${botId}`, JSON.stringify(skills));
+    },
+    getSkill(skillId) {
+      return MCW.skills.find(s => s.id === skillId);
     }
   },
 

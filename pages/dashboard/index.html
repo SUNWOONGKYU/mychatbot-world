@@ -142,6 +142,23 @@
         </div>
     </div>
 
+    <!-- Bot Selection Modal for Skill Install -->
+    <div class="modal-overlay" id="botSelectModal">
+        <div class="modal-container" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>스킬 설치</h3>
+                <button class="modal-close" onclick="closeBotSelectModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:rgba(255,255,255,0.7); margin-bottom:1rem;">어떤 챗봇에 이 스킬을 설치할까요?</p>
+                <input type="hidden" id="selectedSkillId">
+                <div id="botSelectGrid" class="bot-select-grid">
+                    <!-- Bots will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
