@@ -18,7 +18,7 @@ function loadBotData() {
     const username = path.split('/bot/')[1] || path.split('/').pop();
 
     // Load from localStorage
-    const bots = MCW.getBots();
+    const bots = MCW.storage.getBots();
     chatBotData = bots.find(b => b.username === username);
 
     if (!chatBotData) {
@@ -51,6 +51,10 @@ function loadBotData() {
     setTimeout(() => {
         addMessage('bot', chatBotData.greeting);
     }, 500);
+    // Log conversation start
+    if (chatBotData.id) {
+        MCW.storage.logEvent(chatBotData.id, 'conversation_start');
+    }
 }
 
 function renderFaqButtons() {
@@ -82,12 +86,18 @@ async function sendMessage() {
 
     // Add to history
     conversationHistory.push({ role: 'user', content: text });
+    if (chatBotData?.id) {
+        MCW.storage.logEvent(chatBotData.id, 'message', { role: 'user', content: text });
+    }
 
     // Generate response
     const response = await generateResponse(text);
     hideTyping();
     addMessage('bot', response);
     conversationHistory.push({ role: 'assistant', content: response });
+    if (chatBotData?.id) {
+        MCW.storage.logEvent(chatBotData.id, 'message', { role: 'assistant', content: response });
+    }
 
     // TTS
     if (voiceOutputEnabled) speak(response);

@@ -39,19 +39,37 @@ const MCW = {
       localStorage.setItem(`mcw_conv_${botId}`, JSON.stringify(convs));
     },
     getStats(botId) {
-      const stats = JSON.parse(localStorage.getItem(`mcw_stats_${botId}`) || '{}');
-      return {
-        totalConversations: stats.totalConversations || 0,
-        totalMessages: stats.totalMessages || 0,
-        todayConversations: stats.todayConversations || 0,
-        satisfaction: stats.satisfaction || 0,
-        ...stats
-      };
+      return JSON.parse(localStorage.getItem(`mcw_stats_${botId}`) || '{"totalConversations":0,"totalMessages":0,"daily":{},"topQuestions":{}}');
     },
-    incrementStat(botId, key) {
-      const stats = this.getStats(botId);
-      stats[key] = (stats[key] || 0) + 1;
+    saveStats(botId, stats) {
       localStorage.setItem(`mcw_stats_${botId}`, JSON.stringify(stats));
+    },
+    logEvent(botId, type, data = {}) {
+      const stats = this.getStats(botId);
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+      // Initialize daily stats if needed
+      stats.daily = stats.daily || {};
+      stats.daily[today] = stats.daily[today] || { conversations: 0, messages: 0 };
+
+      if (type === 'conversation_start') {
+        stats.totalConversations = (stats.totalConversations || 0) + 1;
+        stats.daily[today].conversations++;
+      } else if (type === 'message') {
+        stats.totalMessages = (stats.totalMessages || 0) + 1;
+        stats.daily[today].messages++;
+
+        // Track top questions (user messages only)
+        if (data.role === 'user' && data.content) {
+          stats.topQuestions = stats.topQuestions || {};
+          const q = data.content.trim();
+          if (q.length < 50) { // Only track short questions
+            stats.topQuestions[q] = (stats.topQuestions[q] || 0) + 1;
+          }
+        }
+      }
+
+      this.saveStats(botId, stats);
     },
     getInstalledSkills(botId) {
       return JSON.parse(localStorage.getItem(`mcw_skills_${botId}`) || '[]');

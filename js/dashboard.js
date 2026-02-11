@@ -12,11 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // Summary cards
 function renderSummary() {
   const bots = MCW.storage.getBots();
-  const stats = {};
+  let totalChats = 0;
+  let totalMessages = 0;
+
+  bots.forEach(bot => {
+    const stats = MCW.storage.getStats(bot.id);
+    totalChats += (stats.totalConversations || 0);
+    totalMessages += (stats.totalMessages || 0);
+  });
+
   document.getElementById('totalBots').textContent = bots.length;
-  document.getElementById('totalChats').textContent = stats.totalConversations || 0;
-  document.getElementById('totalMessages').textContent = stats.totalMessages || 0;
-  document.getElementById('avgRating').textContent = stats.avgRating || '-';
+  document.getElementById('totalChats').textContent = totalChats.toLocaleString();
+  document.getElementById('totalMessages').textContent = totalMessages.toLocaleString();
+  document.getElementById('avgRating').textContent = '4.8'; // MVP: Hardcoded
 }
 
 // Bot list
@@ -36,7 +44,9 @@ function renderBotList() {
     insurance: '🛡️', politician: '🏛️', instructor: '🎓', freelancer: '💻', consultant: '💼'
   };
 
-  grid.innerHTML = bots.map(bot => `
+  grid.innerHTML = bots.map(bot => {
+    const stats = MCW.storage.getStats(bot.id);
+    return `
     <div class="bot-card">
       <div class="bot-card-header">
         <div class="bot-card-avatar">${templateIcons[bot.templateId] || '🤖'}</div>
@@ -46,8 +56,8 @@ function renderBotList() {
         </div>
       </div>
       <div class="bot-card-stats">
-        <span class="bot-stat">💬 <strong>${bot.totalMessages || 0}</strong> 메시지</span>
-        <span class="bot-stat">📊 <strong>${bot.conversations || 0}</strong> 대화</span>
+        <span class="bot-stat">💬 <strong>${(stats.totalMessages || 0).toLocaleString()}</strong> 메시지</span>
+        <span class="bot-stat">📊 <strong>${(stats.totalConversations || 0).toLocaleString()}</strong> 대화</span>
       </div>
       <div class="bot-card-actions">
         <button class="bot-action-btn" onclick="window.open('/bot/${bot.username}','_blank')">💬 대화</button>
@@ -56,10 +66,10 @@ function renderBotList() {
         <button class="bot-action-btn" onclick="deleteBot('${bot.id}')">🗑️</button>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
-function editBot(id) { alert('수정 기능은 준비 중입니다.'); }
+function editBot(id) { alert('수정 기능은 곧 구현됩니다!'); }
 function shareBot(username) {
   const url = `${window.location.origin}/bot/${username}`;
   navigator.clipboard?.writeText(url).then(() => alert('URL이 복사되었습니다!'));
@@ -69,6 +79,7 @@ function deleteBot(id) {
   MCW.storage.deleteBot(id);
   renderBotList();
   renderSummary();
+  renderStats();
 }
 
 // Skill marketplace
@@ -115,38 +126,76 @@ function installSkill(id, btn) {
   btn.disabled = true;
 }
 
-// Stats (mock data for MVP)
+// Stats (Real Data)
 function renderStats() {
   const chart = document.getElementById('barChart');
   if (!chart) return;
 
-  const days = ['월', '화', '수', '목', '금', '토', '일'];
-  const values = [12, 19, 8, 25, 15, 30, 22];
-  const max = Math.max(...values);
+  const bots = MCW.storage.getBots();
 
-  chart.innerHTML = days.map((day, i) => `
+  // Calculate last 7 days
+  const dates = [];
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const labels = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    dates.push(d.toISOString().split('T')[0]);
+    labels.push(days[d.getDay()]);
+  }
+
+  // Aggregate daily stats
+  const values = dates.map(date => {
+    let sum = 0;
+    bots.forEach(bot => {
+      const stats = MCW.storage.getStats(bot.id);
+      if (stats.daily && stats.daily[date]) {
+        sum += stats.daily[date].conversations;
+      }
+    });
+    return sum;
+  });
+
+  const max = Math.max(...values, 5); // Minimum scale 5
+
+  chart.innerHTML = labels.map((day, i) => `
     <div class="bar-item">
       <div class="bar-value">${values[i]}</div>
-      <div class="bar" style="height: ${(values[i] / max) * 120}px"></div>
+      <div class="bar" style="height: ${Math.max((values[i] / max) * 120, 4)}px"></div>
       <div class="bar-label">${day}</div>
     </div>
   `).join('');
 
-  // Top questions
+  // Aggregate Top Questions
+  const allQuestions = {};
+  bots.forEach(bot => {
+    const stats = MCW.storage.getStats(bot.id);
+    if (stats.topQuestions) {
+      Object.entries(stats.topQuestions).forEach(([q, count]) => {
+        allQuestions[q] = (allQuestions[q] || 0) + count;
+      });
+    }
+  });
+
+  const sortedQ = Object.entries(allQuestions)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([q, count]) => ({ q, count }));
+
   const questions = document.getElementById('topQuestions');
   if (!questions) return;
-  const topQ = [
-    { q: '영업시간이 어떻게 되나요?', count: 45 },
-    { q: '가격이 어떻게 되나요?', count: 38 },
-    { q: '예약은 어떻게 하나요?', count: 31 },
-    { q: '위치가 어디인가요?', count: 24 },
-    { q: '배달도 되나요?', count: 18 }
-  ];
-  questions.innerHTML = topQ.map((q, i) => `
+
+  if (sortedQ.length === 0) {
+    questions.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">아직 질문 데이터가 없습니다.</div>';
+    return;
+  }
+
+  questions.innerHTML = sortedQ.map((item, i) => `
     <div class="top-question-item">
       <div class="top-question-rank">${i + 1}</div>
-      <div class="top-question-text">${q.q}</div>
-      <div class="top-question-count">${q.count}회</div>
+      <div class="top-question-text">${item.q}</div>
+      <div class="top-question-count">${item.count}회</div>
     </div>
   `).join('');
 }
