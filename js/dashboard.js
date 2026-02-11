@@ -69,7 +69,73 @@ function renderBotList() {
   `}).join('');
 }
 
-function editBot(id) { alert('수정 기능은 곧 구현됩니다!'); }
+// Edit Bot Functions
+function editBot(id) {
+  const bot = MCW.storage.getBot(id);
+  if (!bot) return;
+
+  document.getElementById('editBotId').value = bot.id;
+  document.getElementById('editBotName').value = bot.botName;
+  document.getElementById('editBotDesc').value = bot.botDesc;
+  document.getElementById('editBotPersonality').value = bot.personality;
+  document.getElementById('editBotGreeting').value = bot.greeting;
+
+  // Render FAQs
+  const faqList = document.getElementById('editFaqList');
+  faqList.innerHTML = '';
+  if (bot.faqs && bot.faqs.length > 0) {
+    bot.faqs.forEach(faq => addFaqItem(faq.q, faq.a));
+  } else {
+    addFaqItem(); // Add one empty item
+  }
+
+  document.getElementById('editModal').classList.add('active');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('active');
+}
+
+function addFaqItem(q = '', a = '') {
+  const div = document.createElement('div');
+  div.className = 'faq-item';
+  div.innerHTML = `
+      <div class="faq-inputs">
+          <input type="text" placeholder="질문 (예: 영업시간이 언제인가요?)" value="${q.replace(/"/g, '&quot;')}" class="faq-q">
+          <textarea placeholder="답변" rows="2" class="faq-a">${a}</textarea>
+      </div>
+      <button class="faq-delete-btn" onclick="this.parentElement.remove()">×</button>
+  `;
+  document.getElementById('editFaqList').appendChild(div);
+}
+
+function saveBotChanges() {
+  const id = document.getElementById('editBotId').value;
+  const bot = MCW.storage.getBot(id);
+  if (!bot) return;
+
+  bot.botName = document.getElementById('editBotName').value;
+  bot.botDesc = document.getElementById('editBotDesc').value;
+  bot.personality = document.getElementById('editBotPersonality').value;
+  bot.greeting = document.getElementById('editBotGreeting').value;
+
+  // Collect FAQs
+  const faqs = [];
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q').value.trim();
+    const a = item.querySelector('.faq-a').value.trim();
+    if (q && a) {
+      faqs.push({ q, a });
+    }
+  });
+  bot.faqs = faqs;
+
+  MCW.storage.saveBot(bot);
+  closeEditModal();
+  renderBotList();
+  alert('저장되었습니다!');
+}
+
 function shareBot(username) {
   const url = `${window.location.origin}/bot/${username}`;
   navigator.clipboard?.writeText(url).then(() => alert('URL이 복사되었습니다!'));
