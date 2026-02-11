@@ -586,6 +586,66 @@
     margin-bottom: var(--space-4);
 }
 
+/* === Criteria Section === */
+.section-criteria {
+    background: white;
+    padding: var(--space-16) 0;
+}
+
+.criteria-badge {
+    background: rgba(59, 130, 246, 0.1) !important;
+    color: #2563eb !important;
+}
+
+.criteria-common {
+    margin-top: var(--space-8);
+}
+
+.criteria-subtitle {
+    text-align: center;
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-8);
+}
+
+.criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+}
+
+.criteria-card {
+    text-align: center;
+    padding: var(--space-6);
+    border-radius: var(--radius-2xl);
+    background: var(--gray-50);
+    border: 2px solid var(--gray-100);
+    transition: all var(--transition-base);
+}
+
+.criteria-card:hover {
+    border-color: var(--primary-300);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.criteria-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-3);
+}
+
+.criteria-card h4 {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+}
+
+.criteria-card p {
+    font-size: var(--font-size-sm);
+    color: var(--gray-500);
+    line-height: 1.6;
+}
+
 /* === School Section === */
 .section-school {
     background: var(--gradient-dark);
@@ -761,6 +821,10 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .criteria-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .pricing-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -796,6 +860,10 @@
     }
 
     .community-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .criteria-grid {
         grid-template-columns: 1fr;
     }
 
