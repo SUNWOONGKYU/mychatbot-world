@@ -146,6 +146,7 @@ const MCW = {
     },
     logout() {
       localStorage.removeItem('mcw_current_user_id');
+      window.location.href = '../login.html'; // Direct redirect
     }
   },
 
