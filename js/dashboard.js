@@ -3,7 +3,17 @@
  * Dashboard JavaScript
  */
 document.addEventListener('DOMContentLoaded', () => {
-  initUser(); // Register/Login Master User
+  const user = MCW.user.getCurrentUser();
+  const bots = MCW.storage.getBots();
+  const sampleInit = localStorage.getItem(`mcw_sample_init_${user?.id || 'none'}`);
+
+  console.log(`[MCW DEBUG] User: ${user?.id}, Total Bots: ${bots.length}, Sample: ${sampleInit}`);
+
+  if (user?.id === 'admin') {
+    alert(`[MCW DEBUG] v3.0 로드 완료.\n계정: ${user.id}\n봇 개수: ${bots.length}\n상태: ${sampleInit || '처음접속'}`);
+  }
+
+  initUser();
   renderSummary();
   renderBotList();
   renderSkillMarketplace();
