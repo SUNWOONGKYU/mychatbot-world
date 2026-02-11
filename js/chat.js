@@ -308,7 +308,7 @@ async function generateResponse(userText) {
                 "X-Title": "My Chatbot World" // Optional
             },
             body: JSON.stringify({
-                "model": "google/gemini-2.0-flash-001", // Using stable version to avoid "No endpoints found"
+                "model": "google/gemini-2.0-flash-exp:free", // Reverting to free experimental version per user request
                 "messages": [
                     { "role": "system", "content": systemPrompt },
                     ...conversationHistory.slice(-10), // Context window
