@@ -583,6 +583,23 @@
     margin-bottom: var(--space-4);
 }
 
+.deploy-channels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: var(--space-2);
+}
+
+.deploy-tag {
+    font-size: 0.7rem;
+    background: var(--primary-50);
+    color: var(--primary-700);
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    border: 1px solid var(--primary-100);
+}
+
 /* === Criteria Section === */
 .section-criteria {
     background: white;
