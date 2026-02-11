@@ -38,13 +38,14 @@ function initUser() {
   // Update Header with My Page Button
   const headerRight = document.querySelector('.header-right') || document.querySelector('.dashboard-header');
   if (headerRight && !document.getElementById('myPageBtn')) {
-    // SunnyBot Button
+    // SunnyBot Button (Direct Chat)
     const sunnyBtn = document.createElement('button');
     sunnyBtn.className = 'btn btn-primary btn-sm';
     sunnyBtn.style.marginRight = '10px';
     sunnyBtn.innerHTML = '💬 써니봇';
     sunnyBtn.onclick = () => location.href = '/pages/bot/index.html?id=sunny-official';
 
+    // My Page Button
     const btn = document.createElement('button');
     btn.id = 'myPageBtn';
     btn.className = 'btn btn-secondary btn-sm';
