@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>긴급 복구 - My Chatbot World</title>
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .btn {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .log {
+            margin-top: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            text-align: left;
+            background: #222;
+            padding: 10px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔧 봇 데이터 긴급 복구 도구</h1>
+    <p>써니봇이 보이지 않을 때 이 버튼을 눌러주세요.<br>데이터를 강제로 생성하고 연결합니다.</p>
+
+    <button class="btn" onclick="emergencyFix()">🚀 써니봇 강제 소환 (Click)</button>
+
+    <div class="log" id="logArea">대기 중...</div>
+
+    <script>
+        function log(msg) {
+            const area = document.getElementById('logArea');
+            area.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            area.scrollTop = area.scrollHeight;
+        }
+
+        const SunnyBotData = {
+            id: 'sunny-bot-sample',
+            botName: '써니봇 (5인의 자아 통합형)',
+            botDesc: '기존 AI 아바타 프로젝트에서 가져온 5가지 페르소나(자아)가 탑재된 통합 봇입니다.',
+            greeting: '안녕하세요! 써니봇입니다. 5가지 자아를 가지고 있습니다. 원하시는 역할을 선택해주세요!',
+            personas: [
+                { id: 'p_ai', name: 'AI Master', role: '전지전능한 AI 마스터', model: 'logic', iqEq: 100, isVisible: true },
+                { id: 'p_startup', name: 'Startup Accelerator', role: '스타트업 전략가', model: 'logic', iqEq: 90, isVisible: true },
+                { id: 'p_cpa', name: '공인회계사', role: '세무/회계 전문가', model: 'logic', iqEq: 85, isVisible: true },
+                { id: 'p_star', name: '별 애호가', role: '우주와 꿈을 사랑하는 낭만가', model: 'creative', iqEq: 60, isVisible: true },
+                { id: 'p_life', name: '순수 생활인', role: '소소한 행복을 즐기는 이웃', model: 'emotion', iqEq: 50, isVisible: true }
+            ],
+            faqs: [
+                { q: '너는 누구니?', a: '저는 5가지 자아를 가진 써니봇입니다.' },
+                { q: '무엇을 할 수 있어?', a: '사업 전략부터 감성적인 대화까지 다양한 주제로 대화할 수 있습니다.' }
+            ],
+            templateId: 'custom',
+            username: 'sunny',
+            ownerId: 'admin',
+            created: Date.now(),
+            likes: 0
+        };
+
+        function emergencyFix() {
+            const area = document.getElementById('logArea');
+            area.innerHTML = ''; // Clear log
+
+            try {
+                log("🔄 복구 프로세스 시작...");
+
+                // 1. 기존 데이터 로드 (안전하게)
+                let bots = [];
+                try {
+                    bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
+                } catch (e) {
+                    log("⚠️ 기존 데이터 손상됨. 초기화합니다.");
+                    bots = [];
+                }
+
+                // 2. 써니봇 중복 제거 (ID나 username 기준)
+                const beforeCount = bots.length;
+                bots = bots.filter(b => b.id !== 'sunny-bot-sample' && b.username !== 'sunny');
+                log(`기존 중복 데이터 정리: ${beforeCount - bots.length}개 삭제됨`);
+
+                // 3. 새 데이터 추가
+                bots.unshift(SunnyBotData); // 맨 앞에 추가
+                localStorage.setItem('mcw_bots', JSON.stringify(bots));
+                log(`✅ 써니봇 데이터 주입 완료 (총 ${bots.length}개 봇)`);
+
+                // 4. 플래그 강제 설정
+                localStorage.setItem('mcw_sample_init_admin', 'true');
+                localStorage.setItem('mcw_sample_initialized', 'true');
+
+                // 5. 관리자 세션 복구
+                localStorage.setItem('mcw_current_user_id', 'admin');
+
+                // Users 배열 확인
+                let users = JSON.parse(localStorage.getItem('mcw_users') || '[]');
+                if (!users.find(u => u.id === 'admin')) {
+                    users.push({ id: 'admin', password: '1234', name: 'Master Admin', role: 'admin' });
+                    localStorage.setItem('mcw_users', JSON.stringify(users));
+                    log("✅ 관리자 계정 생성 완료");
+                }
+
+                log("🎉 복구 완료! 3초 후 이동합니다...");
+                log("이동 주소: dashboard/index.html");
+
+                setTimeout(() => {
+                    const unique = Date.now();
+                    window.location.href = `dashboard/index.html?v=${unique}`;
+                }, 3000);
+
+            } catch (e) {
+                log(`⛔ 치명적 오류: ${e.message}`);
+                alert("오류가 발생했습니다. 로그를 확인해주세요.");
+            }
+        }
+    </script>
+</body>
+
+</html>
