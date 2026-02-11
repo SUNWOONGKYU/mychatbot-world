@@ -36,7 +36,7 @@ function initUser() {
   MCW.user.claimAnonymousBots(user.id);
 
   // Update Header with My Page Button
-  const headerRight = document.querySelector('.header-right') || document.querySelector('.dashboard-header');
+  const headerRight = document.querySelector('.header-right') || document.querySelector('.dashboard-header') || document.querySelector('.navbar-inner');
   if (headerRight && !document.getElementById('myPageBtn')) {
     // SunnyBot Button (Direct Chat)
     const sunnyBtn = document.createElement('button');
