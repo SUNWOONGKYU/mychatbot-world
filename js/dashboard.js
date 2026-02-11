@@ -78,8 +78,8 @@ function renderSummary() {
 function renderBotList() {
   let bots = MCW.storage.getBots();
 
-  // Auto-create Sample Bot (First Time Only)
-  if (!localStorage.getItem('mcw_sample_initialized')) {
+  // Auto-create Sample Bot (If list is empty or first time)
+  if (bots.length === 0 || !localStorage.getItem('mcw_sample_initialized')) {
     if (typeof createSunnyBot === 'function') {
       console.log("Initializing Sample SunnyBot...");
       createSunnyBot(true); // Silent creation

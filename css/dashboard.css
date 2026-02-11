@@ -715,6 +715,7 @@
     flex: 1;
     height: 4px;
     -webkit-appearance: none;
+    appearance: none;
     background: linear-gradient(to right, #3b82f6, #ec4899);
     border-radius: 2px;
 }
@@ -783,4 +784,29 @@
 
 .edit-toggle input:checked+.edit-toggle-slider:before {
     transform: translateX(14px);
+}
+
+/* === Header Profile === */
+.user-profile-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: var(--space-4);
+    line-height: 1.2;
+}
+
+.profile-name {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: white;
+}
+
+.profile-role {
+    font-size: 0.65rem;
+    color: var(--primary-400);
+}
+
+.btn-secondary.btn-sm {
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.75rem;
 }
