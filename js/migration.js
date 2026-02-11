@@ -58,7 +58,7 @@ const SunnyBotData = {
 function createSunnyBot(silent = false) {
     if (!silent && !confirm('5가지 페르소나를 가진 "SunnyBot"을 생성하시겠습니까?')) return;
 
-    const id = 'sunny-' + Date.now().toString(36);
+    const id = 'sunny-official'; // Fixed ID for persistence
 
     // Get Owner
     let ownerId = 'anonymous';

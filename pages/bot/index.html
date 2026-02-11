@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 챗봇 - My Chatbot World</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/chat.css">
 </head>
 
 <body class="chat-body">
@@ -54,6 +54,17 @@
         </div>
     </div>
 
+    <!-- Emotion Control Slider (Patent Core Feature) -->
+    <div class="emotion-control-panel" id="emotionControlPanel" style="display:none;">
+        <div class="emotion-label-group">
+            <span class="emotion-min">🥶 냉철 (Logic)</span>
+            <span class="emotion-value" id="emotionValueDisplay">50</span>
+            <span class="emotion-max">💖 감성 (Emotion)</span>
+        </div>
+        <input type="range" id="emotionSlider" min="1" max="100" value="50" class="emotion-slider">
+        <div class="emotion-desc" id="emotionDesc">AI가 상황에 맞춰 유연하게 대처합니다.</div>
+    </div>
+
     <!-- Chat Messages -->
     <main class="chat-messages" id="chatMessages">
         <div class="chat-welcome" id="chatWelcome">
@@ -81,8 +92,9 @@
         </div>
     </div>
 
-    <script src="js/app.js"></script>
-    <script src="js/chat.js"></script>
+    <script src="../../js/app.js"></script>
+    <script src="../../js/migration.js"></script>
+    <script src="../../js/chat.js"></script>
 </body>
 
 </html>

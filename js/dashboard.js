@@ -38,16 +38,26 @@ function initUser() {
   // Update Header with My Page Button
   const headerRight = document.querySelector('.header-right') || document.querySelector('.dashboard-header');
   if (headerRight && !document.getElementById('myPageBtn')) {
+    // SunnyBot Button
+    const sunnyBtn = document.createElement('button');
+    sunnyBtn.className = 'btn btn-primary btn-sm';
+    sunnyBtn.style.marginRight = '10px';
+    sunnyBtn.innerHTML = '💬 써니봇';
+    sunnyBtn.onclick = () => location.href = '/pages/bot/index.html?id=sunny-official';
+
     const btn = document.createElement('button');
     btn.id = 'myPageBtn';
     btn.className = 'btn btn-secondary btn-sm';
-    btn.innerHTML = '👤 내 정보';
+    btn.innerHTML = '👤 My Page';
     btn.onclick = openMyPage;
-    // Append to header (need to find correct element)
-    // If header-right exists, append there. Else append to header.
+
+    // Append to header
     if (document.querySelector('.header-right')) {
-      document.querySelector('.header-right').prepend(btn);
+      const right = document.querySelector('.header-right');
+      right.prepend(btn);
+      right.prepend(sunnyBtn);
     } else {
+      headerRight.appendChild(sunnyBtn);
       headerRight.appendChild(btn);
     }
   }
@@ -61,7 +71,7 @@ function initUser() {
 
 function openMyPage() {
   const user = MCW.user.getCurrentUser();
-  alert(`[내 정보]\n이름: ${user.name}\n아이디: ${user.id}\n권한: ${user.role}\n\n(로그아웃 하려면 확인을 누르세요)`);
+  alert(`[My Page]\n이름: ${user.name}\n아이디: ${user.id}\n권한: ${user.role}\n\n🤖 써니봇(Official)이 항상 대기중입니다.\n상단 메뉴의 [💬 써니봇] 버튼을 눌러보세요!\n\n(로그아웃 하려면 확인을 누르세요)`);
   // Simple Logout for MVP
   if (confirm('로그아웃 하시겠습니까?')) {
     MCW.user.logout();
@@ -97,13 +107,13 @@ function renderBotList() {
   let allBots = MCW.storage.getBots();
   let userBots = allBots.filter(b => b.ownerId === user.id);
 
-  // Auto-create Sample Bot for NEW USER
-  if (userBots.length === 0 && !localStorage.getItem(`mcw_sample_init_${user.id}`)) {
+  // Auto-create SunnyBot for ALL USERs if missing
+  const hasSunnyBot = userBots.find(b => b.id === 'sunny-official' || b.id.startsWith('sunny-'));
+  if (!hasSunnyBot && !localStorage.getItem(`mcw_sunny_init_${user.id}`)) {
     if (typeof createSunnyBot === 'function') {
-      console.log("Initializing Sample SunnyBot for user:", user.id);
+      console.log("Initializing SunnyBot for user:", user.id);
       createSunnyBot(true); // Silent creation
-      localStorage.setItem(`mcw_sample_init_${user.id}`, 'true');
-      // Full reload to ensure all components (stats, summary) refresh with new data
+      localStorage.setItem(`mcw_sunny_init_${user.id}`, 'true');
       location.reload();
       return;
     }

@@ -33,19 +33,26 @@ function loadBotData() {
     }
 
     if (!chatBotData) {
-        // Demo bot
-        chatBotData = {
-            botName: '써니봇',
-            username: username || 'demo',
-            templateId: 'ceo',
-            personality: '친절하고 전문적인 AI 비서',
-            greeting: '안녕하세요! 써니봇입니다. 무엇이든 도와드리겠습니다! 😊',
-            faqs: [
-                { q: '어떤 서비스를 제공하나요?', a: '다양한 AI 챗봇 서비스를 제공합니다.' },
-                { q: '가격이 어떻게 되나요?', a: '무료 플랜부터 시작할 수 있습니다.' },
-                { q: '문의는 어떻게 하나요?', a: '이 채팅을 통해 편하게 문의해주세요!' }
-            ]
-        };
+        // Check if ID is SunnyBot Official and data is available
+        if ((idParam === 'sunny-official' || idParam?.startsWith('sunny-')) && typeof SunnyBotData !== 'undefined') {
+            chatBotData = { ...SunnyBotData, id: idParam || 'sunny-official' };
+        }
+
+        if (!chatBotData) {
+            // Demo bot fallback
+            chatBotData = {
+                botName: '써니봇 (Demo)',
+                username: username || 'demo',
+                templateId: 'ceo',
+                personality: '친절하고 전문적인 AI 비서',
+                greeting: '안녕하세요! 써니봇입니다. 무엇이든 도와드리겠습니다! 😊',
+                faqs: [
+                    { q: '어떤 서비스를 제공하나요?', a: '다양한 AI 챗봇 서비스를 제공합니다.' },
+                    { q: '가격이 어떻게 되나요?', a: '무료 플랜부터 시작할 수 있습니다.' },
+                    { q: '문의는 어떻게 하나요?', a: '이 채팅을 통해 편하게 문의해주세요!' }
+                ]
+            };
+        }
     }
 
     // Persona Setup
@@ -246,63 +253,69 @@ function hideTyping() {
 
 // Generate AI response (MVP: pattern matching + context-aware + Multi-Persona)
 async function generateResponse(userText) {
-    // Check FAQ first
-    if (chatBotData?.faqs) {
-        for (const faq of chatBotData.faqs) {
-            if (userText.includes(faq.q.substring(0, 5)) || faq.q.includes(userText.substring(0, 5))) {
-                return faq.a;
-            }
+    // Check for API Key
+    let apiKey = localStorage.getItem('mcw_openrouter_key');
+
+    // Fallback to the key found in .env.production
+    if (!apiKey) {
+        apiKey = "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";
+        localStorage.setItem('mcw_openrouter_key', apiKey);
+    }
+    if (!apiKey) {
+        // Prompt for key if missing
+        const userKey = prompt("OpenRouter API Key가 필요합니다.\n키를 입력해주세요 (브라우저에 저장됩니다):", "");
+        if (userKey) {
+            localStorage.setItem('mcw_openrouter_key', userKey);
+            return generateResponse(userText); // Retry with key
+        } else {
+            return "API 키가 없으면 대화할 수 없습니다. 😢";
         }
     }
 
-
-    // Simulate delay based on model
-    const p = currentPersona || chatBotData.personas[0];
+    // Set Loading State
     setAvatarEmotion('thinking'); // Avatar thinking
-    let delay = 1000 + Math.random() * 1500;
-    if (p.model === 'fast') delay = 500; // Fast model
-    if (p.model === 'creative') delay = 2000; // Creative takes longer
 
-    await new Promise(r => setTimeout(r, delay));
+    try {
+        const p = currentPersona || chatBotData.personas[0];
+        const systemPrompt = p.role
+            ? `당신은 ${p.name}입니다. ${p.role}. 항상 한국어로 답변하세요.`
+            : "당신은 도움이 되는 AI 어시스턴트입니다.";
 
-    // Base Logic
-    const lower = userText.toLowerCase();
-    const botName = p.name;
-    let response = '';
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": window.location.href, // Optional
+                "X-Title": "My Chatbot World" // Optional
+            },
+            body: JSON.stringify({
+                "model": "google/gemini-2.0-flash-exp:free", // Use a free/cheap model by default
+                "messages": [
+                    { "role": "system", "content": systemPrompt },
+                    ...conversationHistory.slice(-10), // Context window
+                    { "role": "user", "content": userText }
+                ]
+            })
+        });
 
-    if (lower.includes('안녕') || lower.includes('하이') || lower.includes('hello')) {
-        response = `안녕하세요! ${botName}입니다. 무엇을 도와드릴까요?`;
-    } else if (lower.includes('이름') || lower.includes('누구')) {
-        response = `저는 ${botName}입니다. ${p.role}`;
-    } else if (lower.includes('감사') || lower.includes('고마')) {
-        response = '감사합니다! 더 도움이 필요하시면 언제든 말씀해주세요.';
-    } else if (lower.includes('도움') || lower.includes('도와')) {
-        const helpItems = chatBotData?.faqs?.map(f => `• ${f.q}`).join('\n') || '';
-        response = `물론이죠! 이런 것들을 도와드릴 수 있어요:\n${helpItems}\n\n어떤 것이 궁금하신가요?`;
-    } else {
-        const responses = [
-            `좋은 질문입니다! "${userText}"에 대해 생각해보겠습니다.`,
-            `네, 말씀하신 내용 잘 이해했습니다.`,
-            `해당 문의에 대해 답변 드리겠습니다.`
-        ];
-        response = responses[Math.floor(Math.random() * responses.length)];
+        if (!response.ok) {
+            const err = await response.json();
+            console.error("API Error:", err);
+            return `오류가 발생했습니다: ${err.error?.message || response.statusText}`;
+        }
+
+        const data = await response.json();
+        const botResponse = data.choices[0].message.content;
+
+        setAvatarEmotion('happy'); // Avatar happy
+        setTimeout(() => setAvatarEmotion('neutral'), 3000);
+        return botResponse;
+
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        return "네트워크 오류가 발생했습니다. 다시 시도해주세요.";
     }
-
-    // Apply Persona Flavor
-    if (p.model === 'emotion') {
-        response = response.replace('니다.', '닝~💕').replace('요?', '가요? 🤔');
-        response += " (공감공감!)";
-    } else if (p.model === 'logic') {
-        response = "분석 결과: " + response + " 정확한 데이터에 기반하여 답변드립니다.";
-    } else if (p.model === 'creative') {
-        response = "✨ " + response + " 마치 별들이 노래하듯이요! 🎨";
-    } else if (p.model === 'fast') {
-        response = "네. " + response + " (처리 완료)";
-    }
-
-    setAvatarEmotion('happy'); // Avatar happy
-    setTimeout(() => setAvatarEmotion('neutral'), 3000);
-    return response;
 }
 
 // === Avatar Control ===
