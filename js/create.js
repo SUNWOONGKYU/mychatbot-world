@@ -1,6 +1,6 @@
 /**
  * @task S2F2
- * Create Page JavaScript - 5-step chatbot creation wizard
+ * Create Page JavaScript - 6-step chatbot creation wizard
  */
 let currentStep = 1;
 let selectedTemplate = null;
@@ -9,11 +9,14 @@ let recordingTimer = null;
 let remainingTime = 300;
 let recognition = null;
 let transcriptText = '';
+let personaCount = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     renderTemplateSelect();
     setupSpeechRecognition();
     setupTextCounter();
+    // Add default persona
+    addPersona();
 });
 
 // Step navigation
@@ -27,24 +30,152 @@ function goToStep(step) {
         const name = document.getElementById('botName').value.trim();
         if (!name) { alert('챗봇 이름을 입력해주세요'); return; }
     }
-
-    // Hide all steps, show target
-    for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById('step' + i);
-        if (el) el.classList.toggle('hidden', i !== step);
+    if (step === 4) {
+        // Validate Persona Step
+        const personas = collectPersonas();
+        if (personas.length === 0) { alert('최소 1개의 페르소나를 설정해주세요'); return; }
+        const invalid = personas.find(p => !p.name.trim());
+        if (invalid) { alert('모든 페르소나의 이름을 입력해주세요'); return; }
     }
 
-    // Update progress
+    // Hide all steps, show target
+    for (let i = 1; i <= 6; i++) {
+        const el = document.getElementById('step' + i);
+        if (el) {
+            el.classList.toggle('hidden', i !== step);
+            // Re-trigger animation
+            if (i === step) {
+                el.style.animation = 'none';
+                el.offsetHeight; /* trigger reflow */
+                el.style.animation = 'fadeIn 0.5s ease';
+            }
+        }
+    }
+
+    // Update progress (Map 6 steps to 5 dots)
+    // Step 1,2,3 -> 1,2,3
+    // Step 4 (Interview) -> 4
+    // Step 5 (Analysis) -> 5
+    // Step 6 (Complete) -> 5 (Completed)
     currentStep = step;
+    const progressStep = Math.min(step, 5);
+
     const fill = document.getElementById('progressFill');
-    fill.style.width = (step * 20) + '%';
+    if (fill) fill.style.width = (progressStep * 20) + '%';
+
     document.querySelectorAll('.progress-step').forEach((el, idx) => {
-        el.classList.toggle('active', idx + 1 === step);
-        el.classList.toggle('completed', idx + 1 < step);
+        el.classList.toggle('active', idx + 1 === progressStep);
+        el.classList.toggle('completed', idx + 1 < progressStep);
     });
 
     // Update voice guide for template
-    if (step === 3) updateVoiceGuide();
+    if (step === 4) updateVoiceGuide();
+}
+
+// === Multi-Persona Logic ===
+function addPersona() {
+    if (personaCount >= 5) {
+        alert('페르소나는 최대 5개까지 설정 가능합니다.');
+        return;
+    }
+    personaCount++;
+    const id = Date.now();
+    const div = document.createElement('div');
+    div.className = 'persona-card';
+    div.id = `persona-${id}`;
+    div.innerHTML = `
+        <div class="persona-card-header">
+            <div class="persona-card-title">
+                <span class="persona-counter">Persona ${personaCount}</span>
+                자아 설정
+            </div>
+            ${personaCount > 1 ? `<button class="persona-delete-btn" onclick="removePersona('${id}')">🗑️</button>` : ''}
+        </div>
+        
+        <div class="persona-input-group">
+            <label class="persona-input-label">자아 이름 (예: AI 마스터)</label>
+            <input type="text" class="persona-input p-name" placeholder="이름 입력">
+        </div>
+        
+        <div class="persona-input-group">
+            <label class="persona-input-label">역할/전문성 (예: 기술적 조언)</label>
+            <input type="text" class="persona-input p-role" placeholder="역할 설명">
+        </div>
+        
+        <div class="persona-input-group">
+            <label class="persona-input-label">AI 두뇌 모델</label>
+            <div class="model-select">
+                <div class="model-option">
+                    <input type="radio" name="model-${id}" id="m-logic-${id}" value="logic" checked>
+                    <label for="m-logic-${id}">🧠 논리파<br>(GPT-4)</label>
+                </div>
+                <div class="model-option">
+                    <input type="radio" name="model-${id}" id="m-emotion-${id}" value="emotion">
+                    <label for="m-emotion-${id}">💖 감성파<br>(Claude)</label>
+                </div>
+                <div class="model-option">
+                    <input type="radio" name="model-${id}" id="m-fast-${id}" value="fast">
+                    <label for="m-fast-${id}">⚡ 속도파<br>(Gemini)</label>
+                </div>
+                <div class="model-option">
+                    <input type="radio" name="model-${id}" id="m-creative-${id}" value="creative">
+                    <label for="m-creative-${id}">🎨 창작파<br>(DALL-E)</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="persona-input-group">
+            <div class="toggle-switch-container">
+                <div class="slider-container" style="flex:1; margin-right:1rem;">
+                    <span>지성(IQ)</span>
+                    <input type="range" class="iq-eq-slider p-slider" min="0" max="100" value="50">
+                    <span>감성(EQ)</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="toggle-input p-visible" checked>
+                    <div class="toggle-slider"></div>
+                    <span class="toggle-switch-label">공개</span>
+                </label>
+            </div>
+        </div>
+    `;
+    document.getElementById('personaList').appendChild(div);
+    updateAddButton();
+}
+
+function removePersona(id) {
+    if (personaCount <= 1) return;
+    document.getElementById(`persona-${id}`).remove();
+    personaCount--;
+    updateAddButton();
+    // Re-index titles optionally, but simpler to leave as is or re-render labels
+}
+
+function updateAddButton() {
+    const btn = document.getElementById('addPersonaBtn');
+    if (personaCount >= 5) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.textContent = '최대 5개까지 추가 가능';
+    } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.textContent = '+ 페르소나 추가';
+    }
+}
+
+function collectPersonas() {
+    const list = [];
+    document.querySelectorAll('.persona-card').forEach(card => {
+        list.push({
+            name: card.querySelector('.p-name').value,
+            role: card.querySelector('.p-role').value,
+            model: card.querySelector('input[type=radio]:checked').value,
+            iqEq: card.querySelector('.p-slider').value,
+            isVisible: card.querySelector('.p-visible').checked
+        });
+    });
+    return list;
 }
 
 // Template selection
@@ -177,7 +308,7 @@ async function analyzeInput() {
         return;
     }
 
-    goToStep(4);
+    goToStep(5); // Show Analysis Screen (Step 5 now)
 
     // Simulate AI analysis steps
     const steps = document.querySelectorAll('#analysisSteps .analysis-step');
@@ -194,17 +325,19 @@ async function analyzeInput() {
     const botName = document.getElementById('botName').value.trim();
     const botDesc = document.getElementById('botDesc').value.trim();
     const template = selectedTemplate;
+    const personas = collectPersonas();
 
-    const result = generateBotResult(botName, botDesc, template, inputText);
+    const result = generateBotResult(botName, botDesc, template, inputText, personas);
 
     // Show result
     document.getElementById('analysisAnimation').classList.add('hidden');
     const resultDiv = document.getElementById('analysisResult');
     resultDiv.classList.remove('hidden');
+
+    // Preview with Persona info
     document.getElementById('resultPreview').innerHTML = `
-    <div class="result-item"><div class="result-label">성격</div><div class="result-value">${result.personality}</div></div>
-    <div class="result-item"><div class="result-label">어조</div><div class="result-value">${result.tone}</div></div>
-    <div class="result-item"><div class="result-label">인사말</div><div class="result-value">"${result.greeting}"</div></div>
+    <div class="result-item"><div class="result-label">생성된 페르소나</div><div class="result-value">${personas.length}개 자아 (${personas.map(p => p.name).join(', ')})</div></div>
+    <div class="result-item"><div class="result-label">대표 인사말</div><div class="result-value">"${result.greeting}"</div></div>
     <div class="result-item">
       <div class="result-label">자동 생성 FAQ (${result.faqs.length}개)</div>
       <ul class="result-faq-list">${result.faqs.map(f => `<li><strong>Q:</strong> ${f.q}<br><strong>A:</strong> ${f.a}</li>`).join('')}</ul>
@@ -215,105 +348,17 @@ async function analyzeInput() {
     window._createdBot = result;
 }
 
-function generateBotResult(name, desc, template, text) {
-    const personalities = {
-        smallbiz: '손님을 환대하는 따뜻한 가게 주인',
-        realtor: '신뢰감 있는 전문 부동산 중개인',
-        lawyer: '정중하고 전문적인 법률 어시스턴트',
-        accountant: '친절하고 정확한 세무/회계 전문가',
-        medical: '따뜻하고 전문적인 의료 안내 도우미',
-        insurance: '친근하고 신뢰감 있는 보험 설계사',
-        politician: '국민과 소통하는 따뜻하고 신뢰감 있는 정치인',
-        instructor: '학생들을 이끄는 열정적인 강사/코치',
-        freelancer: '전문적이면서 친근한 프리랜서',
-        consultant: '품격 있고 전문적인 컨설턴트'
-    };
-    const tones = {
-        smallbiz: '친근한 존댑말, 따뜻하고 환대하는 어조',
-        realtor: '전문적 존댑말, 신뢰감 있는 어조',
-        lawyer: '존댑말, 정중하고 전문적인 어조',
-        accountant: '존댑말, 친절하고 정확한 어조',
-        medical: '존댑말, 따뜻하고 전문적인 어조',
-        insurance: '친근한 존댑말, 신뢰감 있는 어조',
-        politician: '존댑말, 정중하고 진정성 있는 어조',
-        instructor: '존댑말, 격려하고 동기부여하는 어조',
-        freelancer: '전문적 존댑말, 친근한 어조',
-        consultant: '비즈니스 존댑말, 품격 있는 어조'
-    };
-    const greetings = {
-        smallbiz: `어서오세요~ ${name}에 오신 것을 환영합니다! 메뉴나 예약에 대해 물어보세요 😊`,
-        realtor: `안녕하세요! ${name} 공인중개사 사무소입니다. 매물이나 시세에 대해 물어보세요.`,
-        lawyer: `안녕하세요, ${name} 변호사의 AI 법률 어시스턴트입니다. 어떤 법률 문의가 있으신가요?`,
-        accountant: `안녕하세요, ${name} 세무사사무소 AI 어시스턴트입니다. 세금이나 회계에 대해 물어보세요.`,
-        medical: `안녕하세요! ${name}의 AI 안내 도우미입니다. 진료 예약이나 궁금한 점을 물어보세요.`,
-        insurance: `안녕하세요! ${name} 설계사의 AI 어시스턴트입니다. 보험 상품이나 보장에 대해 물어보세요.`,
-        politician: `안녕하세요! ${name}입니다. 여러분의 목소리에 귀 기울이겠습니다. 무엇이든 물어봐주세요!`,
-        instructor: `안녕하세요! ${name}입니다. 강의나 코칭에 대해 궁금한 점이 있으신가요?`,
-        freelancer: `안녕하세요! ${name}의 AI 어시스턴트입니다. 포트폴리오나 작업 문의에 대해 알려드릴게요.`,
-        consultant: `안녕하세요, ${name} 컨설팅의 AI 어시스턴트입니다. 컨설팅 서비스에 대해 물어보세요.`
-    };
-    const faqTemplates = {
-        smallbiz: [
-            { q: '영업시간이 어떻게 되나요?', a: '매일 영업합니다. 자세한 시간은 확인해주세요.' },
-            { q: '예약은 어떻게 하나요?', a: '전화나 이 챗봇을 통해 예약하실 수 있습니다.' },
-            { q: '배달도 되나요?', a: '배달 서비스를 제공합니다. 주소를 알려주세요.' }
-        ],
-        realtor: [
-            { q: '현재 매물이 있나요?', a: '다양한 매물이 있습니다. 원하는 조건을 말씀해주세요.' },
-            { q: '수수료는 얼마인가요?', a: '법정 수수료 기준으로 안내드립니다.' },
-            { q: '매물 투어 예약이 가능한가요?', a: '네, 원하시는 시간에 투어를 예약해드립니다.' }
-        ],
-        lawyer: [
-            { q: '상담 예약은 어떻게 하나요?', a: '온라인으로 편하게 예약하실 수 있습니다.' },
-            { q: '전문 분야가 무엇인가요?', a: '다양한 법률 분야를 전문으로 합니다.' },
-            { q: '상담 비용은 얼마인가요?', a: '상담 비용은 사건 유형에 따라 달라집니다.' }
-        ],
-        accountant: [
-            { q: '종합소득세 신고는 언제인가요?', a: '매년 5월에 신고합니다. 상세한 일정은 문의해주세요.' },
-            { q: '기장 대행 비용은?', a: '사업 규모에 따라 달라집니다. 상담을 예약해주세요.' },
-            { q: '절세 방법이 있나요?', a: '절세 전략에 대해 상담해드립니다.' }
-        ],
-        medical: [
-            { q: '진료 예약은 어떻게 하나요?', a: '전화나 온라인으로 예약하실 수 있습니다.' },
-            { q: '보험 적용이 되나요?', a: '대부분의 진료에 보험이 적용됩니다.' },
-            { q: '진료 시간이 어떻게 되나요?', a: '진료 시간을 확인해드립니다.' }
-        ],
-        insurance: [
-            { q: '어떤 보험이 좋을까요?', a: '상황에 맞는 보험을 추천해드립니다.' },
-            { q: '보장 분석이 가능한가요?', a: '네, 무료 보장 분석을 제공합니다.' },
-            { q: '청구는 어떻게 하나요?', a: '청구 절차를 안내해드립니다.' }
-        ],
-        politician: [
-            { q: '대표 공약이 무엇인가요?', a: '주요 공약은 지역 발전, 교육 개선, 일자리 창출입니다.' },
-            { q: '민원은 어떻게 접수하나요?', a: '이 챗봇을 통해 민원을 접수하시거나 사무실로 연락 주세요.' },
-            { q: '사무실은 어디에 있나요?', a: '사무실 주소와 방문 시간은 홈페이지를 확인해주세요.' }
-        ],
-        instructor: [
-            { q: '어떤 강의를 하시나요?', a: '제 전문 분야의 다양한 강의를 제공합니다.' },
-            { q: '수강 신청은 어떻게 하나요?', a: '홈페이지에서 수강 신청하실 수 있습니다.' },
-            { q: '1:1 코칭도 가능한가요?', a: '네, 개인 코칭도 가능합니다. 문의해주세요.' }
-        ],
-        freelancer: [
-            { q: '포트폴리오를 볼 수 있나요?', a: '네, 포트폴리오를 보여드리겠습니다.' },
-            { q: '견적은 어떻게 내나요?', a: '프로젝트 내용을 말씀해주시면 견적을 드리겠습니다.' },
-            { q: '작업 기간은 얼마나 걸리나요?', a: '프로젝트 규모에 따라 달라집니다.' }
-        ],
-        consultant: [
-            { q: '어떤 컨설팅을 제공하나요?', a: '다양한 컨설팅 서비스를 제공합니다.' },
-            { q: '비용은 얼마인가요?', a: '프로젝트 규모에 따라 달라집니다. 상담을 예약해주세요.' },
-            { q: '진행 절차가 어떻게 되나요?', a: '진행 절차를 안내해드리겠습니다.' }
-        ]
-    };
+function generateBotResult(name, desc, template, text, personas) {
+    const faqTemplates = MCW.templates[template.id].faqs || MCW.templates.smallbiz.faqs;
+    const greeting = MCW.templates[template.id].greeting.replace('{name}', name);
 
-    const tid = template?.id || 'smallbiz';
     return {
         botName: name,
         botDesc: desc,
-        templateId: tid,
-        personality: personalities[tid] || personalities.smallbiz,
-        tone: tones[tid] || tones.smallbiz,
-        greeting: greetings[tid] || greetings.smallbiz,
-        faqs: faqTemplates[tid] || faqTemplates.smallbiz,
+        templateId: template.id,
+        personas: personas, // Save Multi-Persona Data
+        greeting: greeting,
+        faqs: faqTemplates,
         inputText: text,
         createdAt: new Date().toISOString()
     };
@@ -335,7 +380,7 @@ function completeCreation() {
     };
     MCW.storage.saveBot(botData);
 
-    goToStep(5);
+    goToStep(6); // Complete Screen (Step 6 now)
 
     // Show URL & QR
     const baseUrl = window.location.origin;

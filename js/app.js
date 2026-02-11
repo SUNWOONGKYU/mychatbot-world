@@ -90,6 +90,43 @@ const MCW = {
     }
   },
 
+  // ─── User Management (Phase 3) ───
+  user: {
+    getUsers() {
+      return JSON.parse(localStorage.getItem('mcw_users') || '[]');
+    },
+    saveUser(user) {
+      const users = this.getUsers();
+      const idx = users.findIndex(u => u.id === user.id);
+      if (idx >= 0) users[idx] = user;
+      else users.push(user);
+      localStorage.setItem('mcw_users', JSON.stringify(users));
+      return user;
+    },
+    getUser(id) {
+      return this.getUsers().find(u => u.id === id);
+    },
+    // Mock Verify
+    verifyPassword(id, password) {
+      const user = this.getUser(id);
+      if (user && user.password === password) return true;
+      // Backdoor for development
+      if (id === 'admin' && password === '1234') return true;
+      return false;
+    },
+    getCurrentUser() {
+      const id = localStorage.getItem('mcw_current_user_id');
+      if (id) return this.getUser(id);
+      return null;
+    },
+    login(id) {
+      localStorage.setItem('mcw_current_user_id', id);
+    },
+    logout() {
+      localStorage.removeItem('mcw_current_user_id');
+    }
+  },
+
   // ─── Templates (10대 타겟 직업) ───
   templates: {
     smallbiz: {

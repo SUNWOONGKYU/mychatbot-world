@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - My Chatbot World</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --surface-dark: #1e293b;
+            --primary: #8b5cf6;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Suit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-card {
+            background: var(--surface-dark);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: white;
+            box-sizing: border-box;
+            /* Fix padding issue */
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+        }
+
+        .hint {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h1>로그인</h1>
+            <p>나만의 챗봇 세계로 입장하세요</p>
+        </div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>아이디</label>
+                <input type="text" id="username" class="form-input" placeholder="admin" required>
+            </div>
+            <div class="form-group">
+                <label>비밀번호</label>
+                <input type="password" id="password" class="form-input" placeholder="1234" required>
+            </div>
+            <button type="submit" class="btn-login">로그인</button>
+        </form>
+        <div class="hint">
+            * 기본 계정: admin / 1234
+        </div>
+        <div style="text-align:center; margin-top:10px;">
+            <a href="/" style="color:var(--text-gray); text-decoration:none; font-size:0.8rem;">← 홈으로 돌아가기</a>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        // Check if already logged in
+        if (MCW.user.getCurrentUser()) {
+            window.location.href = '/pages/dashboard/index.html';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById('username').value;
+            const pw = document.getElementById('password').value;
+
+            if (MCW.user.verifyPassword(id, pw)) {
+                // If admin, ensure user exists in DB or just Login ID
+                // Simulate Login
+                if (!MCW.user.getUser(id)) {
+                    // Create if not exists (for admin backdoor)
+                    MCW.user.saveUser({
+                        id: id,
+                        name: 'Master Admin',
+                        email: 'admin@example.com',
+                        password: pw,
+                        role: 'admin',
+                        created_at: new Date().toISOString()
+                    });
+                }
+                MCW.user.login(id);
+                // Redirect to Dashboard
+                // Assuming folder structure c:\mychatbot-world\pages\login.html
+                // Dashboard is in c:\mychatbot-world\pages\dashboard\index.html
+                window.location.href = 'dashboard/index.html';
+            } else {
+                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+            }
+        }
+    </script>
+</body>
+
+</html>

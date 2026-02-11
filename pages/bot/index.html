@@ -16,7 +16,12 @@
             <div class="chat-avatar" id="chatAvatar">🤖</div>
             <div class="chat-info">
                 <h1 class="chat-bot-name" id="chatBotName">AI 챗봇</h1>
-                <span class="chat-status">● 온라인</span>
+                <div class="chat-header-meta">
+                    <span class="chat-status">● 온라인</span>
+                    <select id="personaSelect" class="chat-persona-select" onchange="switchPersona(this.value)"
+                        style="display:none;">
+                    </select>
+                </div>
             </div>
         </div>
         <div class="chat-header-right">
@@ -24,6 +29,30 @@
             <button class="chat-header-btn" onclick="location.href='/'" title="홈으로">🏠</button>
         </div>
     </header>
+
+    <!-- Avatar Stage (New) -->
+    <div class="chat-avatar-stage" id="avatarStage" style="display:none;">
+        <div class="avatar-container">
+            <div class="avatar-face" id="avatarFace">
+                <div class="head">
+                    <div class="hair"></div>
+                    <div class="eyes">
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="neck"></div>
+                <div class="accessory" id="accessory"></div>
+            </div>
+            <div class="emotion-label" id="emotionLabel"></div>
+        </div>
+    </div>
 
     <!-- Chat Messages -->
     <main class="chat-messages" id="chatMessages">

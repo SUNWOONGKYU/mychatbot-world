@@ -336,3 +336,295 @@
     background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
 }
+
+.chat-header-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: 2px;
+}
+
+.chat-persona-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 2px 8px;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.chat-persona-select option {
+    background: #1e1e24;
+    color: white;
+}
+
+/* === CSS Avatar (Legacy Port) === */
+.chat-avatar-stage {
+    padding: var(--space-4);
+    background: rgba(15, 15, 26, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.avatar-container {
+    width: 120px;
+    height: 140px;
+    position: relative;
+    text-align: center;
+}
+
+.avatar-face {
+    width: 120px;
+    height: 140px;
+    margin: 0 auto;
+    position: relative;
+    transform: scale(0.85);
+    transform-origin: top center;
+}
+
+.head {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.hair {
+    width: 110px;
+    height: 60px;
+    background: #2c3e50;
+    border-radius: 50% 50% 0 0;
+    position: absolute;
+    top: -5px;
+    left: 5px;
+    transition: all 0.5s;
+}
+
+.eyes {
+    position: absolute;
+    width: 100%;
+    top: 45px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.eye {
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pupil {
+    width: 10px;
+    height: 10px;
+    background: #2c3e50;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.nose {
+    width: 6px;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mouth {
+    width: 40px;
+    height: 20px;
+    position: absolute;
+    top: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+}
+
+.mouth::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 3px solid #e74c3c;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.3s;
+}
+
+.neck {
+    width: 40px;
+    height: 25px;
+    background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 8px 8px;
+    z-index: -1;
+}
+
+/* Emotions */
+.avatar-face.happy .mouth::after {
+    border-color: #27ae60;
+    top: -5px;
+}
+
+.avatar-face.happy .head {
+    animation: bounce 0.5s ease infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.avatar-face.sad .mouth::after {
+    border-color: #3498db;
+    top: 12px;
+    transform: rotate(180deg);
+}
+
+.avatar-face.thinking .pupil {
+    transform: translate(-30%, -50%);
+}
+
+.avatar-face.thinking .head {
+    animation: tilt 2s ease-in-out infinite;
+}
+
+@keyframes tilt {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+/* Accessories (Personas) */
+.accessory {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0;
+    transition: all 0.5s;
+    z-index: 5;
+}
+
+/* New 5 Personas Mapping */
+/* AI Master */
+.avatar-face.persona-ai .accessory {
+    content: '🧠';
+    top: -15px;
+    right: 0px;
+    opacity: 1;
+    font-size: 28px;
+}
+
+.avatar-face.persona-ai .hair {
+    background: #95a5a6;
+    height: 50px;
+}
+
+/* Startup Accelerator */
+.avatar-face.persona-startup .accessory {
+    content: '🚀';
+    top: 90px;
+    right: -10px;
+    opacity: 1;
+    font-size: 24px;
+}
+
+.avatar-face.persona-startup .hair {
+    background: #2c3e50;
+    height: 55px;
+}
+
+/* CPA */
+.avatar-face.persona-cpa .accessory {
+    content: '🧮';
+    top: 85px;
+    left: 10px;
+    opacity: 1;
+    font-size: 26px;
+}
+
+.avatar-face.persona-cpa .hair {
+    background: #34495e;
+    height: 45px;
+}
+
+/* Star Lover */
+.avatar-face.persona-star .accessory {
+    content: '🔭';
+    top: 50px;
+    left: -15px;
+    opacity: 1;
+    font-size: 30px;
+}
+
+.avatar-face.persona-star .hair {
+    background: linear-gradient(to right, #240b36, #c31432);
+    height: 70px;
+}
+
+/* Pure Lifer */
+.avatar-face.persona-life .accessory {
+    content: '🌿';
+    top: 95px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+    font-size: 24px;
+}
+
+.avatar-face.persona-life .hair {
+    background: #8d6e63;
+    height: 60px;
+}
+
+.emotion-label {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}

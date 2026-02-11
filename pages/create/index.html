@@ -24,11 +24,11 @@
             <!-- Progress Bar -->
             <div class="create-progress">
                 <div class="progress-steps">
-                    <div class="progress-step active" data-step="1"><span>1</span>분야 선택</div>
-                    <div class="progress-step" data-step="2"><span>2</span>정보 입력</div>
-                    <div class="progress-step" data-step="3"><span>3</span>음성/텍스트</div>
-                    <div class="progress-step" data-step="4"><span>4</span>AI 분석</div>
-                    <div class="progress-step" data-step="5"><span>5</span>완성!</div>
+                    <div class="progress-step horizontal" data-step="1"><span>1</span>분야</div>
+                    <div class="progress-step horizontal" data-step="2"><span>2</span>정보</div>
+                    <div class="progress-step horizontal" data-step="3"><span>3</span>페르소나</div>
+                    <div class="progress-step horizontal" data-step="4"><span>4</span>인터뷰</div>
+                    <div class="progress-step horizontal" data-step="5"><span>5</span>완성</div>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
@@ -70,8 +70,25 @@
                 </div>
             </div>
 
-            <!-- Step 3: Voice/Text Input -->
+            <!-- Step 3: Multi-Persona Setup (New) -->
             <div class="create-step hidden" id="step3">
+                <h2 class="step-title">멀티 페르소나 설정</h2>
+                <p class="step-desc">최대 5개의 자아를 설정하여 상황에 맞게 대화합니다 (수시 변경 가능)</p>
+
+                <div id="personaList" class="persona-list">
+                    <!-- Dynamic Persona Cards -->
+                </div>
+
+                <button class="btn btn-outline" id="addPersonaBtn" onclick="addPersona()">+ 페르소나 추가</button>
+
+                <div class="step-actions">
+                    <button class="btn btn-secondary" onclick="goToStep(2)">이전</button>
+                    <button class="btn btn-primary" onclick="goToStep(4)">다음: 인터뷰 →</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Voice/Text Input -->
+            <div class="create-step hidden" id="step4">
                 <h2 class="step-title">AI에게 당신을 소개해주세요</h2>
                 <p class="step-desc">5분간 자유롭게 말하거나 텍스트로 입력해주세요</p>
 
@@ -111,8 +128,8 @@
                 </button>
             </div>
 
-            <!-- Step 4: AI Analysis -->
-            <div class="create-step hidden" id="step4">
+            <!-- Step 5: AI Analysis -->
+            <div class="create-step hidden" id="step5">
                 <h2 class="step-title">AI가 분석 중입니다...</h2>
                 <div class="analysis-animation" id="analysisAnimation">
                     <div class="analysis-spinner">
@@ -135,8 +152,8 @@
                 </div>
             </div>
 
-            <!-- Step 5: Complete! -->
-            <div class="create-step hidden" id="step5">
+            <!-- Step 6: Complete! -->
+            <div class="create-step hidden" id="step6">
                 <div class="complete-celebration">
                     <div class="complete-icon">🎉</div>
                     <h2 class="step-title">축하합니다! 챗봇이 설치되었습니다!</h2>

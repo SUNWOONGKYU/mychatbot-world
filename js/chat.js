@@ -13,13 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Load bot data from URL
+// Load bot data from URL
 function loadBotData() {
-    const path = window.location.pathname;
-    const username = path.split('/bot/')[1] || path.split('/').pop();
+    const urlParams = new URLSearchParams(window.location.search);
+    const idParam = urlParams.get('id');
+    const userParam = urlParams.get('user');
 
     // Load from localStorage
     const bots = MCW.storage.getBots();
-    chatBotData = bots.find(b => b.username === username);
+
+    if (idParam) {
+        chatBotData = bots.find(b => b.id === idParam);
+    } else if (userParam) {
+        chatBotData = bots.find(b => b.username === userParam);
+    } else {
+        const path = window.location.pathname;
+        const username = path.split('/bot/')[1];
+        if (username) chatBotData = bots.find(b => b.username === username);
+    }
 
     if (!chatBotData) {
         // Demo bot
@@ -28,7 +39,6 @@ function loadBotData() {
             username: username || 'demo',
             templateId: 'ceo',
             personality: '친절하고 전문적인 AI 비서',
-            tone: '존댓말, 친절하고 전문적인 어조',
             greeting: '안녕하세요! 써니봇입니다. 무엇이든 도와드리겠습니다! 😊',
             faqs: [
                 { q: '어떤 서비스를 제공하나요?', a: '다양한 AI 챗봇 서비스를 제공합니다.' },
@@ -38,11 +48,33 @@ function loadBotData() {
         };
     }
 
+    // Persona Setup
+    if (!chatBotData.personas || chatBotData.personas.length === 0) {
+        chatBotData.personas = [{
+            id: 'default',
+            name: chatBotData.botName,
+            role: chatBotData.personality || 'AI Assistant',
+            model: 'logic',
+            iqEq: 50,
+            isVisible: true
+        }];
+    }
+    currentPersona = chatBotData.personas[0];
+    currentPersona = chatBotData.personas[0];
+    renderPersonaSelector();
+
+    // Avatar Setup
+    const avatarStage = document.getElementById('avatarStage');
+    if (chatBotData.personas && chatBotData.personas.length > 0) {
+        if (avatarStage) avatarStage.style.display = 'flex';
+        updateAvatar(currentPersona);
+    }
+
     // Update UI
     document.getElementById('chatBotName').textContent = chatBotData.botName;
     document.title = `${chatBotData.botName} - My Chatbot World`;
     document.getElementById('welcomeTitle').textContent = chatBotData.botName;
-    document.getElementById('welcomeDesc').textContent = chatBotData.personality || '무엇이든 물어보세요.';
+    document.getElementById('welcomeDesc').textContent = currentPersona.role;
 
     // Render FAQ buttons
     renderFaqButtons();
@@ -55,6 +87,48 @@ function loadBotData() {
     if (chatBotData.id) {
         MCW.storage.logEvent(chatBotData.id, 'conversation_start');
     }
+}
+
+let currentPersona = null;
+
+function renderPersonaSelector() {
+    const selector = document.getElementById('personaSelect');
+    if (!selector) return;
+
+    if (!chatBotData.personas || chatBotData.personas.length <= 1) {
+        selector.style.display = 'none';
+        return;
+    }
+
+    selector.innerHTML = chatBotData.personas
+        .filter(p => p.isVisible !== false)
+        .map(p => `<option value="${p.id}">${p.name}</option>`)
+        .join('');
+
+    selector.style.display = 'block';
+    selector.value = currentPersona ? currentPersona.id : chatBotData.personas[0].id;
+}
+
+function switchPersona(id) {
+    const newPersona = chatBotData.personas.find(p => String(p.id) === String(id));
+    if (!newPersona || (currentPersona && currentPersona.id === newPersona.id)) return;
+
+    currentPersona = newPersona;
+
+    // System message
+    addMessage('system', `🔄 <strong>${newPersona.name}</strong>(으)로 전환되었습니다.<br><span style="font-size:0.7em; opacity:0.7;">${newPersona.role} | ${newPersona.model.toUpperCase()} Model</span>`);
+
+    // Update UI
+    document.getElementById('welcomeDesc').textContent = newPersona.role;
+
+    // Announce
+    // Announce
+    if (voiceOutputEnabled) speak(`저는 이제 ${newPersona.name}입니다.`);
+
+    // Update Avatar
+    updateAvatar(newPersona);
+    setAvatarEmotion('happy');
+    setTimeout(() => setAvatarEmotion('neutral'), 1500);
 }
 
 function renderFaqButtons() {
@@ -126,14 +200,19 @@ function addMessage(sender, text) {
     const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
     const div = document.createElement('div');
-    div.className = `message message-${sender}`;
-    div.innerHTML = `
-    <div class="message-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
-    <div>
-      <div class="message-bubble">${text}</div>
-      <div class="message-time">${time}</div>
-    </div>
-  `;
+    if (sender === 'system') {
+        div.className = 'message message-system';
+        div.innerHTML = `<div style="width:100%; text-align:center; margin:10px 0; font-size:0.8rem; color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.05); padding:5px; border-radius:10px;">${text}</div>`;
+    } else {
+        div.className = `message message-${sender}`;
+        div.innerHTML = `
+        <div class="message-avatar">${sender === 'bot' ? (currentPersona?.model === 'emotion' ? '💖' : '🤖') : '👤'}</div>
+        <div>
+          <div class="message-bubble">${text}</div>
+          <div class="message-time">${time}</div>
+        </div>
+      `;
+    }
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
 }
@@ -165,7 +244,7 @@ function hideTyping() {
     if (el) el.remove();
 }
 
-// Generate AI response (MVP: pattern matching + context-aware)
+// Generate AI response (MVP: pattern matching + context-aware + Multi-Persona)
 async function generateResponse(userText) {
     // Check FAQ first
     if (chatBotData?.faqs) {
@@ -176,34 +255,105 @@ async function generateResponse(userText) {
         }
     }
 
-    // Simulate delay for more realistic feel
-    await new Promise(r => setTimeout(r, 1000 + Math.random() * 1500));
 
-    // Context-aware responses
+    // Simulate delay based on model
+    const p = currentPersona || chatBotData.personas[0];
+    setAvatarEmotion('thinking'); // Avatar thinking
+    let delay = 1000 + Math.random() * 1500;
+    if (p.model === 'fast') delay = 500; // Fast model
+    if (p.model === 'creative') delay = 2000; // Creative takes longer
+
+    await new Promise(r => setTimeout(r, delay));
+
+    // Base Logic
     const lower = userText.toLowerCase();
-    const botName = chatBotData?.botName || 'AI 챗봇';
+    const botName = p.name;
+    let response = '';
 
     if (lower.includes('안녕') || lower.includes('하이') || lower.includes('hello')) {
-        return `안녕하세요! ${botName}입니다. 무엇을 도와드릴까요? 😊`;
-    }
-    if (lower.includes('이름') || lower.includes('누구')) {
-        return `저는 ${botName}입니다. ${chatBotData?.personality || 'AI 챗봇입니다.'}`;
-    }
-    if (lower.includes('감사') || lower.includes('고마')) {
-        return '감사합니다! 더 도움이 필요하시면 언제든 말씀해주세요. 😊';
-    }
-    if (lower.includes('도움') || lower.includes('도와')) {
+        response = `안녕하세요! ${botName}입니다. 무엇을 도와드릴까요?`;
+    } else if (lower.includes('이름') || lower.includes('누구')) {
+        response = `저는 ${botName}입니다. ${p.role}`;
+    } else if (lower.includes('감사') || lower.includes('고마')) {
+        response = '감사합니다! 더 도움이 필요하시면 언제든 말씀해주세요.';
+    } else if (lower.includes('도움') || lower.includes('도와')) {
         const helpItems = chatBotData?.faqs?.map(f => `• ${f.q}`).join('\n') || '';
-        return `물론이죠! 이런 것들을 도와드릴 수 있어요:\n${helpItems}\n\n어떤 것이 궁금하신가요?`;
+        response = `물론이죠! 이런 것들을 도와드릴 수 있어요:\n${helpItems}\n\n어떤 것이 궁금하신가요?`;
+    } else {
+        const responses = [
+            `좋은 질문입니다! "${userText}"에 대해 생각해보겠습니다.`,
+            `네, 말씀하신 내용 잘 이해했습니다.`,
+            `해당 문의에 대해 답변 드리겠습니다.`
+        ];
+        response = responses[Math.floor(Math.random() * responses.length)];
     }
 
-    // Generic thoughtful response
-    const responses = [
-        `좋은 질문입니다! "${userText}"에 대해 안내해 드리겠습니다. 자세한 내용은 관련 페이지에서 확인하실 수 있습니다.`,
-        `네, 말씀하신 내용 잘 이해했습니다. 관련 정보를 안내해 드릴게요. 더 구체적인 질문이 있으시면 말씀해주세요!`,
-        `해당 문의에 대해 답변 드리겠습니다. 추가 의견이 있으시면 편하게 말씀해주세요. 😊`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    // Apply Persona Flavor
+    if (p.model === 'emotion') {
+        response = response.replace('니다.', '닝~💕').replace('요?', '가요? 🤔');
+        response += " (공감공감!)";
+    } else if (p.model === 'logic') {
+        response = "분석 결과: " + response + " 정확한 데이터에 기반하여 답변드립니다.";
+    } else if (p.model === 'creative') {
+        response = "✨ " + response + " 마치 별들이 노래하듯이요! 🎨";
+    } else if (p.model === 'fast') {
+        response = "네. " + response + " (처리 완료)";
+    }
+
+    setAvatarEmotion('happy'); // Avatar happy
+    setTimeout(() => setAvatarEmotion('neutral'), 3000);
+    return response;
+}
+
+// === Avatar Control ===
+function updateAvatar(persona) {
+    const face = document.getElementById('avatarFace');
+    if (!face || !persona) return;
+
+    // Reset classes
+    face.className = 'avatar-face';
+
+    // Map ID to Style
+    const styleMap = {
+        'p_ai': 'persona-ai',
+        'p_startup': 'persona-startup',
+        'p_cpa': 'persona-cpa',
+        'p_star': 'persona-star',
+        'p_life': 'persona-life'
+    };
+
+    let styleClass = styleMap[persona.id];
+    if (!styleClass) {
+        // Fallback for custom personas: deterministic random based on Name length
+        const styles = Object.values(styleMap);
+        styleClass = styles[persona.name.length % styles.length];
+    }
+
+    face.classList.add(styleClass);
+}
+
+function setAvatarEmotion(emotion) {
+    const face = document.getElementById('avatarFace');
+    const label = document.getElementById('emotionLabel');
+    if (!face) return;
+
+    // Remove existing emotions
+    face.classList.remove('happy', 'sad', 'thinking', 'surprised');
+
+    if (emotion !== 'neutral') {
+        face.classList.add(emotion);
+    }
+
+    if (label) {
+        const labels = {
+            neutral: '평온',
+            happy: '행복 😊',
+            sad: '슬픔 😢',
+            thinking: '생각중 🤔',
+            surprised: '놀람 😮'
+        };
+        label.textContent = labels[emotion] || '';
+    }
 }
 
 // TTS
