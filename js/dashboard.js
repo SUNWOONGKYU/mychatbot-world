@@ -16,14 +16,9 @@ function initUser() {
 
   // Auth Guard
   if (!user) {
-    // If no user, redirect to login
-    // Check if local file
-    const isLocal = window.location.protocol === 'file:';
-    if (isLocal) {
-      window.location.href = '../login.html'; // Relative path from pages/dashboard/
-    } else {
-      window.location.href = '/login';
-    }
+    // Redirect to login (Relative path works for both Local and GitHub Pages)
+    // From /pages/dashboard/index.html -> ../login.html (pages/login.html)
+    window.location.href = '../login.html';
     return;
   }
 
