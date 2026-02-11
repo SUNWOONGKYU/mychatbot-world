@@ -339,25 +339,59 @@
 
 .chat-header-meta {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-top: 4px;
+}
+
+.persona-selection-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none; /* Firefox */
+    max-width: calc(100vw - 120px);
+}
+
+.persona-selection-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+.persona-chip {
+    display: flex;
     align-items: center;
-    gap: var(--space-3);
-    margin-top: 2px;
-}
-
-.chat-persona-select {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 2px 8px;
-    border-radius: var(--radius-md);
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.75rem;
-    outline: none;
     cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.chat-persona-select option {
-    background: #1e1e24;
+.persona-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.persona-chip.active {
+    background: var(--primary-500);
+    border-color: var(--primary-400);
     color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.persona-chip-icon {
+    font-size: 0.9rem;
+}
+
+.persona-chip-name {
+    font-weight: 600;
 }
 
 /* === CSS Avatar (Legacy Port) === */

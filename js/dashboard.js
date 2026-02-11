@@ -70,13 +70,7 @@ function initUser() {
 }
 
 function openMyPage() {
-  const user = MCW.user.getCurrentUser();
-  alert(`[My Page]\n이름: ${user.name}\n아이디: ${user.id}\n권한: ${user.role}\n\n🤖 써니봇(Official)이 항상 대기중입니다.\n상단 메뉴의 [💬 써니봇] 버튼을 눌러보세요!\n\n(로그아웃 하려면 확인을 누르세요)`);
-  // Simple Logout for MVP
-  if (confirm('로그아웃 하시겠습니까?')) {
-    MCW.user.logout();
-    location.reload();
-  }
+  window.location.href = '../sunny/index.html';
 }
 
 // Summary cards

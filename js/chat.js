@@ -18,6 +18,7 @@ function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
     const idParam = urlParams.get('id');
     const userParam = urlParams.get('user');
+    const personaParam = urlParams.get('persona');
 
     // Load from localStorage
     const bots = MCW.storage.getBots();
@@ -66,8 +67,11 @@ function loadBotData() {
             isVisible: true
         }];
     }
-    currentPersona = chatBotData.personas[0];
-    currentPersona = chatBotData.personas[0];
+    const initialPersona = personaParam
+        ? chatBotData.personas.find(p => p.id === personaParam)
+        : chatBotData.personas[0];
+
+    currentPersona = initialPersona || chatBotData.personas[0];
     renderPersonaSelector();
 
     // Avatar Setup
@@ -99,21 +103,30 @@ function loadBotData() {
 let currentPersona = null;
 
 function renderPersonaSelector() {
-    const selector = document.getElementById('personaSelect');
-    if (!selector) return;
+    const container = document.getElementById('personaContainer');
+    if (!container) return;
 
     if (!chatBotData.personas || chatBotData.personas.length <= 1) {
-        selector.style.display = 'none';
+        container.style.display = 'none';
         return;
     }
 
-    selector.innerHTML = chatBotData.personas
+    const personaIcons = {
+        'p_ai': '🧠', 'p_startup': '🚀', 'p_cpa': '🧮', 'p_star': '🔭', 'p_life': '🌿'
+    };
+
+    container.innerHTML = chatBotData.personas
         .filter(p => p.isVisible !== false)
-        .map(p => `<option value="${p.id}">${p.name}</option>`)
+        .map(p => `
+            <div class="persona-chip ${currentPersona && currentPersona.id === p.id ? 'active' : ''}" 
+                 onclick="switchPersona('${p.id}')">
+                <span class="persona-chip-icon">${personaIcons[p.id] || '👤'}</span>
+                <span class="persona-chip-name">${p.name}</span>
+            </div>
+        `)
         .join('');
 
-    selector.style.display = 'block';
-    selector.value = currentPersona ? currentPersona.id : chatBotData.personas[0].id;
+    container.style.display = 'flex';
 }
 
 function switchPersona(id) {
@@ -122,13 +135,18 @@ function switchPersona(id) {
 
     currentPersona = newPersona;
 
+    // Update UI active state
+    document.querySelectorAll('.persona-chip').forEach(chip => {
+        const isTarget = chip.getAttribute('onclick').includes(`'${id}'`);
+        chip.classList.toggle('active', isTarget);
+    });
+
     // System message
     addMessage('system', `🔄 <strong>${newPersona.name}</strong>(으)로 전환되었습니다.<br><span style="font-size:0.7em; opacity:0.7;">${newPersona.role} | ${newPersona.model.toUpperCase()} Model</span>`);
 
     // Update UI
     document.getElementById('welcomeDesc').textContent = newPersona.role;
 
-    // Announce
     // Announce
     if (voiceOutputEnabled) speak(`저는 이제 ${newPersona.name}입니다.`);
 
