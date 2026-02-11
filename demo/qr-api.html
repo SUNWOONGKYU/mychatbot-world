@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모바일 접속 QR 코드 - 실제 AI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .qr-code {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        
+        .url {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            word-break: break-all;
+        }
+        
+        .instructions {
+            text-align: left;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-left: 4px solid #27ae60;
+            border-radius: 5px;
+            text-align: left;
+        }
+        
+        .warning {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 실제 AI 연결 데모</h1>
+        
+        <div class="badge">✨ Claude AI 실시간 연결</div>
+        
+        <div class="qr-code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=http://192.168.35.209:8080/mobile-api-demo.html" 
+                 alt="QR Code" 
+                 style="max-width: 250px;">
+        </div>
+        
+        <div class="url">
+            http://192.168.35.209:8080/mobile-api-demo.html
+        </div>
+        
+        <div class="instructions">
+            <h3>📖 사용 방법</h3>
+            <ol>
+                <li><strong>모바일에서 QR 코드 스캔</strong><br>
+                    카메라 앱 또는 QR 스캔 앱 사용</li>
+                <li><strong>백엔드 연결 확인</strong><br>
+                    페이지 상단에 "✅ 백엔드 연결됨" 표시 확인</li>
+                <li><strong>실제 AI와 대화</strong><br>
+                    메시지 입력 또는 음성 입력</li>
+                <li><strong>Claude AI 응답</strong><br>
+                    몇 초 후 실제 AI 응답!</li>
+            </ol>
+        </div>
+        
+        <div class="note">
+            <strong>✅ 준비 완료:</strong><br>
+            • ✅ 백엔드 API: http://localhost:8000<br>
+            • ✅ Anthropic Claude AI 연결<br>
+            • ✅ Gemini AI 연결<br>
+            • ✅ 모바일 최적화<br>
+            • ✅ 음성 입력 지원
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ 중요:</strong><br>
+            • PC와 모바일이 <strong>같은 Wi-Fi</strong> 필수<br>
+            • 백엔드 서버가 <strong>실행 중</strong>이어야 합니다<br>
+            • Chrome 브라우저 권장 (음성 인식)
+        </div>
+    </div>
+</body>
+</html>

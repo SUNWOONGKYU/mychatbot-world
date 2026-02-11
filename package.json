@@ -1,0 +1,9 @@
+{
+    "name": "mychatbot-world",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "My Chatbot World - AI 챗봇 생성 플랫폼",
+    "dependencies": {
+        "@supabase/supabase-js": "^2.39.0"
+    }
+}

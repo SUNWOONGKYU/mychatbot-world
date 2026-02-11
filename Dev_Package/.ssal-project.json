@@ -1,0 +1,12 @@
+{
+  "project_id": "mychatbot-world-001",
+  "project_name": "My Chatbot World - AI 챗봇 생성 플랫폼",
+  "description": "음성 3분으로 AI 챗봇을 생성하고, 스킬 마켓을 통해 확장하며, 멀티채널로 배포하는 플랫폼",
+  "owner_email": "",
+  "created_at": "2026-02-11",
+  "version": "1.0.0",
+  "settings": {
+    "auto_upload_progress": true,
+    "github_pages_deploy": false
+  }
+}

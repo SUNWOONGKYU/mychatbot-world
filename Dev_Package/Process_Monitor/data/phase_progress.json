@@ -1,0 +1,66 @@
+{
+  "project_id": "DEV_PACKAGE_TEST",
+  "updated_at": "2026-01-03T14:17:05.222Z",
+  "phases": {
+    "P0": {
+      "name": "작업 디렉토리 구조 생성",
+      "progress": 100,
+      "completed": 2,
+      "total": 2
+    },
+    "P1": {
+      "name": "사업계획",
+      "progress": 0,
+      "completed": 0,
+      "total": 5
+    },
+    "P2": {
+      "name": "프로젝트 기획",
+      "progress": 0,
+      "completed": 0,
+      "total": 8
+    },
+    "P3": {
+      "name": "프로토타입 제작",
+      "progress": 0,
+      "completed": 0,
+      "total": 3
+    },
+    "S0": {
+      "name": "Project SAL Grid 생성",
+      "progress": 100,
+      "completed": 4,
+      "total": 4
+    },
+    "S1": {
+      "name": "개발 준비",
+      "progress": 0,
+      "completed": 0,
+      "total": 0
+    },
+    "S2": {
+      "name": "개발 1차",
+      "progress": 0,
+      "completed": 0,
+      "total": 0
+    },
+    "S3": {
+      "name": "개발 2차",
+      "progress": 0,
+      "completed": 0,
+      "total": 0
+    },
+    "S4": {
+      "name": "개발 3차",
+      "progress": 0,
+      "completed": 0,
+      "total": 0
+    },
+    "S5": {
+      "name": "개발 마무리",
+      "progress": 0,
+      "completed": 0,
+      "total": 0
+    }
+  }
+}

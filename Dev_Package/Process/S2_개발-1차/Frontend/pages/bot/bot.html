@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 챗봇 - My Chatbot World</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+</head>
+
+<body class="chat-body">
+    <!-- Chat Header -->
+    <header class="chat-header" id="chatHeader">
+        <div class="chat-header-left">
+            <div class="chat-avatar" id="chatAvatar">🤖</div>
+            <div class="chat-info">
+                <h1 class="chat-bot-name" id="chatBotName">AI 챗봇</h1>
+                <span class="chat-status">● 온라인</span>
+            </div>
+        </div>
+        <div class="chat-header-right">
+            <button class="chat-header-btn" id="voiceToggle" title="음성 출력 ON/OFF">🔊</button>
+            <button class="chat-header-btn" onclick="location.href='/'" title="홈으로">🏠</button>
+        </div>
+    </header>
+
+    <!-- Chat Messages -->
+    <main class="chat-messages" id="chatMessages">
+        <div class="chat-welcome" id="chatWelcome">
+            <div class="chat-welcome-avatar">🤖</div>
+            <h2 id="welcomeTitle">환영합니다!</h2>
+            <p id="welcomeDesc">무엇이든 물어보세요.</p>
+        </div>
+        <!-- FAQ Quick Buttons -->
+        <div class="chat-faq-buttons" id="faqButtons"></div>
+    </main>
+
+    <!-- Chat Input -->
+    <div class="chat-input-area" id="chatInputArea">
+        <div class="chat-input-container">
+            <button class="chat-voice-btn" id="chatVoiceBtn" onclick="toggleChatVoice()" title="음성 입력">
+                🎤
+            </button>
+            <textarea class="chat-input" id="chatInput" placeholder="메시지를 입력하세요..." rows="1"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+            <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>

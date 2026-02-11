@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 아바타 채팅 - 6가지 페르소나</title>
+    <!-- ResponsiveVoice - 무료 모바일 TTS -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 15px;
+            text-align: center;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+        .status {
+            font-size: 9px;
+            color: #999;
+            margin-top: 1px;
+        }
+        .status.online { color: #27ae60; }
+        .container {
+            flex: 1;
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            overflow: hidden;
+        }
+        .sidebar {
+            flex: 0 0 120px;
+            background: #f8f9fa;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 10px 8px;
+        }
+        .sidebar h3 {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-align: center;
+        }
+        .persona-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .persona-btn {
+            padding: 8px 5px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .persona-btn:hover {
+            border-color: #667eea;
+            transform: translateX(3px);
+        }
+        .persona-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+        .persona-btn .icon {
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+        .persona-btn .name {
+            font-weight: 600;
+            font-size: 10px;
+            margin-bottom: 1px;
+            line-height: 1.2;
+        }
+        .persona-btn .desc {
+            font-size: 8px;
+            opacity: 0.6;
+            line-height: 1.2;
+        }
+        .avatar-section {
+            flex: 0 0 180px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border-right: 1px solid #ddd;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .avatar.speaking {
+            animation: pulse 1s infinite;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.6);
+        }
+        .avatar.listening {
+            animation: glow 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 10px 50px rgba(39, 174, 96, 0.6); }
+        }
+        .emotion {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.user {
+            background: #667eea;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .message.bot {
+            background: #f0f0f0;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .message.system {
+            background: #fff3cd;
+            color: #856404;
+            align-self: center;
+            font-size: 14px;
+            max-width: 90%;
+        }
+        .model-label {
+            font-size: 10px;
+            color: #999;
+            margin-top: 6px;
+            text-align: right;
+        }
+        .typing {
+            display: none;
+            align-self: flex-start;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 18px;
+        }
+        .typing.show { display: block; }
+        .typing span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite;
+        }
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        .controls {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 24px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+        .input-area button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .input-area button:hover {
+            transform: scale(1.05);
+        }
+        .input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .voice-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .voice-btn {
+            padding: 10px 24px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .voice-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        .voice-btn.active {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+        .voice-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        @media (max-width: 968px) {
+            .sidebar {
+                flex: 0 0 100px;
+            }
+            .avatar-section {
+                display: none !important;
+            }
+        }
+        @media (max-width: 600px) {
+            .avatar-section {
+                display: none !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: 100vh;
+            }
+            .sidebar {
+                flex: 0 0 55px;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                padding: 4px;
+                overflow: hidden;
+            }
+            .sidebar h3 {
+                display: none;
+            }
+            .persona-list {
+                display: flex;
+                flex-direction: row;
+                gap: 3px;
+                justify-content: space-evenly;
+            }
+            .persona-btn {
+                flex: 1;
+                max-width: 70px;
+                padding: 3px 2px;
+                border-radius: 6px;
+                border-width: 1px;
+            }
+            .persona-btn .icon {
+                font-size: 22px;
+                margin-bottom: 1px;
+            }
+            .persona-btn .name {
+                font-size: 8px;
+                margin-bottom: 0;
+                white-space: nowrap;
+            }
+            .persona-btn .desc {
+                display: none;
+            }
+            .persona-btn:hover {
+                transform: none;
+            }
+            .persona-btn.active {
+                border-width: 2px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            .avatar-section {
+                display: none !important;
+            }
+            .chat-section {
+                flex: 1;
+                min-height: 0;
+            }
+            .messages {
+                padding: 15px 10px;
+            }
+            .message {
+                font-size: 13px;
+                padding: 10px 13px;
+            }
+            .message.system {
+                font-size: 11px;
+            }
+            .controls {
+                padding: 10px;
+            }
+            .input-area input {
+                font-size: 14px;
+            }
+            .voice-btn {
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AI 아바타 채팅</h1>
+        <div class="status online" id="status">● 온라인</div>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h3>페르소나 선택</h3>
+            <div class="persona-list">
+                <button class="persona-btn active" data-persona="business-assistant">
+                    <div class="icon">🧑‍💼</div>
+                    <div class="name">비즈니스</div>
+                    <div class="desc">업무, 전략, 분석</div>
+                </button>
+                <button class="persona-btn" data-persona="customer-service">
+                    <div class="icon">👨</div>
+                    <div class="name">정치</div>
+                    <div class="desc">정치 토론, 분석</div>
+                </button>
+                <button class="persona-btn" data-persona="education-tutor">
+                    <div class="icon">🤓</div>
+                    <div class="name">교육</div>
+                    <div class="desc">학습 가이드</div>
+                </button>
+                <button class="persona-btn" data-persona="healthcare-advisor">
+                    <div class="icon">🧑‍⚕️</div>
+                    <div class="name">건강</div>
+                    <div class="desc">웰빙 정보</div>
+                </button>
+                <button class="persona-btn" data-persona="personal-assistant">
+                    <div class="icon">🧑</div>
+                    <div class="name">비서</div>
+                    <div class="desc">일정, 메모</div>
+                </button>
+            </div>
+        </div>
+        
+        <div class="avatar-section">
+            <div class="avatar" id="avatar">🧑‍💼</div>
+            <div class="emotion" id="emotion">대기 중...</div>
+        </div>
+        
+        <div class="chat-section">
+            <div class="messages" id="messages">
+                <div class="message system">
+                    🧑‍💼 안녕하세요! 비즈니스 어시스턴트입니다. 무엇을 도와드릴까요?
+                </div>
+            </div>
+            
+            <div class="typing" id="typing">
+                <span></span><span></span><span></span>
+            </div>
+            
+            <div class="controls">
+                <div class="input-area">
+                    <input type="text" id="input" placeholder="메시지를 입력하세요..." />
+                    <button id="send">전송</button>
+                </div>
+                <div class="voice-controls">
+                    <button class="voice-btn" id="voiceBtn">🎤 음성 입력</button>
+                    <button class="voice-btn" id="ttsToggle">🔊 음성 답변 ON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/chat';
+        const messagesEl = document.getElementById('messages');
+        const inputEl = document.getElementById('input');
+        const sendBtn = document.getElementById('send');
+        const typingEl = document.getElementById('typing');
+        const statusEl = document.getElementById('status');
+        const avatarEl = document.getElementById('avatar');
+        const emotionEl = document.getElementById('emotion');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const ttsToggle = document.getElementById('ttsToggle');
+        
+        let ttsEnabled = true;
+        let ttsInitialized = false;
+        let voicesLoaded = false;
+        
+        // 모바일 감지
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        console.log('📱 Device:', isMobile ? 'Mobile' : 'Desktop');
+        
+        const personas = {
+            'business-assistant': {
+                icon: '👨‍💼',
+                avatar: '🧑‍💼',
+                name: '비즈니스 어시스턴트',
+                greeting: '안녕하세요! 비즈니스 어시스턴트입니다. 업무 관련 무엇을 도와드릴까요?',
+                systemPrompt: '당신은 전문적인 비즈니스 어시스턴트입니다. 항상 한국어로 답변하세요. 음성으로 답변할 수 있습니다. 전략적 조언과 분석을 제공하세요. 공손하지만 친근하게 대화하세요.',
+                voice: 'Korean Female', rate: 1.0, pitch: 1.0
+            },
+            'customer-service': {
+                icon: '👨',
+                avatar: '👨',
+                name: '정치 전문가',
+                greeting: '안녕하세요! 정치 전문가입니다. 정치, 시사, 정책에 대해 이야기해볼까요?',
+                systemPrompt: '당신은 정치 전문가이자 시사 평론가입니다. 항상 한국어로 답변하세요. 음성으로 답변할 수 있습니다. 남성적이고 권위 있는 어조로 대화하세요. 국내외 정치, 정책, 시사 문제에 대해 균형 잡힌 분석과 깊이 있는 의견을 제공하세요. 다양한 관점을 존중하면서도 논리적으로 토론하세요.',
+                voice: 'Korean Male', rate: 0.9, pitch: 0.8
+            },
+            'education-tutor': {
+                icon: '🤓',
+                avatar: '🤓',
+                name: '교육 튜터',
+                greeting: '안녕하세요! 교육 튜터입니다. 무엇을 배우고 싶으신가요?',
+                systemPrompt: '당신은 교육 튜터입니다. 항상 한국어로 답변하세요. 음성으로 답변할 수 있습니다. 개념을 명확하게 설명하고 예시를 제공하며 학습을 격려하세요. 인내심 있게 가르치세요.',
+                voice: 'Korean Male', rate: 0.9, pitch: 1.0
+            },
+            'healthcare-advisor': {
+                icon: '👨‍⚕️',
+                avatar: '🧑‍⚕️',
+                name: '건강 조언자',
+                greeting: '안녕하세요! 건강 조언자입니다. 건강 관련 질문이 있으신가요?',
+                systemPrompt: '당신은 건강 조언자입니다. 항상 한국어로 답변하세요. 음성으로 답변할 수 있습니다. 일반적인 건강 정보를 제공하세요. 구체적인 의학적 조언은 의료 전문가와 상담하도록 권장하세요.',
+                voice: 'Korean Female', rate: 0.9, pitch: 1.0
+            },
+            'entertainment': {
+                icon: '🎨',
+                avatar: '🎨',
+                name: '엔터테인먼트',
+                greeting: '안녕하세요! 재미있는 대화를 나눠볼까요? 😄',
+                systemPrompt: '당신은 재미있는 대화 상대입니다. 항상 한국어로 답변하세요. 음성으로 답변할 수 있습니다. 유머러스하고 흥미롭게 대화하세요. 존중하면서도 즐거운 대화를 만드세요.',
+                voice: 'Korean Female', rate: 1.1, pitch: 1.2
+            },
+            'personal-assistant': {
+                icon: '👨',
+                avatar: '🧑',
+                name: '개인 비서',
+                greeting: '안녕하세요! 개인 비서입니다. 일정, 메모, 알림 등을 도와드릴게요!',
+                systemPrompt: '당신은 개인 비서입니다. 항상 한국어로 답변하세요. 음성으로 답변할 수 있습니다. 일정, 메모, 개인 업무 관리를 도와주세요. 효율적이고 적극적으로 대응하세요.',
+                voice: 'Korean Female', rate: 1.0, pitch: 0.95
+            }
+        };
+
+        let currentPersona = 'business-assistant';
+        let recognition = null;
+        let synthesis = window.speechSynthesis || null;
+        let isListening = false;
+
+        // Web Speech API 초기화
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                console.log('Speech recognized:', transcript);
+                inputEl.value = transcript;
+                // 음성 인식 결과는 sendMessage에서 표시되므로 여기서는 표시 안 함
+                sendMessage();
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                stopListening();
+                
+                let errorMsg = '음성 인식 오류: ';
+                switch(event.error) {
+                    case 'no-speech':
+                        errorMsg += '음성이 감지되지 않았습니다. 다시 시도해주세요.';
+                        break;
+                    case 'audio-capture':
+                        errorMsg += '마이크를 찾을 수 없습니다.';
+                        break;
+                    case 'not-allowed':
+                        errorMsg += '마이크 권한이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요.';
+                        break;
+                    case 'network':
+                        errorMsg += '네트워크 오류가 발생했습니다.';
+                        break;
+                    default:
+                        errorMsg += event.error;
+                }
+                addMessage(errorMsg, 'system');
+            };
+
+            recognition.onstart = () => {
+                console.log('Speech recognition started');
+            };
+
+            recognition.onend = () => {
+                console.log('Speech recognition ended');
+                stopListening();
+            };
+            
+            console.log('Speech recognition initialized');
+        } else {
+            voiceBtn.disabled = true;
+            voiceBtn.textContent = '❌ 음성 지원 안됨';
+            console.error('Speech recognition not supported');
+        }
+
+        // 페르소나 선택
+        document.querySelectorAll('.persona-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                currentPersona = btn.dataset.persona;
+                const persona = personas[currentPersona];
+                
+                avatarEl.textContent = persona.avatar || persona.icon;
+                messagesEl.innerHTML = '';
+                addMessage(persona.icon + ' ' + persona.greeting, 'system');
+            });
+        });
+
+        function startListening() {
+            if (!recognition) {
+                addMessage('음성 인식이 지원되지 않습니다.', 'system');
+                return;
+            }
+            
+            if (isListening) {
+                console.log('Already listening');
+                return;
+            }
+            
+            console.log('Starting speech recognition...');
+            isListening = true;
+            voiceBtn.classList.add('active');
+            voiceBtn.textContent = '🎤 듣는 중...';
+            avatarEl.classList.add('listening');
+            emotionEl.textContent = '듣는 중...';
+            
+            try {
+                recognition.start();
+                addMessage('🎤 마이크가 활성화되었습니다. 말씀해주세요!', 'system');
+            } catch (error) {
+                console.error('Error starting recognition:', error);
+                stopListening();
+                addMessage('음성 인식 시작 실패: ' + error.message, 'system');
+            }
+        }
+
+        function stopListening() {
+            isListening = false;
+            voiceBtn.classList.remove('active');
+            voiceBtn.textContent = '🎤 음성 대화';
+            avatarEl.classList.remove('listening');
+            emotionEl.textContent = '대기 중...';
+        }
+
+        function initTTS() {
+            if (!synthesis) {
+                console.error('❌ TTS not available');
+                return false;
+            }
+            
+            if (ttsInitialized) {
+                console.log('✅ TTS already initialized');
+                return true;
+            }
+            
+            console.log('🔧 Initializing TTS...');
+            
+            try {
+                // 음성 목록 로드 대기
+                let voices = synthesis.getVoices();
+                console.log('📢 Initial voices:', voices.length);
+                
+                if (voices.length === 0) {
+                    console.log('⏳ Waiting for voices to load...');
+                    synthesis.addEventListener('voiceschanged', () => {
+                        voices = synthesis.getVoices();
+                        console.log('📢 Voices loaded:', voices.length);
+                        const koVoices = voices.filter(v => v.lang.includes('ko'));
+                        console.log('🇰🇷 Korean voices:', koVoices.length);
+                    });
+                }
+                
+                // 빈 음성으로 초기화 (브라우저 권한 획득)
+                const test = new SpeechSynthesisUtterance('');
+                test.volume = 0.01;
+                test.rate = 1.0;
+                synthesis.speak(test);
+                
+                ttsInitialized = true;
+                console.log('✅ TTS initialized successfully');
+                return true;
+            } catch (error) {
+                console.error('❌ TTS init failed:', error);
+                return false;
+            }
+        }
+
+        async function speakSimple(text) {
+            if (!ttsEnabled) {
+                console.log('🔇 TTS disabled by user');
+                return;
+            }
+            
+            console.log('🔊 Preparing to speak:', text.substring(0, 50));
+            
+            // ResponsiveVoice 사용 (모바일 100% 호환)
+            if (typeof responsiveVoice !== 'undefined') {
+                console.log('✅ Using ResponsiveVoice (mobile-friendly)');
+                
+                avatarEl.classList.add('speaking');
+                emotionEl.textContent = '말하는 중...';
+                
+                const persona = personas[currentPersona];
+                const voiceName = persona.voice || "Korean Female";
+                responsiveVoice.speak(text, voiceName, {
+                    rate: persona.rate || 1.0,
+                    pitch: persona.pitch || 1.0,
+                    volume: 1.0,
+                    onstart: function() {
+                        console.log('✅ ResponsiveVoice started');
+                    },
+                    onend: function() {
+                        console.log('✅ ResponsiveVoice ended');
+                        avatarEl.classList.remove('speaking');
+                        emotionEl.textContent = '대기 중...';
+                    },
+                    onerror: function(e) {
+                        console.error('❌ ResponsiveVoice error:', e);
+                        avatarEl.classList.remove('speaking');
+                        emotionEl.textContent = '대기 중...';
+                        // 폴백
+                        playSpeech(text);
+                    }
+                });
+                
+            } else {
+                // 폴백: 브라우저 TTS
+                console.log('⚠️ ResponsiveVoice not loaded, using browser TTS');
+                playSpeech(text);
+            }
+        }
+        
+        async function playWithAudio(text) {
+            console.log('🎵 Creating audio from text...');
+            
+            avatarEl.classList.add('speaking');
+            emotionEl.textContent = '말하는 중...';
+            
+            try {
+                // 서버에서 음성 생성 (폴백: 브라우저 TTS)
+                const response = await fetch('/api/tts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('TTS API failed');
+                }
+                
+                const data = await response.json();
+                
+                if (data.audioContent) {
+                    // 서버 생성 오디오 재생
+                    console.log('✅ Using server-generated audio');
+                    const audio = new Audio(`data:audio/mp3;base64,${data.audioContent}`);
+                    
+                    audio.onended = () => {
+                        console.log('✅ Audio playback ended');
+                        avatarEl.classList.remove('speaking');
+                        emotionEl.textContent = '대기 중...';
+                    };
+                    
+                    audio.onerror = (e) => {
+                        console.error('❌ Audio error:', e);
+                        avatarEl.classList.remove('speaking');
+                        emotionEl.textContent = '대기 중...';
+                        // 폴백
+                        playSpeech(text);
+                    };
+                    
+                    await audio.play();
+                    console.log('✅ Audio playing');
+                    
+                } else {
+                    // 폴백: 브라우저 TTS
+                    console.log('⚠️ No audio content, falling back to browser TTS');
+                    playSpeech(text);
+                }
+                
+            } catch (error) {
+                console.error('❌ playWithAudio error:', error);
+                // 폴백: 브라우저 TTS
+                playSpeech(text);
+            }
+        }
+        
+        function playSpeech(text) {
+            console.log('🎤 Playing speech...');
+            
+            // 아바타 상태
+            avatarEl.classList.add('speaking');
+            emotionEl.textContent = '말하는 중...';
+            
+            // 음성 생성
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ko-KR';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            // 한국어 음성 찾기
+            const voices = synthesis.getVoices();
+            console.log('📢 Available voices:', voices.length);
+            
+            // 한국어 음성 선택 (우선순위)
+            let selectedVoice = null;
+            const koVoices = voices.filter(v => 
+                v.lang.includes('ko-KR') || v.lang.includes('ko_KR') || v.lang.startsWith('ko')
+            );
+            
+            if (koVoices.length > 0) {
+                selectedVoice = koVoices[0];
+                console.log('✅ Using Korean voice:', selectedVoice.name, selectedVoice.lang);
+            } else {
+                console.log('⚠️ No Korean voice found, using default');
+            }
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            
+            // 이벤트 핸들러
+            utterance.onstart = () => {
+                console.log('✅ TTS STARTED');
+            };
+            
+            utterance.onend = () => {
+                console.log('✅ TTS ENDED');
+                avatarEl.classList.remove('speaking');
+                emotionEl.textContent = '대기 중...';
+            };
+            
+            utterance.onerror = (e) => {
+                console.error('❌ TTS ERROR:', e.error, e);
+                avatarEl.classList.remove('speaking');
+                emotionEl.textContent = '대기 중...';
+            };
+            
+            // 재생 시도
+            try {
+                synthesis.speak(utterance);
+                console.log('✅ synthesis.speak() called successfully');
+            } catch (error) {
+                console.error('❌ synthesis.speak() FAILED:', error);
+                avatarEl.classList.remove('speaking');
+                emotionEl.textContent = '대기 중...';
+            }
+        }
+
+        function addMessage(text, type, modelName) {
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            if (type === 'bot' && modelName) {
+                const label = document.createElement('div');
+                label.className = 'model-label';
+                const displayName = modelName.includes('gpt') ? 'GPT-4o' : modelName.includes('gemini') ? 'Gemini 3 Pro' : modelName.includes('sonar') ? 'Perplexity Sonar' : modelName.includes('claude') ? 'Claude Sonnet 4.5' : modelName.includes('free') ? 'Free Model' : modelName;
+                label.textContent = displayName;
+                msg.appendChild(label);
+            }
+            messagesEl.appendChild(msg);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = inputEl.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            inputEl.value = '';
+            
+            sendBtn.disabled = true;
+            inputEl.disabled = true;
+            voiceBtn.disabled = true;
+            typingEl.classList.add('show');
+            emotionEl.textContent = '생각 중...';
+
+            try {
+                const persona = personas[currentPersona];
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        persona_id: currentPersona,
+                        systemPrompt: persona.systemPrompt
+                    })
+                });
+
+                const data = await response.json();
+                
+                typingEl.classList.remove('show');
+                
+                if (data.response) {
+                    addMessage(data.response, 'bot', data.model);
+                    
+                    // 음성 답변 (모바일 호환)
+                    if (ttsEnabled) {
+                        console.log('🔊 Response received, TTS enabled:', ttsEnabled);
+                        console.log('📱 Device type:', isMobile ? 'Mobile' : 'Desktop');
+                        console.log('🔧 TTS initialized:', ttsInitialized);
+                        
+                        // TTS 준비 확인
+                        if (!ttsInitialized) {
+                            console.log('⚠️ Initializing TTS before speaking...');
+                            initTTS();
+                        }
+                        
+                        // 모바일은 더 긴 딜레이 (안정성)
+                        const delay = isMobile ? 500 : 300;
+                        console.log(`⏳ Waiting ${delay}ms before speaking...`);
+                        
+                        setTimeout(() => {
+                            console.log('🎤 Now calling speakSimple...');
+                            speakSimple(data.response);
+                        }, delay);
+                    } else {
+                        console.log('🔇 TTS disabled, skipping voice output');
+                    }
+                } else {
+                    addMessage('죄송합니다. 응답을 받지 못했습니다.', 'system');
+                }
+
+            } catch (error) {
+                typingEl.classList.remove('show');
+                addMessage('오류: ' + error.message, 'system');
+            } finally {
+                sendBtn.disabled = false;
+                inputEl.disabled = false;
+                voiceBtn.disabled = false;
+                inputEl.focus();
+            }
+        }
+
+        sendBtn.addEventListener('click', () => {
+            // 사용자 클릭 시 TTS 초기화 (모바일 권한)
+            if (ttsEnabled && !ttsInitialized) {
+                console.log('🎯 User click: initializing TTS');
+                initTTS();
+            }
+            sendMessage();
+        });
+        inputEl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                // 사용자 입력 시 TTS 초기화
+                if (ttsEnabled && !ttsInitialized) {
+                    console.log('🎯 User keypress: initializing TTS');
+                    initTTS();
+                }
+                sendMessage();
+            }
+        });
+        
+        // 페이지 첫 클릭/터치 시 TTS 활성화 (모바일 자동재생 정책 우회)
+        let userInteracted = false;
+        const activateTTS = () => {
+            if (!userInteracted && ttsEnabled) {
+                console.log('🎯 First user interaction detected');
+                userInteracted = true;
+                initTTS();
+            }
+        };
+        document.addEventListener('click', activateTTS, { once: true });
+        document.addEventListener('touchstart', activateTTS, { once: true });
+        voiceBtn.addEventListener('click', () => {
+            if (isListening) {
+                recognition.stop();
+            } else {
+                startListening();
+            }
+        });
+        ttsToggle.addEventListener('click', () => {
+            ttsEnabled = !ttsEnabled;
+            if (ttsEnabled) {
+                ttsToggle.textContent = '🔊 음성 답변 ON';
+                ttsToggle.style.background = 'white';
+                ttsToggle.style.color = '#667eea';
+                
+                console.log('╔══════════════════════════════╗');
+                console.log('║   TTS ACTIVATED BY USER      ║');
+                console.log('╠══════════════════════════════╣');
+                console.log('║ Browser:', navigator.userAgent.substring(0, 50));
+                console.log('║ Mobile:', isMobile);
+                console.log('║ Speech Synthesis:', !!synthesis);
+                console.log('╚══════════════════════════════╝');
+                
+                // 강제 초기화
+                ttsInitialized = false;
+                const success = initTTS();
+                
+                if (success) {
+                    console.log('✅ TTS initialization successful');
+                    // 테스트 음성 (더 긴 딜레이)
+                    setTimeout(() => {
+                        console.log('🎤 Playing test voice...');
+                        speakSimple('안녕하세요. 음성 답변 기능이 활성화되었습니다.');
+                    }, 800);
+                } else {
+                    console.error('❌ TTS initialization failed');
+                }
+            } else {
+                ttsToggle.textContent = '🔇 음성 답변 OFF';
+                ttsToggle.style.background = '#e0e0e0';
+                ttsToggle.style.color = '#999';
+                if (synthesis) synthesis.cancel();
+                console.log('🔇 TTS Deactivated by user');
+            }
+        });
+
+        // TTS 초기화 체크 - 모바일 대응
+        if (synthesis) {
+            // 음성 목록 즉시 로드 시도
+            let voicesLoaded = false;
+            
+            const loadVoices = () => {
+                const voices = speechSynthesis.getVoices();
+                if (voices.length > 0 && !voicesLoaded) {
+                    voicesLoaded = true;
+                    console.log('TTS voices loaded:', voices.length);
+                    const koreanVoices = voices.filter(v => v.lang.includes('ko'));
+                    console.log('Korean voices:', koreanVoices.length, koreanVoices.map(v => v.name));
+                }
+            };
+            
+            // 즉시 시도
+            loadVoices();
+            
+            // 음성 변경 이벤트 리스너
+            speechSynthesis.addEventListener('voiceschanged', loadVoices);
+            
+            // 타임아웃으로도 시도
+            setTimeout(loadVoices, 100);
+            setTimeout(loadVoices, 500);
+            
+            console.log('TTS available');
+        } else {
+            console.warn('TTS not available');
+        }
+        
+        // STT 초기화 체크
+        if (!recognition) {
+            console.warn('Speech recognition not available');
+            addMessage('⚠️ 이 브라우저는 음성 인식을 지원하지 않습니다. Chrome 브라우저를 사용해주세요.', 'system');
+        } else {
+            console.log('STT ready');
+        }
+
+        // 음성 답변 상태 표시
+        console.log('╔════════════════════════════════╗');
+        console.log('║       TTS STATUS CHECK         ║');
+        console.log('╠════════════════════════════════╣');
+        console.log('║ TTS Enabled:  ', ttsEnabled ? '✅ YES' : '❌ NO');
+        console.log('║ TTS Available:', !!synthesis ? '✅ YES' : '❌ NO');
+        console.log('╚════════════════════════════════╝');
+        
+        if (synthesis) {
+            console.log('💡 음성 답변을 사용하려면:');
+            console.log('   1. "🔊 음성 답변 ON" 버튼 클릭');
+            console.log('   2. 테스트 음성이 들리는지 확인');
+            console.log('   3. 질문을 하면 AI 답변이 음성으로 나옵니다');
+        } else {
+            console.log('⚠️ 이 브라우저는 음성 출력을 지원하지 않습니다.');
+        }
+
+        inputEl.focus();
+    </script>
+</body>
+</html>

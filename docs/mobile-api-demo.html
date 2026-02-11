@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>AI Avatar Chat - 실제 AI 연결</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            background: white;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .status {
+            background: #27ae60;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .status.connecting {
+            background: #f39c12;
+        }
+        
+        .status.error {
+            background: #e74c3c;
+        }
+        
+        .persona-selector {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: #f7f7f7;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .persona-btn {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .persona-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .avatar-section {
+            padding: 20px 15px;
+            text-align: center;
+            background: #fafafa;
+        }
+        
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .avatar-face {
+            width: 120px;
+            height: 140px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .head {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .hair {
+            width: 110px;
+            height: 60px;
+            background: #2c3e50;
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -5px;
+            left: 5px;
+            transition: all 0.5s;
+        }
+        
+        /* 페르소나별 아바타 스타일 */
+        .avatar-face.persona-business .hair {
+            background: #2c3e50;
+            height: 50px;
+        }
+        
+        .avatar-face.persona-business .head {
+            background: linear-gradient(135deg, #ffd89b 0%, #e0a76f 100%);
+        }
+        
+        .avatar-face.persona-customer .hair {
+            background: #e67e22;
+            height: 65px;
+        }
+        
+        .avatar-face.persona-customer .head {
+            background: linear-gradient(135deg, #ffd89b 0%, #f8c794 100%);
+        }
+        
+        .avatar-face.persona-education .hair {
+            background: #34495e;
+            height: 55px;
+        }
+        
+        .avatar-face.persona-education .head {
+            background: linear-gradient(135deg, #ffd89b 0%, #d4a574 100%);
+        }
+        
+        .avatar-face.persona-healthcare .hair {
+            background: #7f8c8d;
+            height: 60px;
+        }
+        
+        .avatar-face.persona-healthcare .head {
+            background: linear-gradient(135deg, #ffd89b 0%, #e8b88a 100%);
+        }
+        
+        .avatar-face.persona-entertainment .hair {
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+            height: 70px;
+        }
+        
+        .avatar-face.persona-entertainment .head {
+            background: linear-gradient(135deg, #ffd89b 0%, #ffb88c 100%);
+        }
+        
+        .avatar-face.persona-personal .hair {
+            background: #3498db;
+            height: 58px;
+        }
+        
+        .avatar-face.persona-personal .head {
+            background: linear-gradient(135deg, #ffd89b 0%, #e5c087 100%);
+        }
+        
+        .eyes {
+            position: absolute;
+            width: 100%;
+            top: 45px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .eye {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .pupil {
+            width: 10px;
+            height: 10px;
+            background: #2c3e50;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .nose {
+            width: 6px;
+            height: 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .mouth {
+            width: 40px;
+            height: 20px;
+            position: absolute;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+        }
+        
+        .mouth::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 3px solid #e74c3c;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: all 0.3s;
+        }
+        
+        .neck {
+            width: 40px;
+            height: 25px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0 0 8px 8px;
+            transition: all 0.5s;
+        }
+        
+        /* 페르소나별 액세서리 */
+        .accessory {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            transition: all 0.5s;
+        }
+        
+        .avatar-face.persona-business .accessory {
+            content: '👔';
+            top: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 1;
+        }
+        
+        .avatar-face.persona-healthcare .accessory {
+            content: '🩺';
+            top: 80px;
+            left: 10px;
+            opacity: 1;
+        }
+        
+        .avatar-face.persona-education .accessory {
+            content: '👓';
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 1;
+        }
+        
+        .avatar-face.persona-entertainment .accessory {
+            content: '🎭';
+            top: -10px;
+            right: -5px;
+            opacity: 1;
+        }
+        
+        .avatar-face.persona-customer .accessory {
+            content: '🎧';
+            top: 40px;
+            left: -10px;
+            opacity: 1;
+        }
+        
+        .avatar-face.persona-personal .accessory {
+            content: '⚙️';
+            top: 90px;
+            right: 5px;
+            opacity: 1;
+            font-size: 16px;
+        }
+        
+        .avatar-face.happy .mouth::after {
+            border-color: #27ae60;
+            top: -5px;
+        }
+        
+        .avatar-face.thinking .pupil {
+            transform: translate(-30%, -50%);
+        }
+        
+        .avatar-face.thinking .head {
+            animation: tilt 2s ease-in-out infinite;
+        }
+        
+        @keyframes tilt {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        .emotion-label {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .chat-area {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: white;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 14px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        .message.user .message-bubble {
+            background: #667eea;
+            color: white;
+        }
+        
+        .message.bot .message-bubble {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .message.system .message-bubble {
+            background: #fff3cd;
+            color: #856404;
+            max-width: 90%;
+            font-size: 13px;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 12px 14px;
+            background: #f0f0f0;
+            border-radius: 18px;
+            width: fit-content;
+        }
+        
+        .typing-indicator.show {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .input-area {
+            padding: 12px;
+            background: #f7f7f7;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .voice-btn {
+            width: 55px;
+            height: 55px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .voice-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .voice-btn.listening {
+            background: #27ae60;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); 
+            }
+            50% { 
+                transform: scale(1.05); 
+                box-shadow: 0 0 0 15px rgba(39, 174, 96, 0); 
+            }
+        }
+        
+        .input-box {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .input-box:focus {
+            border-color: #667eea;
+        }
+        
+        .input-box:disabled {
+            background: #f5f5f5;
+            color: #999;
+        }
+        
+        .send-btn {
+            width: 55px;
+            height: 55px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .voice-status {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(39, 174, 96, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            display: none;
+            animation: fadeIn 0.3s;
+            font-size: 15px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .voice-status.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        .persona-selector::-webkit-scrollbar,
+        .chat-area::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .persona-selector,
+        .chat-area {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI 아바타 챗봇</h1>
+            <p>실제 Claude AI 연결 · 음성 입력</p>
+        </div>
+        
+        <div class="status" id="status">백엔드 연결 확인 중...</div>
+        
+        <div class="persona-selector" id="personaSelector">
+            <button class="persona-btn active" data-persona="business-assistant">💼 비즈니스</button>
+            <button class="persona-btn" data-persona="customer-service">🎧 고객서비스</button>
+            <button class="persona-btn" data-persona="education-tutor">📚 교육</button>
+            <button class="persona-btn" data-persona="healthcare-advisor">⚕️ 헬스케어</button>
+            <button class="persona-btn" data-persona="entertainment-bot">🎭 엔터테인먼트</button>
+            <button class="persona-btn" data-persona="personal-assistant">🤖 개인비서</button>
+        </div>
+        
+        <div class="avatar-section">
+            <div class="avatar-container">
+                <div class="avatar-face" id="avatarFace">
+                    <div class="head">
+                        <div class="hair"></div>
+                        <div class="eyes">
+                            <div class="eye"><div class="pupil"></div></div>
+                            <div class="eye"><div class="pupil"></div></div>
+                        </div>
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                    </div>
+                    <div class="neck"></div>
+                    <div class="accessory" id="accessory"></div>
+                </div>
+            </div>
+            <div class="emotion-label" id="emotionLabel">감정: 보통</div>
+        </div>
+        
+        <div class="chat-area" id="chatArea">
+            <div class="message bot">
+                <div class="message-bubble">
+                    안녕하세요! 실제 Claude AI에 연결되었습니다! 🤖✨<br>
+                    무엇을 도와드릴까요?
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <button class="voice-btn" id="voiceBtn" aria-label="음성 입력">🎤</button>
+            <input type="text" class="input-box" id="messageInput" placeholder="메시지 입력..." />
+            <button class="send-btn" id="sendBtn" aria-label="전송">📤</button>
+        </div>
+    </div>
+    
+    <div class="voice-status" id="voiceStatus">🎤 듣는 중...</div>
+    
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:8000';
+        
+        const emotionLabels = {
+            neutral: '보통',
+            happy: '행복함 😊',
+            sad: '슬픔 😢',
+            thinking: '생각중 🤔',
+            surprised: '놀람 😮',
+            listening: '듣는중 👂'
+        };
+        
+        let currentPersona = 'business-assistant';
+        let isListening = false;
+        let isSending = false;
+        let recognition = null;
+        
+        // Check backend status
+        async function checkBackendStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    document.getElementById('status').textContent = '✅ 백엔드 연결됨 - Claude AI 준비완료';
+                    document.getElementById('status').className = 'status';
+                    return true;
+                }
+            } catch (error) {
+                document.getElementById('status').textContent = '⚠️ 백엔드 연결 실패 - localhost:8000 확인 필요';
+                document.getElementById('status').className = 'status error';
+                addSystemMessage('백엔드 서버에 연결할 수 없습니다. http://localhost:8000 이 실행 중인지 확인하세요.');
+                return false;
+            }
+        }
+        
+        // Web Speech API 초기화
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('voiceBtn').classList.add('listening');
+                document.getElementById('voiceStatus').classList.add('show');
+                setEmotion('listening');
+            };
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('messageInput').value = transcript;
+                addSystemMessage(`🎤 "${transcript}"`);
+            };
+            
+            recognition.onend = () => {
+                isListening = false;
+                document.getElementById('voiceBtn').classList.remove('listening');
+                document.getElementById('voiceStatus').classList.remove('show');
+                setEmotion('neutral');
+            };
+            
+            recognition.onerror = (event) => {
+                addSystemMessage(`⚠️ 음성 인식 오류: ${event.error}`);
+                isListening = false;
+                document.getElementById('voiceBtn').classList.remove('listening');
+                document.getElementById('voiceStatus').classList.remove('show');
+                setEmotion('neutral');
+            };
+        }
+        
+        // 음성 버튼
+        document.getElementById('voiceBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (!recognition) {
+                addSystemMessage('⚠️ 이 브라우저는 음성 인식을 지원하지 않습니다.');
+                return;
+            }
+            
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+        
+        // 페르소나 선택
+        document.getElementById('personaSelector').addEventListener('click', (e) => {
+            if (e.target.classList.contains('persona-btn')) {
+                document.querySelectorAll('.persona-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                currentPersona = e.target.dataset.persona;
+                updateAvatarPersona(currentPersona);
+                addSystemMessage(`페르소나 변경: ${e.target.textContent}`);
+                setEmotion('happy');
+                setTimeout(() => setEmotion('neutral'), 2000);
+            }
+        });
+        
+        function updateAvatarPersona(persona) {
+            const avatarFace = document.getElementById('avatarFace');
+            const accessory = document.getElementById('accessory');
+            
+            // 기존 페르소나 클래스 제거
+            avatarFace.classList.remove('persona-business', 'persona-customer', 'persona-education', 
+                                       'persona-healthcare', 'persona-entertainment', 'persona-personal');
+            
+            // 새 페르소나 클래스 추가
+            const personaClass = 'persona-' + persona.replace('-assistant', '').replace('-advisor', '')
+                                                    .replace('-tutor', '').replace('-bot', '')
+                                                    .replace('-service', '-customer');
+            avatarFace.classList.add(personaClass);
+            
+            // 액세서리 설정
+            const accessories = {
+                'business-assistant': '👔',
+                'customer-service': '🎧',
+                'education-tutor': '👓',
+                'healthcare-advisor': '🩺',
+                'entertainment-bot': '🎭',
+                'personal-assistant': '⚙️'
+            };
+            
+            accessory.textContent = accessories[persona] || '🤖';
+        }
+        
+        // 메시지 전송
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || isSending) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            isSending = true;
+            
+            // UI 업데이트
+            document.getElementById('sendBtn').disabled = true;
+            document.getElementById('messageInput').disabled = true;
+            document.getElementById('typingIndicator').classList.add('show');
+            setEmotion('thinking');
+            
+            try {
+                // 백엔드 API 호출
+                const response = await fetch(`${API_BASE_URL}/api/v1/chat/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        persona_id: currentPersona
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // AI 응답 표시
+                addBotMessage(data.response);
+                
+                // 감정 분석
+                if (data.emotion) {
+                    setEmotion(data.emotion);
+                    setTimeout(() => setEmotion('neutral'), 3000);
+                } else {
+                    setEmotion('happy');
+                    setTimeout(() => setEmotion('neutral'), 2000);
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                addSystemMessage('⚠️ API 오류: ' + error.message);
+                setEmotion('neutral');
+            } finally {
+                document.getElementById('typingIndicator').classList.remove('show');
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('messageInput').disabled = false;
+                isSending = false;
+            }
+        }
+        
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function addUserMessage(text) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            chatArea.insertBefore(messageDiv, document.getElementById('typingIndicator'));
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        function addBotMessage(text) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            messageDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            chatArea.insertBefore(messageDiv, document.getElementById('typingIndicator'));
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        function addSystemMessage(text) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            messageDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+            chatArea.insertBefore(messageDiv, document.getElementById('typingIndicator'));
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function setEmotion(emotion) {
+            const avatarFace = document.getElementById('avatarFace');
+            avatarFace.className = 'avatar-face ' + emotion;
+            document.getElementById('emotionLabel').textContent = '감정: ' + emotionLabels[emotion];
+        }
+        
+        // 페이지 로드 시 초기화
+        updateAvatarPersona(currentPersona);
+        checkBackendStatus();
+        
+        setTimeout(() => {
+            addSystemMessage('💬 텍스트 또는 🎤 음성으로 질문해보세요!');
+        }, 1000);
+    </script>
+</body>
+</html>

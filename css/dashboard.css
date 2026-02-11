@@ -1,0 +1,396 @@
+/* ============================================
+   Dashboard - Styles
+   @task S2F4
+   ============================================ */
+
+.dashboard-main {
+    padding: 100px 0 40px;
+}
+
+/* === Summary Grid === */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.summary-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    transition: all var(--transition-base);
+}
+
+.summary-card:hover {
+    border-color: var(--primary-400);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.summary-icon {
+    font-size: 2rem;
+}
+
+.summary-number {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    color: white;
+    display: block;
+}
+
+.summary-label {
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* === Section === */
+.dashboard-section {
+    margin-bottom: var(--space-10);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+}
+
+.section-header h2 {
+    color: white;
+    font-size: var(--font-size-xl);
+}
+
+/* === Bot Grid === */
+.bot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-4);
+}
+
+.bot-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    transition: all var(--transition-base);
+}
+
+.bot-card:hover {
+    border-color: var(--primary-400);
+    transform: translateY(-2px);
+}
+
+.bot-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.bot-card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.bot-card-name {
+    color: white;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+}
+
+.bot-card-template {
+    font-size: var(--font-size-xs);
+    color: var(--primary-400);
+}
+
+.bot-card-stats {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.bot-stat {
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.bot-stat strong {
+    color: white;
+}
+
+.bot-card-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.bot-action-btn {
+    flex: 1;
+    padding: var(--space-2);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.bot-action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.bot-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-12);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.bot-empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+}
+
+.bot-empty h3 {
+    color: white;
+    margin-bottom: var(--space-2);
+}
+
+.bot-empty p {
+    margin-bottom: var(--space-6);
+}
+
+/* === Skill Filters === */
+.skill-filters {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.filter-btn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: var(--primary-500);
+    color: white;
+    border-color: var(--primary-500);
+}
+
+/* === Skill Grid === */
+.skill-marketplace-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-4);
+}
+
+.skill-market-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    transition: all var(--transition-base);
+}
+
+.skill-market-card:hover {
+    border-color: var(--primary-300);
+}
+
+.skill-market-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.skill-market-icon {
+    font-size: 1.5rem;
+}
+
+.skill-market-name {
+    color: white;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    flex: 1;
+}
+
+.skill-market-price {
+    font-size: var(--font-size-xs);
+    color: var(--success-500);
+    font-weight: 600;
+}
+
+.skill-market-desc {
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.5;
+    margin-bottom: var(--space-3);
+}
+
+.skill-market-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.skill-market-meta {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.3);
+    display: flex;
+    gap: var(--space-3);
+}
+
+.skill-install-btn {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--primary-500);
+    border: none;
+    color: white;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.skill-install-btn:hover {
+    background: var(--primary-600);
+}
+
+.skill-install-btn.installed {
+    background: var(--success-500);
+}
+
+/* === Stats === */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-4);
+}
+
+.stats-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+}
+
+.stats-card h4 {
+    color: white;
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-sm);
+}
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+    height: 160px;
+    padding-top: var(--space-4);
+}
+
+.bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.bar {
+    width: 100%;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--gradient-primary);
+    transition: height 0.5s ease;
+    min-height: 4px;
+}
+
+.bar-label {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.bar-value {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.top-questions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.top-question-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.top-question-rank {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    background: var(--primary-500);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.top-question-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-xs);
+    flex: 1;
+}
+
+.top-question-count {
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 1024px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .skill-filters {
+        flex-wrap: wrap;
+    }
+
+    .bot-grid {
+        grid-template-columns: 1fr;
+    }
+}

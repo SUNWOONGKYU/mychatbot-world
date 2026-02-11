@@ -1,0 +1,399 @@
+openapi: 3.0.3
+info:
+  title: AI Avatar Chat Platform API
+  description: |
+    REST API for AI Avatar Chat Platform with 6 specialized chatbot personas and real-time 3D avatar expressions.
+    
+    ## Features
+    - 🤖 6 specialized chatbot personas
+    - 🎭 Real-time emotion expressions (7 emotions)
+    - 💬 WebSocket for streaming responses
+    - 🔐 JWT authentication
+    
+  version: 0.1.0
+  contact:
+    name: AI Avatar Chat Platform
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api-dev.example.com
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Auth
+    description: User authentication and authorization
+  - name: Chat
+    description: Chat interactions with AI chatbots
+  - name: Conversations
+    description: Conversation history management
+  - name: Voice
+    description: Voice input/output (STT/TTS)
+  - name: Users
+    description: User profile management
+
+security:
+  - BearerAuth: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from /api/v1/auth/login
+
+  schemas:
+    # Auth Models
+    UserRegister:
+      type: object
+      required:
+        - email
+        - password
+        - username
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: SecurePass123!
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          example: johndoe
+
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+          example: bearer
+        expires_in:
+          type: integer
+          example: 3600
+
+    # Chat Models
+    ChatRequest:
+      type: object
+      required:
+        - message
+        - persona_id
+      properties:
+        message:
+          type: string
+          example: Hello! Can you help me with my schedule?
+        persona_id:
+          type: string
+          enum:
+            - business-assistant
+            - customer-service
+            - education-tutor
+            - healthcare-advisor
+            - entertainment-bot
+            - personal-assistant
+          example: business-assistant
+        conversation_id:
+          type: string
+          format: uuid
+          nullable: true
+
+    ChatResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          example: Of course! I'd be happy to help with your schedule. What would you like to know?
+        emotion:
+          type: string
+          enum: [neutral, happy, sad, angry, surprised, thinking, concerned]
+          example: happy
+        conversation_id:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+
+    # Conversation Models
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        persona_id:
+          type: string
+        title:
+          type: string
+          example: Schedule planning discussion
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        message_count:
+          type: integer
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        emotion:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+    # Error Models
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid credentials
+        detail:
+          type: string
+        status_code:
+          type: integer
+          example: 401
+
+  responses:
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+paths:
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/v1/chat:
+    post:
+      tags:
+        - Chat
+      summary: Send a chat message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/v1/conversations:
+    get:
+      tags:
+        - Conversations
+      summary: List user conversations
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+                  total:
+                    type: integer
+
+  /api/v1/conversations/{conversation_id}:
+    get:
+      tags:
+        - Conversations
+      summary: Get conversation details
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Conversation details with messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation:
+                    $ref: '#/components/schemas/Conversation'
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    delete:
+      tags:
+        - Conversations
+      summary: Delete a conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Conversation deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /ws/chat:
+    get:
+      tags:
+        - Chat
+      summary: WebSocket endpoint for real-time chat
+      description: |
+        WebSocket endpoint for streaming chat responses.
+        
+        **Connection**: ws://localhost:8000/ws/chat?token=<JWT_TOKEN>
+        
+        **Send format**:
+        ```json
+        {
+          "message": "Hello!",
+          "persona_id": "business-assistant",
+          "conversation_id": "optional-uuid"
+        }
+        ```
+        
+        **Receive format**:
+        ```json
+        {
+          "type": "chunk|complete|error",
+          "content": "Response text chunk",
+          "emotion": "happy",
+          "conversation_id": "uuid"
+        }
+        ```
+      responses:
+        '101':
+          description: Switching Protocols - WebSocket established

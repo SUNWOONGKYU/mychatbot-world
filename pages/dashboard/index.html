@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드 - My Chatbot World</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body class="dark-body">
+    <nav class="navbar scrolled">
+        <div class="container navbar-inner">
+            <a href="/" class="navbar-logo">🤖 <span>My Chatbot World</span></a>
+            <ul class="navbar-links">
+                <li><a href="#bots" class="active">내 챗봇</a></li>
+                <li><a href="#skills">스킬 마켓</a></li>
+                <li><a href="#stats">통계</a></li>
+            </ul>
+            <div class="navbar-cta">
+                <a href="/create" class="btn btn-primary btn-sm">+ 새 챗봇</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-main">
+        <div class="container">
+            <!-- Summary Cards -->
+            <div class="summary-grid" id="summaryGrid">
+                <div class="summary-card">
+                    <div class="summary-icon">🤖</div>
+                    <div class="summary-data"><span class="summary-number" id="totalBots">0</span><span
+                            class="summary-label">내 챗봇</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">💬</div>
+                    <div class="summary-data"><span class="summary-number" id="totalChats">0</span><span
+                            class="summary-label">총 대화</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">📊</div>
+                    <div class="summary-data"><span class="summary-number" id="totalMessages">0</span><span
+                            class="summary-label">총 메시지</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">⭐</div>
+                    <div class="summary-data"><span class="summary-number" id="avgRating">-</span><span
+                            class="summary-label">평균 만족도</span></div>
+                </div>
+            </div>
+
+            <!-- Bot List -->
+            <section class="dashboard-section" id="bots">
+                <div class="section-header">
+                    <h2>내 챗봇</h2>
+                    <a href="/create" class="btn btn-primary btn-sm">+ 새 챗봇 만들기</a>
+                </div>
+                <div class="bot-grid" id="botGrid">
+                    <div class="bot-empty" id="botEmpty">
+                        <div class="bot-empty-icon">🤖</div>
+                        <h3>아직 챗봇이 없습니다</h3>
+                        <p>첫 번째 AI 챗봇을 만들어보세요!</p>
+                        <a href="/create" class="btn btn-primary">챗봇 만들기</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section class="dashboard-section" id="skills">
+                <div class="section-header">
+                    <h2>스킬 마켓플레이스</h2>
+                    <div class="skill-filters">
+                        <button class="filter-btn active" onclick="filterSkills('all')">전체</button>
+                        <button class="filter-btn" onclick="filterSkills('소통')">소통</button>
+                        <button class="filter-btn" onclick="filterSkills('비즈니스')">비즈니스</button>
+                        <button class="filter-btn" onclick="filterSkills('유틸리티')">유틸리티</button>
+                        <button class="filter-btn" onclick="filterSkills('분석')">분석</button>
+                    </div>
+                </div>
+                <div class="skill-marketplace-grid" id="skillMarketGrid"></div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="dashboard-section" id="stats">
+                <div class="section-header">
+                    <h2>대화 통계</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <h4>일별 대화량</h4>
+                        <div class="chart-placeholder" id="dailyChart">
+                            <div class="bar-chart" id="barChart"></div>
+                        </div>
+                    </div>
+                    <div class="stats-card">
+                        <h4>인기 질문 TOP 5</h4>
+                        <div id="topQuestions" class="top-questions"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
