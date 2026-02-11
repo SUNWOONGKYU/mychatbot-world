@@ -135,6 +135,17 @@ function renderBotList() {
   `}).join('');
 }
 
+// Manual creation of sample bot
+function forceCreateSunnyBot() {
+  if (typeof createSunnyBot === 'function') {
+    // Clear flag to allow creation
+    localStorage.removeItem('mcw_sample_initialized');
+    createSunnyBot(false); // Non-silent so user sees alert
+  } else {
+    alert('오류: 마이그레이션 스크립트를 불러오지 못했습니다.');
+  }
+}
+
 // Edit Bot Functions
 // Edit Bot Functions
 let editingBotPersonas = [];
