@@ -274,12 +274,12 @@ function hideTyping() {
 async function generateResponse(userText) {
     const apiKey = localStorage.getItem('mcw_openrouter_key') || "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";
 
-    // Model fallback list (Trying multiple IDs to ensure stability)
+    // Model fallback list (Try absolute latest Google Gemini 2.0/2.5 versions)
     const modelStack = [
-        "google/gemini-flash-1.5",
-        "google/gemini-2.0-flash-exp:free",
-        "google/gemini-flash-1.5-exp",
-        "google/gemini-pro-1.5"
+        "google/gemini-2.0-flash-001", // Stable 2.0 Flash
+        "google/gemini-2.0-pro-exp-02-05", // Latest 2.0 Pro Experimental
+        "google/gemini-2.0-flash-lite-preview-02-05", // Latest Lite
+        "google/gemini-2.0-flash-exp:free" // 2.0 Free Experimental
     ];
 
     let lastError = "";
