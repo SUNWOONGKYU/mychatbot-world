@@ -583,18 +583,36 @@
     margin-bottom: var(--space-4);
 }
 
+.deploy-section {
+    margin-top: var(--space-3);
+}
+
+.deploy-group {
+    margin-bottom: var(--space-2);
+}
+
+.deploy-label {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    margin-right: var(--space-2);
+}
+
 .deploy-channels {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: var(--space-2);
+    gap: 5px;
 }
 
 .deploy-tag {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     background: var(--primary-50);
     color: var(--primary-700);
-    padding: 3px 10px;
+    padding: 3px 8px;
     border-radius: var(--radius-full);
     font-weight: 600;
     border: 1px solid var(--primary-100);
