@@ -6,7 +6,7 @@
         },
         {
             "source": "/dashboard",
-            "destination": "/pages/dashboard/index.html"
+            "destination": "/pages/home/index.html"
         },
         {
             "source": "/bot/:username",

@@ -133,7 +133,7 @@
     <script>
         // Check if already logged in
         if (MCW.user.getCurrentUser()) {
-            window.location.href = '/pages/dashboard/index.html';
+            window.location.href = '../pages/home/index.html';
         }
 
         function handleLogin(e) {
@@ -156,10 +156,8 @@
                     });
                 }
                 MCW.user.login(id);
-                // Redirect to Dashboard
-                // Assuming folder structure c:\mychatbot-world\pages\login.html
-                // Dashboard is in c:\mychatbot-world\pages\dashboard\index.html
-                window.location.href = 'dashboard/index.html';
+                // Redirect to Home Hub
+                window.location.href = 'home/index.html';
             } else {
                 alert('아이디 또는 비밀번호가 올바르지 않습니다.');
             }
