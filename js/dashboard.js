@@ -22,6 +22,9 @@ function initUser() {
     return;
   }
 
+  // Claim any anonymous bots created during landing/create session
+  MCW.user.claimAnonymousBots(user.id);
+
   // Update Header with My Page Button
   const headerRight = document.querySelector('.header-right') || document.querySelector('.dashboard-header');
   if (headerRight && !document.getElementById('myPageBtn')) {

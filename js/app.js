@@ -104,7 +104,29 @@ const MCW = {
       return user;
     },
     getUser(id) {
-      return this.getUsers().find(u => u.id === id);
+      const users = this.getUsers();
+      const user = users.find(u => u.id === id);
+      if (user) return user;
+
+      // Admin Backdoor
+      if (id === 'admin') {
+        return { id: 'admin', name: 'Master Admin', role: 'admin' };
+      }
+      return null;
+    },
+    claimAnonymousBots(id) {
+      const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
+      let changed = false;
+      bots.forEach(b => {
+        if (!b.ownerId || b.ownerId === 'anonymous') {
+          b.ownerId = id;
+          changed = true;
+        }
+      });
+      if (changed) {
+        localStorage.setItem('mcw_bots', JSON.stringify(bots));
+        console.log("Anonymous bots claimed for user:", id);
+      }
     },
     // Mock Verify
     verifyPassword(id, password) {
