@@ -270,71 +270,74 @@ function hideTyping() {
     if (el) el.remove();
 }
 
-// Generate AI response (MVP: pattern matching + context-aware + Multi-Persona)
+// Generate AI response with Fallback Loop (Handling invalid Model IDs)
 async function generateResponse(userText) {
-    // Check for API Key
-    let apiKey = localStorage.getItem('mcw_openrouter_key');
+    const apiKey = localStorage.getItem('mcw_openrouter_key') || "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";
 
-    // Fallback to the key found in .env.production
-    if (!apiKey) {
-        apiKey = "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";
-        localStorage.setItem('mcw_openrouter_key', apiKey);
-    }
-    if (!apiKey) {
-        // Prompt for key if missing
-        const userKey = prompt("OpenRouter API Key가 필요합니다.\n키를 입력해주세요 (브라우저에 저장됩니다):", "");
-        if (userKey) {
-            localStorage.setItem('mcw_openrouter_key', userKey);
-            return generateResponse(userText); // Retry with key
-        } else {
-            return "API 키가 없으면 대화할 수 없습니다. 😢";
+    // Model fallback list (Trying multiple IDs to ensure stability)
+    const modelStack = [
+        "google/gemini-flash-1.5",
+        "google/gemini-2.0-flash-exp:free",
+        "google/gemini-flash-1.5-exp",
+        "google/gemini-pro-1.5"
+    ];
+
+    let lastError = "";
+    setAvatarEmotion('thinking');
+
+    for (let i = 0; i < modelStack.length; i++) {
+        const currentModel = modelStack[i];
+        console.log(`[AI Loop] Attempt ${i + 1}/${modelStack.length} using model: ${currentModel}`);
+
+        try {
+            const p = currentPersona || chatBotData.personas[0];
+            const systemPrompt = `당신은 ${p.name}입니다. ${p.role}. 항상 한국어로 답변하세요.`;
+
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": window.location.href,
+                    "X-Title": "My Chatbot World Management Hub"
+                },
+                body: JSON.stringify({
+                    "model": currentModel,
+                    "messages": [
+                        { "role": "system", "content": systemPrompt },
+                        ...conversationHistory.slice(-10),
+                        { "role": "user", "content": userText }
+                    ]
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.choices && data.choices[0]) {
+                    console.log(`[AI Loop] Success with model: ${currentModel}`);
+                    setAvatarEmotion('happy');
+                    setTimeout(() => setAvatarEmotion('neutral'), 3000);
+                    return data.choices[0].message.content;
+                }
+            }
+
+            const errData = await response.json();
+            lastError = errData.error?.message || response.statusText;
+            console.warn(`[AI Loop] Failed for ${currentModel}: ${lastError}`);
+
+            // If it's a specific "model not found" or "invalid model" error, try next immediately
+            if (lastError.includes("not a valid model") || lastError.includes("No endpoints found")) {
+                continue;
+            }
+
+        } catch (error) {
+            lastError = error.message;
+            console.error(`[AI Loop] Network error for ${currentModel}:`, error);
         }
     }
 
-    // Set Loading State
-    setAvatarEmotion('thinking'); // Avatar thinking
-
-    try {
-        const p = currentPersona || chatBotData.personas[0];
-        const systemPrompt = p.role
-            ? `당신은 ${p.name}입니다. ${p.role}. 항상 한국어로 답변하세요.`
-            : "당신은 도움이 되는 AI 어시스턴트입니다.";
-
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json",
-                "HTTP-Referer": window.location.href, // Optional
-                "X-Title": "My Chatbot World" // Optional
-            },
-            body: JSON.stringify({
-                "model": "google/gemini-1.5-flash", // Using stable 1.5 Flash to ensure reliable responses
-                "messages": [
-                    { "role": "system", "content": systemPrompt },
-                    ...conversationHistory.slice(-10), // Context window
-                    { "role": "user", "content": userText }
-                ]
-            })
-        });
-
-        if (!response.ok) {
-            const err = await response.json();
-            console.error("API Error:", err);
-            return `오류가 발생했습니다: ${err.error?.message || response.statusText}`;
-        }
-
-        const data = await response.json();
-        const botResponse = data.choices[0].message.content;
-
-        setAvatarEmotion('happy'); // Avatar happy
-        setTimeout(() => setAvatarEmotion('neutral'), 3000);
-        return botResponse;
-
-    } catch (error) {
-        console.error("Fetch Error:", error);
-        return "네트워크 오류가 발생했습니다. 다시 시도해주세요.";
-    }
+    setAvatarEmotion('sad');
+    return `[AI 오류] 모든 모델 시도에 실패했습니다. (마지막 오류: ${lastError})\nAPI 키 잔액이나 네트워크 상태를 확인해주세요.`;
 }
 
 // === Avatar Control ===
