@@ -202,11 +202,14 @@ async function generateResponse(userText) {
         storedKey = null;
     }
 
-    // Load Priority: 1. Secrets (Fresh) -> 2. Storage (User Custom)
+    // Load Priority: 1. Config (Production) -> 2. Secrets (Local) -> 3. Storage
     let API_KEY = null;
-    if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
+    if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
+        API_KEY = CONFIG.OPENROUTER_API_KEY;
+        // Sync to storage for persistence
+        localStorage.setItem('mcw_openrouter_key', API_KEY);
+    } else if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
         API_KEY = MCW_SECRETS.OPENROUTER_API_KEY;
-        // Sync fresh key to storage
         localStorage.setItem('mcw_openrouter_key', API_KEY);
     } else {
         API_KEY = storedKey;

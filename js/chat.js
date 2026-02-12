@@ -103,8 +103,11 @@ function loadBotData() {
     setTimeout(() => {
         addMessage('bot', chatBotData.greeting);
     }, 500);
-    // Sync API Key from secrets if available
-    if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
+    // Sync API Key from Config or Secrets
+    if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
+        localStorage.setItem('mcw_openrouter_key', CONFIG.OPENROUTER_API_KEY);
+        console.log("API Key synced from config.js");
+    } else if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
         localStorage.setItem('mcw_openrouter_key', MCW_SECRETS.OPENROUTER_API_KEY);
         console.log("API Key synced from secrets.js");
     }
