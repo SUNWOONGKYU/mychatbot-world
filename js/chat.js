@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatModuleVersion = "9.9.2 - SECURITY FIX";
     console.log(`[CRITICAL] Chat Module v${chatModuleVersion} Loaded.`);
 
-    // 🔑 Force Purge Bad Key
+    // ?�� Force Purge Bad Key
     const BAD_KEY_HASH = "sk-or-v1-6a0bbf03";
     if (localStorage.getItem('mcw_openrouter_key')?.includes(BAD_KEY_HASH)) {
         console.error("COMPROMISED KEY PURGED.");
@@ -51,15 +51,15 @@ function loadBotData() {
         if (!chatBotData) {
             // Demo bot fallback
             chatBotData = {
-                botName: '써니봇 (Demo)',
+                botName: '?�니�?(Demo)',
                 username: username || 'demo',
                 templateId: 'ceo',
-                personality: '친절하고 전문적인 AI 비서',
-                greeting: '안녕하세요! 써니봇입니다. 무엇이든 도와드리겠습니다! 😊',
+                personality: '친절?�고 ?�문?�인 AI 비서',
+                greeting: '?�녕?�세?? ?�니봇입?�다. 무엇?�든 ?��??�리겠습?�다! ?��',
                 faqs: [
-                    { q: '어떤 서비스를 제공하나요?', a: '다양한 AI 챗봇 서비스를 제공합니다.' },
-                    { q: '가격이 어떻게 되나요?', a: '무료 플랜부터 시작할 수 있습니다.' },
-                    { q: '문의는 어떻게 하나요?', a: '이 채팅을 통해 편하게 문의해주세요!' }
+                    { q: '?�떤 ?�비?��? ?�공?�나??', a: '?�양??AI 챗봇 ?�비?��? ?�공?�니??' },
+                    { q: '가격이 ?�떻�??�나??', a: '무료 ?�랜부???�작?????�습?�다.' },
+                    { q: '문의???�떻�??�나??', a: '??채팅???�해 ?�하�?문의?�주?�요!' }
                 ]
             };
         }
@@ -125,7 +125,7 @@ function renderPersonaSelector() {
     }
 
     const personaIcons = {
-        'p_ai': '🧠', 'p_startup': '🚀', 'p_cpa': '🧮', 'p_star': '🔭', 'p_life': '🌿'
+        'p_ai': '?��', 'p_startup': '??', 'p_cpa': '?��', 'p_star': '?��', 'p_life': '?��'
     };
 
     container.innerHTML = chatBotData.personas
@@ -133,7 +133,7 @@ function renderPersonaSelector() {
         .map(p => `
             <div class="persona-chip ${currentPersona && currentPersona.id === p.id ? 'active' : ''}" 
                  onclick="switchPersona('${p.id}')">
-                <span class="persona-chip-icon">${personaIcons[p.id] || '👤'}</span>
+                <span class="persona-chip-icon">${personaIcons[p.id] || '?��'}</span>
                 <span class="persona-chip-name">${p.name}</span>
             </div>
         `)
@@ -155,13 +155,13 @@ function switchPersona(id) {
     });
 
     // System message
-    addMessage('system', `🔄 <strong>${newPersona.name}</strong>(으)로 전환되었습니다.<br><span style="font-size:0.7em; opacity:0.7;">${newPersona.role} | ${newPersona.model.toUpperCase()} Model</span>`);
+    addMessage('system', `?�� <strong>${newPersona.name}</strong>(??�??�환?�었?�니??<br><span style="font-size:0.7em; opacity:0.7;">${newPersona.role} | ${newPersona.model.toUpperCase()} Model</span>`);
 
     // Update UI
     document.getElementById('welcomeDesc').textContent = newPersona.role;
 
     // Announce
-    if (voiceOutputEnabled) speak(`저는 이제 ${newPersona.name}입니다.`);
+    if (voiceOutputEnabled) speak(`?�???�제 ${newPersona.name}?�니??`);
 
     // Update Avatar
     updateAvatar(newPersona);
@@ -244,7 +244,7 @@ function addMessage(sender, text) {
     } else {
         div.className = `message message-${sender}`;
         div.innerHTML = `
-        <div class="message-avatar">${sender === 'bot' ? (currentPersona?.model === 'emotion' ? '💖' : '🤖') : '👤'}</div>
+        <div class="message-avatar">${sender === 'bot' ? (currentPersona?.model === 'emotion' ? '?��' : '?��') : '?��'}</div>
         <div>
           <div class="message-bubble">${text}</div>
           <div class="message-time">${time}</div>
@@ -263,7 +263,7 @@ function showTyping() {
     div.className = 'message message-bot';
     div.id = 'typingIndicator';
     div.innerHTML = `
-    <div class="message-avatar">🤖</div>
+    <div class="message-avatar">?��</div>
     <div class="message-bubble">
       <div class="typing-indicator">
         <div class="typing-dot"></div>
@@ -286,7 +286,7 @@ function hideTyping() {
 async function generateResponse(userText) {
     // 3. Validation
     if (!apiKey) {
-        return "[시스템 오류] API 키가 없습니다. js/secrets.js를 확인하세요.";
+        return "[?�스???�류] API ?��? ?�습?�다. js/secrets.js�??�인?�세??";
     }
 
     apiKey = apiKey.trim();
@@ -312,7 +312,7 @@ async function generateResponse(userText) {
 
         try {
             const p = currentPersona || chatBotData.personas[0];
-            const systemPrompt = `당신은 ${p.name}입니다. ${p.role}. 한글(Korean)로만 답변하세요.`;
+            const systemPrompt = `?�신?� ${p.name}?�니?? ${p.role}. ?��?(Korean)로만 ?��??�세??`;
 
             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
@@ -363,9 +363,9 @@ async function generateResponse(userText) {
 
     setAvatarEmotion('sad');
     if (lastError.includes("User not found") || lastError.includes("401")) {
-        return `[계정 오류] 사용자를 찾을 수 없거나 API 키가 유효하지 않습니다. (에러: ${lastError})\n새로운 키를 등록해 주세요.`;
+        return `[계정 ?�류] ?�용?��? 찾을 ???�거??API ?��? ?�효?��? ?�습?�다. (?�러: ${lastError})\n?�로???��? ?�록??주세??`;
     }
-    return `[AI 오류] 명예를 걸고 8개 모델을 시도했으나 모두 실패했습니다. (마지막 오류: ${lastError})\n페이지를 새로고침(F5) 하거나 잠시 후 다시 시도해 주세요.`;
+    return `[AI ?�류] 명예�?걸고 8�?모델???�도?�으??모두 ?�패?�습?�다. (마�?�??�류: ${lastError})\n?�이지�??�로고침(F5) ?�거???�시 ???�시 ?�도??주세??`;
 }
 
 // === Avatar Control ===
@@ -409,11 +409,11 @@ function setAvatarEmotion(emotion) {
 
     if (label) {
         const labels = {
-            neutral: '평온',
-            happy: '행복 😊',
-            sad: '슬픔 😢',
-            thinking: '생각중 🤔',
-            surprised: '놀람 😮'
+            neutral: '?�온',
+            happy: '?�복 ?��',
+            sad: '?�픔 ?��',
+            thinking: '?�각�??��',
+            surprised: '?�???��'
         };
         label.textContent = labels[emotion] || '';
     }
@@ -433,7 +433,7 @@ function speak(text) {
 document.getElementById('voiceToggle')?.addEventListener('click', () => {
     voiceOutputEnabled = !voiceOutputEnabled;
     const btn = document.getElementById('voiceToggle');
-    btn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
+    btn.textContent = voiceOutputEnabled ? '?��' : '?��';
     if (!voiceOutputEnabled) speechSynthesis.cancel();
 });
 
@@ -448,7 +448,7 @@ function toggleChatVoice() {
         return;
     }
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-        alert('이 브라우저는 음성 인식을 지원하지 않습니다.');
+        alert('??브라?��????�성 ?�식??지?�하지 ?�습?�다.');
         return;
     }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -477,3 +477,4 @@ function autoResizeInput() {
         input.style.height = Math.min(input.scrollHeight, 120) + 'px';
     });
 }
+
