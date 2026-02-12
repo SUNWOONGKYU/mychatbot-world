@@ -5,5 +5,8 @@
     "description": "My Chatbot World - AI 챗봇 생성 플랫폼",
     "dependencies": {
         "@supabase/supabase-js": "^2.39.0"
+    },
+    "scripts": {
+        "build": "node scripts/generate-config.js"
     }
 }
