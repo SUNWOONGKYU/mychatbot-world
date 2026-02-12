@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Voice Toggle
     const voiceBtn = document.getElementById('voiceToggle');
     if (voiceBtn) {
-        voiceBtn.textContent = '🔊'; // Default ON
+        voiceBtn.textContent = '?��'; // Default ON
         voiceBtn.addEventListener('click', () => {
             voiceOutputEnabled = !voiceOutputEnabled;
-            voiceBtn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
+            voiceBtn.textContent = voiceOutputEnabled ? '?��' : '?��';
             if (!voiceOutputEnabled) window.speechSynthesis?.cancel();
 
             // Unlock on toggle attempt too
@@ -56,6 +56,7 @@ function unlockAudio() {
 function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
     const idParam = urlParams.get('id');
+    const personaParam = urlParams.get('persona');
     const bots = MCW.storage.getBots();
 
     if (idParam) {
@@ -68,10 +69,10 @@ function loadBotData() {
         }
         if (!chatBotData) {
             chatBotData = {
-                botName: '써니봇 (v10.5)',
+                botName: '?�니�?(v10.5)',
                 username: 'sunny',
-                personality: '당신의 비즈니스 성장을 돕는 AI 파트너입니다.',
-                greeting: '안녕하세요! 모바일에서도 생생한 목소리로 대화하는 v10.5 써니봇입니다.',
+                personality: '?�신??비즈?�스 ?�장???�는 AI ?�트?�입?�다.',
+                greeting: '?�녕?�세?? 모바?�에?�도 ?�생??목소리로 ?�?�하??v10.5 ?�니봇입?�다.',
                 faqs: []
             };
         }
@@ -87,12 +88,22 @@ function loadBotData() {
         }];
     }
 
-    currentPersona = chatBotData.personas[0];
+    const initialPersona = personaParam
+        ? chatBotData.personas.find(p => p.id === personaParam)
+        : chatBotData.personas[0];
+
+    currentPersona = initialPersona || chatBotData.personas[0];
 
     const nameEl = document.getElementById('chatBotName');
     if (nameEl) nameEl.textContent = chatBotData.botName;
     document.title = `${chatBotData.botName} - v10.5`;
 
+    const welcomeTitleEl = document.getElementById('welcomeTitle');
+    const welcomeDescEl = document.getElementById('welcomeDesc');
+    if (welcomeTitleEl) welcomeTitleEl.textContent = chatBotData.botName;
+    if (welcomeDescEl && currentPersona) welcomeDescEl.textContent = currentPersona.role || '';
+
+    renderPersonaSelector();
     renderFaqButtons();
     if (conversationHistory.length === 0) {
         setTimeout(() => addMessage('bot', chatBotData.greeting), 500);
@@ -129,7 +140,7 @@ async function sendMessage() {
     const safetyTimer = setTimeout(() => {
         if (isBotTyping) {
             hideTyping();
-            addMessage('bot', "[네트워크 지연] 응답이 늦어지고 있습니다. 잠시 후 다시 시도해주세요.");
+            addMessage('bot', "[?�트?�크 지?? ?�답????��지�??�습?�다. ?�시 ???�시 ?�도?�주?�요.");
         }
     }, 15000);
 
@@ -160,7 +171,7 @@ function addMessage(sender, text) {
     const div = document.createElement('div');
     div.className = `message message-${sender}`;
     div.innerHTML = `
-        <div class="message-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
+        <div class="message-avatar">${sender === 'bot' ? '?��' : '?��'}</div>
         <div class="message-bubble">${text}</div>
     `;
     container.appendChild(div);
@@ -174,7 +185,7 @@ function showTyping() {
     div.className = 'message message-bot';
     div.id = 'typingIndicator';
     div.innerHTML = `
-        <div class="message-avatar">🤖</div>
+        <div class="message-avatar">?��</div>
         <div class="message-bubble">
             <span class="typing-dot">.</span><span class="typing-dot">.</span><span class="typing-dot">.</span>
         </div>
@@ -192,7 +203,7 @@ function hideTyping() {
 async function generateResponse(userText) {
     const start = Date.now();
 
-    // 🔑 SECURITY: Force Purge Known Bad Keys (User not found error fix)
+    // ?�� SECURITY: Force Purge Known Bad Keys (User not found error fix)
     const BAD_KEY_HASH = "sk-or-v1-6a0bbf03";
     let storedKey = localStorage.getItem('mcw_openrouter_key');
 
@@ -217,7 +228,7 @@ async function generateResponse(userText) {
 
     // Final Validation
     if (!API_KEY || API_KEY.length < 50 || API_KEY.includes(BAD_KEY_HASH)) {
-        return "[시스템 오류] API 키가 유효하지 않습니다. (원인: User not found / Key Invalid). 캐시를 삭제하고 다시 접속해주세요.";
+        return "[?�스???�류] API ?��? ?�효?��? ?�습?�다. (?�인: User not found / Key Invalid). 캐시�???��?�고 ?�시 ?�속?�주?�요.";
     }
 
     // SPEED-FIRST STACK (v10.8 Secure)
@@ -227,6 +238,10 @@ async function generateResponse(userText) {
         "meta-llama/llama-3.3-70b-instruct",
         "openrouter/free"
     ];
+
+    const systemPrompt = (currentPersona && currentPersona.role)
+        ? "You are a Korean AI assistant persona \"" + currentPersona.name + "\". Role: " + currentPersona.role + ". Reply in Korean."
+        : "You are a professional assistant. Reply in Korean.";
 
     let lastError = "";
     for (let currentModel of modelStack) {
@@ -242,7 +257,7 @@ async function generateResponse(userText) {
                 body: JSON.stringify({
                     "model": currentModel,
                     "messages": [
-                        { "role": "system", "content": "You are a professional assistant. Reply in Korean." },
+                        { "role": "system", "content": systemPrompt },
                         ...conversationHistory.slice(-5),
                         { "role": "user", "content": userText }
                     ]
@@ -260,7 +275,7 @@ async function generateResponse(userText) {
             lastError = e.message;
         }
     }
-    return `[AI 오류] 접속 실패 (${lastError})`;
+    return `[AI ?�류] ?�속 ?�패 (${lastError})`;
 }
 
 function speak(text) {
@@ -296,7 +311,7 @@ function toggleChatVoice() {
 
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
-        alert('이 브라우저는 음성 인식을 지원하지 않습니다.');
+        alert('??브라?��????�성 ?�식??지?�하지 ?�습?�다.');
         return;
     }
 
@@ -340,3 +355,56 @@ function autoResizeInput() {
         input.style.height = input.scrollHeight + 'px';
     });
 }
+
+
+
+
+
+// SunnyBot 5-�丣�ҳ� ���� UI
+function renderPersonaSelector() {
+    const container = document.getElementById('personaContainer');
+    if (!container) return;
+
+    if (!chatBotData.personas || chatBotData.personas.length <= 1) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const personaIcons = {
+        p_ai: '??',
+        p_startup: '??',
+        p_cpa: '??',
+        p_star: '?',
+        p_life: '??'
+    };
+
+    container.style.display = 'flex';
+    container.innerHTML = chatBotData.personas
+        .filter(p => p.isVisible !== false)
+        .map(p => `
+            <button class="persona-pill ${p.id === currentPersona.id ? 'active' : ''}" data-persona-id="${p.id}">
+                <span class="persona-icon">${personaIcons[p.id] || '??'}</span>
+                <span class="persona-name">${p.name}</span>
+            </button>
+        `).join('');
+
+    container.querySelectorAll('.persona-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-persona-id');
+            const persona = chatBotData.personas.find(p => p.id === id);
+            if (!persona) return;
+
+            currentPersona = persona;
+
+            const welcomeDescEl = document.getElementById('welcomeDesc');
+            if (welcomeDescEl) welcomeDescEl.textContent = currentPersona.role || '';
+
+            // ���� ���� �ݿ� ���� �ٽ� ������
+            renderPersonaSelector();
+        });
+    });
+}
+
+
+
+

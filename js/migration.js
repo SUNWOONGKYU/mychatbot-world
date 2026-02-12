@@ -4,59 +4,74 @@
  */
 
 const SunnyBotData = {
-    botName: 'ì¨ë‹ˆë´‡ (5ì¸ì˜ ìì•„ í†µí•©í˜•)',
-    botDesc: 'ê¸°ì¡´ AI ì•„ë°”íƒ€ í”„ë¡œì íŠ¸ì—ì„œ ê°€ì ¸ì˜¨ 5ê°€ì§€ í˜ë¥´ì†Œë‚˜(ìì•„)ê°€ íƒ‘ì¬ëœ í†µí•© ë´‡ì…ë‹ˆë‹¤.',
-    greeting: 'ì•ˆë…•í•˜ì„¸ìš”! ì¨ë‹ˆë´‡ì…ë‹ˆë‹¤. 5ê°€ì§€ ìì•„ë¥¼ ê°€ì§€ê³  ìˆìŠµë‹ˆë‹¤. ì›í•˜ì‹œëŠ” ì—­í• ì„ ì„ íƒí•´ì£¼ì„¸ìš”!',
+    botName: "½á´Ïº¿ (5ÀÎÀÇ ÀÚ¾Æ ÅëÇÕÇü)",
+    botDesc: "±âÁ¸ AI ¾Æ¹ÙÅ¸ ÇÁ·ÎÁ§Æ®¿¡¼­ °¡Á®¿Â 5°¡Áö Æä¸£¼Ò³ª(ÀÚ¾Æ)°¡ Å¾ÀçµÈ ÅëÇÕ º¿ÀÔ´Ï´Ù.",
+    greeting: "¾È³çÇÏ¼¼¿ä! ½á´Ïº¿ÀÔ´Ï´Ù. 5°¡Áö ÀÚ¾Æ¸¦ °¡Áö°í ÀÖ½À´Ï´Ù. ¿øÇÏ½Ã´Â ¿ªÇÒÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!",
     personas: [
         {
-            id: 'p_ai',
-            name: 'AI Master',
-            role: 'ì „ì§€ì „ëŠ¥í•œ AI ë§ˆìŠ¤í„°ì…ë‹ˆë‹¤. ëª¨ë“  ì§€ì‹ê³¼ ê¸°ìˆ ì„ í†µë‹¬í–ˆìŠµë‹ˆë‹¤.',
-            model: 'logic',
+            id: "p_ai",
+            name: "AI Master",
+            role: "½á´ÏÀÇ Àü¹İÀûÀÎ AI Àü·«°ú »ç°í¸¦ ´ã´çÇÏ´Â ºĞ½Å ¾Æ¹ÙÅ¸ÀÔ´Ï´Ù.",
+            model: "logic",
             iqEq: 100,
-            isVisible: true
+            isVisible: true,
+            category: "avatar",
+            helperType: null,
+            isPublic: true
         },
         {
-            id: 'p_startup',
-            name: 'Startup Accelerator',
-            role: 'ìŠ¤íƒ€íŠ¸ì—…ì˜ ì„±ê³µì„ ë•ëŠ” ëƒ‰ì² í•œ ì „ëµê°€ì´ì ë©˜í† ì…ë‹ˆë‹¤.',
-            model: 'logic',
+            id: "p_startup",
+            name: "Startup Accelerator",
+            role: "½ºÅ¸Æ®¾÷ »ç¾÷°èÈ¹, ÇÇÄ¡µ¦, ÅõÀÚÀü·«À» µ½´Â ºĞ½Å ¾Æ¹ÙÅ¸ÀÔ´Ï´Ù.",
+            model: "logic",
             iqEq: 90,
-            isVisible: true
+            isVisible: true,
+            category: "avatar",
+            helperType: null,
+            isPublic: true
         },
         {
-            id: 'p_cpa',
-            name: 'ê³µì¸íšŒê³„ì‚¬',
-            role: 'ê¼¼ê¼¼í•˜ê³  ì •í™•í•œ ì„¸ë¬´/íšŒê³„ ì „ë¬¸ê°€ì…ë‹ˆë‹¤. ë³µì¡í•œ ë¬¸ì œë¥¼ í•´ê²°í•´ë“œë¦½ë‹ˆë‹¤.',
-            model: 'logic',
+            id: "p_cpa",
+            name: "°øÀÎÈ¸°è»ç",
+            role: "¼¼¹«¡¤È¸°è¡¤Àç¹«Á¦Ç¥¸¦ µ½´Â Àü¹® ¾Æ¹ÙÅ¸ÀÔ´Ï´Ù.",
+            model: "logic",
             iqEq: 85,
-            isVisible: true
+            isVisible: true,
+            category: "avatar",
+            helperType: null,
+            isPublic: true
         },
         {
-            id: 'p_star',
-            name: 'ë³„ ì• í˜¸ê°€',
-            role: 'ë°¤í•˜ëŠ˜ì˜ ë³„ì„ ì‚¬ë‘í•˜ëŠ” ë‚­ë§Œê°€ì…ë‹ˆë‹¤. ìš°ì£¼ì™€ ê¿ˆì— ëŒ€í•´ ì´ì•¼ê¸°í•´ìš”.',
-            model: 'creative',
+            id: "p_star",
+            name: "¾÷¹« µµ¿ì¹Ì",
+            role: "ÀÏÁ¤¡¤ÇÒ ÀÏ¡¤ÇÁ·ÎÁ§Æ®¸¦ Á¤¸®ÇÏ°í ¾÷¹«¸¦ °ü¸®ÇØÁÖ´Â ºñ¼­ÀÔ´Ï´Ù.",
+            model: "logic",
+            iqEq: 70,
+            isVisible: true,
+            category: "helper",
+            helperType: "work",
+            isPublic: false
+        },
+        {
+            id: "p_life",
+            name: "»ıÈ° µµ¿ì¹Ì",
+            role: "»ıÈ° ·çÆ¾, °Ç°­, °¨Á¤, °¡°èºÎ¸¦ ÇÔ²² °ü¸®ÇØÁÖ´Â ºñ¼­ÀÔ´Ï´Ù.",
+            model: "emotion",
             iqEq: 60,
-            isVisible: true
-        },
-        {
-            id: 'p_life',
-            name: 'ìˆœìˆ˜ ìƒí™œì¸',
-            role: 'ì†Œì†Œí•œ ì¼ìƒì˜ í–‰ë³µì„ ì¦ê¸°ëŠ” í‰ë²”í•œ ì´ì›ƒì…ë‹ˆë‹¤. í¸ì•ˆí•œ ëŒ€í™”ë¥¼ ë‚˜ëˆ ìš”.',
-            model: 'emotion',
-            iqEq: 50,
-            isVisible: true
+            isVisible: true,
+            category: "helper",
+            helperType: "life",
+            isPublic: false
         }
     ],
     faqs: [
-        { q: 'ì–´ë–¤ ê¸°ëŠ¥ì´ ìˆë‚˜ìš”?', a: '5ê°€ì§€ í˜ë¥´ì†Œë‚˜(ìì•„)ë¥¼ ì „í™˜í•˜ë©° ëŒ€í™”í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.' },
-        { q: 'ì¨ë‹ˆë´‡ì´ ë¬´ì—‡ì¸ê°€ìš”?', a: 'ì´ì „ í”„ë¡œì íŠ¸ì—ì„œ ê°œë°œëœ AI ì•„ë°”íƒ€ ì±—ë´‡ì˜ í•µì‹¬ ë°ì´í„°ë¥¼ ë§ˆì´ê·¸ë ˆì´ì…˜í•œ ë²„ì „ì…ë‹ˆë‹¤.' }
+        { q: "¾î¶² ±â´ÉÀÌ ÀÖ³ª¿ä?", a: "5°¡Áö Æä¸£¼Ò³ª(ÀÚ¾Æ)¸¦ ÀüÈ¯ÇÏ¸ç ´ëÈ­ÇÒ ¼ö ÀÖ½À´Ï´Ù." },
+        { q: "½á´Ïº¿ÀÌ ¹«¾ùÀÎ°¡¿ä?", a: "ÀÌÀü ÇÁ·ÎÁ§Æ®¿¡¼­ °³¹ßµÈ AI ¾Æ¹ÙÅ¸ Ãªº¿ÀÇ ÇÙ½É µ¥ÀÌÅÍ¸¦ ¸¶ÀÌ±×·¹ÀÌ¼ÇÇÑ ¹öÀüÀÔ´Ï´Ù." }
     ]
 };
 
 function createSunnyBot(silent = false) {
-    if (!silent && !confirm('5ê°€ì§€ í˜ë¥´ì†Œë‚˜ë¥¼ ê°€ì§„ "SunnyBot"ì„ ìƒì„±í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+    if (!silent && !confirm('5ê°€ì§€ ?˜ë¥´?Œë‚˜ë¥?ê°€ì§?"SunnyBot"???ì„±?˜ì‹œê² ìŠµ?ˆê¹Œ?')) return;
 
     const id = 'sunny-official'; // Fixed ID for persistence
 
@@ -81,14 +96,14 @@ function createSunnyBot(silent = false) {
     if (typeof MCW !== 'undefined' && MCW.storage) {
         MCW.storage.saveBot(newBot);
         if (!silent) {
-            alert('SunnyBot(5ì¸ê²©)ì´ ì„±ê³µì ìœ¼ë¡œ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤!');
+            alert('SunnyBot(5?¸ê²©)???±ê³µ?ìœ¼ë¡??ì„±?˜ì—ˆ?µë‹ˆ??');
             location.reload();
         } else {
             console.log('SunnyBot auto-created as sample.');
             // Do not reload, let dashboard handle it
         }
     } else {
-        if (!silent) alert('ì˜¤ë¥˜: MCW ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.');
+        if (!silent) alert('?¤ë¥˜: MCW ?¼ì´ë¸ŒëŸ¬ë¦¬ë? ì°¾ì„ ???†ìŠµ?ˆë‹¤.');
     }
 }
 
@@ -111,3 +126,4 @@ function createSunnyBot(silent = false) {
         console.warn('[Migration] SunnyBot auto-create skipped:', e);
     }
 })();
+
