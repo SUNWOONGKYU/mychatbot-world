@@ -1,35 +1,18 @@
 {
-    "rewrites": [
+    "version": 2,
+    "builds": [
         {
-            "source": "/create",
-            "destination": "/pages/create/index.html"
-        },
-        {
-            "source": "/dashboard",
-            "destination": "/pages/home/index.html"
-        },
-        {
-            "source": "/bot/:username",
-            "destination": "/pages/bot/index.html"
+            "src": "package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "."
+            }
         }
     ],
-    "headers": [
+    "routes": [
         {
-            "source": "/api/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "*"
-                },
-                {
-                    "key": "Access-Control-Allow-Methods",
-                    "value": "GET,POST,OPTIONS"
-                },
-                {
-                    "key": "Access-Control-Allow-Headers",
-                    "value": "Content-Type"
-                }
-            ]
+            "src": "/(.*)",
+            "dest": "/$1"
         }
     ]
 }
