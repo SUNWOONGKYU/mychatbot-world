@@ -7,6 +7,6 @@
         "@supabase/supabase-js": "^2.39.0"
     },
     "scripts": {
-        "build": "node scripts/generate-config.js"
+        "build": "node scripts/generate-config.cjs"
     }
 }
