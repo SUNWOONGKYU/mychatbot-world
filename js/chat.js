@@ -272,14 +272,23 @@ function hideTyping() {
 
 // Generate AI response with Fallback Loop (Handling invalid Model IDs)
 async function generateResponse(userText) {
-    const apiKey = localStorage.getItem('mcw_openrouter_key') || "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";
+    const apiKey = localStorage.getItem('mcw_openrouter_key');
+
+    if (!apiKey) {
+        return "[오류] API 키가 설정되지 않았습니다. 관리자에게 문의하거나 브라우저 저장소를 확인해주세요.";
+    }
 
     // Model fallback list (Try absolute latest Google Gemini 2.0/2.5 versions)
+    // AND stable FREE models as deep fallbacks (Llama, DeepSeek, Mistral)
     const modelStack = [
-        "google/gemini-2.0-flash-001", // Stable 2.0 Flash
-        "google/gemini-2.0-pro-exp-02-05", // Latest 2.0 Pro Experimental
-        "google/gemini-2.0-flash-lite-preview-02-05", // Latest Lite
-        "google/gemini-2.0-flash-exp:free" // 2.0 Free Experimental
+        "google/gemini-2.0-flash-001",           // Stable 2.0 Flash (Top Priority)
+        "meta-llama/llama-3.3-70b-instruct:free", // Extremely stable FREE model
+        "deepseek/deepseek-chat:free",            // High-end FREE DeepSeek
+        "google/gemini-2.0-flash-lite-preview-02-05:free", // Gemini Lite Free
+        "mistralai/mistral-small-24b-instruct-2501:free", // Mistral Small Free
+        "google/gemini-2.0-flash-exp:free",       // Gemini 2.0 Free
+        "qwen/qwen-2.5-72b-instruct:free",        // Qwen 2.5 72B Free
+        "openrouter/auto"                         // Final Auto Fallback
     ];
 
     let lastError = "";
@@ -291,7 +300,7 @@ async function generateResponse(userText) {
 
         try {
             const p = currentPersona || chatBotData.personas[0];
-            const systemPrompt = `당신은 ${p.name}입니다. ${p.role}. 항상 한국어로 답변하세요.`;
+            const systemPrompt = `당신은 ${p.name}입니다. ${p.role}. 한글(Korean)로만 답변하세요.`;
 
             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
@@ -307,37 +316,44 @@ async function generateResponse(userText) {
                         { "role": "system", "content": systemPrompt },
                         ...conversationHistory.slice(-10),
                         { "role": "user", "content": userText }
-                    ]
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 1000
                 })
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data.choices && data.choices[0]) {
-                    console.log(`[AI Loop] Success with model: ${currentModel}`);
-                    setAvatarEmotion('happy');
-                    setTimeout(() => setAvatarEmotion('neutral'), 3000);
-                    return data.choices[0].message.content;
-                }
+            const data = await response.json();
+
+            if (response.ok && data.choices && data.choices[0]) {
+                console.log(`[AI Loop] Success with model: ${currentModel}`);
+                setAvatarEmotion('happy');
+                setTimeout(() => setAvatarEmotion('neutral'), 3000);
+                return data.choices[0].message.content;
             }
 
-            const errData = await response.json();
-            lastError = errData.error?.message || response.statusText;
-            console.warn(`[AI Loop] Failed for ${currentModel}: ${lastError}`);
+            // Handle specific OpenRouter errors
+            lastError = data.error?.message || response.statusText;
+            console.warn(`[AI Loop] Error with ${currentModel}: ${lastError}`);
 
-            // If it's a specific "model not found" or "invalid model" error, try next immediately
-            if (lastError.includes("not a valid model") || lastError.includes("No endpoints found")) {
+            // If credit is empty or model busy, continue to next
+            if (lastError.includes("balance") || lastError.includes("No endpoints") || lastError.includes("429") || lastError.includes("overloaded")) {
+                console.log(`[AI Loop] Retrying next model due to: ${lastError.substring(0, 30)}...`);
                 continue;
             }
 
         } catch (error) {
             lastError = error.message;
             console.error(`[AI Loop] Network error for ${currentModel}:`, error);
+            // Wait briefly before next attempt on network issue
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
     }
 
     setAvatarEmotion('sad');
-    return `[AI 오류] 모든 모델 시도에 실패했습니다. (마지막 오류: ${lastError})\nAPI 키 잔액이나 네트워크 상태를 확인해주세요.`;
+    if (lastError.includes("User not found") || lastError.includes("401")) {
+        return `[계정 오류] 사용자를 찾을 수 없거나 API 키가 유효하지 않습니다. (에러: ${lastError})\n새로운 키를 등록해 주세요.`;
+    }
+    return `[AI 오류] 명예를 걸고 8개 모델을 시도했으나 모두 실패했습니다. (마지막 오류: ${lastError})\n페이지를 새로고침(F5) 하거나 잠시 후 다시 시도해 주세요.`;
 }
 
 // === Avatar Control ===
