@@ -4,9 +4,9 @@
  */
 
 const SunnyBotData = {
-    botName: "써니봇 (5인의 자아 통합형)",
-    botDesc: "기존 AI 아바타 프로젝트에서 가져온 5가지 페르소나(자아)가 탑재된 통합 봇입니다.",
-    greeting: "안녕하세요! 써니봇입니다. 5가지 자아를 가지고 있습니다. 원하시는 역할을 선택해주세요!",
+    botName: "써니봇 (분신 아바타 3 + AI 도우미 2)",
+    botDesc: "써니의 분신 아바타 3개와 AI 도우미 2개로 구성된 개인 AI 시스템입니다.",
+    greeting: "안녕하세요! 써니봇입니다. 분신 아바타 3개와 AI 도우미 2개 중에서 지금 쓰고 싶은 역할을 선택해주세요!",
     personas: [
         {
             id: "p_ai",
@@ -126,4 +126,8 @@ function createSunnyBot(silent = false) {
         console.warn('[Migration] SunnyBot auto-create skipped:', e);
     }
 })();
+
+
+
+
 
