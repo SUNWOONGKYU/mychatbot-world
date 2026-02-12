@@ -91,3 +91,23 @@ function createSunnyBot(silent = false) {
         if (!silent) alert('ì˜¤ë¥˜: MCW ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.');
     }
 }
+
+// ÆäÀÌÁö¿¡¼­ migration.js¸¦ ºÒ·¯¿À±â¸¸ ÇØµµ
+// SunnyBot(°ø½Ä º¿)ÀÌ ÇÑ ¹ø ÀÚµ¿ »ý¼ºµÇµµ·Ï ¿¬°áÇØÁØ´Ù.
+(function autoCreateSunnyBotOnce() {
+    if (typeof window === 'undefined') return;
+    if (typeof MCW === 'undefined' || !MCW.storage) return;
+
+    try {
+        const bots = MCW.storage.getBots();
+        const exists = bots.some(b => b.id === 'sunny-official' || b.username === 'sunny');
+
+        // ¾ÆÁ÷ SunnyBotÀÌ ¾øÀ¸¸é Á¶¿ëÈ÷ ÇÑ ¹ø¸¸ »ý¼º
+        if (!exists) {
+            createSunnyBot(true);
+            console.log('[Migration] SunnyBot(official) auto-created from legacy data.');
+        }
+    } catch (e) {
+        console.warn('[Migration] SunnyBot auto-create skipped:', e);
+    }
+})();
