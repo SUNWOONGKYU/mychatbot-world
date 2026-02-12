@@ -1,133 +1,146 @@
-/**
- * Legacy Bot Migration Script
- * Imports the "SunnyBot" from the previous project (ai-chatbot-avatar-project)
+ï»¿/**
+ * SunnyBot Persona Definition (Clean Reset)
+ * - ë¶„ì‹  ì•„ë°”íƒ€ 3ê°œ
+ * - AI ë„ìš°ë¯¸ 2ê°œ
  */
 
 const SunnyBotData = {
-    botName: "½á´Ïº¿ (ºÐ½Å ¾Æ¹ÙÅ¸ 3 + AI µµ¿ì¹Ì 2)",
-    botDesc: "½á´ÏÀÇ ºÐ½Å ¾Æ¹ÙÅ¸ 3°³¿Í AI µµ¿ì¹Ì 2°³·Î ±¸¼ºµÈ °³ÀÎ AI ½Ã½ºÅÛÀÔ´Ï´Ù.",
-    greeting: "¾È³çÇÏ¼¼¿ä! ½á´Ïº¿ÀÔ´Ï´Ù. ºÐ½Å ¾Æ¹ÙÅ¸ 3°³¿Í AI µµ¿ì¹Ì 2°³ Áß¿¡¼­ Áö±Ý ¾²°í ½ÍÀº ¿ªÇÒÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!",
-    personas: [
-        {
-            id: "p_ai",
-            name: "AI Master",
-            role: "½á´ÏÀÇ Àü¹ÝÀûÀÎ AI Àü·«°ú »ç°í¸¦ ´ã´çÇÏ´Â ºÐ½Å ¾Æ¹ÙÅ¸ÀÔ´Ï´Ù.",
-            model: "logic",
-            iqEq: 100,
-            isVisible: true,
-            category: "avatar",
-            helperType: null,
-            isPublic: true
-        },
-        {
-            id: "p_startup",
-            name: "Startup Accelerator",
-            role: "½ºÅ¸Æ®¾÷ »ç¾÷°èÈ¹, ÇÇÄ¡µ¦, ÅõÀÚÀü·«À» µ½´Â ºÐ½Å ¾Æ¹ÙÅ¸ÀÔ´Ï´Ù.",
-            model: "logic",
-            iqEq: 90,
-            isVisible: true,
-            category: "avatar",
-            helperType: null,
-            isPublic: true
-        },
-        {
-            id: "p_cpa",
-            name: "°øÀÎÈ¸°è»ç",
-            role: "¼¼¹«¡¤È¸°è¡¤Àç¹«Á¦Ç¥¸¦ µ½´Â Àü¹® ¾Æ¹ÙÅ¸ÀÔ´Ï´Ù.",
-            model: "logic",
-            iqEq: 85,
-            isVisible: true,
-            category: "avatar",
-            helperType: null,
-            isPublic: true
-        },
-        {
-            id: "p_star",
-            name: "¾÷¹« µµ¿ì¹Ì",
-            role: "ÀÏÁ¤¡¤ÇÒ ÀÏ¡¤ÇÁ·ÎÁ§Æ®¸¦ Á¤¸®ÇÏ°í ¾÷¹«¸¦ °ü¸®ÇØÁÖ´Â ºñ¼­ÀÔ´Ï´Ù.",
-            model: "logic",
-            iqEq: 70,
-            isVisible: true,
-            category: "helper",
-            helperType: "work",
-            isPublic: false
-        },
-        {
-            id: "p_life",
-            name: "»ýÈ° µµ¿ì¹Ì",
-            role: "»ýÈ° ·çÆ¾, °Ç°­, °¨Á¤, °¡°èºÎ¸¦ ÇÔ²² °ü¸®ÇØÁÖ´Â ºñ¼­ÀÔ´Ï´Ù.",
-            model: "emotion",
-            iqEq: 60,
-            isVisible: true,
-            category: "helper",
-            helperType: "life",
-            isPublic: false
-        }
-    ],
-    faqs: [
-        { q: "¾î¶² ±â´ÉÀÌ ÀÖ³ª¿ä?", a: "5°¡Áö Æä¸£¼Ò³ª(ÀÚ¾Æ)¸¦ ÀüÈ¯ÇÏ¸ç ´ëÈ­ÇÒ ¼ö ÀÖ½À´Ï´Ù." },
-        { q: "½á´Ïº¿ÀÌ ¹«¾ùÀÎ°¡¿ä?", a: "ÀÌÀü ÇÁ·ÎÁ§Æ®¿¡¼­ °³¹ßµÈ AI ¾Æ¹ÙÅ¸ Ãªº¿ÀÇ ÇÙ½É µ¥ÀÌÅÍ¸¦ ¸¶ÀÌ±×·¹ÀÌ¼ÇÇÑ ¹öÀüÀÔ´Ï´Ù." }
-    ]
+  botName: 'ì¨ë‹ˆë´‡ (ë¶„ì‹  ì•„ë°”íƒ€ 3 + AI ë„ìš°ë¯¸ 2)',
+  botDesc: 'ì¨ë‹ˆì˜ ë¶„ì‹  ì•„ë°”íƒ€ 3ê°œì™€ AI ë„ìš°ë¯¸ 2ê°œë¡œ êµ¬ì„±ëœ ê°œì¸ AI ì‹œìŠ¤í…œìž…ë‹ˆë‹¤.',
+  greeting: 'ì•ˆë…•í•˜ì„¸ìš”! ì¨ë‹ˆë´‡ìž…ë‹ˆë‹¤. ë¶„ì‹  ì•„ë°”íƒ€ 3ê°œì™€ AI ë„ìš°ë¯¸ 2ê°œ ì¤‘ì—ì„œ ì§€ê¸ˆ ì“°ê³  ì‹¶ì€ ì—­í• ì„ ì„ íƒí•´ì£¼ì„¸ìš”!',
+  personas: [
+    // ë¶„ì‹  ì•„ë°”íƒ€ 3ê°œ
+    {
+      id: 'sunny_avatar_ai',
+      name: 'AI Master',
+      role: 'ì¨ë‹ˆì˜ ì „ë°˜ì ì¸ AI ì „ëžµê³¼ ì‚¬ê³ ë¥¼ ë‹´ë‹¹í•˜ëŠ” ë¶„ì‹  ì•„ë°”íƒ€ìž…ë‹ˆë‹¤.',
+      model: 'logic',
+      iqEq: 100,
+      isVisible: true,
+      category: 'avatar',
+      helperType: null,
+      isPublic: true,
+    },
+    {
+      id: 'sunny_avatar_startup',
+      name: 'Startup Accelerator',
+      role: 'ìŠ¤íƒ€íŠ¸ì—… ì‚¬ì—…ê³„íš, í”¼ì¹˜ë±, íˆ¬ìžì „ëžµì„ ë•ëŠ” ë¶„ì‹  ì•„ë°”íƒ€ìž…ë‹ˆë‹¤.',
+      model: 'logic',
+      iqEq: 90,
+      isVisible: true,
+      category: 'avatar',
+      helperType: null,
+      isPublic: true,
+    },
+    {
+      id: 'sunny_avatar_cpa',
+      name: 'ê³µì¸íšŒê³„ì‚¬',
+      role: 'ì„¸ë¬´Â·íšŒê³„Â·ìž¬ë¬´ì œí‘œë¥¼ ë•ëŠ” ì „ë¬¸ ì•„ë°”íƒ€ìž…ë‹ˆë‹¤.',
+      model: 'logic',
+      iqEq: 85,
+      isVisible: true,
+      category: 'avatar',
+      helperType: null,
+      isPublic: true,
+    },
+    // AI ë„ìš°ë¯¸ 2ê°œ
+    {
+      id: 'sunny_helper_work',
+      name: 'ì—…ë¬´ ë„ìš°ë¯¸',
+      role: 'ì¼ì •Â·í•  ì¼Â·í”„ë¡œì íŠ¸ë¥¼ ì •ë¦¬í•˜ê³  ì—…ë¬´ë¥¼ ê´€ë¦¬í•´ì£¼ëŠ” AI ë„ìš°ë¯¸ìž…ë‹ˆë‹¤.',
+      model: 'logic',
+      iqEq: 70,
+      isVisible: true,
+      category: 'helper',
+      helperType: 'work',
+      isPublic: false,
+    },
+    {
+      id: 'sunny_helper_life',
+      name: 'ìƒí™œ ë„ìš°ë¯¸',
+      role: 'ìƒí™œ ë£¨í‹´, ê±´ê°•, ê°ì •, ê°€ê³„ë¶€ë¥¼ í•¨ê»˜ ê´€ë¦¬í•´ì£¼ëŠ” AI ë„ìš°ë¯¸ìž…ë‹ˆë‹¤.',
+      model: 'emotion',
+      iqEq: 60,
+      isVisible: true,
+      category: 'helper',
+      helperType: 'life',
+      isPublic: false,
+    },
+  ],
+  faqs: [
+    {
+      q: 'ì–´ë–¤ êµ¬ì¡°ë¡œ ë˜ì–´ ìžˆë‚˜ìš”?',
+      a: 'ë¶„ì‹  ì•„ë°”íƒ€ 3ê°œì™€ AI ë„ìš°ë¯¸ 2ê°œë¡œ êµ¬ì„±ë˜ì–´ ìžˆìŠµë‹ˆë‹¤.',
+    },
+    {
+      q: 'ì¨ë‹ˆë´‡ì´ ë¬´ì—‡ì¸ê°€ìš”?',
+      a: 'ì¨ë‹ˆì˜ ì¼ì„ ëŒ€ì‹ í•˜ê³  ë„ì™€ì£¼ëŠ” ë¶„ì‹  ì•„ë°”íƒ€ ì„¸ê³„ìž…ë‹ˆë‹¤.',
+    },
+  ],
 };
 
-function createSunnyBot(silent = false) {
-    if (!silent && !confirm('5ê°€ì§€ ?˜ë¥´?Œë‚˜ë¥?ê°€ì§?"SunnyBot"???ì„±?˜ì‹œê² ìŠµ?ˆê¹Œ?')) return;
-
-    const id = 'sunny-official'; // Fixed ID for persistence
-
-    // Get Owner
-    let ownerId = 'anonymous';
-    if (typeof MCW !== 'undefined' && MCW.user) {
-        const user = MCW.user.getCurrentUser();
-        if (user) ownerId = user.id;
-    }
-
-    const newBot = {
-        ...SunnyBotData,
-        id: id,
-        username: 'sunny', // Fixed username for URL
-        ownerId: ownerId, // Link to User
-        created: Date.now(),
-        templateId: 'custom',
-        likes: 0
-    };
-
-    // Use MCW storage
-    if (typeof MCW !== 'undefined' && MCW.storage) {
-        MCW.storage.saveBot(newBot);
-        if (!silent) {
-            alert('SunnyBot(5?¸ê²©)???±ê³µ?ìœ¼ë¡??ì„±?˜ì—ˆ?µë‹ˆ??');
-            location.reload();
-        } else {
-            console.log('SunnyBot auto-created as sample.');
-            // Do not reload, let dashboard handle it
-        }
-    } else {
-        if (!silent) alert('?¤ë¥˜: MCW ?¼ì´ë¸ŒëŸ¬ë¦¬ë? ì°¾ì„ ???†ìŠµ?ˆë‹¤.');
-    }
+// ì „ì—­ìœ¼ë¡œ ë…¸ì¶œí•´ì„œ ì•„ë¬´ ë°ì„œë‚˜ ì“¸ ìˆ˜ ìžˆê²Œ í•¨
+if (typeof window !== 'undefined') {
+  window.SunnyBotData = SunnyBotData;
 }
 
-// ÆäÀÌÁö¿¡¼­ migration.js¸¦ ºÒ·¯¿À±â¸¸ ÇØµµ
-// SunnyBot(°ø½Ä º¿)ÀÌ ÇÑ ¹ø ÀÚµ¿ »ý¼ºµÇµµ·Ï ¿¬°áÇØÁØ´Ù.
-(function autoCreateSunnyBotOnce() {
-    if (typeof window === 'undefined') return;
-    if (typeof MCW === 'undefined' || !MCW.storage) return;
+/**
+ * SunnyBotë¥¼ MCW.storageì— ì €ìž¥í•˜ëŠ” í•¨ìˆ˜
+ */
+function createSunnyBot(silent = false) {
+  const id = 'sunny-official';
 
-    try {
-        const bots = MCW.storage.getBots();
-        const exists = bots.some(b => b.id === 'sunny-official' || b.username === 'sunny');
+  let ownerId = 'anonymous';
+  if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser) {
+    const user = MCW.user.getCurrentUser();
+    if (user) ownerId = user.id;
+  }
 
-        // ¾ÆÁ÷ SunnyBotÀÌ ¾øÀ¸¸é Á¶¿ëÈ÷ ÇÑ ¹ø¸¸ »ý¼º
-        if (!exists) {
-            createSunnyBot(true);
-            console.log('[Migration] SunnyBot(official) auto-created from legacy data.');
-        }
-    } catch (e) {
-        console.warn('[Migration] SunnyBot auto-create skipped:', e);
+  const newBot = {
+    ...SunnyBotData,
+    id,
+    username: 'sunny',
+    ownerId,
+    created: Date.now(),
+    templateId: 'custom',
+    likes: 0,
+  };
+
+  if (typeof MCW !== 'undefined' && MCW.storage && MCW.storage.saveBot) {
+    MCW.storage.saveBot(newBot);
+    if (!silent && typeof alert !== 'undefined') {
+      alert('SunnyBot(ë¶„ì‹  ì•„ë°”íƒ€ 3 + AI ë„ìš°ë¯¸ 2)ì´ ìƒˆë¡œ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.');
+      if (typeof location !== 'undefined') location.reload();
     }
+  } else if (!silent && typeof alert !== 'undefined') {
+    alert('ì˜¤ë¥˜: MCW.storage ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.');
+  }
+}
+
+// íŽ˜ì´ì§€ ë¡œë“œì‹œ SunnyBotì´ ì—†ìœ¼ë©´ í•œ ë²ˆ ê¸°ë³¸ ìƒì„±
+(function autoInitSunnyBot() {
+  if (typeof window === 'undefined') return;
+  if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots) return;
+
+  try {
+    const bots = MCW.storage.getBots();
+    const existing = bots.find(
+      (b) => b.id === 'sunny-official' || b.username === 'sunny',
+    );
+
+    if (!existing) {
+      MCW.storage.saveBot({
+        ...SunnyBotData,
+        id: 'sunny-official',
+        username: 'sunny',
+        ownerId: 'anonymous',
+        created: Date.now(),
+        templateId: 'custom',
+        likes: 0,
+      });
+      console.log('[SunnyBot] initial bot created in localStorage.');
+    }
+  } catch (e) {
+    console.warn('[SunnyBot] auto initialization skipped:', e);
+  }
 })();
-
-
-
-
-
