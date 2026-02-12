@@ -1,5 +1,6 @@
 # Secrets and Environment
 js/secrets.js
+js/config.js
 .env
 *.local
 .vercel/

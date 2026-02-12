@@ -362,7 +362,7 @@ const MCW = {
 
   // ─── Skills Marketplace Data ───
   skills: [
-    { id: 'stats-dashboard', name: '통계 분석 센터', icon: '📊', category: '분석', description: '일일/주간/월간 대화 통계, 인기 질문 TOP 10', isFree: true, installs: 1234, rating: 4.8 },
+    { id: 'stats-analysis', name: '통계 분석 센터', icon: '📊', category: '분석', description: '일일/주간/월간 대화 통계, 인기 질문 TOP 10', isFree: true, installs: 1234, rating: 4.8 },
     { id: 'sentiment', name: '감정 분석', icon: '😊', category: '분석', description: '사용자 만족도 자동 측정, 긍정/부정 비율', isFree: true, installs: 892, rating: 4.5 },
     { id: 'profanity-filter', name: '욕설 필터', icon: '🛡️', category: '보안', description: '부적절한 질문 차단 및 자동 경고', isFree: true, installs: 2103, rating: 4.9 },
     { id: 'spam-block', name: '스팸 방지', icon: '🚫', category: '보안', description: '반복 질문 차단, IP 차단', isFree: true, installs: 1567, rating: 4.6 },

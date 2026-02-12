@@ -8,14 +8,14 @@ let isBotTyping = false;
 let voiceOutputEnabled = true;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const chatModuleVersion = "9.9.1";
+    const chatModuleVersion = "9.9.2 - SECURITY FIX";
     console.log(`[CRITICAL] Chat Module v${chatModuleVersion} Loaded.`);
 
-    // Safety Alert: If the old key is still here, the user's cache is cursed.
-    if (localStorage.getItem('mcw_openrouter_key')?.startsWith("sk-or-v1-7")) {
-        console.error("COMPROMISED KEY DETECTED IN STORAGE. PURGING.");
+    // 🔑 Force Purge Bad Key
+    const BAD_KEY_HASH = "sk-or-v1-6a0bbf03";
+    if (localStorage.getItem('mcw_openrouter_key')?.includes(BAD_KEY_HASH)) {
+        console.error("COMPROMISED KEY PURGED.");
         localStorage.removeItem('mcw_openrouter_key');
-        alert("기존의 유출된 API 키가 브라우저에 남아있어 강제로 삭제했습니다. 페이지를 다시 새로고침(F5) 해주세요!");
     }
     loadBotData();
     autoResizeInput();
@@ -281,20 +281,9 @@ function hideTyping() {
 
 // Generate AI response with Fallback Loop (Handling invalid Model IDs)
 async function generateResponse(userText) {
-    // HARDCODED VERIFIED FALLBACK KEY
-    const FALLBACK_KEY = "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";
-
-    // 1. Try MCW_SECRETS first
-    let apiKey = (typeof MCW_SECRETS !== 'undefined') ? MCW_SECRETS.OPENROUTER_API_KEY : null;
-
-    // 2. Try localStorage second
+    // 3. Validation
     if (!apiKey) {
-        apiKey = localStorage.getItem('mcw_openrouter_key');
-    }
-
-    // 3. Absolute Fallback to hardcoded key
-    if (!apiKey || apiKey.startsWith("sk-or-v1-7")) {
-        apiKey = FALLBACK_KEY;
+        return "[시스템 오류] API 키가 없습니다. js/secrets.js를 확인하세요.";
     }
 
     apiKey = apiKey.trim();
