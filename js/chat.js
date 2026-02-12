@@ -95,9 +95,10 @@ function loadBotData() {
     setTimeout(() => {
         addMessage('bot', chatBotData.greeting);
     }, 500);
-    // Log conversation start
-    if (chatBotData.id) {
-        MCW.storage.logEvent(chatBotData.id, 'conversation_start');
+    // Sync API Key from secrets if available
+    if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
+        localStorage.setItem('mcw_openrouter_key', MCW_SECRETS.OPENROUTER_API_KEY);
+        console.log("API Key synced from secrets.js");
     }
 }
 
@@ -272,23 +273,29 @@ function hideTyping() {
 
 // Generate AI response with Fallback Loop (Handling invalid Model IDs)
 async function generateResponse(userText) {
-    const apiKey = localStorage.getItem('mcw_openrouter_key');
+    let rawKey = localStorage.getItem('mcw_openrouter_key');
 
-    if (!apiKey) {
-        return "[오류] API 키가 설정되지 않았습니다. 관리자에게 문의하거나 브라우저 저장소를 확인해주세요.";
+    // Hard-fix: Check global scope if localStorage is empty
+    if (!rawKey && typeof MCW_SECRETS !== 'undefined') {
+        rawKey = MCW_SECRETS.OPENROUTER_API_KEY;
     }
 
-    // Model fallback list (Try absolute latest Google Gemini 2.0/2.5 versions)
-    // AND stable FREE models as deep fallbacks (Llama, DeepSeek, Mistral)
+    if (!rawKey) {
+        return "[오류] API 키가 설정되지 않았습니다. js/secrets.js 파일이 정상적으로 로드되었는지 확인해주세요.";
+    }
+
+    const apiKey = rawKey.trim(); // CRITICAL: Remove any invisible spaces
+    console.log(`[AI Debug] Key Length: ${apiKey.length}. Starts with: ${apiKey.substring(0, 10)}...`);
+
+    // Model fallback list (Prioritizing FREE models for zero-credit accounts)
     const modelStack = [
-        "google/gemini-2.0-flash-001",           // Stable 2.0 Flash (Top Priority)
-        "meta-llama/llama-3.3-70b-instruct:free", // Extremely stable FREE model
-        "deepseek/deepseek-chat:free",            // High-end FREE DeepSeek
-        "google/gemini-2.0-flash-lite-preview-02-05:free", // Gemini Lite Free
-        "mistralai/mistral-small-24b-instruct-2501:free", // Mistral Small Free
-        "google/gemini-2.0-flash-exp:free",       // Gemini 2.0 Free
-        "qwen/qwen-2.5-72b-instruct:free",        // Qwen 2.5 72B Free
-        "openrouter/auto"                         // Final Auto Fallback
+        "google/gemini-2.0-flash-exp:free",      // Top Free Priority
+        "meta-llama/llama-3.3-70b-instruct:free", // Extremely stable
+        "deepseek/deepseek-chat:free",            // High-end Free
+        "google/gemini-2.0-flash-lite-preview-02-05:free",
+        "mistralai/mistral-7b-instruct:free",     // Lightweight Free
+        "openrouter/auto",                        // Auto selector
+        "google/gemini-2.0-flash-001"            // Paid/Verified Tier Fallback
     ];
 
     let lastError = "";
@@ -307,8 +314,8 @@ async function generateResponse(userText) {
                 headers: {
                     "Authorization": `Bearer ${apiKey}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.href,
-                    "X-Title": "My Chatbot World Management Hub"
+                    "HTTP-Referer": window.location.origin, // Simplified referer
+                    "X-Title": "My Chatbot World"
                 },
                 body: JSON.stringify({
                     "model": currentModel,
