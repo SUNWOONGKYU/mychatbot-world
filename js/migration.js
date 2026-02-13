@@ -47,7 +47,7 @@ const SunnyBotData = {
     {
       id: 'sunny_helper_work',
       name: 'Claude Messenger',
-      role: '클로드 소대와 연결된 업무 메신저입니다. 발화 내용을 소대 명령으로 전달합니다.',
+      role: '클로드 소대와 연결되어 업무 지시를 전달하고, 처리 결과를 다시 알려주는 AI 메신저입니다.',
       model: 'logic',
       iqEq: 70,
       isVisible: true,
