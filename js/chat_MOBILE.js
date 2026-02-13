@@ -141,23 +141,32 @@ function renderPersonaSelector() {
         .filter(p => p.isVisible !== false)
         .filter(p => isDemo || isOwnerView || p.isPublic !== false);
 
-    container.innerHTML = visiblePersonas
-        .map(p => {
-            const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
-            const isHelper = p.category === 'helper';
-            const typeTagHtml = isHelper
-                ? '<span class="persona-chip-type">AI 도우미</span>'
-                : '';
-            return (
-                '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
-                    '<span class="persona-chip-icon">' + (personaIcons[p.id] || '👤') + '</span>' +
-                    '<span class="persona-chip-name">' + p.name + '</span>' +
-                    typeTagHtml +
-                '</div>'
-            );
-        })
-        .join('');
+    const avatarPersonas = visiblePersonas.filter(p => p.category !== 'helper');
+    const helperPersonas = visiblePersonas.filter(p => p.category === 'helper');
 
+    function renderPersonaRow(list, extraClass) {
+        if (!list.length) return '';
+        return '<div class="persona-row ' + extraClass + '">' +
+            list.map(p => {
+                const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
+                const isHelper = p.category === 'helper';
+                const typeTagHtml = isHelper
+                    ? '<span class="persona-chip-type">AI 도우미</span>'
+                    : '';
+                return (
+                    '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
+                        '<span class="persona-chip-icon">' + (personaIcons[p.id] || '👤') + '</span>' +
+                        '<span class="persona-chip-name">' + p.name + '</span>' +
+                        typeTagHtml +
+                    '</div>'
+                );
+            }).join('') +
+        '</div>';
+    }
+
+    container.innerHTML =
+        renderPersonaRow(avatarPersonas, 'avatar-row') +
+        renderPersonaRow(helperPersonas, 'helper-row');
     container.style.display = visiblePersonas.length ? 'flex' : 'none';
 }
 
