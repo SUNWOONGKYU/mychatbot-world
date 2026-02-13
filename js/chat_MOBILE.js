@@ -192,7 +192,7 @@ function switchPersona(id) {
     }
 
     if (voiceOutputEnabled && typeof speak === 'function') {
-        speak('지금부터 ' + newPersona.name + ' 페르소나로 도와드릴게요.');
+        speak('지금부터 ' + newPersona.name + ' 역할로 도와드릴게요.');
     }
 }
 
