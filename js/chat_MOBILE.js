@@ -112,27 +112,49 @@ function renderPersonaSelector() {
     }
 
     const personaIcons = {
-        sunny_avatar_ai: "🧠",
-        sunny_avatar_startup: "🚀",
-        sunny_avatar_cpa: "📊",
-        sunny_helper_work: "💼",
-        sunny_helper_life: "🏡"
+        // 분신 아바타 3개
+        sunny_avatar_ai: '🧠',
+        sunny_avatar_startup: '🚀',
+        sunny_avatar_cpa: '📊',
+        // AI 도우미 2개
+        sunny_helper_work: '💼',
+        sunny_helper_life: '🏡'
     };
 
-    container.innerHTML = chatBotData.personas
+    // 소유자 뷰인지 (로그인 유저 == 봇 ownerId)
+    let isOwnerView = false;
+    try {
+        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser && chatBotData.ownerId) {
+            const u = MCW.user.getCurrentUser();
+            if (u && u.id === chatBotData.ownerId) {
+                isOwnerView = true;
+            }
+        }
+    } catch (e) {
+        console.warn('[Persona] owner check failed:', e);
+    }
+
+    // 타인에게는 isPublic !== false 인 페르소나만 노출 (helper 는 isPublic:false)
+    const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
+        .filter(p => isOwnerView || p.isPublic !== false);
+
+    container.innerHTML = visiblePersonas
         .map(p => {
             const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
+            const isHelper = p.category === 'helper';
+            const typeTag = isHelper ? 'AI 도우미' : '분신 아바타';
             return (
                 '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
                     '<span class="persona-chip-icon">' + (personaIcons[p.id] || '👤') + '</span>' +
                     '<span class="persona-chip-name">' + p.name + '</span>' +
+                    '<span class="persona-chip-type">' + typeTag + '</span>' +
                 '</div>'
             );
         })
         .join('');
 
-    container.style.display = 'flex';
+    container.style.display = visiblePersonas.length ? 'flex' : 'none';
 }
 
 function switchPersona(id) {
@@ -263,56 +285,89 @@ function hideTyping() {
 async function generateResponse(userText) {
     const start = Date.now();
 
-    // 🔑 SECURITY: Force Purge Known Bad Keys (User not found error fix)
-    const BAD_KEY_HASH = "sk-or-v1-6a0bbf03";
+    // 1차: 서버리스 API (/api/chat) 사용 - 키는 서버에서만 사용됩니다.
+    try {
+        const payload = {
+            message: userText,
+            botConfig: {
+                botName: chatBotData && chatBotData.botName,
+                personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
+                tone: (chatBotData && chatBotData.tone) || '',
+                templateId: (chatBotData && chatBotData.templateId) || '',
+                faqs: (chatBotData && chatBotData.faqs) || []
+            },
+            history: conversationHistory.slice(-10)
+        };
+
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            if (data.reply) {
+                const latency = Date.now() - start;
+                console.log('[AI SUCCESS] /api/chat ' + latency + 'ms');
+                return data.reply;
+            }
+        } else {
+            console.warn('[API] /api/chat failed', res.status);
+        }
+    } catch (e) {
+        console.warn('[API] /api/chat error', e);
+    }
+
+    // 2차: 개발 환경용 직접 OpenRouter 호출 (로컬 secrets/config 있을 때만)
+    const BAD_KEY_HASH = 'sk-or-v1-6a0bbf03';
     let storedKey = localStorage.getItem('mcw_openrouter_key');
 
     if (storedKey && storedKey.includes(BAD_KEY_HASH)) {
-        console.warn("[AI SECURITY] Compomised key detected in storage. PURGING.");
+        console.warn('[AI SECURITY] Compomised key detected in storage. PURGING.');
         localStorage.removeItem('mcw_openrouter_key');
         storedKey = null;
     }
 
-    // Load Priority: 1. Secrets (Fresh) -> 2. Storage (User Custom)
     let API_KEY = null;
     if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
         API_KEY = MCW_SECRETS.OPENROUTER_API_KEY;
-        // Sync fresh key to storage
+        localStorage.setItem('mcw_openrouter_key', API_KEY);
+    } else if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
+        API_KEY = CONFIG.OPENROUTER_API_KEY;
         localStorage.setItem('mcw_openrouter_key', API_KEY);
     } else {
         API_KEY = storedKey;
     }
 
-    // Final Validation
     if (!API_KEY || API_KEY.length < 50 || API_KEY.includes(BAD_KEY_HASH)) {
-        return "[시스템 오류] API 키가 유효하지 않습니다. (원인: User not found / Key Invalid). 캐시를 삭제하고 다시 접속해주세요.";
+        return '[시스템 오류] API 키가 유효하지 않습니다. (원인: User not found / Key Invalid). 캐시를 삭제하고 다시 접속해주세요.';
     }
 
-    // SPEED-FIRST STACK (v10.8 Secure)
     const modelStack = [
-        "google/gemini-2.0-flash-001",
-        "google/gemini-2.0-flash-exp:free",
-        "meta-llama/llama-3.3-70b-instruct",
-        "openrouter/free"
+        'google/gemini-2.0-flash-001',
+        'google/gemini-2.0-flash-exp:free',
+        'meta-llama/llama-3.3-70b-instruct',
+        'openrouter/free'
     ];
 
-    let lastError = "";
+    let lastError = '';
     for (let currentModel of modelStack) {
         try {
-            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
+            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
                 headers: {
-                    "Authorization": `Bearer ${API_KEY}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin,
-                    "X-Title": "MCW_MOBILE_V10.5"
+                    'Authorization': 'Bearer ' + API_KEY,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': 'MCW_MOBILE_V10.5'
                 },
                 body: JSON.stringify({
-                    "model": currentModel,
-                    "messages": [
-                        { "role": "system", "content": "You are a professional assistant. Reply in Korean." },
+                    model: currentModel,
+                    messages: [
+                        { role: 'system', content: 'You are a professional assistant. Reply in Korean.' },
                         ...conversationHistory.slice(-5),
-                        { "role": "user", "content": userText }
+                        { role: 'user', content: userText }
                     ]
                 })
             });
@@ -320,15 +375,15 @@ async function generateResponse(userText) {
             const data = await res.json();
             if (res.ok && data.choices && data.choices[0]) {
                 const latency = Date.now() - start;
-                console.log(`%c[AI SUCCESS] ${currentModel} (${latency}ms)`, "color: #00ff00");
+                console.log('[AI SUCCESS] ' + currentModel + ' (' + latency + 'ms)');
                 return data.choices[0].message.content;
             }
-            lastError = data.error?.message || res.statusText;
+            lastError = (data.error && data.error.message) || res.statusText;
         } catch (e) {
             lastError = e.message;
         }
     }
-    return `[AI 오류] 접속 실패 (${lastError})`;
+    return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
 
 function speak(text) {
