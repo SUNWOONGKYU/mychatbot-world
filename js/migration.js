@@ -43,13 +43,24 @@ const SunnyBotData = {
       helperType: null,
       isPublic: true,
     },
-    // AI 도우미 2개
+    // AI 도우미 3개
     {
       id: 'sunny_helper_work',
+      name: 'Claude Messenger',
+      role: '클로드 소대와 연결된 업무 메신저입니다. 발화 내용을 소대 명령으로 전달합니다.',
+      model: 'logic',
+      iqEq: 70,
+      isVisible: true,
+      category: 'helper',
+      helperType: 'claude',
+      isPublic: false,
+    },
+    {
+      id: 'sunny_helper_work2',
       name: '업무 도우미',
       role: '일정·할 일·프로젝트를 정리하고 업무를 관리해주는 AI 도우미입니다.',
       model: 'logic',
-      iqEq: 70,
+      iqEq: 68,
       isVisible: true,
       category: 'helper',
       helperType: 'work',
@@ -70,7 +81,7 @@ const SunnyBotData = {
   faqs: [
     {
       q: '어떤 구조로 되어 있나요?',
-      a: '분신 아바타 3개와 AI 도우미 2개로 구성되어 있습니다.',
+      a: '분신 아바타 3개와 AI 도우미 3개로 구성되어 있습니다.',
     },
     {
       q: '써니봇이 무엇인가요?',

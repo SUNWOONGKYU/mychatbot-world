@@ -140,8 +140,9 @@ function renderPersonaSelector() {
         sunny_avatar_ai: '🧠',
         sunny_avatar_startup: '🚀',
         sunny_avatar_cpa: '📊',
-        // AI 도우미 2개
-        sunny_helper_work: '💼',
+        // AI 도우미 3개
+        sunny_helper_work: '📨',
+        sunny_helper_work2: '💼',
         sunny_helper_life: '🏡'
     };
     // 소유자 뷰인지 (로그인 유저 == 봇 ownerId)
