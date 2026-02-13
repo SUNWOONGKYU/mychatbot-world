@@ -112,11 +112,11 @@ function renderPersonaSelector() {
     }
 
     const personaIcons = {
-        sunny_avatar_ai: "??",
-        sunny_avatar_startup: "??",
-        sunny_avatar_cpa: "??",
-        sunny_helper_work: "??",
-        sunny_helper_life: "??"
+        sunny_avatar_ai: "🧠",
+        sunny_avatar_startup: "🚀",
+        sunny_avatar_cpa: "📊",
+        sunny_helper_work: "💼",
+        sunny_helper_life: "🏡"
     };
 
     container.innerHTML = chatBotData.personas
@@ -125,7 +125,7 @@ function renderPersonaSelector() {
             const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
             return (
                 '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
-                    '<span class="persona-chip-icon">' + (personaIcons[p.id] || '??') + '</span>' +
+                    '<span class="persona-chip-icon">' + (personaIcons[p.id] || '👤') + '</span>' +
                     '<span class="persona-chip-name">' + p.name + '</span>' +
                 '</div>'
             );
@@ -150,7 +150,7 @@ function switchPersona(id) {
 
     addMessage(
         'system',
-        '? <strong>' + newPersona.name + '</strong> �丣�ҳ��� ��ȯ�Ǿ����ϴ�.<br>' +
+        '✅ <strong>' + newPersona.name + '</strong> 페르소나로 전환되었습니다.<br>' +
         '<span style="font-size:0.7em; opacity:0.7;">' +
         (newPersona.role || '') + ' | ' + (newPersona.model || 'MODEL').toUpperCase() +
         '</span>'
@@ -168,7 +168,7 @@ function switchPersona(id) {
     }
 
     if (voiceOutputEnabled && typeof speak === 'function') {
-        speak('���ݺ��� ' + newPersona.name + ' �丣�ҳ��� ���͵帱�Կ�.');
+        speak('지금부터 ' + newPersona.name + ' 페르소나로 도와드릴게요.');
     }
 }
 
