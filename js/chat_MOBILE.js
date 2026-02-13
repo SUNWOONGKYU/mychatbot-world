@@ -463,3 +463,57 @@ function autoResizeInput() {
         input.style.height = input.scrollHeight + 'px';
     });
 }
+
+// === TTS OVERRIDE: 서버 TTS + 브라우저 TTS 병합 (모바일 음성 복원) ===
+async function speak(text) {
+    if (!voiceOutputEnabled || !text) return;
+
+    // 1차: 서버 TTS (/api/tts) 시도 - 모바일 브라우저 Web Speech 미지원 대비
+    try {
+        const res = await fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, voice: 'alloy', speed: 1.0 })
+        });
+
+        const contentType = res.headers.get('Content-Type') || '';
+        if (res.ok && contentType.includes('audio')) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.play();
+            return; // 서버 TTS 성공 시 여기서 종료
+        }
+
+        // 키 미설정 등으로 JSON 응답이 온 경우, 브라우저 TTS로 폴백
+        let data = null;
+        try {
+            data = await res.json();
+        } catch (e) {
+            // JSON 이 아니면 그냥 무시
+        }
+        if (data && data.useBrowserTTS) {
+            console.log('[TTS] Falling back to browser speech.');
+        } else if (!res.ok) {
+            console.warn('[TTS] /api/tts failed', res.status);
+        }
+    } catch (e) {
+        console.warn('[TTS] /api/tts error', e);
+    }
+
+    // 2차: 브라우저 Web Speech API (PC / 지원 브라우저용)
+    if (!('speechSynthesis' in window)) return;
+
+    try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        u.rate = 1.0;
+        u.pitch = 1.0;
+        u.onend = function () { console.log('Speech ended'); };
+        u.onerror = function (e) { console.error('Speech error:', e); };
+        window.speechSynthesis.speak(u);
+    } catch (e) {
+        console.warn('[TTS] browser speech failed', e);
+    }
+}
