@@ -145,19 +145,19 @@ function createSunnyBot(silent = false) {
   }
 }
 
-// 페이지 로드시 SunnyBot이 없으면 한 번 기본 생성
+// 페이지 로드시 SunnyBot이 없으면 생성, 있으면 페르소나 업데이트
 (function autoInitSunnyBot() {
   if (typeof window === 'undefined') return;
-  if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots) return;
+  if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots || !MCW.storage.saveBot) return;
 
   try {
     const bots = MCW.storage.getBots();
-    const existing = bots.find(
+    const existingIndex = bots.findIndex(
       (b) => b.id === 'sunny-official' || b.username === 'sunny',
     );
 
-    if (!existing) {
-      MCW.storage.saveBot({
+    if (existingIndex === -1) {
+      const initialBot = {
         ...SunnyBotData,
         id: 'sunny-official',
         username: 'sunny',
@@ -165,10 +165,23 @@ function createSunnyBot(silent = false) {
         created: Date.now(),
         templateId: 'custom',
         likes: 0,
-      });
+      };
+      MCW.storage.saveBot(initialBot);
       console.log('[SunnyBot] initial bot created in localStorage.');
+    } else {
+      const existing = bots[existingIndex];
+      const hasClaudeMessenger = existing.personas && existing.personas.some(function (p) { return p.id === 'sunny_helper_work' && p.name === 'Claude Messenger'; });
+      const hasNewWorkHelper = existing.personas && existing.personas.some(function (p) { return p.id === 'sunny_helper_work2'; });
+      const needUpdate = !hasClaudeMessenger || !hasNewWorkHelper;
+
+      if (needUpdate) {
+        const updated = Object.assign({}, existing, { personas: SunnyBotData.personas });
+        MCW.storage.saveBot(updated);
+        console.log('[SunnyBot] personas updated to latest definition.');
+      }
     }
   } catch (e) {
     console.warn('[SunnyBot] auto initialization skipped:', e);
   }
 })();
+
