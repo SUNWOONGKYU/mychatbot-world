@@ -143,12 +143,14 @@ function renderPersonaSelector() {
         .map(p => {
             const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
             const isHelper = p.category === 'helper';
-            const typeTag = isHelper ? 'AI 도우미' : '분신 아바타';
+            const typeTagHtml = isHelper
+                ? '<span class="persona-chip-type">AI 도우미</span>'
+                : '';
             return (
                 '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
                     '<span class="persona-chip-icon">' + (personaIcons[p.id] || '👤') + '</span>' +
                     '<span class="persona-chip-name">' + p.name + '</span>' +
-                    '<span class="persona-chip-type">' + typeTag + '</span>' +
+                    typeTagHtml +
                 '</div>'
             );
         })
