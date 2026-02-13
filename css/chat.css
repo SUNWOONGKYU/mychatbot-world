@@ -662,3 +662,22 @@
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.6);
 }
+
+/* Persona rows: avatars on first line, helpers on second line (mobile-friendly) */
+.persona-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.persona-row.helper-row {
+    margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .persona-selection-container {
+      flex-direction: column;
+      max-width: 100%;
+      overflow-x: visible;
+  }
+}

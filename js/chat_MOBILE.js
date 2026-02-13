@@ -135,9 +135,11 @@ function renderPersonaSelector() {
     }
 
     // 타인에게는 isPublic !== false 인 페르소나만 노출 (helper 는 isPublic:false)
+    const isDemo = chatBotData && (chatBotData.id === 'sunny-demo' || (chatBotData.botName && chatBotData.botName.includes('DEMO')));
+
     const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
-        .filter(p => isOwnerView || p.isPublic !== false);
+        .filter(p => isDemo || isOwnerView || p.isPublic !== false);
 
     container.innerHTML = visiblePersonas
         .map(p => {
