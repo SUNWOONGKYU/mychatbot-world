@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadBotData();
+    renderPersonaSelector();
     autoResizeInput();
 
     // Voice Toggle
@@ -100,6 +101,76 @@ function loadBotData() {
 }
 
 let currentPersona = null;
+
+function renderPersonaSelector() {
+    const container = document.getElementById('personaContainer');
+    if (!container) return;
+
+    if (!chatBotData || !chatBotData.personas || chatBotData.personas.length <= 1) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const personaIcons = {
+        sunny_avatar_ai: "??",
+        sunny_avatar_startup: "??",
+        sunny_avatar_cpa: "??",
+        sunny_helper_work: "??",
+        sunny_helper_life: "??"
+    };
+
+    container.innerHTML = chatBotData.personas
+        .filter(p => p.isVisible !== false)
+        .map(p => {
+            const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
+            return (
+                '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
+                    '<span class="persona-chip-icon">' + (personaIcons[p.id] || '??') + '</span>' +
+                    '<span class="persona-chip-name">' + p.name + '</span>' +
+                '</div>'
+            );
+        })
+        .join('');
+
+    container.style.display = 'flex';
+}
+
+function switchPersona(id) {
+    if (!chatBotData || !chatBotData.personas) return;
+    const newPersona = chatBotData.personas.find(p => String(p.id) === String(id));
+    if (!newPersona || (currentPersona && currentPersona.id === newPersona.id)) return;
+
+    currentPersona = newPersona;
+
+    document.querySelectorAll('.persona-chip').forEach(chip => {
+        const onClick = chip.getAttribute('onclick') || "";
+        const isTarget = onClick.indexOf("'" + id + "'") !== -1;
+        chip.classList.toggle('active', isTarget);
+    });
+
+    addMessage(
+        'system',
+        '? <strong>' + newPersona.name + '</strong> �丣�ҳ��� ��ȯ�Ǿ����ϴ�.<br>' +
+        '<span style="font-size:0.7em; opacity:0.7;">' +
+        (newPersona.role || '') + ' | ' + (newPersona.model || 'MODEL').toUpperCase() +
+        '</span>'
+    );
+
+    const welcomeDescEl = document.getElementById('welcomeDesc');
+    if (welcomeDescEl) welcomeDescEl.textContent = newPersona.role || '';
+
+    if (typeof updateAvatar === 'function') {
+        updateAvatar(newPersona);
+    }
+    if (typeof setAvatarEmotion === 'function') {
+        setAvatarEmotion('happy');
+        setTimeout(() => setAvatarEmotion('neutral'), 1500);
+    }
+
+    if (voiceOutputEnabled && typeof speak === 'function') {
+        speak('���ݺ��� ' + newPersona.name + ' �丣�ҳ��� ���͵帱�Կ�.');
+    }
+}
 
 function renderFaqButtons() {
     const container = document.getElementById('faqButtons');
