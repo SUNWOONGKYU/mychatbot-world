@@ -100,6 +100,53 @@ function loadBotData() {
     }
 }
 
+// === Claude Squad Control API 연동 (소대 컨트롤러) ===
+const CLAUDE_SQUAD_API_BASE =
+    (typeof window !== 'undefined' && window.CLAUDE_SQUAD_API_BASE) ||
+    (typeof MCW !== 'undefined' && MCW.env && MCW.env.CLAUDE_SQUAD_API_BASE) ||
+    'http://localhost:4100';
+
+async function cscGetSquads() {
+    try {
+        const res = await fetch(`${CLAUDE_SQUAD_API_BASE}/api/squads`);
+        if (!res.ok) throw new Error('소대 목록 조회 실패');
+        return await res.json();
+    } catch (e) {
+        console.warn('[CSC] getSquads 실패', e);
+        return [];
+    }
+}
+
+async function cscAddSquadCommand(squadId, text, source = 'chatbot') {
+    try {
+        const res = await fetch(
+            `${CLAUDE_SQUAD_API_BASE}/api/squads/${encodeURIComponent(squadId)}/commands`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, source })
+            }
+        );
+        if (!res.ok) throw new Error('소대 명령 추가 실패');
+        return await res.json();
+    } catch (e) {
+        console.warn('[CSC] addSquadCommand 실패', e);
+        return null;
+    }
+}
+
+async function cscGetPendingCommands(squadId) {
+    try {
+        const res = await fetch(
+            `${CLAUDE_SQUAD_API_BASE}/api/squads/${encodeURIComponent(squadId)}/commands?status=PENDING`
+        );
+        if (!res.ok) throw new Error('소대 명령 조회 실패');
+        return await res.json();
+    } catch (e) {
+        console.warn('[CSC] getPendingCommands 실패', e);
+        return [];
+    }
+}
 let currentPersona = null;
 
 function renderPersonaSelector() {
@@ -135,7 +182,13 @@ function renderPersonaSelector() {
     }
 
     // 타인에게는 isPublic !== false 인 페르소나만 노출 (helper 는 isPublic:false)
-    const isDemo = chatBotData && (chatBotData.id === 'sunny-demo' || (chatBotData.botName && chatBotData.botName.includes('DEMO')));
+    const isSunny = chatBotData && (chatBotData.id === 'sunny-official' || (chatBotData.username && chatBotData.username === 'sunny') || (chatBotData.id && String(chatBotData.id).startsWith('sunny-')));
+
+    const isDemo = chatBotData && (
+        chatBotData.id === 'sunny-demo' ||
+        (chatBotData.botName && chatBotData.botName.includes('DEMO')) ||
+        isSunny
+    );
 
     const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
@@ -185,7 +238,7 @@ function switchPersona(id) {
 
     addMessage(
         'system',
-        '✅ <strong>' + newPersona.name + '</strong> 페르소나로 전환되었습니다.<br>' +
+        '✅ <strong>' + newPersona.name + '</strong> 역할로 전환되었습니다.<br>' +
         '<span style="font-size:0.7em; opacity:0.7;">' +
         (newPersona.role || '') + ' | ' + (newPersona.model || 'MODEL').toUpperCase() +
         '</span>'
@@ -230,6 +283,16 @@ async function sendMessage() {
     showTyping();
 
     conversationHistory.push({ role: 'user', content: text });
+
+    // === Claude Squad Control 연동: 업무 도우미 페르소나일 때 소대 명령으로도 전달 ===
+    try {
+        if (currentPersona && currentPersona.id === 'sunny_helper_work') {
+            cscAddSquadCommand('claude-squad-1', text, 'chatbot-mobile')
+                .catch(e => console.warn('[CSC] 명령 전송 실패', e));
+        }
+    } catch (e) {
+        console.warn('[CSC] 연동 중 예외', e);
+    }
 
     // Safety timeout - if AI doesn't respond in 15s, release lock
     const safetyTimer = setTimeout(() => {
@@ -530,3 +593,4 @@ async function speak(text) {
         console.warn('[TTS] browser speech failed', e);
     }
 }
+

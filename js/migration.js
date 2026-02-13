@@ -84,6 +84,23 @@ if (typeof window !== 'undefined') {
   window.SunnyBotData = SunnyBotData;
 }
 
+
+// 데모용 SunnyBot (5개 페르소나 모두 공개)
+const SunnyDemoBotData = {
+  ...SunnyBotData,
+  botName: '써니봇 DEMO (분신 아바타 3 + AI 도우미 2)',
+  greeting: '안녕하세요! 써니봇 데모입니다. 분신 아바타 3개와 AI 도우미 2개를 모두 체험해보세요!',
+  personas: SunnyBotData.personas.map(p => ({
+    ...p,
+    // 데모에서는 도우미까지 모두 공개
+    isPublic: true
+  }))
+};
+
+if (typeof window !== 'undefined') {
+  window.SunnyDemoBotData = SunnyDemoBotData;
+}
+
 /**
  * SunnyBot를 MCW.storage에 저장하는 함수
  */
