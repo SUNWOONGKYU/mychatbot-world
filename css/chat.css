@@ -682,3 +682,23 @@
       overflow-x: visible;
   }
 }
+
+
+/* Title row + header buttons alignment */
+.chat-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .chat-header-right {
+      position: absolute;
+      top: 10px;
+      right: 16px;
+  }
+
+  .chat-bot-name {
+      padding-right: 60px; /* 버튼 두 개 들어갈 여유 */
+  }
+}
