@@ -1,13 +1,13 @@
 ﻿/**
  * SunnyBot Persona Definition (Clean Reset)
  * - 분신 아바타 3개
- * - AI 도우미 2개
+ * - AI 도우미 3개
  */
 
 const SunnyBotData = {
-  botName: '써니봇 (분신 아바타 3 + AI 도우미 2)',
-  botDesc: '써니의 분신 아바타 3개와 AI 도우미 2개로 구성된 개인 AI 시스템입니다.',
-  greeting: '안녕하세요! 써니봇입니다. 분신 아바타 3개와 AI 도우미 2개 중에서 지금 쓰고 싶은 역할을 선택해주세요!',
+  botName: 'Sunny Bot (분신 아바타 3 + AI 도우미 3)',
+  botDesc: '써니의 분신 아바타 3개와 AI 도우미 3개로 구성된 개인 AI 시스템입니다.',
+  greeting: '안녕하세요! Sunny Bot입니다. 분신 아바타 3개와 AI 도우미 3개 중에서 지금 쓰고 싶은 역할을 선택해주세요!',
   personas: [
     // 분신 아바타 3개
     {
@@ -84,7 +84,7 @@ const SunnyBotData = {
       a: '분신 아바타 3개와 AI 도우미 3개로 구성되어 있습니다.',
     },
     {
-      q: '써니봇이 무엇인가요?',
+      q: 'Sunny Bot이 무엇인가요??',
       a: '써니의 일을 대신하고 도와주는 분신 아바타 세계입니다.',
     },
   ],
@@ -99,8 +99,8 @@ if (typeof window !== 'undefined') {
 // 데모용 SunnyBot (5개 페르소나 모두 공개)
 const SunnyDemoBotData = {
   ...SunnyBotData,
-  botName: '써니봇 DEMO (분신 아바타 3 + AI 도우미 2)',
-  greeting: '안녕하세요! 써니봇 데모입니다. 분신 아바타 3개와 AI 도우미 2개를 모두 체험해보세요!',
+  botName: 'Sunny Bot DEMO (분신 아바타 3 + AI 도우미 3)',
+  greeting: '안녕하세요! Sunny Bot 데모입니다. 분신 아바타 3개와 AI 도우미 3개를 모두 체험해보세요!',
   personas: SunnyBotData.personas.map(p => ({
     ...p,
     // 데모에서는 도우미까지 모두 공개
@@ -137,7 +137,7 @@ function createSunnyBot(silent = false) {
   if (typeof MCW !== 'undefined' && MCW.storage && MCW.storage.saveBot) {
     MCW.storage.saveBot(newBot);
     if (!silent && typeof alert !== 'undefined') {
-      alert('SunnyBot(분신 아바타 3 + AI 도우미 2)이 새로 생성되었습니다.');
+      alert('Sunny Bot(분신 아바타 3 + AI 도우미 3)이 새로 생성되었습니다.');
       if (typeof location !== 'undefined') location.reload();
     }
   } else if (!silent && typeof alert !== 'undefined') {
@@ -184,4 +184,5 @@ function createSunnyBot(silent = false) {
     console.warn('[SunnyBot] auto initialization skipped:', e);
   }
 })();
+
 

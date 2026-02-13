@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이 페이지 - My Chatbot World</title>
+    <title>留덉씠 ?섏씠吏 - My Chatbot World</title>
     <link rel="stylesheet" href="../../css/styles.css?v=3.2">
     <link rel="stylesheet" href="../../css/dashboard.css?v=3.2">
     <style>
@@ -198,19 +198,19 @@
         <!-- Sidebar -->
         <aside class="manage-sidebar">
             <div class="brand-section">
-                🤖 <span>마이 페이지</span>
+                ?쨼 <span>留덉씠 ?섏씠吏</span>
             </div>
 
             <ul class="manage-nav">
-                <li class="manage-nav-item active" onclick="switchTab('profile')">👤 회원 정보 관리</li>
-                <li class="manage-nav-item" onclick="switchTab('bots')">🤖 챗봇 및 운영 관리</li>
-                <li class="manage-nav-item" onclick="switchTab('security')">🔒 계정 보안 설정</li>
+                <li class="manage-nav-item active" onclick="switchTab('profile')">?뫀 ?뚯썝 ?뺣낫 愿由?/li>
+                <li class="manage-nav-item" onclick="switchTab('bots')">?쨼 梨쀫큸 諛??댁쁺 愿由?/li>
+                <li class="manage-nav-item" onclick="switchTab('security')">?뵏 怨꾩젙 蹂댁븞 ?ㅼ젙</li>
             </ul>
 
             <div style="margin-top: auto;">
                 <a href="../../index.html" class="manage-nav-item"
-                    style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">🏠 메인 화면으로 이동</a>
-                <div class="manage-nav-item" onclick="logout()">🔌 로그아웃</div>
+                    style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">?룧 硫붿씤 ?붾㈃?쇰줈 ?대룞</a>
+                <div class="manage-nav-item" onclick="logout()">?뵆 濡쒓렇?꾩썐</div>
             </div>
         </aside>
 
@@ -218,34 +218,34 @@
         <main class="manage-content">
             <!-- Profile Tab -->
             <div id="profile-tab" class="manage-tab-content active">
-                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">회원 정보 관리</h1>
+                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">?뚯썝 ?뺣낫 愿由?/h1>
                 <div class="manage-card">
                     <div class="section-header">
-                        <h2 style="font-size: 1.25rem;">기본 프로필 정보</h2>
+                        <h2 style="font-size: 1.25rem;">湲곕낯 ?꾨줈???뺣낫</h2>
                     </div>
                     <div class="form-row">
-                        <label class="form-label">사용자 ID</label>
+                        <label class="form-label">?ъ슜??ID</label>
                         <div class="form-input-static" id="userIdDisplay">admin</div>
                     </div>
                     <div class="form-row">
-                        <label class="form-label">이름 / 닉네임</label>
+                        <label class="form-label">?대쫫 / ?됰꽕??/label>
                         <input type="text" class="form-control" id="userNameInput" value="Master Admin"
                             style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: white;">
                     </div>
                     <div class="form-row">
-                        <label class="form-label">가입 일자</label>
+                        <label class="form-label">媛???쇱옄</label>
                         <div class="form-input-static" id="userJoinedDisplay">2026.01.15</div>
                     </div>
-                    <button class="btn btn-primary" onclick="updateProfile()">프로필 저장하기</button>
+                    <button class="btn btn-primary" onclick="updateProfile()">?꾨줈????ν븯湲?/button>
                 </div>
             </div>
 
             <!-- Bots Tab -->
             <div id="bots-tab" class="manage-tab-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1 class="hero-title" style="font-size: 2rem; margin: 0; text-align: left;">챗봇 및 운영 관리</h1>
-                    <button class="btn btn-primary btn-sm" onclick="location.href='../create/index.html'">+ 새 챗봇
-                        생성</button>
+                    <h1 class="hero-title" style="font-size: 2rem; margin: 0; text-align: left;">梨쀫큸 諛??댁쁺 愿由?/h1>
+                    <button class="btn btn-primary btn-sm" onclick="location.href='../create/index.html'">+ ??梨쀫큸
+                        ?앹꽦</button>
                 </div>
 
                 <div class="bot-manage-list">
@@ -254,40 +254,40 @@
                         <div
                             style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
                             <div class="bot-entry-info">
-                                <div class="bot-entry-icon">🌞</div>
+                                <div class="bot-entry-icon">?뙙</div>
                                 <div>
-                                    <h3 style="font-size: 1.25rem; font-weight: 700; color: white;">써니봇 (SunnyBot
+                                    <h3 style="font-size: 1.25rem; font-weight: 700; color: white;">?⑤땲遊?(SunnyBot
                                         Official)</h3>
-                                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">5가지 자아 통합형 관리 센터</p>
+                                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">5媛吏 ?먯븘 ?듯빀??愿由??쇳꽣</p>
                                 </div>
                             </div>
                             <button class="btn btn-outline btn-sm"
-                                onclick="location.href='../bot/index.html?id=sunny-official'">현장 모니터링 (대화하기)</button>
+                                onclick="location.href='../bot/index.html?id=sunny-official'">?꾩옣 紐⑤땲?곕쭅 (??뷀븯湲?</button>
                         </div>
 
                         <h4
                             style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
-                            운영 및 관리 도구</h4>
+                            ?댁쁺 諛?愿由??꾧뎄</h4>
                         <div class="action-grid">
                             <div class="quick-action-btn" onclick="openTool('logs')">
-                                <span class="quick-action-icon">📑</span>
-                                <span class="quick-action-label">대화 로그 기록</span>
-                                <span class="quick-action-desc">유저별 실시간 대화 내역 모니터링</span>
+                                <span class="quick-action-icon">?뱫</span>
+                                <span class="quick-action-label">???濡쒓렇 湲곕줉</span>
+                                <span class="quick-action-desc">?좎?蹂??ㅼ떆媛?????댁뿭 紐⑤땲?곕쭅</span>
                             </div>
                             <div class="quick-action-btn" onclick="openTool('data')">
-                                <span class="quick-action-icon">💾</span>
-                                <span class="quick-action-label">지식/데이터 주입</span>
-                                <span class="quick-action-desc">PDF, Web 지식 베이스 학습 관리</span>
+                                <span class="quick-action-icon">?뮶</span>
+                                <span class="quick-action-label">吏???곗씠??二쇱엯</span>
+                                <span class="quick-action-desc">PDF, Web 吏??踰좎씠???숈뒿 愿由?/span>
                             </div>
                             <div class="quick-action-btn" onclick="openTool('skills')">
-                                <span class="quick-action-icon">🧩</span>
-                                <span class="quick-action-label">스킬 투입 관리</span>
-                                <span class="quick-action-desc">기능 플러그인 설치 및 설정</span>
+                                <span class="quick-action-icon">?㎥</span>
+                                <span class="quick-action-label">?ㅽ궗 ?ъ엯 愿由?/span>
+                                <span class="quick-action-desc">湲곕뒫 ?뚮윭洹몄씤 ?ㅼ튂 諛??ㅼ젙</span>
                             </div>
                             <div class="quick-action-btn" onclick="openTool('settings')">
-                                <span class="quick-action-icon">⚙️</span>
-                                <span class="quick-action-label">챗봇 고급 설정</span>
-                                <span class="quick-action-desc">페르소나 정의 및 모델 파라미터 변경</span>
+                                <span class="quick-action-icon">?숋툘</span>
+                                <span class="quick-action-label">梨쀫큸 怨좉툒 ?ㅼ젙</span>
+                                <span class="quick-action-desc">?섎Ⅴ?뚮굹 ?뺤쓽 諛?紐⑤뜽 ?뚮씪誘명꽣 蹂寃?/span>
                             </div>
                         </div>
                     </div>
@@ -296,28 +296,28 @@
 
             <!-- Security Tab -->
             <div id="security-tab" class="manage-tab-content">
-                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">계정 보안 설정</h1>
+                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">怨꾩젙 蹂댁븞 ?ㅼ젙</h1>
                 <div class="manage-card">
                     <div class="section-header">
-                        <h2 style="font-size: 1.25rem;">비밀번호 변경</h2>
+                        <h2 style="font-size: 1.25rem;">鍮꾨?踰덊샇 蹂寃?/h2>
                     </div>
                     <div class="form-row">
-                        <label class="form-label">현재 비밀번호</label>
+                        <label class="form-label">?꾩옱 鍮꾨?踰덊샇</label>
                         <input type="password" class="form-control" id="currentPw"
                             style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: white;">
                     </div>
                     <div class="form-row">
-                        <label class="form-label">새 비밀번호</label>
+                        <label class="form-label">??鍮꾨?踰덊샇</label>
                         <input type="password" class="form-control" id="newPw"
                             style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: white;">
                     </div>
                     <div class="form-row">
-                        <label class="form-label">새 비밀번호 확인</label>
+                        <label class="form-label">??鍮꾨?踰덊샇 ?뺤씤</label>
                         <input type="password" class="form-control" id="newPwConfirm"
                             style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: white;">
                     </div>
                     <button class="btn btn-outline" style="border-color: var(--primary-500); color: var(--primary-400);"
-                        onclick="changePassword()">비밀번호 보안 업데이트</button>
+                        onclick="changePassword()">鍮꾨?踰덊샇 蹂댁븞 ?낅뜲?댄듃</button>
                 </div>
             </div>
         </main>
@@ -356,7 +356,7 @@
             const user = MCW.user.getCurrentUser();
             user.name = document.getElementById('userNameInput').value;
             MCW.user.saveUser(user);
-            MCW.showToast('프로필이 성공적으로 저장되었습니다.');
+            MCW.showToast('?꾨줈?꾩씠 ?깃났?곸쑝濡???λ릺?덉뒿?덈떎.');
         }
 
         function changePassword() {
@@ -364,10 +364,10 @@
             const next = document.getElementById('newPw').value;
             const confirm = document.getElementById('newPwConfirm').value;
 
-            if (!current || !next) return alert('비밀번호를 입력해주세요.');
-            if (next !== confirm) return alert('새 비밀번호가 일치하지 않습니다.');
+            if (!current || !next) return alert('鍮꾨?踰덊샇瑜??낅젰?댁＜?몄슂.');
+            if (next !== confirm) return alert('??鍮꾨?踰덊샇媛 ?쇱튂?섏? ?딆뒿?덈떎.');
 
-            MCW.showToast('비밀번호가 안전하게 변경되었습니다.');
+            MCW.showToast('鍮꾨?踰덊샇媛 ?덉쟾?섍쾶 蹂寃쎈릺?덉뒿?덈떎.');
             document.getElementById('currentPw').value = '';
             document.getElementById('newPw').value = '';
             document.getElementById('newPwConfirm').value = '';
@@ -375,16 +375,16 @@
 
         function openTool(tool) {
             const tools = {
-                logs: '대화 로그 모니터링을 준비 중입니다.',
-                data: '지식 베이스 데이터 주입 시스템을 준비 중입니다.',
-                skills: '스킬 투입 및 관리 센터를 준비 중입니다.',
-                settings: '챗봇 고급 설정을 준비 중입니다.'
+                logs: '???濡쒓렇 紐⑤땲?곕쭅??以鍮?以묒엯?덈떎.',
+                data: '吏??踰좎씠???곗씠??二쇱엯 ?쒖뒪?쒖쓣 以鍮?以묒엯?덈떎.',
+                skills: '?ㅽ궗 ?ъ엯 諛?愿由??쇳꽣瑜?以鍮?以묒엯?덈떎.',
+                settings: '梨쀫큸 怨좉툒 ?ㅼ젙??以鍮?以묒엯?덈떎.'
             };
-            alert(tools[tool] || '기능 준비 중');
+            alert(tools[tool] || '湲곕뒫 以鍮?以?);
         }
 
         function logout() {
-            if (confirm('로그아웃 하시겠습니까?')) {
+            if (confirm('濡쒓렇?꾩썐 ?섏떆寃좎뒿?덇퉴?')) {
                 MCW.user.logout();
                 window.location.href = '../login.html';
             }

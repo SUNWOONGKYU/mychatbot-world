@@ -57,10 +57,10 @@ function loadBotData() {
         }
         if (!chatBotData) {
             chatBotData = {
-                botName: '써니봇 (v10.5)',
+                botName: 'Sunny Bot (v10.5)',
                 username: 'sunny',
                 personality: '당신의 비즈니스 성장을 돕는 AI 파트너입니다.',
-                greeting: '안녕하세요! 모바일에서도 생생한 목소리로 대화하는 v10.5 써니봇입니다.',
+                greeting: '안녕하세요! 모바일에서도 생생한 목소리로 대화하는 v10.5 Sunny Bot입니다.',
                 faqs: []
             };
         }
