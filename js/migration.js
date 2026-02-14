@@ -7,7 +7,7 @@
 const SunnyBotData = {
   botName: 'Sunny Bot (분신 아바타 3 + AI 도우미 3)',
   botDesc: '써니의 분신 아바타 3개와 AI 도우미 3개로 구성된 개인 AI 시스템입니다.',
-  greeting: '안녕하세요! Sunny Bot입니다. 분신 아바타 3개와 AI 도우미 3개 중에서 지금 쓰고 싶은 역할을 선택해주세요!',
+  greeting: '안녕하세요! Sunny Bot입니다. 분신 아바타 3개와 AI 도우미 3개 중에서 필요한 페르소나를 선택해주세요!',
   personas: [
     // 분신 아바타 3개
     {
@@ -146,7 +146,7 @@ function createSunnyBot(silent = false) {
 }
 
 // 버전 기반 강제 리셋: 이 값을 올리면 모든 사용자의 SunnyBot 데이터가 갱신됨
-var SUNNY_DATA_VERSION = 'v12.1';
+var SUNNY_DATA_VERSION = 'v12.5';
 
 // 페이지 로드시 SunnyBot이 없으면 생성, 있으면 버전 체크 후 강제 업데이트
 (function autoInitSunnyBot() {
