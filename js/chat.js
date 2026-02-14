@@ -103,7 +103,7 @@ function loadBotData() {
     document.title = `${chatBotData.botName} - v10.5`;
     renderFaqButtons();
     if (conversationHistory.length === 0) {
-        setTimeout(() => addMessage('bot', chatBotData.greeting), 500);
+        setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
     }
 }
 // === Claude Squad Control API 연동 (소대 컨트롤러) ===
@@ -289,10 +289,14 @@ function addMessage(sender, text) {
     if (!container) return;
     const div = document.createElement('div');
     div.className = `message message-${sender}`;
-    div.innerHTML = `
-        <div class="message-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
-        <div class="message-bubble">${text}</div>
-    `;
+    if (sender === 'system') {
+        div.innerHTML = `<div class="message-bubble">${text}</div>`;
+    } else {
+        div.innerHTML = `
+            <div class="message-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
+            <div class="message-bubble">${text}</div>
+        `;
+    }
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
 }
