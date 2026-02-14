@@ -700,6 +700,6 @@
   }
 
   .chat-bot-name {
-      padding-right: 60px; /* 踰꾪듉 ??媛??ㅼ뼱媛??ъ쑀 */
+      padding-right: 60px; /* prevent overlap with header buttons */
   }
 }

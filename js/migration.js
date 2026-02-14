@@ -145,48 +145,46 @@ function createSunnyBot(silent = false) {
   }
 }
 
-// 페이지 로드시 SunnyBot이 없으면 생성, 있으면 페르소나 업데이트
+// 버전 기반 강제 리셋: 이 값을 올리면 모든 사용자의 SunnyBot 데이터가 갱신됨
+var SUNNY_DATA_VERSION = 'v12.1';
+
+// 페이지 로드시 SunnyBot이 없으면 생성, 있으면 버전 체크 후 강제 업데이트
 (function autoInitSunnyBot() {
   if (typeof window === 'undefined') return;
   if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots || !MCW.storage.saveBot) return;
 
   try {
-    const bots = MCW.storage.getBots();
-    const existingIndex = bots.findIndex(
-      (b) => b.id === 'sunny-official' || b.username === 'sunny',
+    var storedVersion = localStorage.getItem('mcw_sunny_data_version');
+    var bots = MCW.storage.getBots();
+    var existingIndex = bots.findIndex(
+      function(b) { return b.id === 'sunny-official' || b.username === 'sunny'; }
     );
 
     if (existingIndex === -1) {
-      const initialBot = {
-        ...SunnyBotData,
+      var initialBot = Object.assign({}, SunnyBotData, {
         id: 'sunny-official',
         username: 'sunny',
         ownerId: 'anonymous',
         created: Date.now(),
         templateId: 'custom',
         likes: 0,
-      };
+      });
       MCW.storage.saveBot(initialBot);
-      console.log('[SunnyBot] initial bot created in localStorage.');
-    } else {
-      const existing = bots[existingIndex];
-      // v12.0: 인코딩 깨짐 감지 → 전체 데이터 강제 리프레시
-      const hasBrokenEncoding = existing.botName && existing.botName.includes('?�');
-      const hasClaudeMessenger = existing.personas && existing.personas.some(function (p) { return p.id === 'sunny_helper_work' && p.name === 'Claude Messenger'; });
-      const hasNewWorkHelper = existing.personas && existing.personas.some(function (p) { return p.id === 'sunny_helper_work2'; });
-      const needUpdate = hasBrokenEncoding || !hasClaudeMessenger || !hasNewWorkHelper;
-
-      if (needUpdate) {
-        const updated = Object.assign({}, existing, {
-          botName: SunnyBotData.botName,
-          botDesc: SunnyBotData.botDesc,
-          greeting: SunnyBotData.greeting,
-          personas: SunnyBotData.personas,
-          faqs: SunnyBotData.faqs
-        });
-        MCW.storage.saveBot(updated);
-        console.log('[SunnyBot] data refreshed (v12.0).');
-      }
+      localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
+      console.log('[SunnyBot] initial bot created (' + SUNNY_DATA_VERSION + ').');
+    } else if (storedVersion !== SUNNY_DATA_VERSION) {
+      // 버전 불일치 = 무조건 강제 리프레시 (인코딩 깨짐, 데이터 구조 변경 등 모두 대응)
+      var existing = bots[existingIndex];
+      var updated = Object.assign({}, existing, {
+        botName: SunnyBotData.botName,
+        botDesc: SunnyBotData.botDesc,
+        greeting: SunnyBotData.greeting,
+        personas: SunnyBotData.personas,
+        faqs: SunnyBotData.faqs
+      });
+      MCW.storage.saveBot(updated);
+      localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
+      console.log('[SunnyBot] data force-refreshed to ' + SUNNY_DATA_VERSION);
     }
   } catch (e) {
     console.warn('[SunnyBot] auto initialization skipped:', e);
