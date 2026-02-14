@@ -181,26 +181,13 @@ function renderPersonaSelector() {
     const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
         .filter(p => isDemo || isOwnerView || p.isPublic !== false);
-    const avatarPersonas = visiblePersonas.filter(p => p.category !== 'helper');
-    const helperPersonas = visiblePersonas.filter(p => p.category === 'helper');
-    function renderPersonaRow(list, extraClass) {
-        if (!list.length) return '';
-        return '<div class="persona-row ' + extraClass + '">' +
-            list.map(p => {
-                const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
-                const isHelper = p.category === 'helper';
-                const typeTagHtml = '';
-                return (
-                    '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
-                        '<span class="persona-chip-name">' + p.name + '</span>' +
-                    '</div>'
-                );
-            }).join('') +
+    // 플랫 렌더링: PC는 6개 한 줄, 모바일은 3개씩 2줄 (CSS가 처리)
+    container.innerHTML = visiblePersonas.map(p => {
+        const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
+        return '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
+            '<span class="persona-chip-name">' + p.name + '</span>' +
         '</div>';
-    }
-    container.innerHTML =
-        renderPersonaRow(avatarPersonas, 'avatar-row') +
-        renderPersonaRow(helperPersonas, 'helper-row');
+    }).join('');
     container.style.display = visiblePersonas.length ? 'flex' : 'none';
 }
 function switchPersona(id) {
