@@ -376,7 +376,7 @@
 .persona-chip {
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
     padding: 5px 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -384,11 +384,8 @@
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.7rem;
     cursor: pointer;
-    white-space: normal;
-    text-align: center;
-    justify-content: center;
-    flex: 1 1 calc((100% - 16px) / 3);
-    max-width: calc((100% - 16px) / 3);
+    white-space: nowrap;
+    flex: 1 1 0;
     min-width: 0;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
