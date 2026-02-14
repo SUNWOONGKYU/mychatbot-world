@@ -349,10 +349,9 @@
 
 .persona-selection-container {
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
+    flex-direction: column;
+    gap: 4px;
     padding-bottom: 4px;
-    scrollbar-width: none; /* Firefox */
     max-width: calc(100vw - 120px);
 }
 
@@ -363,15 +362,20 @@
 .persona-chip {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
+    gap: 4px;
+    padding: 5px 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-full);
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     cursor: pointer;
-    white-space: nowrap;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+    flex: 1 1 calc((100% - 16px) / 3);
+    max-width: calc((100% - 16px) / 3);
+    min-width: 0;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -665,11 +669,12 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Persona rows: avatars on first line, helpers on second line (mobile-friendly) */
+/* Persona rows: 3 per row, names wrap to 2 lines if needed */
 .persona-row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
+    width: 100%;
 }
 
 .persona-row.helper-row {
@@ -681,6 +686,13 @@
       flex-direction: column;
       max-width: 100%;
       overflow-x: visible;
+  }
+  .persona-chip {
+      font-size: 0.65rem;
+      padding: 4px 6px;
+  }
+  .persona-chip-icon {
+      font-size: 0.8rem;
   }
 }
 

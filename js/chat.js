@@ -36,20 +36,36 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('touchstart', unlockAudio, { once: true });
 });
 function unlockAudio() {
-    if (audioUnlocked || !window.speechSynthesis) return;
-    // Play a silent utterance to unlock mobile audio
-    var dummy = new SpeechSynthesisUtterance(' ');
+    if (audioUnlocked) return;
+    if (!window.speechSynthesis) { audioUnlocked = true; return; }
+    // Speak a real short text to properly unlock mobile audio engine
+    var dummy = new SpeechSynthesisUtterance('.');
     dummy.volume = 0.01;
     dummy.lang = 'ko-KR';
+    dummy.rate = 2;
     window.speechSynthesis.speak(dummy);
+    // Also unlock AudioContext (needed for some mobile browsers)
+    try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) {
+            var ctx = new AC();
+            var buf = ctx.createBuffer(1, 1, 22050);
+            var src = ctx.createBufferSource();
+            src.buffer = buf;
+            src.connect(ctx.destination);
+            src.start(0);
+            ctx.resume();
+        }
+    } catch (e) { /* ignore */ }
     audioUnlocked = true;
-    // Pre-load voice list (async on some browsers)
-    if (window.speechSynthesis.getVoices().length === 0) {
+    // Pre-load voice list
+    window.speechSynthesis.getVoices();
+    if (typeof window.speechSynthesis.addEventListener === 'function') {
         window.speechSynthesis.addEventListener('voiceschanged', function () {
-            console.log('[Mobile] Voices loaded:', window.speechSynthesis.getVoices().length);
+            console.log('[TTS] Voices loaded:', window.speechSynthesis.getVoices().length);
         }, { once: true });
     }
-    console.log('[Mobile] Audio Engine Unlocked');
+    console.log('[TTS] Audio Engine Unlocked');
 }
 function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -404,46 +420,33 @@ async function generateResponse(userText) {
     }
     return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
-// Mobile TTS resume interval (Chrome bug: long utterances stop mid-way)
-let _ttsResumeInterval = null;
 function speak(text) {
     if (!voiceOutputEnabled || !window.speechSynthesis) return;
     // Strip HTML tags for clean speech
-    const clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
-    // Cancel previous and clear resume timer
-    window.speechSynthesis.cancel();
-    if (_ttsResumeInterval) { clearInterval(_ttsResumeInterval); _ttsResumeInterval = null; }
-    // Delay after cancel() - Chrome mobile ignores speak() immediately after cancel()
-    setTimeout(function () {
-        var u = new SpeechSynthesisUtterance(clean);
-        u.lang = 'ko-KR';
-        u.rate = 1.0;
-        u.pitch = 1.0;
-        // Try to find Korean voice explicitly
-        var voices = window.speechSynthesis.getVoices();
-        var koVoice = voices.find(function (v) { return v.lang === 'ko-KR'; })
-            || voices.find(function (v) { return v.lang.startsWith('ko'); });
-        if (koVoice) u.voice = koVoice;
-        u.onend = function () {
-            if (_ttsResumeInterval) { clearInterval(_ttsResumeInterval); _ttsResumeInterval = null; }
-            console.log('[TTS] Speech ended');
-        };
-        u.onerror = function (e) {
-            if (_ttsResumeInterval) { clearInterval(_ttsResumeInterval); _ttsResumeInterval = null; }
-            console.error('[TTS] Speech error:', e);
-        };
-        window.speechSynthesis.speak(u);
-        // Chrome mobile bug: speech pauses after ~15s. Periodic resume() keeps it alive.
-        _ttsResumeInterval = setInterval(function () {
-            if (!window.speechSynthesis.speaking) {
-                clearInterval(_ttsResumeInterval);
-                _ttsResumeInterval = null;
-            } else {
-                window.speechSynthesis.resume();
-            }
-        }, 5000);
-    }, 100);
+    // Truncate long text (mobile TTS chokes on long strings)
+    if (clean.length > 300) clean = clean.substring(0, 300);
+    // NO cancel() - it kills TTS engine on mobile Chrome/Safari
+    var u = new SpeechSynthesisUtterance(clean);
+    u.lang = 'ko-KR';
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    // Select Korean voice if available
+    var voices = window.speechSynthesis.getVoices();
+    var koVoice = voices.find(function (v) { return v.lang === 'ko-KR'; })
+        || voices.find(function (v) { return v.lang.startsWith('ko'); });
+    if (koVoice) u.voice = koVoice;
+    u.onend = function () { console.log('[TTS] ended'); };
+    u.onerror = function (e) { console.warn('[TTS] error:', e.error); };
+    // Speak directly - NO setTimeout (preserves user gesture context)
+    window.speechSynthesis.speak(u);
+    // Chrome mobile: periodic resume() prevents pause after ~15s
+    var ri = setInterval(function () {
+        if (!window.speechSynthesis.speaking) { clearInterval(ri); }
+        else { window.speechSynthesis.resume(); }
+    }, 5000);
+    u.onend = function () { clearInterval(ri); };
 }
 // STT
 let chatRecognition = null;
