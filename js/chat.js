@@ -38,11 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
 function unlockAudio() {
     if (audioUnlocked || !window.speechSynthesis) return;
     // Play a silent utterance to unlock mobile audio
-    const dummy = new SpeechSynthesisUtterance('');
-    dummy.volume = 0;
+    var dummy = new SpeechSynthesisUtterance(' ');
+    dummy.volume = 0.01;
+    dummy.lang = 'ko-KR';
     window.speechSynthesis.speak(dummy);
     audioUnlocked = true;
-    console.log("[Mobile] Audio Engine Unlocked");
+    // Pre-load voice list (async on some browsers)
+    if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.addEventListener('voiceschanged', function () {
+            console.log('[Mobile] Voices loaded:', window.speechSynthesis.getVoices().length);
+        }, { once: true });
+    }
+    console.log('[Mobile] Audio Engine Unlocked');
 }
 function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -397,18 +404,46 @@ async function generateResponse(userText) {
     }
     return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
+// Mobile TTS resume interval (Chrome bug: long utterances stop mid-way)
+let _ttsResumeInterval = null;
 function speak(text) {
     if (!voiceOutputEnabled || !window.speechSynthesis) return;
-    // Cancel previous
+    // Strip HTML tags for clean speech
+    const clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    if (!clean) return;
+    // Cancel previous and clear resume timer
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ko-KR';
-    u.rate = 1.0;
-    u.pitch = 1.0;
-    // Mobile Chrome weirdness fix
-    u.onend = function () { console.log('Speech ended'); };
-    u.onerror = function (e) { console.error('Speech error:', e); };
-    window.speechSynthesis.speak(u);
+    if (_ttsResumeInterval) { clearInterval(_ttsResumeInterval); _ttsResumeInterval = null; }
+    // Delay after cancel() - Chrome mobile ignores speak() immediately after cancel()
+    setTimeout(function () {
+        var u = new SpeechSynthesisUtterance(clean);
+        u.lang = 'ko-KR';
+        u.rate = 1.0;
+        u.pitch = 1.0;
+        // Try to find Korean voice explicitly
+        var voices = window.speechSynthesis.getVoices();
+        var koVoice = voices.find(function (v) { return v.lang === 'ko-KR'; })
+            || voices.find(function (v) { return v.lang.startsWith('ko'); });
+        if (koVoice) u.voice = koVoice;
+        u.onend = function () {
+            if (_ttsResumeInterval) { clearInterval(_ttsResumeInterval); _ttsResumeInterval = null; }
+            console.log('[TTS] Speech ended');
+        };
+        u.onerror = function (e) {
+            if (_ttsResumeInterval) { clearInterval(_ttsResumeInterval); _ttsResumeInterval = null; }
+            console.error('[TTS] Speech error:', e);
+        };
+        window.speechSynthesis.speak(u);
+        // Chrome mobile bug: speech pauses after ~15s. Periodic resume() keeps it alive.
+        _ttsResumeInterval = setInterval(function () {
+            if (!window.speechSynthesis.speaking) {
+                clearInterval(_ttsResumeInterval);
+                _ttsResumeInterval = null;
+            } else {
+                window.speechSynthesis.resume();
+            }
+        }, 5000);
+    }, 100);
 }
 // STT
 let chatRecognition = null;
