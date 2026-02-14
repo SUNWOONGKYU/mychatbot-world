@@ -7,11 +7,13 @@ let chatBotData = null;
 let conversationHistory = [];
 let isBotTyping = false;
 let voiceOutputEnabled = true;
-// Mobile Audio Unlocker
-let audioUnlocked = false;
+// Mobile Audio: 전역 Audio 요소 (사용자 제스처로 unlock 후 재사용)
+var _ttsPlayer = new Audio();
+var _ttsUnlocked = false;
+// 대기 중인 TTS 텍스트 (API 응답 후 재생할 내용)
+var _ttsPending = null;
 document.addEventListener('DOMContentLoaded', () => {
     console.log("%c[AI SHIELD] v10.9 SECURITY PATCH LOADED (Cache Bypassed)", "color: #ff00ff; font-weight: bold; font-size: 16px;");
-    // Safety: Purge legacy keys
     const storedKey = localStorage.getItem('mcw_openrouter_key');
     if (storedKey && storedKey.startsWith("sk-or-v1-7")) {
         localStorage.removeItem('mcw_openrouter_key');
@@ -22,50 +24,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Voice Toggle
     const voiceBtn = document.getElementById('voiceToggle');
     if (voiceBtn) {
-        voiceBtn.textContent = '🔊'; // Default ON
+        voiceBtn.textContent = '🔊';
         voiceBtn.addEventListener('click', () => {
             voiceOutputEnabled = !voiceOutputEnabled;
             voiceBtn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
-            if (!voiceOutputEnabled) window.speechSynthesis?.cancel();
-            // Unlock on toggle attempt too
-            if (voiceOutputEnabled) unlockAudio();
+            if (!voiceOutputEnabled) { _ttsPlayer.pause(); }
         });
     }
-    // Unlock audio on any interaction
-    document.body.addEventListener('click', unlockAudio, { once: true });
-    document.body.addEventListener('touchstart', unlockAudio, { once: true });
 });
-function unlockAudio() {
-    if (audioUnlocked) return;
-    if (!window.speechSynthesis) { audioUnlocked = true; return; }
-    // Speak a real short text to properly unlock mobile audio engine
-    var dummy = new SpeechSynthesisUtterance('.');
-    dummy.volume = 0.01;
-    dummy.lang = 'ko-KR';
-    dummy.rate = 2;
-    window.speechSynthesis.speak(dummy);
-    // Also unlock AudioContext (needed for some mobile browsers)
-    try {
-        var AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) {
-            var ctx = new AC();
-            var buf = ctx.createBuffer(1, 1, 22050);
-            var src = ctx.createBufferSource();
-            src.buffer = buf;
-            src.connect(ctx.destination);
-            src.start(0);
-            ctx.resume();
-        }
-    } catch (e) { /* ignore */ }
-    audioUnlocked = true;
-    // Pre-load voice list
-    window.speechSynthesis.getVoices();
-    if (typeof window.speechSynthesis.addEventListener === 'function') {
-        window.speechSynthesis.addEventListener('voiceschanged', function () {
-            console.log('[TTS] Voices loaded:', window.speechSynthesis.getVoices().length);
-        }, { once: true });
-    }
-    console.log('[TTS] Audio Engine Unlocked');
+// 사용자 제스처 시점에 Audio 요소를 unlock (전송 버튼, 터치 등에서 호출)
+function unlockTTS() {
+    if (_ttsUnlocked) return;
+    // 짧은 무음 MP3 data URI로 Audio 요소 unlock
+    _ttsPlayer.src = 'data:audio/mpeg;base64,/+NIxAAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+    _ttsPlayer.volume = 0.01;
+    _ttsPlayer.play().then(function () {
+        _ttsUnlocked = true;
+        console.log('[TTS] Audio player unlocked');
+    }).catch(function (e) {
+        console.warn('[TTS] Unlock failed:', e.message);
+    });
 }
 function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -228,7 +206,8 @@ function renderFaqButtons() {
     ).join('');
 }
 async function sendMessage() {
-    unlockAudio(); // Critical for mobile
+    // 사용자 제스처 시점에 Audio unlock (이 시점이어야 모바일에서 작동)
+    unlockTTS();
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text || isBotTyping) return;
@@ -262,7 +241,7 @@ async function sendMessage() {
     if (voiceOutputEnabled) speak(response);
 }
 function askFaq(q, a) {
-    unlockAudio();
+    unlockTTS();
     addMessage('user', q);
     showTyping();
     setTimeout(() => {
@@ -400,47 +379,34 @@ async function generateResponse(userText) {
     }
     return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
-// TTS: Google Translate Audio (모바일 호환) + SpeechSynthesis 폴백
-var _ttsAudio = null;
+// TTS: unlock된 _ttsPlayer에 Google Translate TTS src를 넣어서 재생
 function speak(text) {
     if (!voiceOutputEnabled) return;
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
     if (clean.length > 200) clean = clean.substring(0, 200);
-    // 이전 재생 중지
-    if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
-    // 1차: Google Translate TTS (모바일에서 확실히 작동)
-    try {
-        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
-        _ttsAudio = new Audio(url);
-        _ttsAudio.playbackRate = 1.0;
-        _ttsAudio.play().then(function () {
-            console.log('[TTS] Google Audio playing');
-        }).catch(function (e) {
-            console.warn('[TTS] Google Audio failed:', e.message);
-            _speakFallback(clean);
-        });
-    } catch (e) {
-        console.warn('[TTS] Google Audio error:', e);
-        _speakFallback(clean);
-    }
-}
-function _speakFallback(clean) {
-    // 2차 폴백: SpeechSynthesis API
-    if (!window.speechSynthesis) return;
-    var u = new SpeechSynthesisUtterance(clean);
-    u.lang = 'ko-KR';
-    u.rate = 1.0;
-    var voices = window.speechSynthesis.getVoices();
-    var koVoice = voices.find(function (v) { return v.lang === 'ko-KR'; })
-        || voices.find(function (v) { return v.lang.startsWith('ko'); });
-    if (koVoice) u.voice = koVoice;
-    window.speechSynthesis.speak(u);
+    var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
+    // unlock된 동일 Audio 요소에 src만 교체하여 재생
+    _ttsPlayer.pause();
+    _ttsPlayer.currentTime = 0;
+    _ttsPlayer.src = url;
+    _ttsPlayer.volume = 1.0;
+    _ttsPlayer.play().then(function () {
+        console.log('[TTS] Playing');
+    }).catch(function (e) {
+        console.warn('[TTS] Play failed:', e.message);
+        // 폴백: SpeechSynthesis
+        if (window.speechSynthesis) {
+            var u = new SpeechSynthesisUtterance(clean);
+            u.lang = 'ko-KR';
+            window.speechSynthesis.speak(u);
+        }
+    });
 }
 // STT
 let chatRecognition = null;
 function toggleChatVoice() {
-    unlockAudio(); // Unlock audio context when using STT too
+    unlockTTS(); // Unlock audio context when using STT too
     const btn = document.getElementById('chatVoiceBtn');
     if (chatRecognition) {
         chatRecognition.stop();
