@@ -400,33 +400,42 @@ async function generateResponse(userText) {
     }
     return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
+// TTS: Google Translate Audio (모바일 호환) + SpeechSynthesis 폴백
+var _ttsAudio = null;
 function speak(text) {
-    if (!voiceOutputEnabled || !window.speechSynthesis) return;
-    // Strip HTML tags for clean speech
+    if (!voiceOutputEnabled) return;
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
-    // Truncate long text (mobile TTS chokes on long strings)
-    if (clean.length > 300) clean = clean.substring(0, 300);
-    // NO cancel() - it kills TTS engine on mobile Chrome/Safari
+    if (clean.length > 200) clean = clean.substring(0, 200);
+    // 이전 재생 중지
+    if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
+    // 1차: Google Translate TTS (모바일에서 확실히 작동)
+    try {
+        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
+        _ttsAudio = new Audio(url);
+        _ttsAudio.playbackRate = 1.0;
+        _ttsAudio.play().then(function () {
+            console.log('[TTS] Google Audio playing');
+        }).catch(function (e) {
+            console.warn('[TTS] Google Audio failed:', e.message);
+            _speakFallback(clean);
+        });
+    } catch (e) {
+        console.warn('[TTS] Google Audio error:', e);
+        _speakFallback(clean);
+    }
+}
+function _speakFallback(clean) {
+    // 2차 폴백: SpeechSynthesis API
+    if (!window.speechSynthesis) return;
     var u = new SpeechSynthesisUtterance(clean);
     u.lang = 'ko-KR';
     u.rate = 1.0;
-    u.pitch = 1.0;
-    // Select Korean voice if available
     var voices = window.speechSynthesis.getVoices();
     var koVoice = voices.find(function (v) { return v.lang === 'ko-KR'; })
         || voices.find(function (v) { return v.lang.startsWith('ko'); });
     if (koVoice) u.voice = koVoice;
-    u.onend = function () { console.log('[TTS] ended'); };
-    u.onerror = function (e) { console.warn('[TTS] error:', e.error); };
-    // Speak directly - NO setTimeout (preserves user gesture context)
     window.speechSynthesis.speak(u);
-    // Chrome mobile: periodic resume() prevents pause after ~15s
-    var ri = setInterval(function () {
-        if (!window.speechSynthesis.speaking) { clearInterval(ri); }
-        else { window.speechSynthesis.resume(); }
-    }, 5000);
-    u.onend = function () { clearInterval(ri); };
 }
 // STT
 let chatRecognition = null;
