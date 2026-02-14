@@ -1,174 +1,226 @@
-/**
+﻿/**
  * @task S2F3
- * Chat Interface JavaScript
+ * Chat Interface JavaScript - v10.5 MOBILE VOICE FIXED
+ * Includes "Audio Context Unlock" for mobile browsers.
  */
 let chatBotData = null;
 let conversationHistory = [];
 let isBotTyping = false;
 let voiceOutputEnabled = true;
-
+// Mobile Audio Unlocker
+let audioUnlocked = false;
 document.addEventListener('DOMContentLoaded', () => {
-    const chatModuleVersion = "9.9.2 - SECURITY FIX";
-    console.log(`[CRITICAL] Chat Module v${chatModuleVersion} Loaded.`);
-
-    // ?�� Force Purge Bad Key
-    const BAD_KEY_HASH = "sk-or-v1-6a0bbf03";
-    if (localStorage.getItem('mcw_openrouter_key')?.includes(BAD_KEY_HASH)) {
-        console.error("COMPROMISED KEY PURGED.");
+    console.log("%c[AI SHIELD] v10.9 SECURITY PATCH LOADED (Cache Bypassed)", "color: #ff00ff; font-weight: bold; font-size: 16px;");
+    // Safety: Purge legacy keys
+    const storedKey = localStorage.getItem('mcw_openrouter_key');
+    if (storedKey && storedKey.startsWith("sk-or-v1-7")) {
         localStorage.removeItem('mcw_openrouter_key');
     }
     loadBotData();
+    renderPersonaSelector();
     autoResizeInput();
+    // Voice Toggle
+    const voiceBtn = document.getElementById('voiceToggle');
+    if (voiceBtn) {
+        voiceBtn.textContent = '🔊'; // Default ON
+        voiceBtn.addEventListener('click', () => {
+            voiceOutputEnabled = !voiceOutputEnabled;
+            voiceBtn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
+            if (!voiceOutputEnabled) window.speechSynthesis?.cancel();
+            // Unlock on toggle attempt too
+            if (voiceOutputEnabled) unlockAudio();
+        });
+    }
+    // Unlock audio on any interaction
+    document.body.addEventListener('click', unlockAudio, { once: true });
+    document.body.addEventListener('touchstart', unlockAudio, { once: true });
 });
-
-// Load bot data from URL
-// Load bot data from URL
+function unlockAudio() {
+    if (audioUnlocked || !window.speechSynthesis) return;
+    // Play a silent utterance to unlock mobile audio
+    const dummy = new SpeechSynthesisUtterance('');
+    dummy.volume = 0;
+    window.speechSynthesis.speak(dummy);
+    audioUnlocked = true;
+    console.log("[Mobile] Audio Engine Unlocked");
+}
 function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
     const idParam = urlParams.get('id');
-    const userParam = urlParams.get('user');
-    const personaParam = urlParams.get('persona');
-
-    // Load from localStorage
     const bots = MCW.storage.getBots();
-
     if (idParam) {
         chatBotData = bots.find(b => b.id === idParam);
-    } else if (userParam) {
-        chatBotData = bots.find(b => b.username === userParam);
-    } else {
-        const path = window.location.pathname;
-        const username = path.split('/bot/')[1];
-        if (username) chatBotData = bots.find(b => b.username === username);
     }
-
     if (!chatBotData) {
-        // Check if ID is SunnyBot Official and data is available
         if ((idParam === 'sunny-official' || idParam?.startsWith('sunny-')) && typeof SunnyBotData !== 'undefined') {
             chatBotData = { ...SunnyBotData, id: idParam || 'sunny-official' };
         }
-
         if (!chatBotData) {
-            // Demo bot fallback
             chatBotData = {
-                botName: '?�니�?(Demo)',
-                username: username || 'demo',
-                templateId: 'ceo',
-                personality: '친절?�고 ?�문?�인 AI 비서',
-                greeting: '?�녕?�세?? ?�니봇입?�다. 무엇?�든 ?��??�리겠습?�다! ?��',
-                faqs: [
-                    { q: '?�떤 ?�비?��? ?�공?�나??', a: '?�양??AI 챗봇 ?�비?��? ?�공?�니??' },
-                    { q: '가격이 ?�떻�??�나??', a: '무료 ?�랜부???�작?????�습?�다.' },
-                    { q: '문의???�떻�??�나??', a: '??채팅???�해 ?�하�?문의?�주?�요!' }
-                ]
+                botName: 'Sunny Bot (v10.5)',
+                username: 'sunny',
+                personality: '당신의 비즈니스 성장을 돕는 AI 파트너입니다.',
+                greeting: '안녕하세요! 모바일에서도 생생한 목소리로 대화하는 v10.5 Sunny Bot입니다.',
+                faqs: []
             };
         }
     }
-
-    // Persona Setup
     if (!chatBotData.personas || chatBotData.personas.length === 0) {
         chatBotData.personas = [{
             id: 'default',
             name: chatBotData.botName,
             role: chatBotData.personality || 'AI Assistant',
             model: 'logic',
-            iqEq: 50,
             isVisible: true
         }];
     }
-    const initialPersona = personaParam
-        ? chatBotData.personas.find(p => p.id === personaParam)
-        : chatBotData.personas[0];
-
-    currentPersona = initialPersona || chatBotData.personas[0];
-    renderPersonaSelector();
-
-    // Avatar Setup
-    const avatarStage = document.getElementById('avatarStage');
-    if (chatBotData.personas && chatBotData.personas.length > 0) {
-        if (avatarStage) avatarStage.style.display = 'flex';
-        updateAvatar(currentPersona);
-    }
-
-    // Update UI
-    document.getElementById('chatBotName').textContent = chatBotData.botName;
-    document.title = `${chatBotData.botName} - My Chatbot World`;
-    document.getElementById('welcomeTitle').textContent = chatBotData.botName;
-    document.getElementById('welcomeDesc').textContent = currentPersona.role;
-
-    // Render FAQ buttons
+    currentPersona = chatBotData.personas[0];
+    const nameEl = document.getElementById('chatBotName');
+    if (nameEl) nameEl.textContent = chatBotData.botName;
+    document.title = `${chatBotData.botName} - v10.5`;
     renderFaqButtons();
-
-    // Send greeting
-    setTimeout(() => {
-        addMessage('bot', chatBotData.greeting);
-    }, 500);
-    // Sync API Key from Config or Secrets
-    if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
-        localStorage.setItem('mcw_openrouter_key', CONFIG.OPENROUTER_API_KEY);
-        console.log("API Key synced from config.js");
-    } else if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
-        localStorage.setItem('mcw_openrouter_key', MCW_SECRETS.OPENROUTER_API_KEY);
-        console.log("API Key synced from secrets.js");
+    if (conversationHistory.length === 0) {
+        setTimeout(() => addMessage('bot', chatBotData.greeting), 500);
     }
 }
-
+// === Claude Squad Control API 연동 (소대 컨트롤러) ===
+const CLAUDE_SQUAD_API_BASE =
+    (typeof window !== 'undefined' && window.CLAUDE_SQUAD_API_BASE) ||
+    (typeof MCW !== 'undefined' && MCW.env && MCW.env.CLAUDE_SQUAD_API_BASE) ||
+    'http://localhost:4100';
+async function cscGetSquads() {
+    try {
+        const res = await fetch(`${CLAUDE_SQUAD_API_BASE}/api/squads`);
+        if (!res.ok) throw new Error('소대 목록 조회 실패');
+        return await res.json();
+    } catch (e) {
+        console.warn('[CSC] getSquads 실패', e);
+        return [];
+    }
+}
+async function cscAddSquadCommand(squadId, text, source = 'chatbot') {
+    try {
+        const res = await fetch(
+            `${CLAUDE_SQUAD_API_BASE}/api/squads/${encodeURIComponent(squadId)}/commands`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, source })
+            }
+        );
+        if (!res.ok) throw new Error('소대 명령 추가 실패');
+        return await res.json();
+    } catch (e) {
+        console.warn('[CSC] addSquadCommand 실패', e);
+        return null;
+    }
+}
+async function cscGetPendingCommands(squadId) {
+    try {
+        const res = await fetch(
+            `${CLAUDE_SQUAD_API_BASE}/api/squads/${encodeURIComponent(squadId)}/commands?status=PENDING`
+        );
+        if (!res.ok) throw new Error('소대 명령 조회 실패');
+        return await res.json();
+    } catch (e) {
+        console.warn('[CSC] getPendingCommands 실패', e);
+        return [];
+    }
+}
 let currentPersona = null;
-
 function renderPersonaSelector() {
     const container = document.getElementById('personaContainer');
     if (!container) return;
-
-    if (!chatBotData.personas || chatBotData.personas.length <= 1) {
+    if (!chatBotData || !chatBotData.personas || chatBotData.personas.length <= 1) {
         container.style.display = 'none';
         return;
     }
-
     const personaIcons = {
-        'p_ai': '?��', 'p_startup': '??', 'p_cpa': '?��', 'p_star': '?��', 'p_life': '?��'
+        // 분신 아바타 3개
+        sunny_avatar_ai: '🧠',
+        sunny_avatar_startup: '🚀',
+        sunny_avatar_cpa: '📊',
+        // AI 도우미 3개
+        sunny_helper_work: '📨',
+        sunny_helper_work2: '💼',
+        sunny_helper_life: '🏡'
     };
-
-    container.innerHTML = chatBotData.personas
+    // 소유자 뷰인지 (로그인 유저 == 봇 ownerId)
+    let isOwnerView = false;
+    try {
+        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser && chatBotData.ownerId) {
+            const u = MCW.user.getCurrentUser();
+            if (u && u.id === chatBotData.ownerId) {
+                isOwnerView = true;
+            }
+        }
+    } catch (e) {
+        console.warn('[Persona] owner check failed:', e);
+    }
+    // 타인에게는 isPublic !== false 인 페르소나만 노출 (helper 는 isPublic:false)
+    const isSunny = chatBotData && (chatBotData.id === 'sunny-official' || (chatBotData.username && chatBotData.username === 'sunny') || (chatBotData.id && String(chatBotData.id).startsWith('sunny-')));
+    const isDemo = chatBotData && (
+        chatBotData.id === 'sunny-demo' ||
+        (chatBotData.botName && chatBotData.botName.includes('DEMO')) ||
+        isSunny
+    );
+    const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
-        .map(p => `
-            <div class="persona-chip ${currentPersona && currentPersona.id === p.id ? 'active' : ''}" 
-                 onclick="switchPersona('${p.id}')">
-                <span class="persona-chip-icon">${personaIcons[p.id] || '?��'}</span>
-                <span class="persona-chip-name">${p.name}</span>
-            </div>
-        `)
-        .join('');
-
-    container.style.display = 'flex';
+        .filter(p => isDemo || isOwnerView || p.isPublic !== false);
+    const avatarPersonas = visiblePersonas.filter(p => p.category !== 'helper');
+    const helperPersonas = visiblePersonas.filter(p => p.category === 'helper');
+    function renderPersonaRow(list, extraClass) {
+        if (!list.length) return '';
+        return '<div class="persona-row ' + extraClass + '">' +
+            list.map(p => {
+                const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
+                const isHelper = p.category === 'helper';
+                const typeTagHtml = '';
+                return (
+                    '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
+                        '<span class="persona-chip-icon">' + (personaIcons[p.id] || '👤') + '</span>' +
+                        '<span class="persona-chip-name">' + p.name + '</span>' +
+                        typeTagHtml +
+                    '</div>'
+                );
+            }).join('') +
+        '</div>';
+    }
+    container.innerHTML =
+        renderPersonaRow(avatarPersonas, 'avatar-row') +
+        renderPersonaRow(helperPersonas, 'helper-row');
+    container.style.display = visiblePersonas.length ? 'flex' : 'none';
 }
-
 function switchPersona(id) {
+    if (!chatBotData || !chatBotData.personas) return;
     const newPersona = chatBotData.personas.find(p => String(p.id) === String(id));
     if (!newPersona || (currentPersona && currentPersona.id === newPersona.id)) return;
-
     currentPersona = newPersona;
-
-    // Update UI active state
     document.querySelectorAll('.persona-chip').forEach(chip => {
-        const isTarget = chip.getAttribute('onclick').includes(`'${id}'`);
+        const onClick = chip.getAttribute('onclick') || "";
+        const isTarget = onClick.indexOf("'" + id + "'") !== -1;
         chip.classList.toggle('active', isTarget);
     });
-
-    // System message
-    addMessage('system', `?�� <strong>${newPersona.name}</strong>(??�??�환?�었?�니??<br><span style="font-size:0.7em; opacity:0.7;">${newPersona.role} | ${newPersona.model.toUpperCase()} Model</span>`);
-
-    // Update UI
-    document.getElementById('welcomeDesc').textContent = newPersona.role;
-
-    // Announce
-    if (voiceOutputEnabled) speak(`?�???�제 ${newPersona.name}?�니??`);
-
-    // Update Avatar
-    updateAvatar(newPersona);
-    setAvatarEmotion('happy');
-    setTimeout(() => setAvatarEmotion('neutral'), 1500);
+    addMessage(
+        'system',
+        '✅ <strong>' + newPersona.name + '</strong> 역할로 전환되었습니다.<br>' +
+        '<span style="font-size:0.7em; opacity:0.7;">' +
+        (newPersona.role || '') + ' | ' + (newPersona.model || 'MODEL').toUpperCase() +
+        '</span>'
+    );
+    const welcomeDescEl = document.getElementById('welcomeDesc');
+    if (welcomeDescEl) welcomeDescEl.textContent = newPersona.role || '';
+    if (typeof updateAvatar === 'function') {
+        updateAvatar(newPersona);
+    }
+    if (typeof setAvatarEmotion === 'function') {
+        setAvatarEmotion('happy');
+        setTimeout(() => setAvatarEmotion('neutral'), 1500);
+    }
+    if (voiceOutputEnabled && typeof speak === 'function') {
+        speak('지금부터 ' + newPersona.name + ' 역할로 도와드릴게요.');
+    }
 }
-
 function renderFaqButtons() {
     const container = document.getElementById('faqButtons');
     if (!container || !chatBotData?.faqs) return;
@@ -176,86 +228,62 @@ function renderFaqButtons() {
         `<button class="faq-btn" onclick="askFaq('${f.q.replace(/'/g, "\\'")}', '${f.a.replace(/'/g, "\\'")}')">${f.q}</button>`
     ).join('');
 }
-
-// Send message
 async function sendMessage() {
+    unlockAudio(); // Critical for mobile
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text || isBotTyping) return;
-
     input.value = '';
+    // Reset height
     input.style.height = 'auto';
     addMessage('user', text);
-
-    // Hide welcome and FAQ on first message
-    const welcome = document.getElementById('chatWelcome');
-    const faq = document.getElementById('faqButtons');
-    if (welcome) welcome.style.display = 'none';
-    if (faq) faq.style.display = 'none';
-
-    // Show typing
     showTyping();
-
-    // Add to history
     conversationHistory.push({ role: 'user', content: text });
-    if (chatBotData?.id) {
-        MCW.storage.logEvent(chatBotData.id, 'message', { role: 'user', content: text });
+    // === Claude Squad Control 연동: 업무 도우미 페르소나일 때 소대 명령으로도 전달 ===
+    try {
+        if (currentPersona && currentPersona.id === 'sunny_helper_work') {
+            cscAddSquadCommand('claude-squad-1', text, 'chatbot-mobile')
+                .catch(e => console.warn('[CSC] 명령 전송 실패', e));
+        }
+    } catch (e) {
+        console.warn('[CSC] 연동 중 예외', e);
     }
-
-    // Generate response
+    // Safety timeout - if AI doesn't respond in 15s, release lock
+    const safetyTimer = setTimeout(() => {
+        if (isBotTyping) {
+            hideTyping();
+            addMessage('bot', "[네트워크 지연] 응답이 늦어지고 있습니다. 잠시 후 다시 시도해주세요.");
+        }
+    }, 15000);
     const response = await generateResponse(text);
+    clearTimeout(safetyTimer);
     hideTyping();
     addMessage('bot', response);
     conversationHistory.push({ role: 'assistant', content: response });
-    if (chatBotData?.id) {
-        MCW.storage.logEvent(chatBotData.id, 'message', { role: 'assistant', content: response });
-    }
-
-    // TTS
     if (voiceOutputEnabled) speak(response);
 }
-
-// FAQ
-function askFaq(question, answer) {
-    addMessage('user', question);
-
-    const welcome = document.getElementById('chatWelcome');
-    const faq = document.getElementById('faqButtons');
-    if (welcome) welcome.style.display = 'none';
-    if (faq) faq.style.display = 'none';
-
+function askFaq(q, a) {
+    unlockAudio();
+    addMessage('user', q);
     showTyping();
     setTimeout(() => {
         hideTyping();
-        addMessage('bot', answer);
-        if (voiceOutputEnabled) speak(answer);
-    }, 800);
+        addMessage('bot', a);
+        if (voiceOutputEnabled) speak(a);
+    }, 500);
 }
-
-// Add message to UI
 function addMessage(sender, text) {
     const container = document.getElementById('chatMessages');
-    const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-
+    if (!container) return;
     const div = document.createElement('div');
-    if (sender === 'system') {
-        div.className = 'message message-system';
-        div.innerHTML = `<div style="width:100%; text-align:center; margin:10px 0; font-size:0.8rem; color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.05); padding:5px; border-radius:10px;">${text}</div>`;
-    } else {
-        div.className = `message message-${sender}`;
-        div.innerHTML = `
-        <div class="message-avatar">${sender === 'bot' ? (currentPersona?.model === 'emotion' ? '?��' : '?��') : '?��'}</div>
-        <div>
-          <div class="message-bubble">${text}</div>
-          <div class="message-time">${time}</div>
-        </div>
-      `;
-    }
+    div.className = `message message-${sender}`;
+    div.innerHTML = `
+        <div class="message-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
+        <div class="message-bubble">${text}</div>
+    `;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
 }
-
-// Typing indicator
 function showTyping() {
     isBotTyping = true;
     const container = document.getElementById('chatMessages');
@@ -263,218 +291,220 @@ function showTyping() {
     div.className = 'message message-bot';
     div.id = 'typingIndicator';
     div.innerHTML = `
-    <div class="message-avatar">?��</div>
-    <div class="message-bubble">
-      <div class="typing-indicator">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      </div>
-    </div>
-  `;
+        <div class="message-avatar">🤖</div>
+        <div class="message-bubble">
+            <span class="typing-dot">.</span><span class="typing-dot">.</span><span class="typing-dot">.</span>
+        </div>
+    `;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
 }
-
 function hideTyping() {
     isBotTyping = false;
     const el = document.getElementById('typingIndicator');
     if (el) el.remove();
 }
-
-// Generate AI response with Fallback Loop (Handling invalid Model IDs)
 async function generateResponse(userText) {
-    // 3. Validation
-    if (!apiKey) {
-        return "[?�스???�류] API ?��? ?�습?�다. js/secrets.js�??�인?�세??";
+    const start = Date.now();
+    // 1차: 서버리스 API (/api/chat) 사용 - 키는 서버에서만 사용됩니다.
+    try {
+        const payload = {
+            message: userText,
+            botConfig: {
+                botName: chatBotData && chatBotData.botName,
+                personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
+                tone: (chatBotData && chatBotData.tone) || '',
+                templateId: (chatBotData && chatBotData.templateId) || '',
+                faqs: (chatBotData && chatBotData.faqs) || []
+            },
+            history: conversationHistory.slice(-10)
+        };
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.reply) {
+                const latency = Date.now() - start;
+                console.log('[AI SUCCESS] /api/chat ' + latency + 'ms');
+                return data.reply;
+            }
+        } else {
+            console.warn('[API] /api/chat failed', res.status);
+        }
+    } catch (e) {
+        console.warn('[API] /api/chat error', e);
     }
-
-    apiKey = apiKey.trim();
-    console.log(`[AI Debug] v9.9.1 Running. Using Key: ${apiKey.substring(0, 11)}...`);
-
-    // Model fallback list (Prioritizing FREE models for zero-credit accounts)
+    // 2차: 개발 환경용 직접 OpenRouter 호출 (로컬 secrets/config 있을 때만)
+    const BAD_KEY_HASH = 'sk-or-v1-6a0bbf03';
+    let storedKey = localStorage.getItem('mcw_openrouter_key');
+    if (storedKey && storedKey.includes(BAD_KEY_HASH)) {
+        console.warn('[AI SECURITY] Compomised key detected in storage. PURGING.');
+        localStorage.removeItem('mcw_openrouter_key');
+        storedKey = null;
+    }
+    let API_KEY = null;
+    if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
+        API_KEY = MCW_SECRETS.OPENROUTER_API_KEY;
+        localStorage.setItem('mcw_openrouter_key', API_KEY);
+    } else if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
+        API_KEY = CONFIG.OPENROUTER_API_KEY;
+        localStorage.setItem('mcw_openrouter_key', API_KEY);
+    } else {
+        API_KEY = storedKey;
+    }
+    if (!API_KEY || API_KEY.length < 50 || API_KEY.includes(BAD_KEY_HASH)) {
+        return '[시스템 오류] API 키가 유효하지 않습니다. (원인: User not found / Key Invalid). 캐시를 삭제하고 다시 접속해주세요.';
+    }
     const modelStack = [
-        "google/gemini-2.0-flash-exp:free",      // Top Free Priority
-        "meta-llama/llama-3.3-70b-instruct:free", // Extremely stable
-        "deepseek/deepseek-chat:free",            // High-end Free
-        "google/gemini-2.0-flash-lite-preview-02-05:free",
-        "mistralai/mistral-7b-instruct:free",     // Lightweight Free
-        "openrouter/auto",                        // Auto selector
-        "google/gemini-2.0-flash-001"            // Paid/Verified Tier Fallback
+        'google/gemini-2.0-flash-001',
+        'google/gemini-2.0-flash-exp:free',
+        'meta-llama/llama-3.3-70b-instruct',
+        'openrouter/free'
     ];
-
-    let lastError = "";
-    setAvatarEmotion('thinking');
-
-    for (let i = 0; i < modelStack.length; i++) {
-        const currentModel = modelStack[i];
-        console.log(`[AI Loop] Attempt ${i + 1}/${modelStack.length} using model: ${currentModel}`);
-
+    let lastError = '';
+    for (let currentModel of modelStack) {
         try {
-            const p = currentPersona || chatBotData.personas[0];
-            const systemPrompt = `?�신?� ${p.name}?�니?? ${p.role}. ?��?(Korean)로만 ?��??�세??`;
-
-            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
+            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
                 headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin, // Simplified referer
-                    "X-Title": "My Chatbot World"
+                    'Authorization': 'Bearer ' + API_KEY,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': 'MCW_MOBILE_V10.5'
                 },
                 body: JSON.stringify({
-                    "model": currentModel,
-                    "messages": [
-                        { "role": "system", "content": systemPrompt },
-                        ...conversationHistory.slice(-10),
-                        { "role": "user", "content": userText }
-                    ],
-                    "temperature": 0.7,
-                    "max_tokens": 1000
+                    model: currentModel,
+                    messages: [
+                        { role: 'system', content: 'You are a professional assistant. Reply in Korean.' },
+                        ...conversationHistory.slice(-5),
+                        { role: 'user', content: userText }
+                    ]
                 })
             });
-
-            const data = await response.json();
-
-            if (response.ok && data.choices && data.choices[0]) {
-                console.log(`[AI Loop] Success with model: ${currentModel}`);
-                setAvatarEmotion('happy');
-                setTimeout(() => setAvatarEmotion('neutral'), 3000);
+            const data = await res.json();
+            if (res.ok && data.choices && data.choices[0]) {
+                const latency = Date.now() - start;
+                console.log('[AI SUCCESS] ' + currentModel + ' (' + latency + 'ms)');
                 return data.choices[0].message.content;
             }
-
-            // Handle specific OpenRouter errors
-            lastError = data.error?.message || response.statusText;
-            console.warn(`[AI Loop] Error with ${currentModel}: ${lastError}`);
-
-            // If credit is empty or model busy, continue to next
-            if (lastError.includes("balance") || lastError.includes("No endpoints") || lastError.includes("429") || lastError.includes("overloaded")) {
-                console.log(`[AI Loop] Retrying next model due to: ${lastError.substring(0, 30)}...`);
-                continue;
-            }
-
-        } catch (error) {
-            lastError = error.message;
-            console.error(`[AI Loop] Network error for ${currentModel}:`, error);
-            // Wait briefly before next attempt on network issue
-            await new Promise(resolve => setTimeout(resolve, 300));
+            lastError = (data.error && data.error.message) || res.statusText;
+        } catch (e) {
+            lastError = e.message;
         }
     }
-
-    setAvatarEmotion('sad');
-    if (lastError.includes("User not found") || lastError.includes("401")) {
-        return `[계정 ?�류] ?�용?��? 찾을 ???�거??API ?��? ?�효?��? ?�습?�다. (?�러: ${lastError})\n?�로???��? ?�록??주세??`;
-    }
-    return `[AI ?�류] 명예�?걸고 8�?모델???�도?�으??모두 ?�패?�습?�다. (마�?�??�류: ${lastError})\n?�이지�??�로고침(F5) ?�거???�시 ???�시 ?�도??주세??`;
+    return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
-
-// === Avatar Control ===
-function updateAvatar(persona) {
-    const face = document.getElementById('avatarFace');
-    if (!face || !persona) return;
-
-    // Reset classes
-    face.className = 'avatar-face';
-
-    // Map ID to Style
-    const styleMap = {
-        'p_ai': 'persona-ai',
-        'p_startup': 'persona-startup',
-        'p_cpa': 'persona-cpa',
-        'p_star': 'persona-star',
-        'p_life': 'persona-life'
-    };
-
-    let styleClass = styleMap[persona.id];
-    if (!styleClass) {
-        // Fallback for custom personas: deterministic random based on Name length
-        const styles = Object.values(styleMap);
-        styleClass = styles[persona.name.length % styles.length];
-    }
-
-    face.classList.add(styleClass);
-}
-
-function setAvatarEmotion(emotion) {
-    const face = document.getElementById('avatarFace');
-    const label = document.getElementById('emotionLabel');
-    if (!face) return;
-
-    // Remove existing emotions
-    face.classList.remove('happy', 'sad', 'thinking', 'surprised');
-
-    if (emotion !== 'neutral') {
-        face.classList.add(emotion);
-    }
-
-    if (label) {
-        const labels = {
-            neutral: '?�온',
-            happy: '?�복 ?��',
-            sad: '?�픔 ?��',
-            thinking: '?�각�??��',
-            surprised: '?�???��'
-        };
-        label.textContent = labels[emotion] || '';
-    }
-}
-
-// TTS
 function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ko-KR';
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    speechSynthesis.speak(utterance);
+    if (!voiceOutputEnabled || !window.speechSynthesis) return;
+    // Cancel previous
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ko-KR';
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    // Mobile Chrome weirdness fix
+    u.onend = function () { console.log('Speech ended'); };
+    u.onerror = function (e) { console.error('Speech error:', e); };
+    window.speechSynthesis.speak(u);
 }
-
-// Voice toggle
-document.getElementById('voiceToggle')?.addEventListener('click', () => {
-    voiceOutputEnabled = !voiceOutputEnabled;
-    const btn = document.getElementById('voiceToggle');
-    btn.textContent = voiceOutputEnabled ? '?��' : '?��';
-    if (!voiceOutputEnabled) speechSynthesis.cancel();
-});
-
-// Voice input for chat
+// STT
 let chatRecognition = null;
 function toggleChatVoice() {
+    unlockAudio(); // Unlock audio context when using STT too
     const btn = document.getElementById('chatVoiceBtn');
     if (chatRecognition) {
         chatRecognition.stop();
         chatRecognition = null;
-        btn.classList.remove('recording');
-        return;
-    }
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-        alert('??브라?��????�성 ?�식??지?�하지 ?�습?�다.');
+        btn?.classList.remove('recording');
         return;
     }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+        alert('이 브라우저는 음성 인식을 지원하지 않습니다.');
+        return;
+    }
     chatRecognition = new SR();
     chatRecognition.lang = 'ko-KR';
     chatRecognition.interimResults = false;
+    chatRecognition.maxAlternatives = 1;
+    chatRecognition.onstart = () => {
+        btn?.classList.add('recording');
+    }
     chatRecognition.onresult = (e) => {
         const text = e.results[0][0].transcript;
-        document.getElementById('chatInput').value = text;
-        sendMessage();
+        const input = document.getElementById('chatInput');
+        if (input) {
+            input.value = text;
+            sendMessage(); // Auto-send
+        }
+    };
+    chatRecognition.onerror = (e) => {
+        console.error("STT Error", e);
+        chatRecognition = null;
+        btn?.classList.remove('recording');
     };
     chatRecognition.onend = () => {
         chatRecognition = null;
-        btn.classList.remove('recording');
+        btn?.classList.remove('recording');
     };
     chatRecognition.start();
-    btn.classList.add('recording');
 }
-
-// Auto-resize input
 function autoResizeInput() {
     const input = document.getElementById('chatInput');
     if (!input) return;
     input.addEventListener('input', () => {
         input.style.height = 'auto';
-        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+        input.style.height = input.scrollHeight + 'px';
     });
 }
-
+// === TTS OVERRIDE: 서버 TTS + 브라우저 TTS 병합 (모바일 음성 복원) ===
+async function speak(text) {
+    if (!voiceOutputEnabled || !text) return;
+    // 1차: 서버 TTS (/api/tts) 시도 - 모바일 브라우저 Web Speech 미지원 대비
+    try {
+        const res = await fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, voice: 'alloy', speed: 1.0 })
+        });
+        const contentType = res.headers.get('Content-Type') || '';
+        if (res.ok && contentType.includes('audio')) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.play();
+            return; // 서버 TTS 성공 시 여기서 종료
+        }
+        // 키 미설정 등으로 JSON 응답이 온 경우, 브라우저 TTS로 폴백
+        let data = null;
+        try {
+            data = await res.json();
+        } catch (e) {
+            // JSON 이 아니면 그냥 무시
+        }
+        if (data && data.useBrowserTTS) {
+            console.log('[TTS] Falling back to browser speech.');
+        } else if (!res.ok) {
+            console.warn('[TTS] /api/tts failed', res.status);
+        }
+    } catch (e) {
+        console.warn('[TTS] /api/tts error', e);
+    }
+    // 2차: 브라우저 Web Speech API (PC / 지원 브라우저용)
+    if (!('speechSynthesis' in window)) return;
+    try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        u.rate = 1.0;
+        u.pitch = 1.0;
+        u.onend = function () { console.log('Speech ended'); };
+        u.onerror = function (e) { console.error('Speech error:', e); };
+        window.speechSynthesis.speak(u);
+    } catch (e) {
+        console.warn('[TTS] browser speech failed', e);
+    }
+}

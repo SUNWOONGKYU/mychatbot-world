@@ -170,14 +170,22 @@ function createSunnyBot(silent = false) {
       console.log('[SunnyBot] initial bot created in localStorage.');
     } else {
       const existing = bots[existingIndex];
+      // v12.0: 인코딩 깨짐 감지 → 전체 데이터 강제 리프레시
+      const hasBrokenEncoding = existing.botName && existing.botName.includes('?�');
       const hasClaudeMessenger = existing.personas && existing.personas.some(function (p) { return p.id === 'sunny_helper_work' && p.name === 'Claude Messenger'; });
       const hasNewWorkHelper = existing.personas && existing.personas.some(function (p) { return p.id === 'sunny_helper_work2'; });
-      const needUpdate = !hasClaudeMessenger || !hasNewWorkHelper;
+      const needUpdate = hasBrokenEncoding || !hasClaudeMessenger || !hasNewWorkHelper;
 
       if (needUpdate) {
-        const updated = Object.assign({}, existing, { personas: SunnyBotData.personas });
+        const updated = Object.assign({}, existing, {
+          botName: SunnyBotData.botName,
+          botDesc: SunnyBotData.botDesc,
+          greeting: SunnyBotData.greeting,
+          personas: SunnyBotData.personas,
+          faqs: SunnyBotData.faqs
+        });
         MCW.storage.saveBot(updated);
-        console.log('[SunnyBot] personas updated to latest definition.');
+        console.log('[SunnyBot] data refreshed (v12.0).');
       }
     }
   } catch (e) {
