@@ -66,12 +66,12 @@
 }
 
 .chat-header-btn {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: var(--radius-lg);
     background: rgba(255, 255, 255, 0.06);
     border: none;
-    font-size: 1rem;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -719,6 +719,146 @@
   }
 
   .chat-bot-name {
-      padding-right: 60px; /* prevent overlap with header buttons */
+      padding-right: 100px; /* prevent overlap with 3 header buttons */
   }
+}
+
+/* ============================================
+   Light Mode Overrides
+   ============================================ */
+.chat-body.light {
+    background: #f5f5fa;
+}
+
+.chat-body.light .chat-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.chat-body.light .chat-bot-name {
+    color: #1a1a2e;
+}
+
+.chat-body.light .chat-welcome h2 {
+    color: #1a1a2e;
+}
+
+.chat-body.light .chat-welcome p {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.chat-body.light .chat-header-btn {
+    background: rgba(0, 0, 0, 0.06);
+    color: #333;
+}
+
+.chat-body.light .chat-header-btn:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.chat-body.light .persona-chip {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.chat-body.light .persona-chip:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.chat-body.light .persona-chip.active {
+    background: var(--primary-500);
+    border-color: var(--primary-400);
+    color: white;
+}
+
+.chat-body.light .message-bot .message-bubble {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a2e;
+}
+
+.chat-body.light .message-user .message-bubble {
+    background: var(--primary-500);
+    color: white;
+}
+
+.chat-body.light .message-system .message-bubble {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.chat-body.light .message-time {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.chat-body.light .chat-input-area {
+    background: rgba(255, 255, 255, 0.95);
+    border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+.chat-body.light .chat-input-container {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.chat-body.light .chat-input {
+    color: #1a1a2e;
+}
+
+.chat-body.light .chat-input::placeholder {
+    color: rgba(0, 0, 0, 0.35);
+}
+
+.chat-body.light .chat-voice-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.chat-body.light .faq-btn {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.15);
+    color: var(--primary-600);
+}
+
+.chat-body.light .faq-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--primary-400);
+}
+
+.chat-body.light .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.chat-body.light .emotion-label {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+/* Per-message speaker button */
+.msg-tts-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    opacity: 0.4;
+    padding: 2px 4px;
+    margin-left: 4px;
+    transition: opacity 0.2s;
+    vertical-align: middle;
+}
+
+.msg-tts-btn:hover {
+    opacity: 0.8;
+}
+
+.msg-tts-btn.playing {
+    opacity: 1;
+    animation: pulse-speaker 1s infinite;
+}
+
+@keyframes pulse-speaker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.chat-body.light .msg-tts-btn {
+    color: #333;
 }

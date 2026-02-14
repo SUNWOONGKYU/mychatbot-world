@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!voiceOutputEnabled) { _ttsPlayer.pause(); }
         });
     }
+    // Theme: restore saved preference
+    initTheme();
 });
 // 사용자 제스처 시점에 Audio 요소를 unlock (전송 버튼, 터치 등에서 호출)
 function unlockTTS() {
@@ -45,6 +47,28 @@ function unlockTTS() {
         console.warn('[TTS] Unlock failed:', e.message);
     });
 }
+// === Theme (Dark/Light) ===
+function initTheme() {
+    var saved = localStorage.getItem('mcw_theme') || 'dark';
+    applyTheme(saved);
+}
+function applyTheme(theme) {
+    var body = document.querySelector('.chat-body');
+    if (!body) return;
+    if (theme === 'light') {
+        body.classList.add('light');
+    } else {
+        body.classList.remove('light');
+    }
+    localStorage.setItem('mcw_theme', theme);
+    var btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+function toggleTheme() {
+    var current = localStorage.getItem('mcw_theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
 function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
     const idParam = urlParams.get('id');
@@ -257,9 +281,14 @@ function addMessage(sender, text) {
     div.className = `message message-${sender}`;
     if (sender === 'system') {
         div.innerHTML = `<div class="message-bubble">${text}</div>`;
+    } else if (sender === 'bot') {
+        div.innerHTML = `
+            <div class="message-avatar">🤖</div>
+            <div class="message-bubble">${text}</div>
+        `;
     } else {
         div.innerHTML = `
-            <div class="message-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
+            <div class="message-avatar">👤</div>
             <div class="message-bubble">${text}</div>
         `;
     }
@@ -453,51 +482,44 @@ function autoResizeInput() {
         input.style.height = input.scrollHeight + 'px';
     });
 }
-// === TTS OVERRIDE: 서버 TTS + 브라우저 TTS 병합 (모바일 음성 복원) ===
-async function speak(text) {
-    if (!voiceOutputEnabled || !text) return;
-    // 1차: 서버 TTS (/api/tts) 시도 - 모바일 브라우저 Web Speech 미지원 대비
-    try {
-        const res = await fetch('/api/tts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text, voice: 'alloy', speed: 1.0 })
-        });
-        const contentType = res.headers.get('Content-Type') || '';
-        if (res.ok && contentType.includes('audio')) {
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            audio.play();
-            return; // 서버 TTS 성공 시 여기서 종료
-        }
-        // 키 미설정 등으로 JSON 응답이 온 경우, 브라우저 TTS로 폴백
-        let data = null;
-        try {
-            data = await res.json();
-        } catch (e) {
-            // JSON 이 아니면 그냥 무시
-        }
-        if (data && data.useBrowserTTS) {
-            console.log('[TTS] Falling back to browser speech.');
-        } else if (!res.ok) {
-            console.warn('[TTS] /api/tts failed', res.status);
-        }
-    } catch (e) {
-        console.warn('[TTS] /api/tts error', e);
+// === Per-message TTS: 사용자가 직접 탭하여 재생 (모바일 제스처 보장) ===
+function playMsgTTS(btn) {
+    // Extract text from the parent bubble element
+    var bubble = btn.parentElement;
+    if (!bubble) return;
+    var clean = bubble.textContent.replace(/🔊/g, '').trim();
+    if (!clean) return;
+    if (clean.length > 200) clean = clean.substring(0, 200);
+    // 재생 중이면 중지
+    if (btn.classList.contains('playing')) {
+        _ttsPlayer.pause();
+        _ttsPlayer.currentTime = 0;
+        btn.classList.remove('playing');
+        return;
     }
-    // 2차: 브라우저 Web Speech API (PC / 지원 브라우저용)
-    if (!('speechSynthesis' in window)) return;
-    try {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'ko-KR';
-        u.rate = 1.0;
-        u.pitch = 1.0;
-        u.onend = function () { console.log('Speech ended'); };
-        u.onerror = function (e) { console.error('Speech error:', e); };
-        window.speechSynthesis.speak(u);
-    } catch (e) {
-        console.warn('[TTS] browser speech failed', e);
-    }
+    // 다른 버튼의 playing 상태 초기화
+    document.querySelectorAll('.msg-tts-btn.playing').forEach(function(b) {
+        b.classList.remove('playing');
+    });
+    var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
+    _ttsPlayer.pause();
+    _ttsPlayer.currentTime = 0;
+    _ttsPlayer.src = url;
+    _ttsPlayer.volume = 1.0;
+    btn.classList.add('playing');
+    _ttsPlayer.play().then(function() {
+        console.log('[TTS] Playing via button tap');
+    }).catch(function(e) {
+        console.warn('[TTS] Play failed:', e.message);
+        btn.classList.remove('playing');
+        // 폴백: SpeechSynthesis
+        if (window.speechSynthesis) {
+            var u = new SpeechSynthesisUtterance(clean);
+            u.lang = 'ko-KR';
+            window.speechSynthesis.speak(u);
+        }
+    });
+    _ttsPlayer.onended = function() {
+        btn.classList.remove('playing');
+    };
 }

@@ -5,9 +5,9 @@
  */
 
 const SunnyBotData = {
-  botName: 'Sunny Bot (분신 아바타 3 + AI 도우미 3)',
-  botDesc: '써니의 분신 아바타 3개와 AI 도우미 3개로 구성된 개인 AI 시스템입니다.',
-  greeting: '안녕하세요! Sunny Bot입니다. 분신 아바타 3개와 AI 도우미 3개 중에서 필요한 페르소나를 선택해주세요!',
+  botName: 'Sunny Bot (분신 아바타 + AI 도우미)',
+  botDesc: '써니의 분신 아바타와 AI 도우미로 구성된 개인 AI 시스템입니다.',
+  greeting: '안녕하세요! Sunny Bot입니다. 분신 아바타와 AI 도우미 중에서 필요한 페르소나를 선택해주세요!',
   personas: [
     // 분신 아바타 3개
     {
@@ -81,7 +81,7 @@ const SunnyBotData = {
   faqs: [
     {
       q: '어떤 구조로 되어 있나요?',
-      a: '분신 아바타 3개와 AI 도우미 3개로 구성되어 있습니다.',
+      a: '분신 아바타와 AI 도우미로 구성되어 있습니다.',
     },
     {
       q: 'Sunny Bot이 무엇인가요??',
@@ -99,8 +99,8 @@ if (typeof window !== 'undefined') {
 // 데모용 SunnyBot (5개 페르소나 모두 공개)
 const SunnyDemoBotData = {
   ...SunnyBotData,
-  botName: 'Sunny Bot DEMO (분신 아바타 3 + AI 도우미 3)',
-  greeting: '안녕하세요! Sunny Bot 데모입니다. 분신 아바타 3개와 AI 도우미 3개를 모두 체험해보세요!',
+  botName: 'Sunny Bot DEMO (분신 아바타 + AI 도우미)',
+  greeting: '안녕하세요! Sunny Bot 데모입니다. 분신 아바타와 AI 도우미를 모두 체험해보세요!',
   personas: SunnyBotData.personas.map(p => ({
     ...p,
     // 데모에서는 도우미까지 모두 공개
@@ -137,7 +137,7 @@ function createSunnyBot(silent = false) {
   if (typeof MCW !== 'undefined' && MCW.storage && MCW.storage.saveBot) {
     MCW.storage.saveBot(newBot);
     if (!silent && typeof alert !== 'undefined') {
-      alert('Sunny Bot(분신 아바타 3 + AI 도우미 3)이 새로 생성되었습니다.');
+      alert('Sunny Bot(분신 아바타 + AI 도우미)이 새로 생성되었습니다.');
       if (typeof location !== 'undefined') location.reload();
     }
   } else if (!silent && typeof alert !== 'undefined') {
@@ -146,7 +146,7 @@ function createSunnyBot(silent = false) {
 }
 
 // 버전 기반 강제 리셋: 이 값을 올리면 모든 사용자의 SunnyBot 데이터가 갱신됨
-var SUNNY_DATA_VERSION = 'v12.5';
+var SUNNY_DATA_VERSION = 'v12.7';
 
 // 페이지 로드시 SunnyBot이 없으면 생성, 있으면 버전 체크 후 강제 업데이트
 (function autoInitSunnyBot() {
