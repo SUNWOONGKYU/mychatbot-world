@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - My Chatbot World</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --surface-dark: #1e293b;
+            --primary: #8b5cf6;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+            --error: #ef4444;
+            --success: #22c55e;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Suit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .signup-card {
+            background: var(--surface-dark);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .signup-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .signup-header p {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: white;
+            box-sizing: border-box;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+        }
+
+        .form-error {
+            color: var(--error);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        .btn-signup {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-signup:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signup-card">
+        <div class="signup-header">
+            <h1>회원가입</h1>
+            <p>나의 챗봇 세계에 오신 것을 환영합니다</p>
+        </div>
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label>아이디</label>
+                <input type="text" id="userId" class="form-input" placeholder="아이디를 입력하세요" required>
+                <div class="form-error" id="userIdError">이미 사용 중인 아이디입니다.</div>
+            </div>
+            <div class="form-group">
+                <label>이름 (닉네임)</label>
+                <input type="text" id="userName" class="form-input" placeholder="표시될 이름을 입력하세요" required>
+            </div>
+            <div class="form-group">
+                <label>비밀번호</label>
+                <input type="password" id="userPw" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            </div>
+            <div class="form-group">
+                <label>비밀번호 확인</label>
+                <input type="password" id="userPwConfirm" class="form-input" placeholder="비밀번호를 다시 입력하세요"
+                    required>
+                <div class="form-error" id="pwMatchError">비밀번호가 일치하지 않습니다.</div>
+            </div>
+            <button type="submit" class="btn-signup">가입하기</button>
+        </form>
+        <div style="text-align:center; margin-top:1rem; font-size:0.85rem;">
+            <span style="color:var(--text-gray);">이미 계정이 있으신가요?</span>
+            <a href="login.html" style="color:var(--primary); text-decoration:none; font-weight:600; margin-left:4px;">로그인</a>
+        </div>
+        <div style="text-align:center; margin-top:10px;">
+            <a href="../index.html" style="color:var(--text-gray); text-decoration:none; font-size:0.8rem;">← 홈으로
+                돌아가기</a>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        // Already logged in → redirect
+        if (MCW.user.getCurrentUser()) {
+            window.location.href = 'home/index.html';
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('userId').value.trim();
+            const name = document.getElementById('userName').value.trim();
+            const pw = document.getElementById('userPw').value;
+            const pwConfirm = document.getElementById('userPwConfirm').value;
+
+            // Reset errors
+            document.getElementById('userIdError').classList.remove('visible');
+            document.getElementById('pwMatchError').classList.remove('visible');
+            document.getElementById('userId').classList.remove('error');
+            document.getElementById('userPwConfirm').classList.remove('error');
+
+            // Validate: password match
+            if (pw !== pwConfirm) {
+                document.getElementById('pwMatchError').classList.add('visible');
+                document.getElementById('userPwConfirm').classList.add('error');
+                return;
+            }
+
+            // Validate: duplicate ID
+            const existing = MCW.user.getUsers().find(u => u.id === id);
+            if (existing) {
+                document.getElementById('userIdError').classList.add('visible');
+                document.getElementById('userId').classList.add('error');
+                return;
+            }
+
+            // Save user
+            MCW.user.saveUser({
+                id: id,
+                name: name,
+                password: pw,
+                role: 'user',
+                created_at: new Date().toISOString()
+            });
+
+            // Auto login & redirect
+            MCW.user.login(id);
+            window.location.href = 'home/index.html';
+        }
+    </script>
+</body>
+
+</html>
