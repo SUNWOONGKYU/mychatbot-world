@@ -3,7 +3,7 @@
  * POST /api/create-bot
  * AI가 인터뷰 텍스트를 분석하여 인사말 + FAQ 자동 생성
  */
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -138,4 +138,4 @@ module.exports = async (req, res) => {
     console.error('Create bot error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}

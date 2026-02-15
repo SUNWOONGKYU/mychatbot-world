@@ -4,9 +4,9 @@
  * OpenAI Whisper로 음성→텍스트 변환 (원소스 멀티유즈)
  * 플랫폼/텔레그램 동일 서비스
  */
-const FormData = require('form-data');
+import FormData from 'form-data';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -65,4 +65,4 @@ module.exports = async (req, res) => {
     console.error('STT error:', error);
     res.status(500).json({ error: 'STT failed', useBrowserSTT: true });
   }
-};
+}

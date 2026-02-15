@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="chat-page">
 
 <head>
     <meta charset="UTF-8">
@@ -40,6 +40,17 @@
         <!-- FAQ Quick Buttons -->
         <div class="chat-faq-buttons" id="faqButtons"></div>
     </main>
+
+    <!-- CPC Platoon Selector (업무 도우미 전용) -->
+    <div class="cpc-bar" id="cpcBar" style="display:none">
+        <div class="cpc-bar-inner">
+            <span class="cpc-bar-label">CPC</span>
+            <select class="cpc-select" id="cpcPlatoonSelect">
+                <option value="">소대 선택...</option>
+            </select>
+            <span class="cpc-status" id="cpcStatus"></span>
+        </div>
+    </div>
 
     <!-- Chat Input -->
     <div class="chat-input-area" id="chatInputArea">

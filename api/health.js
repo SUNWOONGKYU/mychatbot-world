@@ -2,7 +2,7 @@
  * Health check API
  * GET /api/health
  */
-module.exports = (req, res) => {
+export default function handler(req, res) {
   res.status(200).json({
     status: 'ok',
     service: 'My Chatbot World',
@@ -10,4 +10,4 @@ module.exports = (req, res) => {
     timestamp: new Date().toISOString(),
     endpoints: ['/api/chat', '/api/create-bot', '/api/tts', '/api/health']
   });
-};
+}

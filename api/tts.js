@@ -3,7 +3,7 @@
  * TTS API - Vercel Serverless Function
  * POST /api/tts
  */
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(200).end();
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
     const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
     if (!OPENAI_API_KEY) {
-      return res.status(200).json({
+      return res.status(503).json({
         message: 'TTS API key not configured. Use browser Web Speech API instead.',
         useBrowserTTS: true
       });
@@ -53,4 +53,4 @@ module.exports = async (req, res) => {
     console.error('TTS error:', error);
     res.status(500).json({ error: 'TTS generation failed', useBrowserTTS: true });
   }
-};
+}

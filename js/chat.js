@@ -145,26 +145,30 @@ async function loadBotData() {
         setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
         logPerPersonaStat('conversation_start');
     }
+    // URL로 sunny_helper_work 직접 진입 시 CPC 바 자동 표시
+    if (currentPersona && currentPersona.id === 'sunny_helper_work') {
+        cpcShowBar();
+    }
 }
-// === Claude Squad Control API 연동 (소대 컨트롤러) ===
-const CLAUDE_SQUAD_API_BASE =
-    (typeof window !== 'undefined' && window.CLAUDE_SQUAD_API_BASE) ||
-    (typeof MCW !== 'undefined' && MCW.env && MCW.env.CLAUDE_SQUAD_API_BASE) ||
-    'http://localhost:4100';
-async function cscGetSquads() {
+// === CPC (Claude Platoons Control) API 연동 ===
+const CPC_API_BASE = 'https://claude-platoons-control.vercel.app';
+let _cpcPlatoons = [];       // 캐시된 소대 목록
+let _cpcSelectedId = '';     // 현재 선택된 소대 ID
+
+async function cpcGetPlatoons() {
     try {
-        const res = await fetch(`${CLAUDE_SQUAD_API_BASE}/api/squads`);
+        const res = await fetch(`${CPC_API_BASE}/api/platoons`);
         if (!res.ok) throw new Error('소대 목록 조회 실패');
         return await res.json();
     } catch (e) {
-        console.warn('[CSC] getSquads 실패', e);
+        console.warn('[CPC] getPlatoons 실패', e);
         return [];
     }
 }
-async function cscAddSquadCommand(squadId, text, source = 'chatbot') {
+async function cpcAddCommand(platoonId, text, source = 'chatbot') {
     try {
         const res = await fetch(
-            `${CLAUDE_SQUAD_API_BASE}/api/squads/${encodeURIComponent(squadId)}/commands`,
+            `${CPC_API_BASE}/api/platoons/${encodeURIComponent(platoonId)}/commands`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -174,21 +178,88 @@ async function cscAddSquadCommand(squadId, text, source = 'chatbot') {
         if (!res.ok) throw new Error('소대 명령 추가 실패');
         return await res.json();
     } catch (e) {
-        console.warn('[CSC] addSquadCommand 실패', e);
+        console.warn('[CPC] addCommand 실패', e);
         return null;
     }
 }
-async function cscGetPendingCommands(squadId) {
+async function cpcGetPendingCommands(platoonId) {
     try {
         const res = await fetch(
-            `${CLAUDE_SQUAD_API_BASE}/api/squads/${encodeURIComponent(squadId)}/commands?status=PENDING`
+            `${CPC_API_BASE}/api/platoons/${encodeURIComponent(platoonId)}/commands?status=PENDING`
         );
         if (!res.ok) throw new Error('소대 명령 조회 실패');
         return await res.json();
     } catch (e) {
-        console.warn('[CSC] getPendingCommands 실패', e);
+        console.warn('[CPC] getPendingCommands 실패', e);
         return [];
     }
+}
+
+// CPC 소대 선택 바 — 소대 목록을 API에서 동적 로딩
+async function cpcShowBar() {
+    const bar = document.getElementById('cpcBar');
+    const select = document.getElementById('cpcPlatoonSelect');
+    if (!bar || !select) return;
+    bar.style.display = '';
+
+    // 이미 로딩했으면 재사용
+    if (_cpcPlatoons.length === 0) {
+        _cpcPlatoons = await cpcGetPlatoons();
+    }
+
+    // 프로젝트별 그룹핑 (prefix 기준: mychatbot-1 → mychatbot)
+    const groups = {};
+    _cpcPlatoons.forEach(p => {
+        const parts = p.id.match(/^(.+)-(\d+)$/);
+        const project = parts ? parts[1] : p.id;
+        if (!groups[project]) groups[project] = [];
+        groups[project].push(p);
+    });
+
+    select.innerHTML = '<option value="">소대 선택...</option>';
+    Object.keys(groups).sort().forEach(project => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = groups[project][0].name
+            ? groups[project][0].name.replace(/\s*\d소대$/, '')
+            : project;
+        groups[project].forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = (p.name || p.id) + ' [' + p.status + ']';
+            select.appendChild(opt);
+        });
+        // optgroup이 의미있으면 사용, 아니면 flat
+        if (groups[project].length > 1) {
+            groups[project].forEach(p => {
+                const opt = select.querySelector(`option[value="${p.id}"]`);
+                if (opt) {
+                    select.removeChild(opt);
+                    optgroup.appendChild(opt);
+                }
+            });
+            select.appendChild(optgroup);
+        }
+    });
+
+    // 이전 선택 복원
+    if (_cpcSelectedId) select.value = _cpcSelectedId;
+
+    // 변경 이벤트
+    select.onchange = function () {
+        _cpcSelectedId = this.value;
+        const statusEl = document.getElementById('cpcStatus');
+        if (statusEl) {
+            statusEl.textContent = _cpcSelectedId ? '연결됨' : '';
+        }
+    };
+    // 현재 상태 표시
+    const statusEl = document.getElementById('cpcStatus');
+    if (statusEl) statusEl.textContent = _cpcSelectedId ? '연결됨' : '';
+}
+
+function cpcHideBar() {
+    const bar = document.getElementById('cpcBar');
+    if (bar) bar.style.display = 'none';
 }
 let currentPersona = null;
 function renderPersonaSelector() {
@@ -259,6 +330,12 @@ function switchPersona(id) {
     }
     // 페르소나 전환 시 FAQ 버튼도 갱신
     renderFaqButtons();
+    // CPC 바: 업무 도우미 페르소나일 때만 표시
+    if (newPersona.id === 'sunny_helper_work') {
+        cpcShowBar();
+    } else {
+        cpcHideBar();
+    }
 }
 function renderFaqButtons() {
     const container = document.getElementById('faqButtons');
@@ -286,14 +363,15 @@ async function sendMessage() {
     conversationHistory.push({ role: 'user', content: text });
     // 페르소나별 대화 저장
     savePerPersonaMessage('user', text);
-    // === Claude Squad Control 연동: 업무 도우미 페르소나일 때 소대 명령으로도 전달 ===
+    // === CPC 연동: 업무 도우미 + 소대 선택 시 해당 소대로 명령 전달 ===
     try {
-        if (currentPersona && currentPersona.id === 'sunny_helper_work') {
-            cscAddSquadCommand('claude-squad-1', text, 'chatbot-mobile')
-                .catch(e => console.warn('[CSC] 명령 전송 실패', e));
+        if (currentPersona && currentPersona.id === 'sunny_helper_work' && _cpcSelectedId) {
+            cpcAddCommand(_cpcSelectedId, text, 'chatbot')
+                .then(r => { if (r) console.log('[CPC] 명령 전송 →', _cpcSelectedId); })
+                .catch(e => console.warn('[CPC] 명령 전송 실패', e));
         }
     } catch (e) {
-        console.warn('[CSC] 연동 중 예외', e);
+        console.warn('[CPC] 연동 중 예외', e);
     }
     // Safety timeout - if AI doesn't respond in 15s, release lock
     const safetyTimer = setTimeout(() => {
@@ -453,20 +531,22 @@ async function generateResponse(userText) {
     }
     return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
-// TTS: 1차 /api/tts (OpenAI TTS-1) → 2차 Google Translate → 3차 SpeechSynthesis
+// TTS: 1차 /api/tts (OpenAI TTS-1) → 2차 SpeechSynthesis → 3차 Google Translate
 function speak(text) {
     if (!voiceOutputEnabled) return;
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
     if (clean.length > 200) clean = clean.substring(0, 200);
 
-    // 1차: /api/tts (OpenAI TTS-1 — 원소스 멀티유즈)
+    // 1차: /api/tts (OpenAI TTS-1)
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: clean, voice: 'alloy' })
     }).then(function (res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
+        var ct = res.headers.get('content-type') || '';
+        if (ct.indexOf('audio') === -1) throw new Error('TTS response not audio');
         return res.blob();
     }).then(function (blob) {
         var blobUrl = URL.createObjectURL(blob);
@@ -483,8 +563,21 @@ function speak(text) {
         speakFallback(clean);
     });
 }
-// 2차: Google Translate TTS → 3차: SpeechSynthesis
+// 2차: SpeechSynthesis (모바일 최우선) → 3차: Google Translate TTS
 function speakFallback(clean) {
+    if (window.speechSynthesis) {
+        try {
+            window.speechSynthesis.cancel();
+            var u = new SpeechSynthesisUtterance(clean);
+            u.lang = 'ko-KR';
+            u.rate = 1.0;
+            window.speechSynthesis.speak(u);
+            console.log('[TTS] SpeechSynthesis fallback');
+            return;
+        } catch (e) {
+            console.warn('[TTS] SpeechSynthesis failed:', e);
+        }
+    }
     var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
     _ttsPlayer.pause();
     _ttsPlayer.currentTime = 0;
@@ -493,11 +586,7 @@ function speakFallback(clean) {
     _ttsPlayer.play().then(function () {
         console.log('[TTS] Google Translate fallback');
     }).catch(function () {
-        if (window.speechSynthesis) {
-            var u = new SpeechSynthesisUtterance(clean);
-            u.lang = 'ko-KR';
-            window.speechSynthesis.speak(u);
-        }
+        console.warn('[TTS] All TTS methods failed');
     });
 }
 // STT
@@ -614,13 +703,15 @@ function playMsgTTS(btn) {
         b.classList.remove('playing');
     });
     btn.classList.add('playing');
-    // 1차: /api/tts (OpenAI TTS-1) → 2차: Google Translate → 3차: SpeechSynthesis
+    // 1차: /api/tts (OpenAI TTS-1) → 2차: SpeechSynthesis → 3차: Google Translate
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: clean, voice: 'alloy' })
     }).then(function(res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
+        var ct = res.headers.get('content-type') || '';
+        if (ct.indexOf('audio') === -1) throw new Error('Not audio');
         return res.blob();
     }).then(function(blob) {
         var blobUrl = URL.createObjectURL(blob);
@@ -634,20 +725,24 @@ function playMsgTTS(btn) {
             URL.revokeObjectURL(blobUrl);
         };
     }).catch(function() {
-        // 폴백: Google Translate TTS
+        // 폴백: SpeechSynthesis 우선
+        if (window.speechSynthesis) {
+            try {
+                window.speechSynthesis.cancel();
+                var u = new SpeechSynthesisUtterance(clean);
+                u.lang = 'ko-KR';
+                u.onend = function() { btn.classList.remove('playing'); };
+                window.speechSynthesis.speak(u);
+                return;
+            } catch (e) { /* fall through */ }
+        }
+        // Google Translate TTS (최후 수단)
         var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
         _ttsPlayer.pause();
         _ttsPlayer.currentTime = 0;
         _ttsPlayer.src = url;
         _ttsPlayer.volume = 1.0;
-        _ttsPlayer.play().catch(function() {
-            btn.classList.remove('playing');
-            if (window.speechSynthesis) {
-                var u = new SpeechSynthesisUtterance(clean);
-                u.lang = 'ko-KR';
-                window.speechSynthesis.speak(u);
-            }
-        });
+        _ttsPlayer.play().catch(function() { btn.classList.remove('playing'); });
         _ttsPlayer.onended = function() { btn.classList.remove('playing'); };
     });
 }

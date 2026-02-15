@@ -3,7 +3,7 @@
  * Chat API - Vercel Serverless Function
  * POST /api/chat
  */
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -95,4 +95,4 @@ ${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}
     console.error('Chat error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
