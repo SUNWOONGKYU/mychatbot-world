@@ -106,13 +106,7 @@ const MCW = {
     getUser(id) {
       const users = this.getUsers();
       const user = users.find(u => u.id === id || u.email === id);
-      if (user) return user;
-
-      // Admin Backdoor
-      if (id === 'admin') {
-        return { id: 'admin', name: 'Master Admin', role: 'admin' };
-      }
-      return null;
+      return user || null;
     },
     claimAnonymousBots(id) {
       const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
@@ -128,12 +122,9 @@ const MCW = {
         console.log("[MCW] Bots claimed for user:", id);
       }
     },
-    // Mock Verify
     verifyPassword(id, password) {
       const user = this.getUser(id);
       if (user && user.password === password) return true;
-      // Backdoor for development
-      if (id === 'admin' && password === '1234') return true;
       return false;
     },
     getCurrentUser() {
