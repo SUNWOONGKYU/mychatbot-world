@@ -248,49 +248,8 @@
                         생성</button>
                 </div>
 
-                <div class="bot-manage-list">
-                    <!-- SunnyBot (Always at top) -->
-                    <div class="manage-card" style="max-width: none;">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
-                            <div class="bot-entry-info">
-                                <div class="bot-entry-icon">🌞</div>
-                                <div>
-                                    <h3 style="font-size: 1.25rem; font-weight: 700; color: white;">써니봇 (SunnyBot
-                                        Official)</h3>
-                                    <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">5가지 자아 통합형 관리 센터</p>
-                                </div>
-                            </div>
-                            <button class="btn btn-outline btn-sm"
-                                onclick="location.href='../bot/index.html?id=sunny-official'">현장 모니터링 (대화하기)</button>
-                        </div>
-
-                        <h4
-                            style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
-                            운영 및 관리 도구</h4>
-                        <div class="action-grid">
-                            <div class="quick-action-btn" onclick="openTool('logs')">
-                                <span class="quick-action-icon">📑</span>
-                                <span class="quick-action-label">대화 로그 기록</span>
-                                <span class="quick-action-desc">유저별 실시간 대화 내역 모니터링</span>
-                            </div>
-                            <div class="quick-action-btn" onclick="openTool('data')">
-                                <span class="quick-action-icon">💾</span>
-                                <span class="quick-action-label">지식/데이터 주입</span>
-                                <span class="quick-action-desc">PDF, Web 지식 베이스 학습 관리</span>
-                            </div>
-                            <div class="quick-action-btn" onclick="openTool('skills')">
-                                <span class="quick-action-icon">🧩</span>
-                                <span class="quick-action-label">스킬 투입 관리</span>
-                                <span class="quick-action-desc">기능 플러그인 설치 및 설정</span>
-                            </div>
-                            <div class="quick-action-btn" onclick="openTool('settings')">
-                                <span class="quick-action-icon">⚙️</span>
-                                <span class="quick-action-label">챗봇 고급 설정</span>
-                                <span class="quick-action-desc">페르소나 정의 및 모델 파라미터 변경</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bot-manage-list" id="botListContainer">
+                    <!-- home.js renderBotList()가 동적으로 렌더링 -->
                 </div>
             </div>
 
@@ -327,6 +286,8 @@
     <script src="../../js/config.js?v=14.0"></script>
     <script src="../../js/secrets.js?v=14.0"></script>
     <script src="../../js/app.js?v=14.0"></script>
+    <script src="../../js/kb-manager.js?v=14.0"></script>
+    <script src="../../js/home.js?v=14.0"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             await MCW.ready;
@@ -340,6 +301,8 @@
                     document.getElementById('userIdDisplay').textContent = user.email || user.id;
                     document.getElementById('userNameInput').value = user.name;
                     document.getElementById('userJoinedDisplay').textContent = user.created_at ? MCW.formatDate(user.created_at) : '-';
+                    // home.js의 동적 봇 목록 렌더링
+                    if (typeof HomePage !== 'undefined') HomePage.init();
                 } else {
                     location.href = '../login.html';
                 }

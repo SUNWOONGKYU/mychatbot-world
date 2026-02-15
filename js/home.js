@@ -47,6 +47,19 @@ const HomePage = (() => {
     if (nameEl) nameEl.value = user.name || '';
     if (dateEl) dateEl.textContent = user.created_at ? MCW.formatDate(user.created_at) : '-';
 
+    // 클라우드에서 봇 로드 → localStorage에 머지
+    if (typeof StorageManager !== 'undefined' && StorageManager.loadUserBotsFromCloud) {
+      try {
+        const cloudBots = await StorageManager.loadUserBotsFromCloud(user.id);
+        for (const cb of cloudBots) {
+          const existing = MCW.storage.getBot(cb.id);
+          if (!existing) {
+            MCW.storage.saveBot(cb);
+          }
+        }
+      } catch (e) { console.warn('[Home] cloud bot load failed:', e); }
+    }
+
     renderBotList();
   }
 

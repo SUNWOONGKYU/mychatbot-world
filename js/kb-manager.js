@@ -791,9 +791,9 @@ const StorageManager = (() => {
 
     const result = await supabaseSave('mcw_bots', payload);
 
-    // 공개 페르소나(avatar)도 동기화
-    const avatarPersonas = (botData.personas || []).filter(p => p.category === 'avatar');
-    for (const p of avatarPersonas) {
+    // 모든 페르소나 동기화 (소유자 관리 화면에서 helper도 표시)
+    const allPersonas = botData.personas || [];
+    for (const p of allPersonas) {
       await supabaseSave('mcw_personas', {
         id: p.id,
         bot_id: botData.id,
@@ -847,6 +847,30 @@ const StorageManager = (() => {
   }
 
 
+  /**
+   * Supabase에서 특정 유저의 모든 봇 로드
+   */
+  async function loadUserBotsFromCloud(userId) {
+    if (!getSupabase()) return [];
+    const bots = await supabaseQuery('mcw_bots', { owner_id: userId });
+    const result = [];
+    for (const bot of bots) {
+      const personas = await supabaseQuery('mcw_personas', { bot_id: bot.id });
+      result.push({
+        id: bot.id, username: bot.username, ownerId: bot.owner_id,
+        botName: bot.bot_name, botDesc: bot.bot_desc, emoji: bot.emoji,
+        greeting: bot.greeting, faqs: bot.faqs, inputText: bot.input_text,
+        personas: personas.map(p => ({
+          id: p.id, name: p.name, role: p.role, category: p.category,
+          model: p.model, iqEq: p.iq_eq, isPublic: p.is_public,
+          isVisible: true, greeting: p.greeting, faqs: p.faqs
+        })),
+        createdAt: bot.created_at
+      });
+    }
+    return result;
+  }
+
   // ─── Init: 자동 연결 시도 ───
   if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {
@@ -873,6 +897,7 @@ const StorageManager = (() => {
     // Bot Cloud Sync
     syncBotToCloud,
     loadBotFromCloud,
+    loadUserBotsFromCloud,
 
     // Info / Debug
     route: getRoute,

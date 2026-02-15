@@ -177,6 +177,10 @@ var SUNNY_DATA_VERSION = 'v15.0';
         likes: 0,
       });
       MCW.storage.saveBot(initialBot);
+      // Supabase에도 동기화
+      if (typeof StorageManager !== 'undefined' && StorageManager.syncBotToCloud) {
+        StorageManager.syncBotToCloud(initialBot).catch(function(e) { console.warn('[SunnyBot] cloud sync failed:', e); });
+      }
       localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
       console.log('[SunnyBot] created (' + SUNNY_DATA_VERSION + ') owner: ' + SUNNY_OWNER_EMAIL);
     } else {
@@ -206,6 +210,10 @@ var SUNNY_DATA_VERSION = 'v15.0';
 
       if (needUpdate) {
         MCW.storage.saveBot(existing);
+        // Supabase에도 동기화
+        if (typeof StorageManager !== 'undefined' && StorageManager.syncBotToCloud) {
+          StorageManager.syncBotToCloud(existing).catch(function(e) { console.warn('[SunnyBot] cloud sync failed:', e); });
+        }
         localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
         console.log('[SunnyBot] updated to ' + SUNNY_DATA_VERSION + ', owner: ' + existing.ownerId);
       }
