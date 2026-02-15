@@ -154,10 +154,14 @@
             const pw = document.getElementById('password').value;
 
             try {
+                const client = MCW.auth.getClient();
+                console.log('[Login] client ready:', !!client);
+                console.log('[Login] attempting:', email);
                 await MCW.user.login(email, pw);
                 window.location.href = 'home/index.html';
             } catch (err) {
-                errorEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+                console.error('[Login] error:', err.message, err.status, err);
+                errorEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다. (' + (err.message || '') + ')';
                 errorEl.style.display = 'block';
             }
         }
