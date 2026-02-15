@@ -217,9 +217,10 @@ function clearDraft() {
     sessionStorage.removeItem(DRAFT_KEY);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // 로그인 확인
-    if (typeof MCW !== 'undefined' && MCW.user) {
+    if (typeof MCW !== 'undefined' && MCW.ready) {
+        await MCW.ready;
         const user = MCW.user.getCurrentUser();
         if (!user) {
             alert('챗봇을 생성하려면 먼저 로그인해주세요.');

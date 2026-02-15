@@ -361,13 +361,14 @@
     </div>
   </footer>
 
-  <script src="js/config.js?v=13.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=14.0"></script>
   <script src="js/check_key.js?v=11.1"></script>
-  <script src="js/secrets.js?v=13.0"></script>
-  <script src="js/app.js?v=13.0"></script>
-  <script src="js/migration.js?v=13.0"></script>
-  <script src="js/sunny-demo.js?v=13.0"></script>
-  <script src="js/landing.js?v=11.0"></script>
+  <script src="js/secrets.js?v=14.0"></script>
+  <script src="js/app.js?v=14.0"></script>
+  <script src="js/migration.js?v=14.0"></script>
+  <script src="js/sunny-demo.js?v=14.0"></script>
+  <script src="js/landing.js?v=14.0"></script>
   <script>
     // Navbar: 로그인 상태에 따라 버튼 전환
     function updateNavbar() {
@@ -378,12 +379,15 @@
       document.getElementById('navLogout').style.display = loggedIn ? '' : 'none';
     }
 
-    function handleLogout() {
-      localStorage.removeItem('mcw_current_user_id');
+    async function handleLogout() {
+      await MCW.user.logout();
       updateNavbar();
     }
 
-    document.addEventListener('DOMContentLoaded', updateNavbar);
+    document.addEventListener('DOMContentLoaded', async () => {
+      await MCW.ready;
+      updateNavbar();
+    });
   </script>
 </body>
 

@@ -29,8 +29,10 @@ const HomePage = (() => {
 
 
   // ─── Init ───
-  function init() {
+  async function init() {
     if (typeof MCW === 'undefined') return;
+
+    await MCW.ready;
 
     const user = MCW.user.getCurrentUser();
     if (!user) {
@@ -41,7 +43,7 @@ const HomePage = (() => {
     const idEl = document.getElementById('userIdDisplay');
     const nameEl = document.getElementById('userNameInput');
     const dateEl = document.getElementById('userJoinedDisplay');
-    if (idEl) idEl.textContent = user.id;
+    if (idEl) idEl.textContent = user.email || user.id;
     if (nameEl) nameEl.value = user.name || '';
     if (dateEl) dateEl.textContent = user.created_at ? MCW.formatDate(user.created_at) : '-';
 
@@ -1031,32 +1033,41 @@ const HomePage = (() => {
     });
   }
 
-  function updateProfile() {
+  async function updateProfile() {
     const user = MCW.user.getCurrentUser();
     if (!user) return;
     const nameEl = document.getElementById('userNameInput');
-    if (nameEl) user.name = nameEl.value;
-    MCW.user.saveUser(user);
-    MCW.showToast('프로필이 저장되었습니다.');
+    if (!nameEl) return;
+    try {
+      await MCW.user.saveUser({ name: nameEl.value });
+      MCW.showToast('프로필이 저장되었습니다.');
+    } catch (e) {
+      MCW.showToast('프로필 저장에 실패했습니다.');
+    }
   }
 
-  function changePassword() {
-    const current = document.getElementById('currentPw')?.value;
+  async function changePassword() {
     const next = document.getElementById('newPw')?.value;
     const confirmVal = document.getElementById('newPwConfirm')?.value;
 
-    if (!current || !next) return alert('비밀번호를 입력해주세요.');
+    if (!next) return alert('새 비밀번호를 입력해주세요.');
+    if (next.length < 6) return alert('비밀번호는 6자 이상이어야 합니다.');
     if (next !== confirmVal) return alert('새 비밀번호가 일치하지 않습니다.');
 
-    MCW.showToast('비밀번호가 변경되었습니다.');
-    if (document.getElementById('currentPw')) document.getElementById('currentPw').value = '';
-    if (document.getElementById('newPw')) document.getElementById('newPw').value = '';
-    if (document.getElementById('newPwConfirm')) document.getElementById('newPwConfirm').value = '';
+    try {
+      await MCW.user.updatePassword(next);
+      MCW.showToast('비밀번호가 변경되었습니다.');
+      if (document.getElementById('currentPw')) document.getElementById('currentPw').value = '';
+      if (document.getElementById('newPw')) document.getElementById('newPw').value = '';
+      if (document.getElementById('newPwConfirm')) document.getElementById('newPwConfirm').value = '';
+    } catch (e) {
+      alert('비밀번호 변경에 실패했습니다: ' + (e.message || ''));
+    }
   }
 
-  function logout() {
+  async function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-      MCW.user.logout();
+      await MCW.user.logout();
       window.location.href = '../login.html';
     }
   }

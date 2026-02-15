@@ -90,24 +90,117 @@ const MCW = {
     }
   },
 
-  // ─── User Management (Phase 3) ───
+  // ─── Auth (Supabase Auth wrapper) ───
+  auth: {
+    _supabase: null,
+    _user: null,
+
+    async init() {
+      if (this._supabase) return this._user;
+
+      const url = typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.SUPABASE_URL;
+      const key = typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.SUPABASE_ANON_KEY;
+      if (!url || !key || typeof supabase === 'undefined') {
+        console.warn('[MCW.auth] Supabase not available');
+        return null;
+      }
+
+      this._supabase = supabase.createClient(url, key);
+
+      // Restore session
+      const { data: { session } } = await this._supabase.auth.getSession();
+      if (session?.user) {
+        this._user = MCW.auth._toUserObj(session.user);
+      }
+
+      // Listen for auth changes
+      this._supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          this._user = MCW.auth._toUserObj(session.user);
+        } else {
+          this._user = null;
+        }
+      });
+
+      return this._user;
+    },
+
+    getClient() {
+      return this._supabase;
+    },
+
+    _toUserObj(supaUser) {
+      return {
+        id: supaUser.email,
+        email: supaUser.email,
+        name: supaUser.user_metadata?.name || supaUser.email.split('@')[0],
+        created_at: supaUser.created_at,
+        role: 'user'
+      };
+    }
+  },
+
+  // ─── User Management (Supabase Auth) ───
   user: {
-    getUsers() {
-      return JSON.parse(localStorage.getItem('mcw_users') || '[]');
+    getCurrentUser() {
+      return MCW.auth._user;
     },
-    saveUser(user) {
-      const users = this.getUsers();
-      const idx = users.findIndex(u => u.id === user.id);
-      if (idx >= 0) users[idx] = user;
-      else users.push(user);
-      localStorage.setItem('mcw_users', JSON.stringify(users));
-      return user;
+
+    async login(email, password) {
+      const client = MCW.auth.getClient();
+      if (!client) throw new Error('Auth not initialized');
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      MCW.auth._user = MCW.auth._toUserObj(data.user);
+      return MCW.auth._user;
     },
-    getUser(id) {
-      const users = this.getUsers();
-      const user = users.find(u => u.id === id || u.email === id);
-      return user || null;
+
+    async signup(email, password, name) {
+      const client = MCW.auth.getClient();
+      if (!client) throw new Error('Auth not initialized');
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: { data: { name } }
+      });
+      if (error) throw error;
+      MCW.auth._user = MCW.auth._toUserObj(data.user);
+      return MCW.auth._user;
     },
+
+    async logout() {
+      const client = MCW.auth.getClient();
+      if (client) await client.auth.signOut();
+      MCW.auth._user = null;
+    },
+
+    async saveUser(updates) {
+      const client = MCW.auth.getClient();
+      if (!client) throw new Error('Auth not initialized');
+      const { data, error } = await client.auth.updateUser({
+        data: { name: updates.name }
+      });
+      if (error) throw error;
+      MCW.auth._user = MCW.auth._toUserObj(data.user);
+      return MCW.auth._user;
+    },
+
+    async resetPassword(email) {
+      const client = MCW.auth.getClient();
+      if (!client) throw new Error('Auth not initialized');
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://mychatbot.world/pages/reset-password.html'
+      });
+      if (error) throw error;
+    },
+
+    async updatePassword(newPassword) {
+      const client = MCW.auth.getClient();
+      if (!client) throw new Error('Auth not initialized');
+      const { error } = await client.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+    },
+
     claimAnonymousBots(id) {
       const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
       let changed = false;
@@ -121,23 +214,6 @@ const MCW = {
         localStorage.setItem('mcw_bots', JSON.stringify(bots));
         console.log("[MCW] Bots claimed for user:", id);
       }
-    },
-    verifyPassword(id, password) {
-      const user = this.getUser(id);
-      if (user && user.password === password) return true;
-      return false;
-    },
-    getCurrentUser() {
-      const id = localStorage.getItem('mcw_current_user_id');
-      if (id) return this.getUser(id);
-      return null;
-    },
-    login(id) {
-      localStorage.setItem('mcw_current_user_id', id);
-    },
-    logout() {
-      localStorage.removeItem('mcw_current_user_id');
-      window.location.href = '../login.html'; // Direct redirect
     }
   },
 
@@ -252,8 +328,14 @@ const MCW = {
 // Make globally available
 window.MCW = MCW;
 
-// ─── App Init: 로그인 유저 봇 자동 연결 ───
-(function autoClaimBots() {
-  const user = MCW.user.getCurrentUser();
-  if (user) MCW.user.claimAnonymousBots(user.id);
+// ─── MCW.ready: 모든 페이지가 await 가능한 Promise ───
+MCW.ready = (async () => {
+  try {
+    const user = await MCW.auth.init();
+    if (user) MCW.user.claimAnonymousBots(user.id);
+    return user;
+  } catch (e) {
+    console.warn('[MCW.ready] init error:', e);
+    return null;
+  }
 })();

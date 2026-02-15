@@ -140,9 +140,12 @@ if (typeof window !== 'undefined') {
 var SUNNY_DATA_VERSION = 'v15.0';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
-(function autoInitSunnyBot() {
+(async function autoInitSunnyBot() {
   if (typeof window === 'undefined') return;
   if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots || !MCW.storage.saveBot) return;
+
+  // auth init 완료 대기
+  if (MCW.ready) await MCW.ready;
 
   try {
     var storedVersion = localStorage.getItem('mcw_sunny_data_version');

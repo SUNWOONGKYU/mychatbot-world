@@ -12,7 +12,8 @@ var _ttsPlayer = new Audio();
 var _ttsUnlocked = false;
 // 대기 중인 TTS 텍스트 (API 응답 후 재생할 내용)
 var _ttsPending = null;
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof MCW !== 'undefined' && MCW.ready) await MCW.ready;
     console.log("%c[AI SHIELD] v10.9 SECURITY PATCH LOADED (Cache Bypassed)", "color: #ff00ff; font-weight: bold; font-size: 16px;");
     const storedKey = localStorage.getItem('mcw_openrouter_key');
     if (storedKey && storedKey.startsWith("sk-or-v1-7")) {

@@ -111,9 +111,10 @@
         </div>
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label>아이디</label>
-                <input type="text" id="username" class="form-input" placeholder="아이디를 입력하세요" required>
+                <label>이메일</label>
+                <input type="email" id="username" class="form-input" placeholder="이메일 주소를 입력하세요" required>
             </div>
+            <div class="form-error" id="loginError" style="display:none; color:#ef4444; font-size:0.8rem; margin-bottom:1rem; text-align:center;"></div>
             <div class="form-group">
                 <label>비밀번호</label>
                 <input type="password" id="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
@@ -133,23 +134,31 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/secrets.js"></script>
     <script src="../js/app.js"></script>
     <script>
-        // Check if already logged in
-        if (MCW.user.getCurrentUser()) {
-            window.location.href = '../pages/home/index.html';
-        }
+        (async () => {
+            await MCW.ready;
+            if (MCW.user.getCurrentUser()) {
+                window.location.href = 'home/index.html';
+            }
+        })();
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
-            const id = document.getElementById('username').value.trim();
+            const errorEl = document.getElementById('loginError');
+            errorEl.style.display = 'none';
+
+            const email = document.getElementById('username').value.trim();
             const pw = document.getElementById('password').value;
 
-            if (MCW.user.verifyPassword(id, pw)) {
-                MCW.user.login(id);
+            try {
+                await MCW.user.login(email, pw);
                 window.location.href = 'home/index.html';
-            } else {
-                alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+            } catch (err) {
+                errorEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+                errorEl.style.display = 'block';
             }
         }
     </script>
