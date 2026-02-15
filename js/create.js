@@ -54,17 +54,19 @@ function _startFieldSTT(input, convertToUrl = false) {
     const rec = new SpeechRecognition();
     rec.lang = 'ko-KR';
     rec.continuous = true;
-    rec.interimResults = true;
+    rec.interimResults = false;  // 확정 결과만 표시 (중간 결과 비활성)
 
     // 버튼 시각 피드백
     const btn = input.parentElement.querySelector('.mic-btn');
     if (btn) { btn.textContent = '🔴'; btn.classList.add('recording'); }
 
     rec.onresult = (e) => {
-        // 모든 결과를 처음부터 다시 조합 (에코 방지)
+        // 확정된(final) 결과만 조합
         let fullText = '';
         for (let i = 0; i < e.results.length; i++) {
-            fullText += e.results[i][0].transcript;
+            if (e.results[i].isFinal) {
+                fullText += e.results[i][0].transcript;
+            }
         }
         const maxLen = input.maxLength > 0 ? input.maxLength : 9999;
         let result = fullText.slice(0, maxLen);
