@@ -567,15 +567,19 @@ function savePerPersonaMessage(role, content) {
     localStorage.setItem(key, JSON.stringify(convs));
 
     // Supabase mcw_chat_logs (비동기, 실패해도 무시)
-    if (typeof StorageManager !== 'undefined' && StorageManager.supabase && StorageManager.getSupabase()) {
-        StorageManager.supabase.save('mcw_chat_logs', {
-            id: botId + '_' + personaId + '_' + Date.now(),
-            bot_id: botId,
-            persona_id: personaId,
-            role: role,
-            content: content,
-            session_id: _chatSessionId
-        }).catch(function(e) { console.warn('[Chat] cloud log failed:', e); });
+    if (typeof StorageManager !== 'undefined' && StorageManager.getSupabase) {
+        var sb = StorageManager.getSupabase();
+        if (sb) {
+            sb.from('mcw_chat_logs').insert({
+                bot_id: botId,
+                persona_id: personaId,
+                role: role,
+                content: content,
+                session_id: _chatSessionId
+            }).then(function(res) {
+                if (res.error) console.warn('[Chat] cloud log error:', res.error.message);
+            }).catch(function(e) { console.warn('[Chat] cloud log failed:', e); });
+        }
     }
 }
 
