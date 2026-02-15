@@ -139,7 +139,11 @@
     <script src="../js/app.js"></script>
     <script>
         (async () => {
-            await MCW.ready;
+            console.log('[Login] supabase global:', typeof supabase);
+            console.log('[Login] MCW_SECRETS:', typeof MCW_SECRETS, typeof MCW_SECRETS !== 'undefined' ? !!MCW_SECRETS.SUPABASE_URL : 'N/A');
+            const u = await MCW.ready;
+            console.log('[Login] MCW.ready resolved, user:', u);
+            console.log('[Login] client:', !!MCW.auth.getClient());
             if (MCW.user.getCurrentUser()) {
                 window.location.href = 'home/index.html';
             }
