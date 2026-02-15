@@ -53,23 +53,20 @@ function _startFieldSTT(input, convertToUrl = false) {
 
     const rec = new SpeechRecognition();
     rec.lang = 'ko-KR';
-    rec.continuous = true;
-    rec.interimResults = false;  // 확정 결과만 표시 (중간 결과 비활성)
+    rec.continuous = false;     // 한 번 말하면 자동 종료
+    rec.interimResults = false; // 확정 결과만
 
     // 버튼 시각 피드백
     const btn = input.parentElement.querySelector('.mic-btn');
     if (btn) { btn.textContent = '🔴'; btn.classList.add('recording'); }
 
     rec.onresult = (e) => {
-        // 확정된(final) 결과만 조합
-        let fullText = '';
-        for (let i = 0; i < e.results.length; i++) {
-            if (e.results[i].isFinal) {
-                fullText += e.results[i][0].transcript;
-            }
-        }
+        // 기존 텍스트에 이어붙이기 (여러 번 마이크 누를 수 있도록)
+        const newText = e.results[0][0].transcript;
+        const existing = input.value.trim();
         const maxLen = input.maxLength > 0 ? input.maxLength : 9999;
-        let result = fullText.slice(0, maxLen);
+        let result = existing ? existing + ' ' + newText : newText;
+        result = result.slice(0, maxLen);
         if (convertToUrl) {
             result = _koreanToUrl(result);
         }
@@ -135,6 +132,91 @@ const HELPER_TYPES = [
 ];
 
 // === Init ===
+// === 단계별 저장/복원 (sessionStorage) ===
+const DRAFT_KEY = 'mcw_create_draft';
+
+function saveDraft() {
+    const draft = {
+        step: currentStep,
+        botName: document.getElementById('botName')?.value || '',
+        botDesc: document.getElementById('botDesc')?.value || '',
+        botUsername: document.getElementById('botUsername')?.value || '',
+        usernameManual: _usernameManuallyEdited,
+        persona: _collectPersonaFromDOM(),
+        transcriptText: transcriptText,
+        textContent: document.getElementById('textContent')?.value || '',
+        savedAt: Date.now()
+    };
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+}
+
+function _collectPersonaFromDOM() {
+    const card = document.querySelector('#avatarPersonaList .persona-card');
+    if (!card) return null;
+    return {
+        name: card.querySelector('.p-name')?.value || '',
+        role: card.querySelector('.p-role')?.value || '',
+        iqEq: parseInt(card.querySelector('.p-iqeq')?.value || '50', 10),
+        model: card.querySelector('input[type=radio][name^="model"]:checked')?.value || 'logic'
+    };
+}
+
+function loadDraft() {
+    try {
+        const raw = sessionStorage.getItem(DRAFT_KEY);
+        if (!raw) return null;
+        const draft = JSON.parse(raw);
+        // 24시간 이상 된 초안은 무시
+        if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {
+            sessionStorage.removeItem(DRAFT_KEY);
+            return null;
+        }
+        return draft;
+    } catch { return null; }
+}
+
+function restoreDraft(draft) {
+    // Step 1 필드 복원
+    if (draft.botName) document.getElementById('botName').value = draft.botName;
+    if (draft.botDesc) document.getElementById('botDesc').value = draft.botDesc;
+    if (draft.botUsername) document.getElementById('botUsername').value = draft.botUsername;
+    if (draft.usernameManual) _usernameManuallyEdited = true;
+
+    // 페르소나 카드 복원
+    if (draft.persona) {
+        setTimeout(() => {
+            const card = document.querySelector('#avatarPersonaList .persona-card');
+            if (!card) return;
+            const nameEl = card.querySelector('.p-name');
+            const roleEl = card.querySelector('.p-role');
+            const iqEl = card.querySelector('.p-iqeq');
+            if (nameEl) nameEl.value = draft.persona.name;
+            if (roleEl) roleEl.value = draft.persona.role;
+            if (iqEl) { iqEl.value = draft.persona.iqEq; updateSliderPreview(iqEl); }
+            if (draft.persona.model) {
+                const radio = card.querySelector(`input[type=radio][value="${draft.persona.model}"]`);
+                if (radio) radio.checked = true;
+            }
+        }, 100);
+    }
+
+    // Step 3 텍스트 복원
+    if (draft.transcriptText) transcriptText = draft.transcriptText;
+    if (draft.textContent) {
+        const ta = document.getElementById('textContent');
+        if (ta) ta.value = draft.textContent;
+    }
+
+    // 저장된 단계로 이동
+    if (draft.step > 1) {
+        setTimeout(() => goToStep(draft.step), 200);
+    }
+}
+
+function clearDraft() {
+    sessionStorage.removeItem(DRAFT_KEY);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // 로그인 확인
     if (typeof MCW !== 'undefined' && MCW.user) {
@@ -147,10 +229,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setupSpeechRecognition();
     setupTextCounter();
-    // 챗봇 이름 → 사용자명(URL) 자동 생성
     setupAutoUsername();
-    // 대표 페르소나 1개만 생성
     addPersonaCard('avatar');
+
+    // 저장된 초안이 있으면 복원
+    const draft = loadDraft();
+    if (draft && draft.step > 1) {
+        if (confirm('이전에 작성 중이던 챗봇이 있습니다. 이어서 작성하시겠습니까?')) {
+            restoreDraft(draft);
+        } else {
+            clearDraft();
+        }
+    } else if (draft) {
+        restoreDraft(draft);
+    }
 });
 
 // === 챗봇 이름 → 사용자명 자동 생성 ===
@@ -215,6 +307,9 @@ function goToStep(step) {
     }
 
     currentStep = step;
+
+    // 단계 이동 시 자동 저장
+    saveDraft();
 
     const pct = Math.round((step / PART1_STEPS) * 100);
     const fill = document.getElementById('progressFill');
@@ -749,6 +844,9 @@ async function completeCreation() {
     } catch (err) {
         console.warn('[Create] Cloud sync skipped:', err.message);
     }
+
+    // 생성 완료 → 초안 삭제
+    clearDraft();
 
     goToStep(5);
 
