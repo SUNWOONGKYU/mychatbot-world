@@ -1,14 +1,11 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "package.json",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "."
-            }
+    "buildCommand": "node scripts/generate-config.cjs",
+    "functions": {
+        "api/**/*.js": {
+            "runtime": "@vercel/node@3"
         }
-    ],
+    },
     "headers": [
         {
             "source": "/js/(.*)",
@@ -21,12 +18,14 @@
             "headers": [
                 { "key": "Content-Type", "value": "text/css; charset=utf-8" }
             ]
-        }
-    ],
-    "rewrites": [
+        },
         {
-            "source": "/(.*)",
-            "destination": "/$1"
+            "source": "/api/(.*)",
+            "headers": [
+                { "key": "Access-Control-Allow-Origin", "value": "*" },
+                { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PATCH, OPTIONS" },
+                { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+            ]
         }
     ]
 }
