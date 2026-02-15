@@ -221,6 +221,23 @@ textarea.form-control-dark {
   margin-top: 4px;
 }
 
+/* === Draft Card (작성 중) === */
+.draft-card {
+  border: 1px dashed rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.draft-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 /* === URL Panel === */
 .url-panel {
   display: none;

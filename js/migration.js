@@ -151,31 +151,37 @@ var SUNNY_DATA_VERSION = 'v15.0';
       return b.id === 'sunny-official' || b.username === 'sunny';
     });
 
-    // 현재 로그인 유저
+    // Sunny Bot은 wksun999@gmail.com 전용
+    var SUNNY_OWNER_EMAIL = 'wksun999@gmail.com';
+    var currentUser = null;
     var ownerId = 'anonymous';
     if (MCW.user && MCW.user.getCurrentUser) {
-      var user = MCW.user.getCurrentUser();
-      if (user) ownerId = user.id;
+      currentUser = MCW.user.getCurrentUser();
+      if (currentUser) ownerId = currentUser.id;
     }
 
+    // Sunny Bot 소유자가 아니면 생성/할당하지 않음
+    var isSunnyOwner = currentUser && (currentUser.id === SUNNY_OWNER_EMAIL || currentUser.email === SUNNY_OWNER_EMAIL);
+
     if (existingIndex === -1) {
-      // 최초 생성
+      // Sunny Bot 소유자만 최초 생성
+      if (!isSunnyOwner) return;
       var initialBot = Object.assign({}, SunnyBotData, {
         id: 'sunny-official',
         username: 'sunny',
-        ownerId: ownerId,
+        ownerId: SUNNY_OWNER_EMAIL,
         created: Date.now(),
         likes: 0,
       });
       MCW.storage.saveBot(initialBot);
       localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
-      console.log('[SunnyBot] created (' + SUNNY_DATA_VERSION + ') owner: ' + ownerId);
+      console.log('[SunnyBot] created (' + SUNNY_DATA_VERSION + ') owner: ' + SUNNY_OWNER_EMAIL);
     } else {
       var existing = bots[existingIndex];
       var needUpdate = false;
 
-      // 버전 불일치 → 데이터 리프레시
-      if (storedVersion !== SUNNY_DATA_VERSION) {
+      // 버전 불일치 → 데이터 리프레시 (소유자만)
+      if (storedVersion !== SUNNY_DATA_VERSION && isSunnyOwner) {
         Object.assign(existing, {
           botName: SunnyBotData.botName,
           botDesc: SunnyBotData.botDesc,
@@ -189,9 +195,9 @@ var SUNNY_DATA_VERSION = 'v15.0';
         needUpdate = true;
       }
 
-      // ownerId가 admin/anonymous이면 현재 유저에 연결
-      if (ownerId !== 'anonymous' && (!existing.ownerId || existing.ownerId === 'anonymous' || existing.ownerId === 'admin')) {
-        existing.ownerId = ownerId;
+      // ownerId를 Sunny 소유자 이메일로 고정
+      if (existing.ownerId !== SUNNY_OWNER_EMAIL) {
+        existing.ownerId = SUNNY_OWNER_EMAIL;
         needUpdate = true;
       }
 

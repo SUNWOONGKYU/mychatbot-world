@@ -58,12 +58,15 @@ const HomePage = (() => {
 
     const user = MCW.user.getCurrentUser();
     const allBots = MCW.storage.getBots();
-    // 내 봇만 필터 (_system 데모봇 제외)
+    // 내 봇만 필터 (정확히 내 ownerId만)
     const bots = user
-      ? allBots.filter(b => b.ownerId !== '_system' && (b.ownerId === user.id || !b.ownerId || b.ownerId === 'anonymous' || b.ownerId === 'admin'))
-      : allBots.filter(b => b.ownerId !== '_system');
+      ? allBots.filter(b => b.ownerId === user.id)
+      : [];
 
-    if (bots.length === 0) {
+    // 작성 중인 초안 확인
+    const draftHtml = renderDraftCard();
+
+    if (bots.length === 0 && !draftHtml) {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🤖</div>
@@ -74,7 +77,46 @@ const HomePage = (() => {
       return;
     }
 
-    container.innerHTML = bots.map(bot => renderBotCard(bot)).join('');
+    container.innerHTML = (draftHtml || '') + bots.map(bot => renderBotCard(bot)).join('');
+  }
+
+  // 작성 중인 초안 카드
+  function renderDraftCard() {
+    try {
+      const raw = sessionStorage.getItem('mcw_create_draft');
+      if (!raw) return '';
+      const draft = JSON.parse(raw);
+      if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) return '';
+
+      const name = draft.botName || '이름 미정';
+      const stepLabels = ['', '기본정보', '페르소나', '인터뷰', '분석', '완성'];
+      const stepLabel = stepLabels[draft.step] || `Step ${draft.step}`;
+      const savedTime = new Date(draft.savedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <div class="bot-card draft-card">
+          <div class="bot-card-header">
+            <div class="bot-info">
+              <div class="bot-meta">
+                <h3>${escHtml(name)} <span class="draft-badge">작성 중</span></h3>
+                <p>Step ${draft.step}: ${stepLabel} 단계에서 중단됨</p>
+                <div class="bot-date">${savedTime} 저장</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button class="btn-sm-primary" onclick="location.href='../create/index.html'">이어서 작성</button>
+              <button class="btn-sm-dark" onclick="HomePage.clearDraft()">삭제</button>
+            </div>
+          </div>
+        </div>`;
+    } catch { return ''; }
+  }
+
+  function clearDraft() {
+    if (!confirm('작성 중인 초안을 삭제하시겠습니까?')) return;
+    sessionStorage.removeItem('mcw_create_draft');
+    MCW.showToast('초안이 삭제되었습니다.');
+    renderBotList();
   }
 
   function renderBotCard(bot) {
@@ -1081,7 +1123,10 @@ const HomePage = (() => {
 
     // Bot
     saveBotInfo,
-    deleteBot
+    deleteBot,
+
+    // Draft
+    clearDraft
   };
 })();
 
