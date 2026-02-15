@@ -253,6 +253,58 @@
     display: none;
 }
 
+/* === 10가지 직업 카드 === */
+.jobs-preview {
+    margin-top: var(--space-8);
+}
+
+.jobs-title {
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-6);
+    color: var(--gray-800);
+}
+
+.jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+}
+
+.job-card {
+    background: white;
+    border: 2px solid var(--gray-100);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.job-card:hover {
+    border-color: var(--primary-300);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.job-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+.job-card h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+}
+
+.job-card p {
+    font-size: 0.7rem;
+    color: var(--gray-500);
+    line-height: 1.4;
+}
+
 .template-tag {
     font-size: 0.65rem;
     background: var(--primary-50);
@@ -848,6 +900,10 @@
         grid-template-columns: repeat(3, 1fr);
     }
 
+    .jobs-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     .skills-preview-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -903,6 +959,10 @@
     }
 
     .templates-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .jobs-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 

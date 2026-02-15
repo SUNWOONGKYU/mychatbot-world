@@ -394,12 +394,9 @@ async function generateResponse(userText) {
     if (!API_KEY || API_KEY.length < 50 || API_KEY.includes(BAD_KEY_HASH)) {
         return '[시스템 오류] API 키가 유효하지 않습니다. (원인: User not found / Key Invalid). 캐시를 삭제하고 다시 접속해주세요.';
     }
-    const modelStack = [
-        'google/gemini-2.0-flash-001',
-        'google/gemini-2.0-flash-exp:free',
-        'meta-llama/llama-3.3-70b-instruct',
-        'openrouter/free'
-    ];
+    const modelStack = (typeof MCW !== 'undefined' && MCW.models)
+        ? [...MCW.models.chat, MCW.models.free]
+        : ['google/gemini-2.5-flash', 'openai/gpt-4o', 'anthropic/claude-sonnet-4.5', 'deepseek/deepseek-chat', 'openrouter/free'];
     let lastError = '';
     for (let currentModel of modelStack) {
         try {
@@ -433,23 +430,46 @@ async function generateResponse(userText) {
     }
     return '[AI 오류] 접속 실패 (' + lastError + ')';
 }
-// TTS: unlock된 _ttsPlayer에 Google Translate TTS src를 넣어서 재생
+// TTS: 1차 /api/tts (OpenAI TTS-1) → 2차 Google Translate → 3차 SpeechSynthesis
 function speak(text) {
     if (!voiceOutputEnabled) return;
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
     if (clean.length > 200) clean = clean.substring(0, 200);
+
+    // 1차: /api/tts (OpenAI TTS-1 — 원소스 멀티유즈)
+    fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, voice: 'alloy' })
+    }).then(function (res) {
+        if (!res.ok) throw new Error('TTS API ' + res.status);
+        return res.blob();
+    }).then(function (blob) {
+        var blobUrl = URL.createObjectURL(blob);
+        _ttsPlayer.pause();
+        _ttsPlayer.currentTime = 0;
+        _ttsPlayer.src = blobUrl;
+        _ttsPlayer.volume = 1.0;
+        _ttsPlayer.play().then(function () {
+            console.log('[TTS] OpenAI TTS-1');
+        }).catch(function () { speakFallback(clean); });
+        _ttsPlayer.onended = function () { URL.revokeObjectURL(blobUrl); };
+    }).catch(function (e) {
+        console.warn('[TTS] API fallback:', e.message);
+        speakFallback(clean);
+    });
+}
+// 2차: Google Translate TTS → 3차: SpeechSynthesis
+function speakFallback(clean) {
     var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
-    // unlock된 동일 Audio 요소에 src만 교체하여 재생
     _ttsPlayer.pause();
     _ttsPlayer.currentTime = 0;
     _ttsPlayer.src = url;
     _ttsPlayer.volume = 1.0;
     _ttsPlayer.play().then(function () {
-        console.log('[TTS] Playing');
-    }).catch(function (e) {
-        console.warn('[TTS] Play failed:', e.message);
-        // 폴백: SpeechSynthesis
+        console.log('[TTS] Google Translate fallback');
+    }).catch(function () {
         if (window.speechSynthesis) {
             var u = new SpeechSynthesisUtterance(clean);
             u.lang = 'ko-KR';
@@ -535,42 +555,55 @@ function logPerPersonaStat(type, data) {
 
 // === Per-message TTS: 사용자가 직접 탭하여 재생 (모바일 제스처 보장) ===
 function playMsgTTS(btn) {
-    // Extract text from the parent bubble element
     var bubble = btn.parentElement;
     if (!bubble) return;
     var clean = bubble.textContent.replace(/🔊/g, '').trim();
     if (!clean) return;
     if (clean.length > 200) clean = clean.substring(0, 200);
-    // 재생 중이면 중지
     if (btn.classList.contains('playing')) {
         _ttsPlayer.pause();
         _ttsPlayer.currentTime = 0;
         btn.classList.remove('playing');
         return;
     }
-    // 다른 버튼의 playing 상태 초기화
     document.querySelectorAll('.msg-tts-btn.playing').forEach(function(b) {
         b.classList.remove('playing');
     });
-    var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
-    _ttsPlayer.pause();
-    _ttsPlayer.currentTime = 0;
-    _ttsPlayer.src = url;
-    _ttsPlayer.volume = 1.0;
     btn.classList.add('playing');
-    _ttsPlayer.play().then(function() {
-        console.log('[TTS] Playing via button tap');
-    }).catch(function(e) {
-        console.warn('[TTS] Play failed:', e.message);
-        btn.classList.remove('playing');
-        // 폴백: SpeechSynthesis
-        if (window.speechSynthesis) {
-            var u = new SpeechSynthesisUtterance(clean);
-            u.lang = 'ko-KR';
-            window.speechSynthesis.speak(u);
-        }
+    // 1차: /api/tts (OpenAI TTS-1) → 2차: Google Translate → 3차: SpeechSynthesis
+    fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, voice: 'alloy' })
+    }).then(function(res) {
+        if (!res.ok) throw new Error('TTS API ' + res.status);
+        return res.blob();
+    }).then(function(blob) {
+        var blobUrl = URL.createObjectURL(blob);
+        _ttsPlayer.pause();
+        _ttsPlayer.currentTime = 0;
+        _ttsPlayer.src = blobUrl;
+        _ttsPlayer.volume = 1.0;
+        _ttsPlayer.play();
+        _ttsPlayer.onended = function() {
+            btn.classList.remove('playing');
+            URL.revokeObjectURL(blobUrl);
+        };
+    }).catch(function() {
+        // 폴백: Google Translate TTS
+        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
+        _ttsPlayer.pause();
+        _ttsPlayer.currentTime = 0;
+        _ttsPlayer.src = url;
+        _ttsPlayer.volume = 1.0;
+        _ttsPlayer.play().catch(function() {
+            btn.classList.remove('playing');
+            if (window.speechSynthesis) {
+                var u = new SpeechSynthesisUtterance(clean);
+                u.lang = 'ko-KR';
+                window.speechSynthesis.speak(u);
+            }
+        });
+        _ttsPlayer.onended = function() { btn.classList.remove('playing'); };
     });
-    _ttsPlayer.onended = function() {
-        btn.classList.remove('playing');
-    };
 }

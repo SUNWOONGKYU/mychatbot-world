@@ -799,6 +799,10 @@ const HomePage = (() => {
     const bot = MCW.storage.getBot(botId);
     if (!bot) return;
     if (!bot.personas) bot.personas = [];
+    if (bot.personas.length >= 10) {
+      MCW.showToast('페르소나는 최대 10개까지 설정 가능합니다.');
+      return;
+    }
 
     // 미니 생성 폼을 모달로 표시
     const overlay = document.createElement('div');

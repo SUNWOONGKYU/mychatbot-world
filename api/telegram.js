@@ -89,10 +89,11 @@ export default async function handler(req, res) {
       }
 
       const modelNames = {
+        'google/gemini-2.5-flash': 'Gemini 2.5 Flash',
         'openai/gpt-4o': 'GPT-4o',
-        'google/gemini-3-pro-preview': 'Gemini 3 Pro',
-        'perplexity/sonar': 'Perplexity Sonar',
         'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
+        'deepseek/deepseek-chat': 'DeepSeek V3',
+        'perplexity/sonar': 'Perplexity Sonar',
         'openrouter/free': 'Free Model',
         'random': '?쒕뜡 (5媛?紐⑤뜽 以?'
       };
@@ -310,18 +311,19 @@ async function processMessage(botId, chatId, userText, supabase, openrouterKey, 
 
     // 5. AI ?몄텧 (?좏샇 紐⑤뜽 ?먮뒗 ?대갚 ?ъ떆??
     const models = [
+      'google/gemini-2.5-flash',
       'openai/gpt-4o',
-      'google/gemini-3-pro-preview',
-      'perplexity/sonar',
       'anthropic/claude-sonnet-4.5',
+      'deepseek/deepseek-chat',
       'openrouter/free'
     ];
 
     const modelDisplayNames = {
+      'google/gemini-2.5-flash': 'Gemini 2.5 Flash',
       'openai/gpt-4o': 'GPT-4o',
-      'google/gemini-3-pro-preview': 'Gemini 3 Pro',
-      'perplexity/sonar': 'Perplexity Sonar',
       'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
+      'deepseek/deepseek-chat': 'DeepSeek V3',
+      'perplexity/sonar': 'Perplexity Sonar',
       'openrouter/free': 'Free Model'
     };
 
@@ -332,7 +334,7 @@ async function processMessage(botId, chatId, userText, supabase, openrouterKey, 
 
     let replied = false;
 
-    for (const tryModel of shuffled) {
+    for (const tryModel of tryOrder) {
       try {
         const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
@@ -429,16 +431,19 @@ async function sendModelSelection(botToken, chatId) {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: '?뵶 GPT-4o', callback_data: 'model:openai/gpt-4o' },
-            { text: '?뵷 Gemini 3 Pro', callback_data: 'model:google/gemini-3-pro-preview' }
+            { text: 'Gemini 2.5 Flash', callback_data: 'model:google/gemini-2.5-flash' },
+            { text: 'GPT-4o', callback_data: 'model:openai/gpt-4o' }
           ],
           [
-            { text: '?윢 Claude Sonnet 4.5', callback_data: 'model:anthropic/claude-sonnet-4.5' },
-            { text: '?윟 Perplexity Sonar', callback_data: 'model:perplexity/sonar' }
+            { text: 'Claude Sonnet 4.5', callback_data: 'model:anthropic/claude-sonnet-4.5' },
+            { text: 'DeepSeek V3', callback_data: 'model:deepseek/deepseek-chat' }
           ],
           [
-            { text: '??Free Model', callback_data: 'model:openrouter/free' },
-            { text: '?렡 ?쒕뜡', callback_data: 'model:random' }
+            { text: 'Perplexity Sonar', callback_data: 'model:perplexity/sonar' },
+            { text: 'Free Model', callback_data: 'model:openrouter/free' }
+          ],
+          [
+            { text: 'Random', callback_data: 'model:random' }
           ]
         ]
       }

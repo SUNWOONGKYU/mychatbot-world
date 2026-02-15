@@ -40,17 +40,23 @@
             <!-- Step 1: 봇 기본정보 -->
             <div class="create-step" id="step1">
                 <h2 class="step-title">챗봇의 기본 정보를 입력하세요</h2>
-                <p class="step-desc">이름과 소개를 설정합니다</p>
+                <p class="step-desc">🎤 옆 마이크를 누르면 음성으로 입력됩니다. 직접 텍스트로 입력해도 됩니다.</p>
                 <div class="form-card">
                     <div class="form-group">
                         <label class="form-label">챗봇 이름 *</label>
-                        <input type="text" class="form-input" id="botName"
-                            placeholder="예: 김의원 AI 비서, 쿡식당 도우미" maxlength="30">
+                        <div class="input-with-mic">
+                            <input type="text" class="form-input" id="botName"
+                                placeholder="예: 홍길동, 김변호사, 박의원, 최셰프" maxlength="30">
+                            <button type="button" class="mic-btn" onclick="voiceToField('botName')" title="음성 입력">🎤</button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">한 줄 소개</label>
-                        <input type="text" class="form-input" id="botDesc"
-                            placeholder="예: 유권자들과 소통하는 AI 비서입니다" maxlength="100">
+                        <div class="input-with-mic">
+                            <input type="text" class="form-input" id="botDesc"
+                                placeholder="예: 나를 대신해 24시간 소통하는 AI 챗봇" maxlength="100">
+                            <button type="button" class="mic-btn" onclick="voiceToField('botDesc')" title="음성 입력">🎤</button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">사용자명 (URL용)</label>
@@ -69,7 +75,7 @@
             <!-- Step 2: 대표 페르소나 설정 -->
             <div class="create-step hidden" id="step2">
                 <h2 class="step-title">대표 페르소나를 설정하세요</h2>
-                <p class="step-desc">챗봇의 대표 페르소나 1개를 설정합니다. 추가 페르소나는 마이페이지에서 만들 수 있습니다.</p>
+                <p class="step-desc">🎤 마이크 버튼으로 음성 입력 또는 직접 텍스트 입력이 가능합니다.<br>페르소나는 총 9개까지 추가할 수 있으며, 마이페이지에서 별도로 설정합니다.</p>
 
                 <div class="persona-type-badge badge-avatar">대표 페르소나를 설정하세요</div>
                 <div id="avatarPersonaList" class="persona-list"></div>

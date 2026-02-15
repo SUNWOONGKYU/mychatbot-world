@@ -180,6 +180,31 @@ const MCW = {
     { id: 'custom-theme', name: '커스텀 테마', icon: '🎨', category: 'UI', description: '브랜드 색상, 로고 추가', isFree: false, price: 20000, installs: 1234, rating: 4.5 },
   ],
 
+  // ─── AI Models (원소스 멀티유즈 통합 모델 스택) ───
+  models: {
+    // 채팅 모델 — 가성비 순서 (최고 모델 바로 밑 단계)
+    chat: [
+      'google/gemini-2.5-flash',
+      'openai/gpt-4o',
+      'anthropic/claude-sonnet-4.5',
+      'deepseek/deepseek-chat',
+    ],
+    search: 'perplexity/sonar',
+    free: 'openrouter/free',
+    // 음성 (원소스 — 플랫폼/텔레그램 동일)
+    stt: 'whisper-1',
+    tts: 'tts-1',
+    ttsVoice: 'alloy',
+    names: {
+      'google/gemini-2.5-flash': 'Gemini 2.5 Flash',
+      'openai/gpt-4o': 'GPT-4o',
+      'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
+      'deepseek/deepseek-chat': 'DeepSeek V3',
+      'perplexity/sonar': 'Perplexity Sonar',
+      'openrouter/free': 'Free Model',
+    }
+  },
+
   // ─── Helpers ───
   formatDate(iso) {
     const d = new Date(iso);

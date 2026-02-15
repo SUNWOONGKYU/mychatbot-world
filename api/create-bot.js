@@ -74,36 +74,65 @@ module.exports = async (req, res) => {
 - 인터뷰에 없는 내용을 지어내지 마세요
 - 한국어로 작성하세요`;
 
-    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
-        max_tokens: 1000
-      })
-    });
+    // 통합 모델 스택 — 가성비 순서 (원소스 멀티유즈)
+    const MODEL_STACK = [
+      'google/gemini-2.5-flash',
+      'openai/gpt-4o',
+      'anthropic/claude-sonnet-4.5',
+      'deepseek/deepseek-chat',
+    ];
 
-    const data = await resp.json();
-    const content = data.choices?.[0]?.message?.content || '';
+    for (const model of MODEL_STACK) {
+      try {
+        const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+            max_tokens: 1000
+          })
+        });
 
-    let aiResult = null;
-    try {
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) aiResult = JSON.parse(jsonMatch[0]);
-    } catch (e) {
-      console.error('AI JSON parse error:', e);
+        if (!resp.ok) {
+          console.warn(`[Create API] ${model} failed: ${resp.status}`);
+          continue;
+        }
+
+        const data = await resp.json();
+        const content = data.choices?.[0]?.message?.content || '';
+
+        let aiResult = null;
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          if (jsonMatch) aiResult = JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          console.warn(`[Create API] ${model} JSON parse error`);
+          continue;
+        }
+
+        if (aiResult?.greeting && aiResult?.faqs) {
+          return res.status(200).json({
+            success: true,
+            greeting: aiResult.greeting,
+            faqs: aiResult.faqs,
+            model: data.model || model
+          });
+        }
+      } catch (e) {
+        console.warn(`[Create API] ${model} error:`, e.message);
+      }
     }
 
     res.status(200).json({
       success: true,
-      greeting: aiResult?.greeting || null,
-      faqs: aiResult?.faqs || null,
-      model: data.model || 'gpt-4o-mini'
+      greeting: null,
+      faqs: null,
+      model: 'fallback'
     });
   } catch (error) {
     console.error('Create bot error:', error);

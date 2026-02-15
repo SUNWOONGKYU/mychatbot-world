@@ -18,6 +18,65 @@ let remainingTime = 300;
 let recognition = null;
 let transcriptText = '';
 
+// === 폼 필드 음성 입력 (SpeechRecognition) ===
+let _fieldRecognition = null;
+
+// Step 1: id로 필드 지정
+function voiceToField(fieldId) {
+    const input = document.getElementById(fieldId);
+    if (input) _startFieldSTT(input);
+}
+
+// Step 2: 버튼 옆 input/textarea 자동 감지
+function voiceToInput(btn) {
+    const wrap = btn.parentElement;
+    const input = wrap.querySelector('input, textarea');
+    if (input) _startFieldSTT(input);
+}
+
+function _startFieldSTT(input) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert('이 브라우저는 음성 입력을 지원하지 않습니다. Chrome을 사용해주세요.');
+        return;
+    }
+
+    // 이미 녹음 중이면 중지
+    if (_fieldRecognition) {
+        _fieldRecognition.stop();
+        _fieldRecognition = null;
+        return;
+    }
+
+    const rec = new SpeechRecognition();
+    rec.lang = 'ko-KR';
+    rec.continuous = false;
+    rec.interimResults = false;
+
+    // 버튼 시각 피드백
+    const btn = input.parentElement.querySelector('.mic-btn');
+    if (btn) { btn.textContent = '🔴'; btn.classList.add('recording'); }
+
+    rec.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        input.value = text;
+        input.dispatchEvent(new Event('input'));
+    };
+
+    rec.onend = () => {
+        if (btn) { btn.textContent = '🎤'; btn.classList.remove('recording'); }
+        _fieldRecognition = null;
+    };
+
+    rec.onerror = () => {
+        if (btn) { btn.textContent = '🎤'; btn.classList.remove('recording'); }
+        _fieldRecognition = null;
+    };
+
+    _fieldRecognition = rec;
+    rec.start();
+}
+
 // (KB는 마이페이지에서 관리)
 
 // (이모지는 봇 레벨이 아닌 페르소나별로 관리)
@@ -104,7 +163,7 @@ function addPersonaCard(type) {
     const isAvatar = type === 'avatar';
     const list = document.getElementById(isAvatar ? 'avatarPersonaList' : 'helperPersonaList');
     const count = isAvatar ? avatarPersonaCount : helperPersonaCount;
-    const maxCount = 5;
+    const maxCount = 10;
 
     if (count >= maxCount) {
         alert('페르소나는 최대 ' + maxCount + '개까지 설정 가능합니다.');
@@ -155,14 +214,20 @@ function addPersonaCard(type) {
 
         <div class="persona-input-group">
             <label class="persona-input-label">페르소나 이름 *</label>
-            <input type="text" class="persona-input p-name" placeholder="${isAvatar ? '예: 고객 상담, 전문 컨설팅' : '예: 업무 비서, 학습 코치'}">
+            <div class="input-with-mic">
+                <input type="text" class="persona-input p-name" placeholder="${isAvatar ? '예: 고객 상담, 전문 컨설팅' : '예: 업무 비서, 학습 코치'}">
+                <button type="button" class="mic-btn" onclick="voiceToInput(this)" title="음성 입력">🎤</button>
+            </div>
         </div>
 
         ${typeSpecificHTML}
 
         <div class="persona-input-group">
             <label class="persona-input-label">역할/전문성 설명</label>
-            <textarea class="persona-textarea p-role" rows="2" placeholder="이 페르소나의 역할을 설명해주세요"></textarea>
+            <div class="input-with-mic">
+                <textarea class="persona-textarea p-role" rows="2" placeholder="이 페르소나의 역할을 설명해주세요"></textarea>
+                <button type="button" class="mic-btn" onclick="voiceToInput(this)" title="음성 입력">🎤</button>
+            </div>
         </div>
 
         <div class="persona-input-group">
@@ -201,7 +266,6 @@ function addPersonaCard(type) {
     `;
 
     list.appendChild(div);
-    updateAddButtons();
 }
 
 function removePersonaCard(id, type) {
@@ -210,22 +274,6 @@ function removePersonaCard(id, type) {
     el.remove();
     if (type === 'avatar') avatarPersonaCount--;
     else helperPersonaCount--;
-    updateAddButtons();
-}
-
-function updateAddButtons() {
-    const avatarBtn = document.getElementById('addAvatarBtn');
-    const helperBtn = document.getElementById('addHelperBtn');
-    if (avatarBtn) {
-        avatarBtn.disabled = avatarPersonaCount >= 5;
-        avatarBtn.style.opacity = avatarPersonaCount >= 5 ? '0.5' : '1';
-        avatarBtn.textContent = avatarPersonaCount >= 5 ? '최대 5개까지 추가 가능' : '+ 대면용 페르소나 추가';
-    }
-    if (helperBtn) {
-        helperBtn.disabled = helperPersonaCount >= 5;
-        helperBtn.style.opacity = helperPersonaCount >= 5 ? '0.5' : '1';
-        helperBtn.textContent = helperPersonaCount >= 5 ? '최대 5개까지 추가 가능' : '+ 도우미 페르소나 추가';
-    }
 }
 
 // === Emotion Slider ===
@@ -518,11 +566,9 @@ async function callAIAnalysis(botName, botDesc, inputText, persona) {
 
 규칙: FAQ는 인터뷰 내용 기반, 지어내지 마세요, 한국어로 작성`;
 
-    const models = [
-        'google/gemini-2.0-flash-001',
-        'openai/gpt-4o-mini',
-        'google/gemini-2.0-flash-exp:free'
-    ];
+    const models = (typeof MCW !== 'undefined' && MCW.models)
+        ? MCW.models.chat.slice(0, 3)
+        : ['google/gemini-2.5-flash', 'openai/gpt-4o', 'anthropic/claude-sonnet-4.5'];
 
     for (const model of models) {
         try {

@@ -51,24 +51,46 @@ ${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}
       { role: 'user', content: message }
     ];
 
-    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
-        messages,
-        temperature: 0.8,
-        max_tokens: 500
-      })
-    });
+    // 통합 모델 스택 — 가성비 순서 (원소스 멀티유즈)
+    const MODEL_STACK = [
+      'google/gemini-2.5-flash',
+      'openai/gpt-4o',
+      'anthropic/claude-sonnet-4.5',
+      'deepseek/deepseek-chat',
+    ];
 
-    const data = await resp.json();
-    const reply = data.choices?.[0]?.message?.content || '죄송합니다. 잠시 후 다시 시도해주세요.';
+    for (const model of MODEL_STACK) {
+      try {
+        const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature: 0.8,
+            max_tokens: 500
+          })
+        });
 
-    res.status(200).json({ reply, model: data.model || 'gpt-4o-mini' });
+        if (!resp.ok) {
+          console.warn(`[Chat API] ${model} failed: ${resp.status}`);
+          continue;
+        }
+
+        const data = await resp.json();
+        const reply = data.choices?.[0]?.message?.content;
+        if (reply) {
+          return res.status(200).json({ reply, model: data.model || model });
+        }
+      } catch (e) {
+        console.warn(`[Chat API] ${model} error:`, e.message);
+      }
+    }
+
+    res.status(200).json({ reply: '죄송합니다. 잠시 후 다시 시도해주세요.', model: 'fallback' });
   } catch (error) {
     console.error('Chat error:', error);
     res.status(500).json({ error: 'Internal server error' });
