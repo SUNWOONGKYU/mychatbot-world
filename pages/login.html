@@ -124,6 +124,9 @@
             <span style="color:var(--text-gray);">계정이 없으신가요?</span>
             <a href="signup.html" style="color:var(--primary); text-decoration:none; font-weight:600; margin-left:4px;">회원가입</a>
         </div>
+        <div style="text-align:center; margin-top:8px; font-size:0.8rem;">
+            <a href="reset-password.html" style="color:var(--text-gray); text-decoration:none;">비밀번호를 잊으셨나요?</a>
+        </div>
         <div style="text-align:center; margin-top:10px;">
             <a href="../index.html" style="color:var(--text-gray); text-decoration:none; font-size:0.8rem;">← 홈으로
                 돌아가기</a>
@@ -139,25 +142,11 @@
 
         function handleLogin(e) {
             e.preventDefault();
-            const id = document.getElementById('username').value;
+            const id = document.getElementById('username').value.trim();
             const pw = document.getElementById('password').value;
 
             if (MCW.user.verifyPassword(id, pw)) {
-                // If admin, ensure user exists in DB or just Login ID
-                // Simulate Login
-                if (!MCW.user.getUser(id)) {
-                    // Create if not exists (for admin backdoor)
-                    MCW.user.saveUser({
-                        id: id,
-                        name: 'Master Admin',
-                        email: 'admin@example.com',
-                        password: pw,
-                        role: 'admin',
-                        created_at: new Date().toISOString()
-                    });
-                }
                 MCW.user.login(id);
-                // Redirect to Home Hub
                 window.location.href = 'home/index.html';
             } else {
                 alert('아이디 또는 비밀번호가 올바르지 않습니다.');
