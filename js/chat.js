@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (storedKey && storedKey.startsWith("sk-or-v1-7")) {
         localStorage.removeItem('mcw_openrouter_key');
     }
-    loadBotData();
+    await loadBotData();
     renderPersonaSelector();
     autoResizeInput();
     // Voice Toggle
@@ -70,12 +70,23 @@ function toggleTheme() {
     applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
-function loadBotData() {
+async function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
     const idParam = urlParams.get('id');
     const bots = MCW.storage.getBots();
     if (idParam) {
         chatBotData = bots.find(b => b.id === idParam);
+    }
+    // 로컬에 없으면 클라우드에서 로드
+    if (!chatBotData && idParam && typeof StorageManager !== 'undefined' && StorageManager.loadBotFromCloud) {
+        try {
+            const cloudBot = await StorageManager.loadBotFromCloud(idParam);
+            if (cloudBot) {
+                MCW.storage.saveBot(cloudBot);
+                chatBotData = cloudBot;
+                console.log('[Chat] Bot loaded from cloud:', idParam);
+            }
+        } catch (e) { console.warn('[Chat] cloud bot load failed:', e); }
     }
     if (!chatBotData) {
         // 데모 봇
@@ -88,10 +99,10 @@ function loadBotData() {
         }
         if (!chatBotData) {
             chatBotData = {
-                botName: 'Sunny Bot (v10.5)',
-                username: 'sunny',
-                personality: '당신의 비즈니스 성장을 돕는 AI 파트너입니다.',
-                greeting: '안녕하세요! 모바일에서도 생생한 목소리로 대화하는 v10.5 Sunny Bot입니다.',
+                botName: 'Bot',
+                username: 'bot',
+                personality: 'AI 챗봇입니다.',
+                greeting: '안녕하세요! 무엇이든 물어보세요.',
                 faqs: []
             };
         }
