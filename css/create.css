@@ -1040,28 +1040,6 @@
     color: rgba(255, 255, 255, 0.3);
 }
 
-/* === Voice Playback (Step 3) === */
-.voice-playback {
-    margin-top: var(--space-4);
-}
-
-.voice-playback-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-xl);
-}
-
-.voice-duration {
-    font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 600;
-}
-
 /* Hidden */
 .hidden {
     display: none !important;

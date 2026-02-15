@@ -120,6 +120,10 @@ const HomePage = (() => {
             <button class="url-copy-btn" onclick="HomePage.copyUrl(this.previousElementSibling)">복사</button>
           </div>
           ${personaUrls}
+          <div class="url-qr-section">
+            <button class="btn-sm-dark" onclick="HomePage.toggleQR('${id}', '${escAttr(botUrl)}')">📱 QR 코드 보기</button>
+            <div class="url-qr-code" id="qr-${id}"></div>
+          </div>
         </div>
 
         <!-- Bot Settings Panel (bot level: edit name/desc, delete) -->
@@ -721,12 +725,6 @@ const HomePage = (() => {
   // ═══════════════════════════════════════════════
   // 6. PERSONA SETTINGS PANEL (per persona)
   // ═══════════════════════════════════════════════
-  // Voice recording state for home page
-  let homeMediaRecorder = null;
-  let homeAudioChunks = [];
-  let homeRecordingBotId = null;
-  let homeRecordingPersonaId = null;
-
   function renderPersonaSettingsPanel(panel, bot, persona) {
     const key = `${bot.id}_${persona.id}`;
 
@@ -764,124 +762,7 @@ const HomePage = (() => {
           <button class="btn-danger btn-sm" onclick="HomePage.removePersona('${bot.id}', '${persona.id}')">이 페르소나 삭제</button>
         </div>
       </div>
-
-      <div class="settings-section">
-        <h4>음성 녹음</h4>
-        <div class="voice-record-section" id="voice-section-${key}">
-          <div class="voice-status" id="voice-status-${key}">확인 중...</div>
-        </div>
-      </div>
     `;
-
-    // 비동기로 음성 녹음 상태 로드
-    loadVoiceSection(bot.id, persona.id);
-  }
-
-  async function loadVoiceSection(botId, personaId) {
-    const key = `${botId}_${personaId}`;
-    const section = document.getElementById(`voice-section-${key}`);
-    if (!section) return;
-
-    let hasVoice = false;
-    try {
-      const blob = await StorageManager.load('voice-recording', `voice_${botId}_${personaId}`);
-      hasVoice = !!(blob && blob.size > 0);
-    } catch (e) {
-      hasVoice = false;
-    }
-
-    if (hasVoice) {
-      section.innerHTML = `
-        <div class="voice-status voice-status-recorded">녹음됨</div>
-        <div class="voice-record-actions">
-          <button class="btn-sm-primary" onclick="HomePage.playPersonaVoice('${botId}', '${personaId}')">재생</button>
-          <button class="btn-sm-dark" onclick="HomePage.startPersonaRecording('${botId}', '${personaId}')">재녹음</button>
-          <button class="btn-danger btn-sm" onclick="HomePage.deletePersonaVoice('${botId}', '${personaId}')">삭제</button>
-        </div>
-      `;
-    } else {
-      section.innerHTML = `
-        <div class="voice-status voice-status-none">미녹음</div>
-        <div class="voice-record-actions">
-          <button class="btn-sm-primary" onclick="HomePage.startPersonaRecording('${botId}', '${personaId}')">녹음하기</button>
-        </div>
-      `;
-    }
-  }
-
-  async function startPersonaRecording(botId, personaId) {
-    const key = `${botId}_${personaId}`;
-    const section = document.getElementById(`voice-section-${key}`);
-    if (!section) return;
-
-    homeAudioChunks = [];
-    homeRecordingBotId = botId;
-    homeRecordingPersonaId = personaId;
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      homeMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-      homeMediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) homeAudioChunks.push(e.data);
-      };
-      homeMediaRecorder.onstop = async () => {
-        const blob = new Blob(homeAudioChunks, { type: 'audio/webm' });
-        stream.getTracks().forEach(t => t.stop());
-        try {
-          await StorageManager.save('voice-recording', `voice_${botId}_${personaId}`, blob, { botId });
-          MCW.showToast('음성 녹음이 저장되었습니다.');
-        } catch (err) {
-          console.warn('[Home] voice save:', err);
-          MCW.showToast('음성 저장에 실패했습니다.');
-        }
-        loadVoiceSection(botId, personaId);
-      };
-      homeMediaRecorder.start();
-
-      section.innerHTML = `
-        <div class="voice-status voice-status-recording">녹음 중...</div>
-        <div class="voice-record-actions">
-          <button class="voice-record-btn recording" onclick="HomePage.stopPersonaRecording()">
-            <span class="voice-record-icon">⏹</span>
-          </button>
-          <span style="color:rgba(255,255,255,0.5);font-size:0.8rem;">탭하여 정지</span>
-        </div>
-      `;
-    } catch (err) {
-      console.warn('[Home] mic access denied:', err);
-      MCW.showToast('마이크 접근이 거부되었습니다.');
-    }
-  }
-
-  function stopPersonaRecording() {
-    if (homeMediaRecorder && homeMediaRecorder.state !== 'inactive') {
-      homeMediaRecorder.stop();
-    }
-  }
-
-  async function playPersonaVoice(botId, personaId) {
-    try {
-      const blob = await StorageManager.load('voice-recording', `voice_${botId}_${personaId}`);
-      if (!blob) { MCW.showToast('녹음 파일이 없습니다.'); return; }
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audio.onended = () => URL.revokeObjectURL(url);
-      audio.play();
-    } catch (err) {
-      console.warn('[Home] voice play:', err);
-      MCW.showToast('재생에 실패했습니다.');
-    }
-  }
-
-  async function deletePersonaVoice(botId, personaId) {
-    if (!confirm('음성 녹음을 삭제하시겠습니까?')) return;
-    try {
-      await StorageManager.remove('voice-recording', `voice_${botId}_${personaId}`);
-      MCW.showToast('음성 녹음이 삭제되었습니다.');
-    } catch (err) {
-      console.warn('[Home] voice delete:', err);
-    }
-    loadVoiceSection(botId, personaId);
   }
 
   function savePersonaSettings(botId, personaId) {
@@ -1135,6 +1016,19 @@ const HomePage = (() => {
   }
 
 
+  // ─── QR Code ───
+  function toggleQR(botId, botUrl) {
+    const el = document.getElementById(`qr-${botId}`);
+    if (!el) return;
+    if (el.innerHTML) {
+      el.innerHTML = '';
+      return;
+    }
+    const fullUrl = window.location.origin + '/' + botUrl.replace(/^\.\.\//, '');
+    const qrSrc = MCW.getQRCodeURL(fullUrl, 200);
+    el.innerHTML = `<img src="${qrSrc}" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">`;
+  }
+
   // ─── Copy URL ───
   function copyUrl(inputEl) {
     if (!inputEl) return;
@@ -1160,6 +1054,7 @@ const HomePage = (() => {
     changePassword,
     logout,
     copyUrl,
+    toggleQR,
 
     // KB
     addQA,
@@ -1179,12 +1074,6 @@ const HomePage = (() => {
     addPersona,
     removePersona,
     savePersonaSettings,
-
-    // Voice Recording
-    startPersonaRecording,
-    stopPersonaRecording,
-    playPersonaVoice,
-    deletePersonaVoice,
 
     // Bot
     saveBotInfo,

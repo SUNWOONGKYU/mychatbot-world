@@ -77,7 +77,12 @@ function loadBotData() {
         chatBotData = bots.find(b => b.id === idParam);
     }
     if (!chatBotData) {
-        if ((idParam === 'sunny-official' || idParam?.startsWith('sunny-')) && typeof SunnyBotData !== 'undefined') {
+        // 데모 봇
+        if (idParam === 'sunny-demo' && typeof SunnyDemoBotData !== 'undefined') {
+            chatBotData = { ...SunnyDemoBotData, id: 'sunny-demo' };
+        }
+        // 실제 Sunny Bot
+        else if ((idParam === 'sunny-official' || idParam?.startsWith('sunny-')) && typeof SunnyBotData !== 'undefined') {
             chatBotData = { ...SunnyBotData, id: idParam || 'sunny-official' };
         }
         if (!chatBotData) {
@@ -99,13 +104,23 @@ function loadBotData() {
             isVisible: true
         }];
     }
-    currentPersona = chatBotData.personas[0];
+    // ?persona= 파라미터로 특정 페르소나 바로 선택
+    const personaParam = urlParams.get('persona');
+    if (personaParam) {
+        const matched = chatBotData.personas.find(p => p.id === personaParam);
+        if (matched) currentPersona = matched;
+        else currentPersona = chatBotData.personas[0];
+    } else {
+        currentPersona = chatBotData.personas[0];
+    }
     const nameEl = document.getElementById('chatBotName');
     if (nameEl) nameEl.textContent = chatBotData.botName;
     document.title = `${chatBotData.botName} - v10.5`;
     renderFaqButtons();
     if (conversationHistory.length === 0) {
         setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
+        // 대화 세션 시작 기록
+        logPerPersonaStat('conversation_start');
     }
 }
 // === Claude Squad Control API 연동 (소대 컨트롤러) ===
@@ -174,11 +189,9 @@ function renderPersonaSelector() {
         console.warn('[Persona] owner check failed:', e);
     }
     // 타인에게는 isPublic !== false 인 페르소나만 노출 (helper 는 isPublic:false)
-    const isSunny = chatBotData && (chatBotData.id === 'sunny-official' || (chatBotData.username && chatBotData.username === 'sunny') || (chatBotData.id && String(chatBotData.id).startsWith('sunny-')));
     const isDemo = chatBotData && (
         chatBotData.id === 'sunny-demo' ||
-        (chatBotData.botName && chatBotData.botName.includes('DEMO')) ||
-        isSunny
+        (chatBotData.botName && chatBotData.botName.includes('DEMO'))
     );
     const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
@@ -221,12 +234,19 @@ function switchPersona(id) {
     if (voiceOutputEnabled && typeof speak === 'function') {
         speak('지금부터 ' + newPersona.name + ' 역할로 도와드릴게요.');
     }
+    // 페르소나 전환 시 FAQ 버튼도 갱신
+    renderFaqButtons();
 }
 function renderFaqButtons() {
     const container = document.getElementById('faqButtons');
-    if (!container || !chatBotData?.faqs) return;
-    container.innerHTML = chatBotData.faqs.map(f =>
-        `<button class="faq-btn" onclick="askFaq('${f.q.replace(/'/g, "\\'")}', '${f.a.replace(/'/g, "\\'")}')">${f.q}</button>`
+    if (!container) return;
+    // 페르소나별 FAQ가 있으면 우선, 없으면 봇 전체 FAQ 폴백
+    const faqs = (currentPersona && currentPersona.faqs && currentPersona.faqs.length > 0)
+        ? currentPersona.faqs
+        : chatBotData?.faqs;
+    if (!faqs || faqs.length === 0) { container.innerHTML = ''; return; }
+    container.innerHTML = faqs.map(f =>
+        `<button class="faq-btn" onclick="askFaq('${f.q.replace(/'/g, "\\'")}', '${(f.a || '').replace(/'/g, "\\'")}')">${f.q}</button>`
     ).join('');
 }
 async function sendMessage() {
@@ -241,6 +261,8 @@ async function sendMessage() {
     addMessage('user', text);
     showTyping();
     conversationHistory.push({ role: 'user', content: text });
+    // 페르소나별 대화 저장
+    savePerPersonaMessage('user', text);
     // === Claude Squad Control 연동: 업무 도우미 페르소나일 때 소대 명령으로도 전달 ===
     try {
         if (currentPersona && currentPersona.id === 'sunny_helper_work') {
@@ -262,6 +284,10 @@ async function sendMessage() {
     hideTyping();
     addMessage('bot', response);
     conversationHistory.push({ role: 'assistant', content: response });
+    // 페르소나별 대화 + 통계 저장
+    savePerPersonaMessage('assistant', response);
+    logPerPersonaStat('message', { role: 'user', content: text });
+    logPerPersonaStat('message', { role: 'assistant', content: response });
     if (voiceOutputEnabled) speak(response);
 }
 function askFaq(q, a) {
@@ -325,7 +351,6 @@ async function generateResponse(userText) {
                 botName: chatBotData && chatBotData.botName,
                 personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
                 tone: (chatBotData && chatBotData.tone) || '',
-                templateId: (chatBotData && chatBotData.templateId) || '',
                 faqs: (chatBotData && chatBotData.faqs) || []
             },
             history: conversationHistory.slice(-10)
@@ -482,6 +507,32 @@ function autoResizeInput() {
         input.style.height = input.scrollHeight + 'px';
     });
 }
+// === Per-persona 대화/통계 저장 (home.js와 키 일치) ===
+function savePerPersonaMessage(role, content) {
+    if (!chatBotData || !currentPersona) return;
+    var botId = chatBotData.id;
+    var personaId = currentPersona.id;
+    var key = 'mcw_conv_' + botId + '_' + personaId;
+    var convs = JSON.parse(localStorage.getItem(key) || '[]');
+    convs.push({ role: role, content: content, timestamp: new Date().toISOString() });
+    if (convs.length > 200) convs.splice(0, convs.length - 200);
+    localStorage.setItem(key, JSON.stringify(convs));
+}
+
+function logPerPersonaStat(type, data) {
+    if (!chatBotData || !currentPersona) return;
+    var botId = chatBotData.id;
+    var personaId = currentPersona.id;
+    var key = 'mcw_stats_' + botId + '_' + personaId;
+    var stats = JSON.parse(localStorage.getItem(key) || '{"totalConversations":0,"totalMessages":0}');
+    if (type === 'conversation_start') {
+        stats.totalConversations = (stats.totalConversations || 0) + 1;
+    } else if (type === 'message') {
+        stats.totalMessages = (stats.totalMessages || 0) + 1;
+    }
+    localStorage.setItem(key, JSON.stringify(stats));
+}
+
 // === Per-message TTS: 사용자가 직접 탭하여 재생 (모바일 제스처 보장) ===
 function playMsgTTS(btn) {
     // Extract text from the parent bubble element

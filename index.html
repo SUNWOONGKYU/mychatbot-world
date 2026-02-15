@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Chatbot World - 5분 인터뷰로 AI 챗봇 생성</title>
-  <meta name="description" content="5분 인터뷰만으로 나만의 AI 챗봇이 생성됩니다. 봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장하는 챗봇의 세계.">
+  <meta name="description" content="5분 인터뷰만으로 나만의 AI 챗봇이 생성됩니다. 챗봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장하는 챗봇의 세계.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/landing.css">
 </head>
@@ -16,14 +16,16 @@
     <div class="container navbar-inner">
       <a href="/" class="navbar-logo"><span>My Chatbot World</span></a>
       <ul class="navbar-links">
-        <li><a href="#birth">봇생성</a></li>
-        <li><a href="#school">봇스쿨</a></li>
-        <li><a href="#skills">스킬 허브</a></li>
-        <li><a href="#community">봇 커뮤니티</a></li>
+        <li><a href="#birth">Birth</a></li>
+        <li><a href="#school">School</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#community">Community</a></li>
       </ul>
-      <div class="navbar-cta">
-        <a href="pages/login.html" class="btn btn-secondary btn-sm">로그인</a>
-        <a href="pages/signup.html" class="btn btn-primary btn-sm">회원가입</a>
+      <div class="navbar-cta" id="navbarCta">
+        <a href="pages/login.html" class="btn btn-secondary btn-sm" id="navLogin">로그인</a>
+        <a href="pages/signup.html" class="btn btn-primary btn-sm" id="navSignup">회원가입</a>
+        <a href="pages/home/index.html" class="btn btn-primary btn-sm" id="navMypage" style="display:none;">마이 페이지</a>
+        <a href="#" class="btn btn-secondary btn-sm" id="navLogout" style="display:none;" onclick="handleLogout(); return false;">로그아웃</a>
       </div>
     </div>
   </nav>
@@ -51,9 +53,9 @@
           🎤 5분 인터뷰로 챗봇 생성하기
         </a>
         <a href="#journey" class="btn btn-secondary btn-xl">챗봇의 여정 보기 ↓</a>
-        <a href="pages/bot/index.html?id=sunny-official" class="btn btn-primary btn-xl"
+        <a href="pages/bot/index.html?id=sunny-demo" class="btn btn-primary btn-xl"
           style="background:var(--accent-500); border-color:var(--accent-500);">
-          💬 써니봇과 대화하기 (Demo)
+          💬 Sunny Bot 대화하기 (Demo)
         </a>
       </div>
     </div>
@@ -76,7 +78,7 @@
         <div class="journey-arrow">→</div>
         <div class="journey-step">
           <div class="journey-icon">📚</div>
-          <h4>봇스쿨</h4>
+          <h4>챗봇스쿨</h4>
           <p>교육·훈련</p>
         </div>
         <div class="journey-arrow">→</div>
@@ -88,60 +90,72 @@
         <div class="journey-arrow">→</div>
         <div class="journey-step">
           <div class="journey-icon">🤝</div>
-          <h4>봇 커뮤니티</h4>
+          <h4>챗봇 커뮤니티</h4>
           <p>교류·성장</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 1. 탄생 -->
+  <!-- 1. 탄생 Birth -->
   <section class="world-section section-birth" id="birth">
     <div class="container">
       <div class="world-section-header">
         <span class="world-step-badge">🐣 STEP 1</span>
-        <h2 class="section-title">생성 — 5분 인터뷰, AI 챗봇 생성</h2>
-        <p class="section-subtitle">AI가 묻고, 당신이 답하면 됩니다. 5분이면 당신만의 챗봇이 생성됩니다.</p>
+        <h2 class="section-title">생성 (Birth) — 5분 인터뷰, AI 챗봇 생성</h2>
+        <p class="section-subtitle">기본정보 입력, 페르소나 설정, 음성 인터뷰 — 5분이면 당신만의 챗봇이 생성됩니다.</p>
       </div>
       <div class="birth-grid">
         <div class="birth-process">
           <div class="process-step">
             <div class="process-num">01</div>
             <div>
-              <h4>직업 선택</h4>
-              <p>10가지 직업별 맞춤 템플릿 중 선택</p>
+              <h4>기본정보 입력</h4>
+              <p>챗봇 이름, 한 줄 소개, 사용자명(URL)을 설정합니다</p>
             </div>
           </div>
           <div class="process-step">
             <div class="process-num">02</div>
             <div>
-              <h4>5분 인터뷰</h4>
-              <p>AI가 묻고, 당신이 답합니다</p>
+              <h4>페르소나 설정</h4>
+              <p>대면용(공개) 페르소나와 도우미(비공개) 페르소나를 구성합니다</p>
             </div>
           </div>
           <div class="process-step">
             <div class="process-num">03</div>
             <div>
-              <h4>챗봇 생성! 바로 설치</h4>
-              <p>성격, 어조, FAQ 자동 생성. 원하는 곳 어디든 설치하세요.</p>
+              <h4>5분 음성 인터뷰</h4>
+              <p>AI에게 자신을 소개해주세요. 음성으로 입력합니다</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">04</div>
+            <div>
+              <h4>AI 분석</h4>
+              <p>AI가 인터뷰 내용을 분석하여 인사말과 자주 묻는 질문을 자동 생성합니다</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">05</div>
+            <div>
+              <h4>챗봇 완성</h4>
+              <p>전용 링크와 QR 코드가 생성됩니다</p>
               <div class="deploy-section">
                 <div class="deploy-group">
-                  <span class="deploy-label">방법</span>
-                  <div class="deploy-channels">
-                    <span class="deploy-tag">🔗 전용 링크</span>
-                    <span class="deploy-tag">📱 QR 코드</span>
-                  </div>
-                </div>
-                <div class="deploy-group">
-                  <span class="deploy-label">채널</span>
+                  <span class="deploy-method">전용 링크를 복사해서 붙이세요</span>
                   <div class="deploy-channels">
                     <span class="deploy-tag">🌐 내 웹사이트</span>
                     <span class="deploy-tag">💬 카카오톡</span>
                     <span class="deploy-tag">📸 SNS 프로필</span>
                     <span class="deploy-tag">📝 블로그</span>
                     <span class="deploy-tag">✉️ 이메일 서명</span>
-                    <span class="deploy-tag">🏢 네이버 플레이스</span>
+                  </div>
+                </div>
+                <div class="deploy-group">
+                  <span class="deploy-method">QR 코드를 다운로드해서 넣으세요</span>
+                  <div class="deploy-channels">
                     <span class="deploy-tag">💳 명함</span>
+                    <span class="deploy-tag">🏢 네이버 플레이스</span>
                     <span class="deploy-tag">🗃️ 인쇄물</span>
                     <span class="deploy-tag">🏪 매장 간판</span>
                   </div>
@@ -151,10 +165,6 @@
           </div>
         </div>
 
-        <div class="templates-preview">
-          <h4>10가지 직업별 맞춤 템플릿</h4>
-          <div class="templates-grid" id="templatesGrid"></div>
-        </div>
 
       </div>
     </div>
@@ -196,13 +206,13 @@
     </div>
   </section>
 
-  <!-- 2. 봇스쿨 -->
+  <!-- 2. 챗봇스쿨 School -->
   <section class="world-section section-school" id="school">
     <div class="container">
       <div class="world-section-header">
         <span class="world-step-badge">📚 STEP 2</span>
-        <h2 class="section-title" style="color: white;">봇스쿨 — 체계적으로 배우고 성장합니다</h2>
-        <p class="section-subtitle" style="color: rgba(255,255,255,0.7);">갓 태어난 챗봇은 아직 초보입니다. 봇스쿨에서 체계적으로 교육받습니다.</p>
+        <h2 class="section-title" style="color: white;">챗봇스쿨 (School) — 체계적으로 배우고 성장합니다</h2>
+        <p class="section-subtitle" style="color: rgba(255,255,255,0.7);">갓 태어난 챗봇은 아직 초보입니다. 챗봇스쿨에서 체계적으로 교육받습니다.</p>
       </div>
       <div class="school-grid">
         <div class="school-card">
@@ -229,12 +239,12 @@
     </div>
   </section>
 
-  <!-- 3. 스킬 허브 -->
+  <!-- 3. 스킬 허브 Skills -->
   <section class="world-section section-skills" id="skills">
     <div class="container">
       <div class="world-section-header">
         <span class="world-step-badge">🔧 STEP 3</span>
-        <h2 class="section-title">스킬 허브 — 능력을 장착합니다</h2>
+        <h2 class="section-title">스킬 허브 (Skills) — 능력을 장착합니다</h2>
         <p class="section-subtitle">예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. 사용자가 만든 스킬도 공유·거래합니다.</p>
       </div>
       <div class="skills-preview-grid" id="skillsGrid"></div>
@@ -244,12 +254,12 @@
     </div>
   </section>
 
-  <!-- 4. 봇 커뮤니티 -->
+  <!-- 4. 챗봇 커뮤니티 (Community) -->
   <section class="world-section section-community" id="community">
     <div class="container">
       <div class="world-section-header">
         <span class="world-step-badge">🤝 STEP 4</span>
-        <h2 class="section-title" style="color: white;">봇 커뮤니티 — 챗봇끼리 교류하고 협업합니다</h2>
+        <h2 class="section-title" style="color: white;">챗봇 커뮤니티 (Community) — 챗봇끼리 교류하고 협업합니다</h2>
         <p class="section-subtitle" style="color: rgba(255,255,255,0.7);">My Chatbot World에서 챗봇은 혼자가 아닙니다. 서로 배우고 함께
           일합니다.</p>
       </div>
@@ -278,77 +288,8 @@
     <div class="container">
       <div class="text-center">
         <span class="badge badge-primary">PRICING</span>
-        <h2 class="section-title" style="margin-top: 1rem;">합리적인 가격, 완벽한 챗봇</h2>
-        <p class="section-subtitle">무료로 시작하고, 필요할 때 업그레이드하세요</p>
-      </div>
-      <div class="pricing-grid">
-        <!-- Free -->
-        <div class="pricing-card">
-          <div class="pricing-header">
-            <h3>Free</h3>
-            <div class="pricing-price"><span class="pricing-amount">0</span><span class="pricing-unit">원/월</span></div>
-          </div>
-          <ul class="pricing-features">
-            <li>✅ 챗봇 1개</li>
-            <li>✅ 월 100건 메시지</li>
-            <li>✅ 기본 템플릿</li>
-            <li>✅ 봇스쿨 기초 과정</li>
-            <li>✅ 무료 스킬 5개</li>
-            <li>❌ 봇 커뮤니티</li>
-          </ul>
-          <a href="pages/create/index.html" class="btn btn-outline" style="width:100%">무료로 시작</a>
-        </div>
-        <!-- Basic -->
-        <div class="pricing-card">
-          <div class="pricing-header">
-            <h3>Basic</h3>
-            <div class="pricing-price"><span class="pricing-amount">29,000</span><span class="pricing-unit">원/월</span>
-            </div>
-          </div>
-          <ul class="pricing-features">
-            <li>✅ 챗봇 3개</li>
-            <li>✅ 월 3,000건 메시지</li>
-            <li>✅ 모든 템플릿</li>
-            <li>✅ 봇스쿨 전체 과정</li>
-            <li>✅ 무료 스킬 전체</li>
-            <li>✅ 봇 커뮤니티 참여</li>
-          </ul>
-          <a href="pages/create/index.html" class="btn btn-outline" style="width:100%">시작하기</a>
-        </div>
-        <!-- Pro -->
-        <div class="pricing-card pricing-featured">
-          <div class="pricing-badge">🔥 인기</div>
-          <div class="pricing-header">
-            <h3>Pro</h3>
-            <div class="pricing-price"><span class="pricing-amount">79,000</span><span class="pricing-unit">원/월</span>
-            </div>
-          </div>
-          <ul class="pricing-features">
-            <li>✅ 챗봇 10개</li>
-            <li>✅ 무제한 메시지</li>
-            <li>✅ AI 멘토링 포함</li>
-            <li>✅ 프리미엄 스킬</li>
-            <li>✅ 챗봇 간 협업</li>
-            <li>✅ 고급 통계</li>
-          </ul>
-          <a href="pages/create/index.html" class="btn btn-primary" style="width:100%">Pro 시작하기</a>
-        </div>
-        <!-- Enterprise -->
-        <div class="pricing-card">
-          <div class="pricing-header">
-            <h3>Enterprise</h3>
-            <div class="pricing-price"><span class="pricing-amount">별도 협의</span></div>
-          </div>
-          <ul class="pricing-features">
-            <li>✅ 무제한 챗봇</li>
-            <li>✅ 무제한 메시지</li>
-            <li>✅ 전용 서버</li>
-            <li>✅ SLA 보장</li>
-            <li>✅ 전담 매니저</li>
-            <li>✅ 온프레미스 가능</li>
-          </ul>
-          <a href="mailto:contact@mychatbot.world" class="btn btn-outline" style="width:100%">문의하기</a>
-        </div>
+        <h2 class="section-title" style="margin-top: 1rem;">가격 정책</h2>
+        <p class="section-subtitle">준비 중</p>
       </div>
     </div>
   </section>
@@ -359,10 +300,9 @@
       <h2 class="section-title" style="color: white;">당신의 AI 챗봇을 생성하세요</h2>
       <p class="hero-catchphrase"
         style="color: rgba(255,255,255,0.9); font-size: 1.1rem; line-height: 1.8; margin-bottom: 0.5rem;">
-        5분 만에 생성되고, 봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장합니다.<br>
-        그래서 <strong>당신을 대신해 24시간 일합니다.</strong>
+        5분 만에 생성되고, 챗봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장합니다.<br>
+        그래서 <strong>당신을 대신해 24시간 활동합니다.</strong>
       </p>
-      <p class="section-subtitle" style="color: rgba(255,255,255,0.6);">무료로 시작하세요. 신용카드 불필요.</p>
       <a href="pages/create/index.html" class="btn btn-primary btn-xl" style="margin-top: 2rem;">
         🎤 5분 인터뷰로 시작하기
       </a>
@@ -374,18 +314,18 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <div class="navbar-logo" style="margin-bottom: 1rem;">🤖 <span>My Chatbot World</span></div>
+          <div class="navbar-logo" style="margin-bottom: 1rem;"><span>My Chatbot World</span></div>
           <p style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">
             5분 인터뷰로 생성된 AI 챗봇이<br>
-            배우고, 성장하여 당신을 대신해 24시간 일합니다
+            배우고, 성장하여 당신을 대신해 24시간 활동합니다
           </p>
         </div>
         <div class="footer-links">
           <h4>서비스</h4>
-          <a href="pages/create/index.html">챗봇 생성하기</a>
-          <a href="#school">봇스쿨</a>
-          <a href="#skills">스킬 허브</a>
-          <a href="#community">봇 커뮤니티</a>
+          <a href="pages/create/index.html">Birth</a>
+          <a href="#school">School</a>
+          <a href="#skills">Skills</a>
+          <a href="#community">Community</a>
           <a href="#pricing">가격 정책</a>
         </div>
         <div class="footer-links">
@@ -402,11 +342,30 @@
     </div>
   </footer>
 
-  <script src="js/config.js?v=11.1"></script>
+  <script src="js/config.js?v=13.0"></script>
   <script src="js/check_key.js?v=11.1"></script>
-  <script src="js/secrets.js?v=11.0"></script>
-  <script src="js/app.js?v=11.0"></script>
+  <script src="js/secrets.js?v=13.0"></script>
+  <script src="js/app.js?v=13.0"></script>
+  <script src="js/migration.js?v=13.0"></script>
+  <script src="js/sunny-demo.js?v=13.0"></script>
   <script src="js/landing.js?v=11.0"></script>
+  <script>
+    // Navbar: 로그인 상태에 따라 버튼 전환
+    function updateNavbar() {
+      const loggedIn = typeof MCW !== 'undefined' && MCW.user.getCurrentUser();
+      document.getElementById('navLogin').style.display = loggedIn ? 'none' : '';
+      document.getElementById('navSignup').style.display = loggedIn ? 'none' : '';
+      document.getElementById('navMypage').style.display = loggedIn ? '' : 'none';
+      document.getElementById('navLogout').style.display = loggedIn ? '' : 'none';
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('mcw_current_user_id');
+      updateNavbar();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateNavbar);
+  </script>
 </body>
 
 </html>

@@ -35,7 +35,6 @@ module.exports = async (req, res) => {
     const systemMsg = `당신은 "${botConfig?.botName || 'AI 챗봇'}"입니다.
 성격: ${botConfig?.personality || '친절하고 전문적'}
 어조: ${botConfig?.tone || '존댓말, 친절한 어조'}
-분야: ${botConfig?.templateId || '일반'}
 
 다음 예시 FAQ를 참고하여 답변하세요:
 ${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}

@@ -4,7 +4,6 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
-  renderTemplates();
   renderSkills();
   initScrollAnimations();
 });
@@ -17,28 +16,11 @@ function initNavbar() {
   });
 }
 
-// Render template cards
-function renderTemplates() {
-  const grid = document.getElementById('templatesGrid');
-  if (!grid) return;
-  const templates = MCW.templates;
-  grid.innerHTML = Object.values(templates).map(t => `
-    <div class="template-card" onclick="location.href='/create?template=${t.id}'">
-      <div class="template-icon">${t.icon}</div>
-      <h4>${t.name}</h4>
-      <p>${t.description}</p>
-      <div class="template-categories">
-        ${t.categories.map(c => `<span class="template-tag">${c}</span>`).join('')}
-      </div>
-    </div>
-  `).join('');
-}
-
-// Render skills preview (show 8)
+// Render skills preview (show 3)
 function renderSkills() {
   const grid = document.getElementById('skillsGrid');
   if (!grid) return;
-  const skills = MCW.skills.slice(0, 8);
+  const skills = MCW.skills.slice(0, 3);
   grid.innerHTML = skills.map(s => `
     <div class="skill-card">
       <div class="skill-header">

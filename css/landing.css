@@ -270,7 +270,7 @@
 
 .skills-preview-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-4);
     margin-top: var(--space-12);
 }
@@ -525,9 +525,8 @@
 
 .birth-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--space-10);
-    align-items: start;
 }
 
 .birth-process {
@@ -588,7 +587,7 @@
 }
 
 .deploy-group {
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 .deploy-label {
@@ -598,7 +597,7 @@
     color: var(--gray-400);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     margin-right: var(--space-2);
 }
 
@@ -606,6 +605,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+}
+
+.deploy-method {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 4px;
 }
 
 .deploy-tag {
@@ -863,10 +870,6 @@
 
     .pricing-featured {
         transform: scale(1);
-    }
-
-    .birth-grid {
-        grid-template-columns: 1fr;
     }
 
     .footer-grid {

@@ -971,71 +971,25 @@ textarea.form-control-dark {
   opacity: 1;
 }
 
-/* === Voice Recording Section === */
-.voice-record-section {
+/* === QR Code in URL Panel === */
+.url-qr-section {
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 8px;
 }
 
-.voice-status {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-}
-
-.voice-status-recorded {
-  background: rgba(16, 185, 129, 0.15);
-  color: #6ee7b7;
-}
-
-.voice-status-none {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.voice-status-recording {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  animation: pulse-voice 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse-voice {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
-.voice-record-actions {
+.url-qr-code {
   display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.voice-record-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 1.1rem;
 }
 
-.voice-record-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.voice-record-btn.recording {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
-  animation: pulse-voice 1.5s ease-in-out infinite;
+.url-qr-code img {
+  background: white;
+  padding: 4px;
+  border-radius: 8px;
 }
 
 /* === Persona Form Modal (addPersona) === */
