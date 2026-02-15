@@ -24,7 +24,10 @@ let _fieldRecognition = null;
 // Step 1: id로 필드 지정
 function voiceToField(fieldId) {
     const input = document.getElementById(fieldId);
-    if (input) _startFieldSTT(input);
+    if (!input) return;
+    // URL 필드는 한글→영문 변환 후처리 적용
+    const isUrlField = fieldId === 'botUsername';
+    _startFieldSTT(input, isUrlField);
 }
 
 // Step 2: 버튼 옆 input/textarea 자동 감지
@@ -34,7 +37,7 @@ function voiceToInput(btn) {
     if (input) _startFieldSTT(input);
 }
 
-function _startFieldSTT(input) {
+function _startFieldSTT(input, convertToUrl = false) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
         alert('이 브라우저는 음성 입력을 지원하지 않습니다. Chrome을 사용해주세요.');
@@ -50,16 +53,25 @@ function _startFieldSTT(input) {
 
     const rec = new SpeechRecognition();
     rec.lang = 'ko-KR';
-    rec.continuous = false;
-    rec.interimResults = false;
+    rec.continuous = true;
+    rec.interimResults = true;
 
     // 버튼 시각 피드백
     const btn = input.parentElement.querySelector('.mic-btn');
     if (btn) { btn.textContent = '🔴'; btn.classList.add('recording'); }
 
     rec.onresult = (e) => {
-        const text = e.results[0][0].transcript;
-        input.value = text;
+        // 모든 결과를 처음부터 다시 조합 (에코 방지)
+        let fullText = '';
+        for (let i = 0; i < e.results.length; i++) {
+            fullText += e.results[i][0].transcript;
+        }
+        const maxLen = input.maxLength > 0 ? input.maxLength : 9999;
+        let result = fullText.slice(0, maxLen);
+        if (convertToUrl) {
+            result = _koreanToUrl(result);
+        }
+        input.value = result;
         input.dispatchEvent(new Event('input'));
     };
 
@@ -75,6 +87,27 @@ function _startFieldSTT(input) {
 
     _fieldRecognition = rec;
     rec.start();
+}
+
+// 한글 → URL-safe 영문 변환 (간단 로마자 변환)
+function _koreanToUrl(text) {
+    const map = {
+        '가':'ga','나':'na','다':'da','라':'ra','마':'ma','바':'ba','사':'sa','아':'a','자':'ja','차':'cha','카':'ka','타':'ta','파':'pa','하':'ha',
+        '고':'go','노':'no','도':'do','로':'ro','모':'mo','보':'bo','소':'so','오':'o','조':'jo','초':'cho','코':'ko','토':'to','포':'po','호':'ho',
+        '구':'gu','누':'nu','두':'du','루':'ru','무':'mu','부':'bu','수':'su','우':'u','주':'ju','추':'chu','쿠':'ku','투':'tu','푸':'pu','후':'hu',
+        '김':'kim','이':'lee','박':'park','정':'jung','홍':'hong','길':'gil','동':'dong','순':'sun','신':'shin','강':'kang',
+        '서':'seo','윤':'yun','장':'jang','임':'lim','한':'han','오':'oh','배':'bae','허':'heo','유':'yu','안':'an',
+        '송':'song','전':'jeon','황':'hwang','양':'yang','권':'kwon','민':'min','최':'choi','조':'cho','문':'moon',
+        '시':'si','시장':'mayor','의원':'member','대표':'ceo','원장':'director','선생':'teacher','사장':'boss'
+    };
+    // 먼저 긴 단어부터 매칭
+    let result = text;
+    const sorted = Object.keys(map).sort((a, b) => b.length - a.length);
+    for (const k of sorted) {
+        result = result.split(k).join(map[k]);
+    }
+    // 남은 한글 제거, 공백→하이픈, 소문자
+    return result.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase().replace(/-+/g, '-').replace(/^-|-$/g, '');
 }
 
 // (KB는 마이페이지에서 관리)
@@ -112,9 +145,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setupSpeechRecognition();
     setupTextCounter();
+    // 챗봇 이름 → 사용자명(URL) 자동 생성
+    setupAutoUsername();
     // 대표 페르소나 1개만 생성
     addPersonaCard('avatar');
 });
+
+// === 챗봇 이름 → 사용자명 자동 생성 ===
+let _usernameManuallyEdited = false;
+
+function setupAutoUsername() {
+    const nameInput = document.getElementById('botName');
+    const urlInput = document.getElementById('botUsername');
+    if (!nameInput || !urlInput) return;
+
+    // 이름 변경 시 자동 URL 생성
+    nameInput.addEventListener('input', () => {
+        if (_usernameManuallyEdited) return; // 수동 편집했으면 자동 생성 중지
+        urlInput.value = _koreanToUrl(nameInput.value);
+    });
+
+    // 사용자가 직접 URL 수정하면 자동 생성 중지
+    urlInput.addEventListener('input', () => {
+        _usernameManuallyEdited = true;
+    });
+    urlInput.addEventListener('focus', () => {
+        _usernameManuallyEdited = true;
+    });
+}
 
 // === Step Navigation ===
 function goToStep(step) {
@@ -122,6 +180,16 @@ function goToStep(step) {
     if (step === 2) {
         const name = document.getElementById('botName').value.trim();
         if (!name) { alert('챗봇 이름을 입력해주세요'); return; }
+        const username = document.getElementById('botUsername').value.trim();
+        if (!username) {
+            document.getElementById('botUsername').value = _koreanToUrl(name);
+        }
+        const finalUsername = document.getElementById('botUsername').value.trim();
+        if (!confirm(`사용자명(URL)을 "${finalUsername}"(으)로 하시겠습니까?\n\n챗봇 주소: mychatbot.world/bot/${finalUsername}\n\n수정하려면 "취소"를 누르세요.`)) {
+            document.getElementById('botUsername').focus();
+            _usernameManuallyEdited = true;
+            return;
+        }
     }
     if (step === 3) {
         const avatars = collectPersonas('avatar');
