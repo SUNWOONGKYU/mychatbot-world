@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>챗봇 탄생시키기 - My Chatbot World</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=3.5">
-    <link rel="stylesheet" href="../../css/create.css?v=3.5">
+    <title>나의 챗봇 생성하기 - My Chatbot World</title>
+    <link rel="stylesheet" href="../../css/styles.css?v=13.1">
+    <link rel="stylesheet" href="../../css/create.css?v=13.1">
 </head>
 
 <body class="dark-body">
     <nav class="navbar scrolled">
         <div class="container navbar-inner">
-            <a href="/" class="navbar-logo">🤖 <span>My Chatbot World</span></a>
+            <a href="/" class="navbar-logo"><span>My Chatbot World</span></a>
             <div class="navbar-cta">
                 <a href="../home/index.html" class="btn btn-secondary btn-sm">마이 페이지</a>
             </div>
@@ -21,13 +21,13 @@
 
     <main class="create-main">
         <div class="container-sm">
-            <!-- Progress Bar -->
-            <div class="create-progress">
+            <!-- Progress Bar (5 Steps) -->
+            <div class="create-progress" id="progressBar">
                 <div class="progress-steps">
-                    <div class="progress-step horizontal" data-step="1"><span>1</span>분야</div>
-                    <div class="progress-step horizontal" data-step="2"><span>2</span>정보</div>
-                    <div class="progress-step horizontal" data-step="3"><span>3</span>페르소나</div>
-                    <div class="progress-step horizontal" data-step="4"><span>4</span>인터뷰</div>
+                    <div class="progress-step horizontal active" data-step="1"><span>1</span>기본정보</div>
+                    <div class="progress-step horizontal" data-step="2"><span>2</span>페르소나</div>
+                    <div class="progress-step horizontal" data-step="3"><span>3</span>인터뷰</div>
+                    <div class="progress-step horizontal" data-step="4"><span>4</span>분석</div>
                     <div class="progress-step horizontal" data-step="5"><span>5</span>완성</div>
                 </div>
                 <div class="progress-bar">
@@ -35,60 +35,53 @@
                 </div>
             </div>
 
-            <!-- Step 1: Template Selection -->
-            <div class="create-step" id="step1">
-                <h2 class="step-title">어떤 분야의 챗봇을 탄생시키겠어요?</h2>
-                <p class="step-desc">분야에 맞는 맞춤 템플릿으로 시작하세요</p>
-                <div class="template-select-grid" id="templateSelectGrid"></div>
-            </div>
+            <!-- ===== Part 1: 봇 생성 (5분 내) ===== -->
 
-            <!-- Step 2: Basic Info -->
-            <div class="create-step hidden" id="step2">
-                <h2 class="step-title">기본 정보를 알려주세요</h2>
-                <p class="step-desc">챗봇의 이름과 설명을 입력해주세요</p>
+            <!-- Step 1: 봇 기본정보 -->
+            <div class="create-step" id="step1">
+                <h2 class="step-title">챗봇의 기본 정보를 입력하세요</h2>
+                <p class="step-desc">이름과 소개를 설정합니다</p>
                 <div class="form-card">
                     <div class="form-group">
-                        <label class="form-label" style="color:white">챗봇 이름 *</label>
-                        <input type="text" class="form-input" id="botName" placeholder="예: 김의원 AI 비서, 쿡식당 도우미"
-                            maxlength="30">
+                        <label class="form-label">챗봇 이름 *</label>
+                        <input type="text" class="form-input" id="botName"
+                            placeholder="예: 김의원 AI 비서, 쿡식당 도우미" maxlength="30">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" style="color:white">한줄 설명</label>
-                        <input type="text" class="form-input" id="botDesc" placeholder="예: 유권자들과 소통하는 AI 비서입니다"
-                            maxlength="100">
+                        <label class="form-label">한 줄 소개</label>
+                        <input type="text" class="form-input" id="botDesc"
+                            placeholder="예: 유권자들과 소통하는 AI 비서입니다" maxlength="100">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" style="color:white">사용자명 (URL용)</label>
+                        <label class="form-label">사용자명 (URL용)</label>
                         <div class="input-with-prefix">
                             <span class="input-prefix">mychatbot.world/bot/</span>
                             <input type="text" class="form-input" id="botUsername" placeholder="my-bot" maxlength="20"
                                 pattern="[a-z0-9-]+">
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-lg" style="width:100%" onclick="goToStep(3)">다음: 음성/텍스트 입력
-                        →</button>
+                    <button class="btn btn-primary btn-lg" style="width:100%" onclick="goToStep(2)">
+                        다음: 페르소나 설정 →
+                    </button>
                 </div>
             </div>
 
-            <!-- Step 3: Multi-Persona Setup (New) -->
-            <div class="create-step hidden" id="step3">
-                <h2 class="step-title">멀티 페르소나 설정</h2>
-                <p class="step-desc">최대 5개의 자아를 설정하여 상황에 맞게 대화합니다 (수시 변경 가능)</p>
+            <!-- Step 2: 대표 페르소나 설정 -->
+            <div class="create-step hidden" id="step2">
+                <h2 class="step-title">대표 페르소나를 설정하세요</h2>
+                <p class="step-desc">챗봇의 대표 페르소나 1개를 설정합니다. 추가 페르소나는 마이페이지에서 만들 수 있습니다.</p>
 
-                <div id="personaList" class="persona-list">
-                    <!-- Dynamic Persona Cards -->
-                </div>
-
-                <button class="btn btn-outline" id="addPersonaBtn" onclick="addPersona()">+ 페르소나 추가</button>
+                <div class="persona-type-badge badge-avatar">대표 페르소나를 설정하세요</div>
+                <div id="avatarPersonaList" class="persona-list"></div>
 
                 <div class="step-actions">
-                    <button class="btn btn-secondary" onclick="goToStep(2)">이전</button>
-                    <button class="btn btn-primary" onclick="goToStep(4)">다음: 인터뷰 →</button>
+                    <button class="btn btn-secondary" onclick="goToStep(1)">← 이전</button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">다음: 인터뷰 →</button>
                 </div>
             </div>
 
-            <!-- Step 4: Voice/Text Input -->
-            <div class="create-step hidden" id="step4">
+            <!-- Step 3: 인터뷰 -->
+            <div class="create-step hidden" id="step3">
                 <h2 class="step-title">AI에게 당신을 소개해주세요</h2>
                 <p class="step-desc">5분간 자유롭게 말하거나 텍스트로 입력해주세요</p>
 
@@ -101,13 +94,17 @@
                 <div class="voice-input-area" id="voiceInput">
                     <div class="voice-circle" id="voiceCircle" onclick="toggleRecording()">
                         <div class="voice-icon" id="voiceIcon">🎤</div>
-                        <div class="voice-waves" id="voiceWaves"></div>
                     </div>
                     <div class="voice-timer" id="voiceTimer">5:00</div>
                     <p class="voice-hint" id="voiceHint">마이크를 탭하여 녹음을 시작하세요</p>
                     <div class="voice-guide">
-                        <h4>💡 이런 내용을 말해주세요:</h4>
-                        <ul id="voiceGuideList"></ul>
+                        <h4>이런 내용을 말해주세요:</h4>
+                        <ul id="voiceGuideList">
+                            <li>자기소개와 업무 소개</li>
+                            <li>고객이 자주 묻는 질문과 답변</li>
+                            <li>전문 분야와 강점</li>
+                            <li>원하는 대화 스타일</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -119,41 +116,49 @@
                 </div>
 
                 <div class="voice-transcript hidden" id="transcriptArea">
-                    <h4>📝 녹음 내용:</h4>
+                    <h4>녹음 내용:</h4>
                     <p id="transcriptText"></p>
                 </div>
 
+                <div class="voice-playback hidden" id="voicePlayback">
+                    <div class="voice-playback-bar">
+                        <button class="btn btn-sm btn-secondary" onclick="playRecording()">재생</button>
+                        <span class="voice-duration" id="voiceDuration"></span>
+                        <button class="btn btn-sm btn-secondary" onclick="reRecord()">다시 녹음</button>
+                    </div>
+                </div>
+
                 <button class="btn btn-primary btn-lg" style="width:100%; margin-top:1.5rem" onclick="analyzeInput()">
-                    🤖 AI 분석 시작 →
+                    AI 분석 시작 →
                 </button>
             </div>
 
-            <!-- Step 5: AI Analysis -->
-            <div class="create-step hidden" id="step5">
+            <!-- Step 4: AI 분석 -->
+            <div class="create-step hidden" id="step4">
                 <h2 class="step-title">AI가 분석 중입니다...</h2>
                 <div class="analysis-animation" id="analysisAnimation">
                     <div class="analysis-spinner">
                         <div class="spinner spinner-primary" style="width:48px;height:48px;border-width:4px"></div>
                     </div>
                     <div class="analysis-steps" id="analysisSteps">
-                        <div class="analysis-step">🔍 음성/텍스트 분석 중...</div>
-                        <div class="analysis-step">🧠 성격과 어조 추출 중...</div>
+                        <div class="analysis-step">🔍 입력 데이터 분석 중...</div>
+                        <div class="analysis-step">🧠 페르소나별 성격/어조 추출 중...</div>
                         <div class="analysis-step">💬 인사말 생성 중...</div>
                         <div class="analysis-step">❓ FAQ 자동 생성 중...</div>
                     </div>
                 </div>
                 <div class="analysis-result hidden" id="analysisResult">
-                    <h2 class="step-title">✨ 챗봇이 탄생했습니다!</h2>
+                    <h2 class="step-title">챗봇이 탄생했습니다!</h2>
                     <div class="result-preview" id="resultPreview"></div>
                     <button class="btn btn-primary btn-xl" style="width:100%; margin-top:1.5rem"
                         onclick="completeCreation()">
-                        🚀 챗봇 설치하기
+                        챗봇 설치하기
                     </button>
                 </div>
             </div>
 
-            <!-- Step 6: Complete! -->
-            <div class="create-step hidden" id="step6">
+            <!-- Step 5: 완성 -->
+            <div class="create-step hidden" id="step5">
                 <div class="complete-celebration">
                     <div class="complete-icon">🎉</div>
                     <h2 class="step-title">축하합니다! 챗봇이 설치되었습니다!</h2>
@@ -168,18 +173,22 @@
                         <div class="complete-qr" id="qrCode"></div>
                     </div>
                     <div class="complete-actions">
-                        <a href="#" id="chatLink" class="btn btn-primary btn-lg">💬 챗봇과 대화하기</a>
-                        <a href="../home/index.html" class="btn btn-secondary btn-lg">🏠 마이 페이지로 가기</a>
+                        <a href="#" id="chatLink" class="btn btn-primary btn-lg">챗봇과 대화하기</a>
+                        <a href="../home/index.html" class="btn btn-secondary btn-lg">마이 페이지로 가기</a>
                     </div>
                 </div>
+
+                <p class="complete-next-hint">마이페이지에서 지식베이스, 스킬, 챗봇 스쿨을 관리할 수 있습니다.</p>
             </div>
         </div>
     </main>
 
-    <script src="../../js/config.js?v=11.0"></script>
-    <script src="../../js/secrets.js?v=11.0"></script>
-    <script src="../../js/app.js?v=11.0"></script>
-    <script src="../../js/create.js?v=11.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/config.js?v=15.0"></script>
+    <script src="../../js/secrets.js?v=15.0"></script>
+    <script src="../../js/app.js?v=15.0"></script>
+    <script src="../../js/kb-manager.js?v=15.0"></script>
+    <script src="../../js/create.js?v=15.0"></script>
 </body>
 
 </html>

@@ -1,209 +1,354 @@
 /**
- * @task S2F2
- * Create Page JavaScript - 6-step chatbot creation wizard
+ * Create Page JavaScript - 5-step chatbot creation wizard v15.0
+ * Steps: 기본정보 → 대표 페르소나 → 인터뷰 → AI분석 → 완성
+ * 간소화: 대표 페르소나 1개만 생성, 나머지는 마이페이지에서 추가
  */
+
+// === State ===
 let currentStep = 1;
-let selectedTemplate = null;
+const PART1_STEPS = 5;  // 5단계 생성 프로세스
+let savedBotId = null;   // Set after completeCreation, used by Part 2 KB
+let avatarPersonaCount = 0;
+let helperPersonaCount = 0;
+
+// Voice (STT)
 let isRecording = false;
 let recordingTimer = null;
 let remainingTime = 300;
 let recognition = null;
 let transcriptText = '';
-let personaCount = 0;
 
+// Voice (MediaRecorder — 오디오 파일 저장)
+let mediaRecorder = null;
+let audioChunks = [];
+let audioBlob = null;
+
+// (KB는 마이페이지에서 관리)
+
+// (이모지는 봇 레벨이 아닌 페르소나별로 관리)
+
+// Emotion slider preview texts (key: iqEq value range)
+const SLIDER_PREVIEWS = [
+    { max: 10, text: '힘드셨죠... 제가 도와드릴게요.' },
+    { max: 30, text: '걱정되시죠? 함께 해결해볼게요.' },
+    { max: 60, text: '객관적으로 보면서도, 마음은 이해합니다.' },
+    { max: 80, text: '분석 결과를 바탕으로 설명해드릴게요.' },
+    { max: 100, text: '정확한 데이터 기반으로 답변드리겠습니다.' }
+];
+
+// Helper types
+const HELPER_TYPES = [
+    { id: 'work', label: '💼 업무', desc: '업무 비서' },
+    { id: 'life', label: '🏠 생활', desc: '생활 매니저' },
+    { id: 'study', label: '📚 학습', desc: '학습 코치' },
+    { id: 'creative', label: '🎨 창작', desc: '창작 도우미' },
+    { id: 'etc', label: '⚙️ 기타', desc: '기타 도우미' }
+];
+
+// === Init ===
 document.addEventListener('DOMContentLoaded', () => {
-    renderTemplateSelect();
+    // 로그인 확인
+    if (typeof MCW !== 'undefined' && MCW.user) {
+        const user = MCW.user.getCurrentUser();
+        if (!user) {
+            alert('챗봇을 생성하려면 먼저 로그인해주세요.');
+            location.href = '../login.html';
+            return;
+        }
+    }
     setupSpeechRecognition();
     setupTextCounter();
-    // Add default persona
-    addPersona();
+    // 대표 페르소나 1개만 생성
+    addPersonaCard('avatar');
 });
 
-// Step navigation
+// === Step Navigation ===
 function goToStep(step) {
-    // Validate current step
-    if (step === 2 && !selectedTemplate) {
-        alert('분야를 선택해주세요');
-        return;
-    }
-    if (step === 3) {
+    // Validation
+    if (step === 2) {
         const name = document.getElementById('botName').value.trim();
         if (!name) { alert('챗봇 이름을 입력해주세요'); return; }
     }
-    if (step === 4) {
-        // Validate Persona Step
-        const personas = collectPersonas();
-        if (personas.length === 0) { alert('최소 1개의 페르소나를 설정해주세요'); return; }
-        const invalid = personas.find(p => !p.name.trim());
-        if (invalid) { alert('모든 페르소나의 이름을 입력해주세요'); return; }
+    if (step === 3) {
+        const avatars = collectPersonas('avatar');
+        if (avatars.length === 0) { alert('대표 페르소나를 설정해주세요'); return; }
+        const invalidAvatar = avatars.find(p => !p.name.trim());
+        if (invalidAvatar) { alert('대표 페르소나의 이름을 입력해주세요'); return; }
+        updateVoiceGuide();
     }
 
-    // Hide all steps, show target
-    for (let i = 1; i <= 6; i++) {
+    // Toggle steps (1-5)
+    for (let i = 1; i <= 5; i++) {
         const el = document.getElementById('step' + i);
         if (el) {
             el.classList.toggle('hidden', i !== step);
-            // Re-trigger animation
             if (i === step) {
                 el.style.animation = 'none';
-                el.offsetHeight; /* trigger reflow */
+                el.offsetHeight;
                 el.style.animation = 'fadeIn 0.5s ease';
             }
         }
     }
 
-    // Update progress (Map 6 steps to 5 dots)
-    // Step 1,2,3 -> 1,2,3
-    // Step 4 (Interview) -> 4
-    // Step 5 (Analysis) -> 5
-    // Step 6 (Complete) -> 5 (Completed)
     currentStep = step;
-    const progressStep = Math.min(step, 5);
 
+    const pct = Math.round((step / PART1_STEPS) * 100);
     const fill = document.getElementById('progressFill');
-    if (fill) fill.style.width = (progressStep * 20) + '%';
+    if (fill) fill.style.width = pct + '%';
 
     document.querySelectorAll('.progress-step').forEach((el, idx) => {
-        el.classList.toggle('active', idx + 1 === progressStep);
-        el.classList.toggle('completed', idx + 1 < progressStep);
+        el.classList.toggle('active', idx + 1 === step);
+        el.classList.toggle('completed', idx + 1 < step);
     });
 
-    // Update voice guide for template
-    if (step === 4) updateVoiceGuide();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// === Multi-Persona Logic ===
-function addPersona() {
-    if (personaCount >= 5) {
-        alert('페르소나는 최대 5개까지 설정 가능합니다.');
+// === Step 2 & 3: Persona Cards ===
+function addPersonaCard(type) {
+    const isAvatar = type === 'avatar';
+    const list = document.getElementById(isAvatar ? 'avatarPersonaList' : 'helperPersonaList');
+    const count = isAvatar ? avatarPersonaCount : helperPersonaCount;
+    const maxCount = 5;
+
+    if (count >= maxCount) {
+        alert('페르소나는 최대 ' + maxCount + '개까지 설정 가능합니다.');
         return;
     }
-    personaCount++;
-    const id = Date.now();
+
+    if (isAvatar) avatarPersonaCount++;
+    else helperPersonaCount++;
+
+    const num = isAvatar ? avatarPersonaCount : helperPersonaCount;
+    const id = type + '_' + Date.now();
+
     const div = document.createElement('div');
-    div.className = 'persona-card';
-    div.id = `persona-${id}`;
+    div.className = 'persona-card persona-card-' + type;
+    div.id = 'pc-' + id;
+    div.dataset.personaType = type;
+
+    const tagClass = isAvatar ? 'tag-avatar' : 'tag-helper';
+    const tagLabel = isAvatar ? 'A형' : 'B형';
+    const titleLabel = isAvatar ? '대면용 페르소나 ' + num : '도우미 페르소나 ' + num;
+    const deleteBtn = num > 1 ? `<button class="persona-delete-btn" onclick="removePersonaCard('${id}','${type}')">✕</button>` : '';
+
+    let typeSpecificHTML = '';
+
+    if (isAvatar) {
+        // Template selector for A-type
+        const templateOptions = Object.values(MCW.templates).map(t =>
+            `<option value="${t.id}">${t.icon} ${t.name} — ${t.description}</option>`
+        ).join('');
+        typeSpecificHTML = `
+            <div class="persona-input-group">
+                <label class="persona-input-label">직종 템플릿 (선택 시 역할/FAQ 자동 추천)</label>
+                <select class="persona-select p-template" onchange="onTemplateSelect(this)">
+                    <option value="">선택 안 함 (자유 설정)</option>
+                    ${templateOptions}
+                </select>
+            </div>`;
+    } else {
+        // Helper type selector for B-type
+        const helperHTML = HELPER_TYPES.map(h =>
+            `<div class="helper-type-option">
+                <input type="radio" name="htype-${id}" id="ht-${h.id}-${id}" value="${h.id}"${h.id === 'work' ? ' checked' : ''}>
+                <label for="ht-${h.id}-${id}">${h.label}</label>
+            </div>`
+        ).join('');
+        typeSpecificHTML = `
+            <div class="persona-input-group">
+                <label class="persona-input-label">도우미 유형</label>
+                <div class="helper-type-grid">${helperHTML}</div>
+            </div>`;
+    }
+
     div.innerHTML = `
         <div class="persona-card-header">
             <div class="persona-card-title">
-                <span class="persona-counter">Persona ${personaCount}</span>
-                자아 설정
+                <span class="persona-type-tag ${tagClass}">${tagLabel}</span>
+                ${titleLabel}
             </div>
-            ${personaCount > 1 ? `<button class="persona-delete-btn" onclick="removePersona('${id}')">🗑️</button>` : ''}
+            ${deleteBtn}
         </div>
-        
+
         <div class="persona-input-group">
-            <label class="persona-input-label">자아 이름 (예: AI 마스터)</label>
-            <input type="text" class="persona-input p-name" placeholder="이름 입력">
+            <label class="persona-input-label">페르소나 이름 *</label>
+            <input type="text" class="persona-input p-name" placeholder="${isAvatar ? '예: 고객 상담, 전문 컨설팅' : '예: 업무 비서, 학습 코치'}">
         </div>
-        
+
+        ${typeSpecificHTML}
+
         <div class="persona-input-group">
-            <label class="persona-input-label">역할/전문성 (예: 기술적 조언)</label>
-            <input type="text" class="persona-input p-role" placeholder="역할 설명">
+            <label class="persona-input-label">역할/전문성 설명</label>
+            <textarea class="persona-textarea p-role" rows="2" placeholder="이 페르소나의 역할을 설명해주세요"></textarea>
         </div>
-        
+
+        <div class="persona-input-group">
+            <label class="persona-input-label">감정 슬라이더 (IQ ↔ EQ)</label>
+            <div class="emotion-slider-wrap">
+                <span class="emotion-label">💖 감성</span>
+                <input type="range" class="emotion-slider p-iqeq" min="0" max="100" value="50"
+                    oninput="updateSliderPreview(this)">
+                <span class="emotion-label">🧠 논리</span>
+            </div>
+            <div class="slider-value-display">50 — 균형</div>
+            <div class="slider-preview">"객관적으로 보면서도, 마음은 이해합니다."</div>
+        </div>
+
         <div class="persona-input-group">
             <label class="persona-input-label">AI 두뇌 모델</label>
             <div class="model-select">
                 <div class="model-option">
-                    <input type="radio" name="model-${id}" id="m-logic-${id}" value="logic" checked>
-                    <label for="m-logic-${id}">🧠 논리파<br>(GPT-4)</label>
+                    <input type="radio" name="model-${id}" id="ml-${id}" value="logic" checked>
+                    <label for="ml-${id}">🧠 논리파</label>
                 </div>
                 <div class="model-option">
-                    <input type="radio" name="model-${id}" id="m-emotion-${id}" value="emotion">
-                    <label for="m-emotion-${id}">💖 감성파<br>(Claude)</label>
+                    <input type="radio" name="model-${id}" id="me-${id}" value="emotion">
+                    <label for="me-${id}">💖 감성파</label>
                 </div>
                 <div class="model-option">
-                    <input type="radio" name="model-${id}" id="m-fast-${id}" value="fast">
-                    <label for="m-fast-${id}">⚡ 속도파<br>(Gemini)</label>
+                    <input type="radio" name="model-${id}" id="mf-${id}" value="fast">
+                    <label for="mf-${id}">⚡ 속도파</label>
                 </div>
                 <div class="model-option">
-                    <input type="radio" name="model-${id}" id="m-creative-${id}" value="creative">
-                    <label for="m-creative-${id}">🎨 창작파<br>(DALL-E)</label>
+                    <input type="radio" name="model-${id}" id="mc-${id}" value="creative">
+                    <label for="mc-${id}">🎨 창작파</label>
                 </div>
-            </div>
-        </div>
-        
-        <div class="persona-input-group">
-            <div class="toggle-switch-container">
-                <div class="slider-container" style="flex:1; margin-right:1rem;">
-                    <span>지성(IQ)</span>
-                    <input type="range" class="iq-eq-slider p-slider" min="0" max="100" value="50">
-                    <span>감성(EQ)</span>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" class="toggle-input p-visible" checked>
-                    <div class="toggle-slider"></div>
-                    <span class="toggle-switch-label">공개</span>
-                </label>
             </div>
         </div>
     `;
-    document.getElementById('personaList').appendChild(div);
-    updateAddButton();
+
+    list.appendChild(div);
+    updateAddButtons();
 }
 
-function removePersona(id) {
-    if (personaCount <= 1) return;
-    document.getElementById(`persona-${id}`).remove();
-    personaCount--;
-    updateAddButton();
-    // Re-index titles optionally, but simpler to leave as is or re-render labels
+function removePersonaCard(id, type) {
+    const el = document.getElementById('pc-' + id);
+    if (!el) return;
+    el.remove();
+    if (type === 'avatar') avatarPersonaCount--;
+    else helperPersonaCount--;
+    updateAddButtons();
 }
 
-function updateAddButton() {
-    const btn = document.getElementById('addPersonaBtn');
-    if (personaCount >= 5) {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.textContent = '최대 5개까지 추가 가능';
-    } else {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.textContent = '+ 페르소나 추가';
+function updateAddButtons() {
+    const avatarBtn = document.getElementById('addAvatarBtn');
+    const helperBtn = document.getElementById('addHelperBtn');
+    if (avatarBtn) {
+        avatarBtn.disabled = avatarPersonaCount >= 5;
+        avatarBtn.style.opacity = avatarPersonaCount >= 5 ? '0.5' : '1';
+        avatarBtn.textContent = avatarPersonaCount >= 5 ? '최대 5개까지 추가 가능' : '+ 대면용 페르소나 추가';
+    }
+    if (helperBtn) {
+        helperBtn.disabled = helperPersonaCount >= 5;
+        helperBtn.style.opacity = helperPersonaCount >= 5 ? '0.5' : '1';
+        helperBtn.textContent = helperPersonaCount >= 5 ? '최대 5개까지 추가 가능' : '+ 도우미 페르소나 추가';
     }
 }
 
-function collectPersonas() {
-    const list = [];
-    document.querySelectorAll('.persona-card').forEach(card => {
-        list.push({
-            name: card.querySelector('.p-name').value,
-            role: card.querySelector('.p-role').value,
-            model: card.querySelector('input[type=radio]:checked').value,
-            iqEq: card.querySelector('.p-slider').value,
-            isVisible: card.querySelector('.p-visible').checked
+// === Emotion Slider ===
+function updateSliderPreview(slider) {
+    const val = parseInt(slider.value, 10);
+    const card = slider.closest('.persona-card');
+    if (!card) return;
+
+    // Update value display
+    const valueDisplay = card.querySelector('.slider-value-display');
+    if (valueDisplay) {
+        let label = '';
+        if (val <= 20) label = '감성 중심';
+        else if (val <= 40) label = '감성 우세';
+        else if (val <= 60) label = '균형';
+        else if (val <= 80) label = '논리 우세';
+        else label = '논리 중심';
+        valueDisplay.textContent = val + ' — ' + label;
+    }
+
+    // Update preview text
+    const preview = card.querySelector('.slider-preview');
+    if (preview) {
+        const match = SLIDER_PREVIEWS.find(p => val <= p.max);
+        preview.textContent = '"' + (match ? match.text : SLIDER_PREVIEWS[4].text) + '"';
+    }
+}
+
+// === Template Auto-Fill (A-type only) ===
+function onTemplateSelect(select) {
+    const card = select.closest('.persona-card');
+    if (!card) return;
+    const templateId = select.value;
+    if (!templateId) return;
+
+    const tpl = MCW.templates[templateId];
+    if (!tpl) return;
+
+    // Auto-fill role
+    const roleField = card.querySelector('.p-role');
+    if (roleField && !roleField.value.trim()) {
+        roleField.value = tpl.name + ' 전문 상담 — ' + (tpl.tone || tpl.description);
+    }
+
+    // Suggest iqEq based on template
+    const suggestedIqEq = tpl.suggestedIqEq || 50;
+    const slider = card.querySelector('.p-iqeq');
+    if (slider) {
+        slider.value = suggestedIqEq;
+        updateSliderPreview(slider);
+    }
+}
+
+// === Collect Personas ===
+function collectPersonas(type) {
+    const listId = type === 'avatar' ? 'avatarPersonaList' : 'helperPersonaList';
+    const list = document.getElementById(listId);
+    if (!list) return [];
+
+    const personas = [];
+    list.querySelectorAll('.persona-card').forEach(card => {
+        const name = card.querySelector('.p-name')?.value || '';
+        const role = card.querySelector('.p-role')?.value || '';
+        const model = card.querySelector('input[type=radio][name^="model"]:checked')?.value || 'logic';
+        const iqEq = parseInt(card.querySelector('.p-iqeq')?.value || '50', 10);
+
+        let templateId = null;
+        let helperType = null;
+
+        if (type === 'avatar') {
+            templateId = card.querySelector('.p-template')?.value || null;
+        } else {
+            helperType = card.querySelector('input[type=radio][name^="htype"]:checked')?.value || 'work';
+        }
+
+        personas.push({
+            id: type + '_' + name.replace(/\s/g, '_').toLowerCase() + '_' + Date.now().toString(36),
+            name: name,
+            role: role,
+            category: type,
+            templateId: templateId,
+            helperType: helperType,
+            model: model,
+            iqEq: iqEq,
+            isVisible: true,
+            isPublic: type === 'avatar',
+            greeting: '',
+            faqs: []
         });
     });
-    return list;
+    return personas;
 }
 
-// Template selection
-function renderTemplateSelect() {
-    const grid = document.getElementById('templateSelectGrid');
-    if (!grid) return;
-    const templates = MCW.templates;
-    grid.innerHTML = Object.values(templates).map(t => `
-    <div class="template-select-card" id="tpl-${t.id}" onclick="selectTemplate('${t.id}')">
-      <div class="template-icon">${t.icon}</div>
-      <h4>${t.name}</h4>
-      <p>${t.description}</p>
-    </div>
-  `).join('');
-}
+// === Step 4: Knowledge Base ===
+// === Step 4: Interview ===
 
-function selectTemplate(id) {
-    selectedTemplate = MCW.templates[id];
-    document.querySelectorAll('.template-select-card').forEach(el => {
-        el.classList.toggle('selected', el.id === 'tpl-' + id);
-    });
-    setTimeout(() => goToStep(2), 300);
-}
-
-// Voice guide based on template
+// Voice guide based on detected templates
 function updateVoiceGuide() {
     const list = document.getElementById('voiceGuideList');
-    if (!list || !selectedTemplate) return;
+    if (!list) return;
+
+    // Check avatar personas for templates
+    const avatarPersonas = collectPersonas('avatar');
+    const templateIds = avatarPersonas.map(p => p.templateId).filter(Boolean);
+
     const guides = {
         smallbiz: ['가게 소개와 분위기', '대표 메뉴/상품 3~5가지', '영업시간과 위치', '예약/배달 방법'],
         realtor: ['사무소 소개', '전문 지역/매물 유형', '자주 받는 문의', '수수료/상담 절차'],
@@ -216,8 +361,13 @@ function updateVoiceGuide() {
         freelancer: ['전문 분야와 경력', '포트폴리오 소개', '작업 프로세스', '견적/결제 방법'],
         consultant: ['컨설팅 분야 소개', '대표 성공 사례', '진행 절차', '비용/견적 안내']
     };
-    const items = guides[selectedTemplate.id] || guides.smallbiz;
-    list.innerHTML = items.map(g => `<li>${g}</li>`).join('');
+
+    // Use first matched template, or defaults
+    let items = ['자기소개와 업무 소개', '고객이 자주 묻는 질문과 답변', '전문 분야와 강점', '원하는 대화 스타일'];
+    if (templateIds.length > 0 && guides[templateIds[0]]) {
+        items = guides[templateIds[0]];
+    }
+    list.innerHTML = items.map(g => '<li>' + g + '</li>').join('');
 }
 
 // Input mode toggle
@@ -225,8 +375,8 @@ function switchInputMode(mode) {
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', (mode === 'voice' && i === 0) || (mode === 'text' && i === 1));
     });
-    document.getElementById('voiceInput').classList.toggle('hidden', mode !== 'voice');
-    document.getElementById('textInput').classList.toggle('hidden', mode !== 'text');
+    document.getElementById('voiceInput')?.classList.toggle('hidden', mode !== 'voice');
+    document.getElementById('textInput')?.classList.toggle('hidden', mode !== 'text');
 }
 
 // Speech Recognition
@@ -247,11 +397,11 @@ function setupSpeechRecognition() {
             const area = document.getElementById('transcriptArea');
             const txt = document.getElementById('transcriptText');
             if (transcriptText) {
-                area.classList.remove('hidden');
-                txt.textContent = transcriptText + interim;
+                area?.classList.remove('hidden');
+                if (txt) txt.textContent = transcriptText + interim;
             }
         };
-        recognition.onerror = (e) => { console.error('Speech error:', e.error); stopRecording(); };
+        recognition.onerror = () => stopRecording();
         recognition.onend = () => { if (isRecording) recognition.start(); };
     }
 }
@@ -261,20 +411,55 @@ function toggleRecording() {
     else startRecording();
 }
 
-function startRecording() {
-    if (!recognition) { alert('이 브라우저는 음성 인식을 지원하지 않습니다. 텍스트 입력을 이용해주세요.'); return; }
+async function startRecording() {
+    if (!recognition) {
+        alert('이 브라우저는 음성 인식을 지원하지 않습니다. 텍스트 입력을 이용해주세요.');
+        return;
+    }
     isRecording = true;
-    remainingTime = 180;
+    remainingTime = 300;
     transcriptText = '';
-    document.getElementById('voiceCircle').classList.add('recording');
+    audioChunks = [];
+    audioBlob = null;
+    document.getElementById('voicePlayback')?.classList.add('hidden');
+    document.getElementById('voiceCircle')?.classList.add('recording');
     document.getElementById('voiceIcon').textContent = '⏹';
     document.getElementById('voiceHint').textContent = '녹음 중... 탭하여 정지';
+
+    // STT 시작
     recognition.start();
+
+    // MediaRecorder 시작 (오디오 파일 저장)
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+        mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+            audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            stream.getTracks().forEach(t => t.stop());
+            // 재생 UI 표시
+            const playbackEl = document.getElementById('voicePlayback');
+            const durationEl = document.getElementById('voiceDuration');
+            if (playbackEl) playbackEl.classList.remove('hidden');
+            if (durationEl) {
+                const elapsed = 300 - remainingTime;
+                const min = Math.floor(elapsed / 60);
+                const sec = String(elapsed % 60).padStart(2, '0');
+                durationEl.textContent = min + ':' + sec + ' 녹음됨';
+            }
+        };
+        mediaRecorder.start();
+    } catch (err) {
+        console.warn('[Create] MediaRecorder not available:', err);
+    }
+
     recordingTimer = setInterval(() => {
         remainingTime--;
         const min = Math.floor(remainingTime / 60);
         const sec = String(remainingTime % 60).padStart(2, '0');
-        document.getElementById('voiceTimer').textContent = `${min}:${sec}`;
+        document.getElementById('voiceTimer').textContent = min + ':' + sec;
         if (remainingTime <= 0) stopRecording();
     }, 1000);
 }
@@ -282,13 +467,34 @@ function startRecording() {
 function stopRecording() {
     isRecording = false;
     if (recognition) recognition.stop();
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
     clearInterval(recordingTimer);
-    document.getElementById('voiceCircle').classList.remove('recording');
+    document.getElementById('voiceCircle')?.classList.remove('recording');
     document.getElementById('voiceIcon').textContent = '🎤';
     document.getElementById('voiceHint').textContent = '녹음 완료! 아래에서 AI 분석을 시작하세요.';
 }
 
-// Text counter
+function playRecording() {
+    if (!audioBlob) return;
+    const url = URL.createObjectURL(audioBlob);
+    const audio = new Audio(url);
+    audio.onended = () => URL.revokeObjectURL(url);
+    audio.play();
+}
+
+function reRecord() {
+    audioBlob = null;
+    audioChunks = [];
+    transcriptText = '';
+    document.getElementById('voicePlayback')?.classList.add('hidden');
+    const area = document.getElementById('transcriptArea');
+    if (area) area.classList.add('hidden');
+    document.getElementById('voiceTimer').textContent = '5:00';
+    document.getElementById('voiceHint').textContent = '마이크를 탭하여 녹음을 시작하세요';
+}
+
 function setupTextCounter() {
     const ta = document.getElementById('textContent');
     const ct = document.getElementById('charCount');
@@ -297,20 +503,20 @@ function setupTextCounter() {
     }
 }
 
-// AI Analysis
+// === Step 6: AI Analysis ===
 async function analyzeInput() {
     const voiceText = transcriptText.trim();
     const manualText = document.getElementById('textContent')?.value.trim() || '';
     const inputText = voiceText || manualText;
 
-    if (!inputText || inputText.length < 20) {
-        alert('음성 또는 텍스트로 최소 20자 이상 입력해주세요.');
+    if (!inputText || inputText.length < 10) {
+        alert('음성 또는 텍스트로 최소 10자 이상 입력해주세요.');
         return;
     }
 
-    goToStep(5); // Show Analysis Screen (Step 5 now)
+    goToStep(4);
 
-    // Simulate AI analysis steps
+    // Animate analysis steps
     const steps = document.querySelectorAll('#analysisSteps .analysis-step');
     for (let i = 0; i < steps.length; i++) {
         await new Promise(r => setTimeout(r, 800));
@@ -321,78 +527,164 @@ async function analyzeInput() {
 
     await new Promise(r => setTimeout(r, 500));
 
-    // Generate result (MVP: local AI analysis simulation)
+    // Build result — 대표 페르소나 1개만
     const botName = document.getElementById('botName').value.trim();
     const botDesc = document.getElementById('botDesc').value.trim();
-    const template = selectedTemplate;
-    const personas = collectPersonas();
+    const avatarPersonas = collectPersonas('avatar');
+    const primaryPersona = avatarPersonas[0];
 
-    const result = generateBotResult(botName, botDesc, template, inputText, personas);
+    // Generate greeting and FAQs for primary persona
+    if (primaryPersona) {
+        if (primaryPersona.templateId && MCW.templates[primaryPersona.templateId]) {
+            const tpl = MCW.templates[primaryPersona.templateId];
+            primaryPersona.greeting = tpl.greeting.replace('{name}', botName);
+            primaryPersona.faqs = tpl.faqs.map(f => ({ ...f }));
+        } else {
+            primaryPersona.greeting = generateGreeting(botName, primaryPersona);
+            primaryPersona.faqs = generateDefaultFaqs(primaryPersona);
+        }
+    }
+
+    const result = {
+        botName: botName,
+        botDesc: botDesc,
+        greeting: primaryPersona?.greeting || '',
+        faqs: primaryPersona?.faqs || [],
+        personas: avatarPersonas,
+        inputText: inputText,
+        audioBlob: audioBlob || null,
+        createdAt: new Date().toISOString()
+    };
 
     // Show result
-    document.getElementById('analysisAnimation').classList.add('hidden');
+    document.getElementById('analysisAnimation')?.classList.add('hidden');
     const resultDiv = document.getElementById('analysisResult');
-    resultDiv.classList.remove('hidden');
+    resultDiv?.classList.remove('hidden');
 
-    // Preview with Persona info
+    const personaName = primaryPersona?.name || '';
+    const greeting = primaryPersona?.greeting || '';
+    const faqs = primaryPersona?.faqs || [];
+
     document.getElementById('resultPreview').innerHTML = `
-    <div class="result-item"><div class="result-label">생성된 페르소나</div><div class="result-value">${personas.length}개 자아 (${personas.map(p => p.name).join(', ')})</div></div>
-    <div class="result-item"><div class="result-label">대표 인사말</div><div class="result-value">"${result.greeting}"</div></div>
-    <div class="result-item">
-      <div class="result-label">자동 생성 FAQ (${result.faqs.length}개)</div>
-      <ul class="result-faq-list">${result.faqs.map(f => `<li><strong>Q:</strong> ${f.q}<br><strong>A:</strong> ${f.a}</li>`).join('')}</ul>
-    </div>
-  `;
+        <div class="result-item">
+            <div class="result-label">대표 페르소나</div>
+            <div class="result-value">${personaName}</div>
+        </div>
+        <div class="result-item">
+            <div class="result-label">인사말</div>
+            <div class="result-value">"${greeting}"</div>
+        </div>
+        ${audioBlob ? `
+        <div class="result-item">
+            <div class="result-label">음성 녹음</div>
+            <div class="result-value">녹음 완료</div>
+        </div>` : ''}
+        ${faqs.length > 0 ? `
+        <div class="result-item">
+            <div class="result-label">자동 생성 FAQ (${faqs.length}개)</div>
+            <ul class="result-faq-list">${faqs.slice(0, 5).map(f =>
+                '<li><strong>Q:</strong> ' + f.q + (f.a ? '<br><strong>A:</strong> ' + f.a : '') + '</li>'
+            ).join('')}</ul>
+        </div>` : ''}
+    `;
 
-    // Save bot data
     window._createdBot = result;
 }
 
-function generateBotResult(name, desc, template, text, personas) {
-    const faqTemplates = MCW.templates[template.id].faqs || MCW.templates.smallbiz.faqs;
-    const greeting = MCW.templates[template.id].greeting.replace('{name}', name);
-
-    return {
-        botName: name,
-        botDesc: desc,
-        templateId: template.id,
-        personas: personas, // Save Multi-Persona Data
-        greeting: greeting,
-        faqs: faqTemplates,
-        inputText: text,
-        createdAt: new Date().toISOString()
-    };
+function generateGreeting(botName, persona) {
+    const iq = persona.iqEq;
+    if (iq >= 75) return '안녕하세요. ' + botName + '의 ' + persona.name + '입니다. 정확하고 전문적인 답변으로 도와드리겠습니다.';
+    if (iq >= 50) return '안녕하세요! ' + botName + '의 ' + persona.name + '입니다. 무엇이든 편하게 물어보세요.';
+    if (iq >= 25) return '안녕하세요! ' + botName + '의 ' + persona.name + '이에요. 함께 이야기해볼까요?';
+    return '반가워요! ' + botName + '의 ' + persona.name + '이에요. 편하게 말씀해 주세요.';
 }
 
-// Complete creation
-function completeCreation() {
+function generateDefaultFaqs(persona) {
+    if (persona.category === 'helper') {
+        const map = {
+            work: [{ q: '오늘 일정 알려줘', a: '' }, { q: '이메일 초안 작성해줘', a: '' }, { q: '회의 요약해줘', a: '' }],
+            life: [{ q: '오늘 날씨 어때?', a: '' }, { q: '근처 맛집 추천해줘', a: '' }, { q: '건강 팁 알려줘', a: '' }],
+            study: [{ q: '이 개념 설명해줘', a: '' }, { q: '공부 계획 짜줘', a: '' }, { q: '퀴즈 내줘', a: '' }],
+            creative: [{ q: '글 아이디어 추천해줘', a: '' }, { q: '문장 다듬어줘', a: '' }, { q: '제목 만들어줘', a: '' }],
+            etc: [{ q: '도움이 필요해요', a: '' }, { q: '추천해줘', a: '' }]
+        };
+        return map[persona.helperType] || map.etc;
+    }
+    return [
+        { q: '소개해주세요', a: '' },
+        { q: '서비스 안내', a: '' },
+        { q: '연락처', a: '' }
+    ];
+}
+
+// === Step 7: Complete ===
+async function completeCreation() {
     const bot = window._createdBot;
     if (!bot) return;
 
     const username = document.getElementById('botUsername').value.trim() ||
-        bot.botName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+        bot.botName.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
 
-    // Save to localStorage
+    const currentUser = MCW.user.getCurrentUser();
     const botData = {
         id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
         username: username,
+        ownerId: currentUser ? currentUser.id : 'anonymous',
         ...bot
     };
+
+    // audioBlob은 localStorage에 저장하지 않음
+    const voiceBlob = botData.audioBlob;
+    delete botData.audioBlob;
+
+    // 1) localStorage 저장 (기존 방식, 즉시 사용 가능)
     MCW.storage.saveBot(botData);
+    savedBotId = botData.id;
 
-    goToStep(6); // Complete Screen (Step 6 now)
+    // 2) 인터뷰 텍스트 → IndexedDB 저장
+    const primaryPersonaId = (botData.personas && botData.personas[0]) ? botData.personas[0].id : 'default';
+    if (botData.inputText) {
+        try {
+            await StorageManager.save('interview-text', `interview_${botData.id}_${primaryPersonaId}`, botData.inputText, { botId: botData.id });
+        } catch (err) { console.warn('[Create] interview save:', err); }
+    }
 
-    // Show URL & QR
+    // 3) 음성 녹음 → IndexedDB 저장
+    if (voiceBlob) {
+        try {
+            await StorageManager.save('voice-recording', `voice_${botData.id}_${primaryPersonaId}`, voiceBlob, { botId: botData.id });
+            console.log('[Create] Voice recording saved');
+        } catch (err) { console.warn('[Create] voice save:', err); }
+    }
+
+    // 4) Supabase 클라우드 동기화 (공개 데이터: 봇 프로필 + 페르소나)
+    try {
+        await StorageManager.syncBotToCloud(botData);
+        console.log('[Create] Bot synced to Supabase');
+    } catch (err) {
+        console.warn('[Create] Cloud sync skipped:', err.message);
+    }
+
+    goToStep(5);
+
+    // URL & QR
     const baseUrl = window.location.origin;
-    const url = `${baseUrl}/bot/${username}`;
+    const url = baseUrl + '/bot/' + username;
     document.getElementById('botUrl').value = url;
-    document.getElementById('chatLink').href = `/bot/${username}`;
-    document.getElementById('qrCode').innerHTML = `<img src="${MCW.getQRCodeURL(url, 200)}" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">`;
+    document.getElementById('chatLink').href = '/bot/' + username;
+    document.getElementById('qrCode').innerHTML =
+        '<img src="' + MCW.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
 }
 
 function copyUrl() {
     const input = document.getElementById('botUrl');
     input.select();
-    document.execCommand('copy');
-    alert('URL이 복사되었습니다!');
+    navigator.clipboard?.writeText(input.value).then(() => {
+        MCW.showToast?.('URL이 복사되었습니다!');
+    }).catch(() => {
+        document.execCommand('copy');
+        alert('URL이 복사되었습니다!');
+    });
 }
+
+// (지식베이스, 스킬, 챗봇스쿨은 마이페이지에서 관리)

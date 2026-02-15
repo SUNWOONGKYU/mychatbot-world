@@ -1,15 +1,25 @@
-﻿/**
- * SunnyBot Persona Definition (Clean Reset)
- * - 분신 아바타 3개
- * - AI 도우미 3개
+/**
+ * SunnyBot — 실제 유저 소유 봇 (wksun999@gmail.com)
+ * ID: 'sunny-official'
+ * helper 페르소나는 isPublic: false (소유자만 사용)
  */
 
 const SunnyBotData = {
-  botName: 'Sunny Bot (분신 아바타 + AI 도우미)',
+  // Step 1: 기본정보
+  botName: 'Sunny Bot',
   botDesc: '써니의 분신 아바타와 AI 도우미로 구성된 개인 AI 시스템입니다.',
-  greeting: '안녕하세요! Sunny Bot입니다. 분신 아바타와 AI 도우미 중에서 필요한 페르소나를 선택해주세요!',
+  username: 'sunny',
+
+  // Step 4: AI 분석 결과 — top-level (대표 페르소나 기준)
+  greeting: '안녕하세요! Sunny Bot입니다. 페르소나를 선택해주세요!',
+  faqs: [
+    { q: '어떤 구조로 되어 있나요?', a: '분신 아바타와 AI 도우미로 구성되어 있습니다.' },
+    { q: 'Sunny Bot이 무엇인가요?', a: '써니의 일을 대신하고 도와주는 분신 아바타 세계입니다.' },
+  ],
+
+  // Step 2: 페르소나 설정 (대면용 + 도우미)
   personas: [
-    // 분신 아바타 3개
+    // 대면용 아바타 3개 (공개)
     {
       id: 'sunny_avatar_ai',
       name: 'AI Master',
@@ -18,8 +28,15 @@ const SunnyBotData = {
       iqEq: 100,
       isVisible: true,
       category: 'avatar',
+      templateId: 'consultant',
       helperType: null,
       isPublic: true,
+      greeting: '안녕하세요. Sunny Bot의 AI Master입니다. 정확하고 전문적인 답변으로 도와드리겠습니다.',
+      faqs: [
+        { q: 'AI 전략을 세워주세요', a: '' },
+        { q: 'AI 도구 추천해주세요', a: '' },
+        { q: 'AI 트렌드 알려주세요', a: '' },
+      ],
     },
     {
       id: 'sunny_avatar_startup',
@@ -29,8 +46,15 @@ const SunnyBotData = {
       iqEq: 90,
       isVisible: true,
       category: 'avatar',
+      templateId: 'consultant',
       helperType: null,
       isPublic: true,
+      greeting: '안녕하세요. Sunny Bot의 Startup Accelerator입니다. 사업 전략을 함께 고민하겠습니다.',
+      faqs: [
+        { q: '사업계획서 도와주세요', a: '' },
+        { q: '투자 전략 알려주세요', a: '' },
+        { q: '피치덱 검토해주세요', a: '' },
+      ],
     },
     {
       id: 'sunny_avatar_cpa',
@@ -40,10 +64,17 @@ const SunnyBotData = {
       iqEq: 85,
       isVisible: true,
       category: 'avatar',
+      templateId: 'accountant',
       helperType: null,
       isPublic: true,
+      greeting: '안녕하세요. Sunny Bot의 공인회계사입니다. 세무·회계 관련 질문에 답변드리겠습니다.',
+      faqs: [
+        { q: '세금 관련 질문이 있어요', a: '' },
+        { q: '재무제표 분석해주세요', a: '' },
+        { q: '절세 방법 알려주세요', a: '' },
+      ],
     },
-    // AI 도우미 3개
+    // 도우미 3개 (비공개 — 소유자만)
     {
       id: 'sunny_helper_work',
       name: 'Claude Messenger',
@@ -52,8 +83,15 @@ const SunnyBotData = {
       iqEq: 70,
       isVisible: true,
       category: 'helper',
-      helperType: 'claude',
+      templateId: null,
+      helperType: 'work',
       isPublic: false,
+      greeting: '안녕하세요! Claude Messenger입니다. 업무 지시를 전달해주세요.',
+      faqs: [
+        { q: '업무 지시 전달해줘', a: '' },
+        { q: '처리 결과 알려줘', a: '' },
+        { q: '진행 상황 확인해줘', a: '' },
+      ],
     },
     {
       id: 'sunny_helper_work2',
@@ -63,8 +101,15 @@ const SunnyBotData = {
       iqEq: 68,
       isVisible: true,
       category: 'helper',
+      templateId: null,
       helperType: 'work',
       isPublic: false,
+      greeting: '안녕하세요! 업무 도우미입니다. 무엇을 도와드릴까요?',
+      faqs: [
+        { q: '오늘 일정 알려줘', a: '' },
+        { q: '이메일 초안 작성해줘', a: '' },
+        { q: '회의 요약해줘', a: '' },
+      ],
     },
     {
       id: 'sunny_helper_life',
@@ -74,81 +119,33 @@ const SunnyBotData = {
       iqEq: 60,
       isVisible: true,
       category: 'helper',
+      templateId: null,
       helperType: 'life',
       isPublic: false,
+      greeting: '안녕하세요! 생활 도우미예요. 편하게 말씀해 주세요.',
+      faqs: [
+        { q: '오늘 날씨 어때?', a: '' },
+        { q: '근처 맛집 추천해줘', a: '' },
+        { q: '건강 팁 알려줘', a: '' },
+      ],
     },
   ],
-  faqs: [
-    {
-      q: '어떤 구조로 되어 있나요?',
-      a: '분신 아바타와 AI 도우미로 구성되어 있습니다.',
-    },
-    {
-      q: 'Sunny Bot이 무엇인가요??',
-      a: '써니의 일을 대신하고 도와주는 분신 아바타 세계입니다.',
-    },
-  ],
+
+  // Step 3: 인터뷰 텍스트
+  inputText: '안녕하세요, 써니입니다. AI 전략과 스타트업 컨설팅을 전문으로 하고 있습니다. 공인회계사 자격을 보유하고 있으며, 세무·회계 분야에서도 전문 상담이 가능합니다. 평소 클로드 AI를 활용해 업무를 처리하고, 일정과 생활도 AI 도우미와 함께 관리하고 있습니다.',
+
+  // Step 5: 완성 메타
+  createdAt: '2025-01-01T00:00:00.000Z',
 };
 
-// 전역으로 노출해서 아무 데서나 쓸 수 있게 함
 if (typeof window !== 'undefined') {
   window.SunnyBotData = SunnyBotData;
 }
 
+// 버전 기반 강제 리셋
+var SUNNY_DATA_VERSION = 'v15.0';
 
-// 데모용 SunnyBot (5개 페르소나 모두 공개)
-const SunnyDemoBotData = {
-  ...SunnyBotData,
-  botName: 'Sunny Bot DEMO (분신 아바타 + AI 도우미)',
-  greeting: '안녕하세요! Sunny Bot 데모입니다. 분신 아바타와 AI 도우미를 모두 체험해보세요!',
-  personas: SunnyBotData.personas.map(p => ({
-    ...p,
-    // 데모에서는 도우미까지 모두 공개
-    isPublic: true
-  }))
-};
-
-if (typeof window !== 'undefined') {
-  window.SunnyDemoBotData = SunnyDemoBotData;
-}
-
-/**
- * SunnyBot를 MCW.storage에 저장하는 함수
- */
-function createSunnyBot(silent = false) {
-  const id = 'sunny-official';
-
-  let ownerId = 'anonymous';
-  if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser) {
-    const user = MCW.user.getCurrentUser();
-    if (user) ownerId = user.id;
-  }
-
-  const newBot = {
-    ...SunnyBotData,
-    id,
-    username: 'sunny',
-    ownerId,
-    created: Date.now(),
-    templateId: 'custom',
-    likes: 0,
-  };
-
-  if (typeof MCW !== 'undefined' && MCW.storage && MCW.storage.saveBot) {
-    MCW.storage.saveBot(newBot);
-    if (!silent && typeof alert !== 'undefined') {
-      alert('Sunny Bot(분신 아바타 + AI 도우미)이 새로 생성되었습니다.');
-      if (typeof location !== 'undefined') location.reload();
-    }
-  } else if (!silent && typeof alert !== 'undefined') {
-    alert('오류: MCW.storage 를 찾을 수 없습니다.');
-  }
-}
-
-// 버전 기반 강제 리셋: 이 값을 올리면 모든 사용자의 SunnyBot 데이터가 갱신됨
-var SUNNY_DATA_VERSION = 'v12.7';
-
-// 페이지 로드시 SunnyBot이 없으면 생성, 있으면 버전 체크 후 강제 업데이트
+// 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (function autoInitSunnyBot() {
   if (typeof window === 'undefined') return;
   if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots || !MCW.storage.saveBot) return;
@@ -156,40 +153,64 @@ var SUNNY_DATA_VERSION = 'v12.7';
   try {
     var storedVersion = localStorage.getItem('mcw_sunny_data_version');
     var bots = MCW.storage.getBots();
-    var existingIndex = bots.findIndex(
-      function(b) { return b.id === 'sunny-official' || b.username === 'sunny'; }
-    );
+    var existingIndex = bots.findIndex(function(b) {
+      return b.id === 'sunny-official' || b.username === 'sunny';
+    });
+
+    // 현재 로그인 유저
+    var ownerId = 'anonymous';
+    if (MCW.user && MCW.user.getCurrentUser) {
+      var user = MCW.user.getCurrentUser();
+      if (user) ownerId = user.id;
+    }
 
     if (existingIndex === -1) {
+      // 최초 생성
       var initialBot = Object.assign({}, SunnyBotData, {
         id: 'sunny-official',
         username: 'sunny',
-        ownerId: 'anonymous',
+        ownerId: ownerId,
         created: Date.now(),
         templateId: 'custom',
         likes: 0,
       });
       MCW.storage.saveBot(initialBot);
       localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
-      console.log('[SunnyBot] initial bot created (' + SUNNY_DATA_VERSION + ').');
-    } else if (storedVersion !== SUNNY_DATA_VERSION) {
-      // 버전 불일치 = 무조건 강제 리프레시 (인코딩 깨짐, 데이터 구조 변경 등 모두 대응)
+      console.log('[SunnyBot] created (' + SUNNY_DATA_VERSION + ') owner: ' + ownerId);
+    } else {
       var existing = bots[existingIndex];
-      var updated = Object.assign({}, existing, {
-        botName: SunnyBotData.botName,
-        botDesc: SunnyBotData.botDesc,
-        greeting: SunnyBotData.greeting,
-        personas: SunnyBotData.personas,
-        faqs: SunnyBotData.faqs
-      });
-      MCW.storage.saveBot(updated);
-      localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
-      console.log('[SunnyBot] data force-refreshed to ' + SUNNY_DATA_VERSION);
+      var needUpdate = false;
+
+      // 버전 불일치 → 데이터 리프레시
+      if (storedVersion !== SUNNY_DATA_VERSION) {
+        Object.assign(existing, {
+          botName: SunnyBotData.botName,
+          botDesc: SunnyBotData.botDesc,
+          username: SunnyBotData.username,
+          greeting: SunnyBotData.greeting,
+          faqs: SunnyBotData.faqs,
+          personas: SunnyBotData.personas,
+          inputText: SunnyBotData.inputText,
+          createdAt: SunnyBotData.createdAt,
+        });
+        needUpdate = true;
+      }
+
+      // ownerId가 admin/anonymous이면 현재 유저에 연결
+      if (ownerId !== 'anonymous' && (!existing.ownerId || existing.ownerId === 'anonymous' || existing.ownerId === 'admin')) {
+        existing.ownerId = ownerId;
+        needUpdate = true;
+      }
+
+      if (needUpdate) {
+        MCW.storage.saveBot(existing);
+        localStorage.setItem('mcw_sunny_data_version', SUNNY_DATA_VERSION);
+        console.log('[SunnyBot] updated to ' + SUNNY_DATA_VERSION + ', owner: ' + existing.ownerId);
+      }
     }
+
+    // 데모 봇은 sunny-demo.js가 담당
   } catch (e) {
-    console.warn('[SunnyBot] auto initialization skipped:', e);
+    console.warn('[SunnyBot] init skipped:', e);
   }
 })();
-
-
-
