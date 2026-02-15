@@ -1,11 +1,6 @@
 {
     "version": 2,
     "buildCommand": "node scripts/generate-config.cjs",
-    "functions": {
-        "api/**/*.js": {
-            "runtime": "@vercel/node@3"
-        }
-    },
     "headers": [
         {
             "source": "/js/(.*)",
