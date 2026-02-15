@@ -127,11 +127,22 @@ async function loadBotData() {
     }
     const nameEl = document.getElementById('chatBotName');
     if (nameEl) nameEl.textContent = chatBotData.botName;
-    document.title = `${chatBotData.botName} - v10.5`;
+    document.title = `${chatBotData.botName} - My Chatbot World`;
+
+    // 환영 문구: 페르소나가 1개면 바로 인사, 여러 개면 선택 안내
+    const welcomeTitleEl = document.getElementById('welcomeTitle');
+    const welcomeDescEl = document.getElementById('welcomeDesc');
+    if (chatBotData.personas.length <= 1) {
+        if (welcomeTitleEl) welcomeTitleEl.textContent = chatBotData.botName;
+        if (welcomeDescEl) welcomeDescEl.textContent = currentPersona.greeting || currentPersona.role || chatBotData.greeting || '';
+    } else {
+        if (welcomeTitleEl) welcomeTitleEl.textContent = `${chatBotData.botName}`;
+        if (welcomeDescEl) welcomeDescEl.textContent = chatBotData.greeting || '페르소나를 선택해주세요!';
+    }
+
     renderFaqButtons();
     if (conversationHistory.length === 0) {
         setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
-        // 대화 세션 시작 기록
         logPerPersonaStat('conversation_start');
     }
 }
