@@ -78,10 +78,15 @@ const HomePage = (() => {
       ? allBots.filter(b => b.ownerId === user.id)
       : [];
 
+    // 봇은 1개만 생성 가능 — 없을 때만 생성 버튼 표시
+    const createBtn = document.getElementById('createBotBtn');
+    if (createBtn) createBtn.style.display = bots.length === 0 ? '' : 'none';
+
     // 작성 중인 초안 확인
     const draftHtml = renderDraftCard();
 
     if (bots.length === 0 && !draftHtml) {
+      if (createBtn) createBtn.style.display = '';
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🤖</div>
