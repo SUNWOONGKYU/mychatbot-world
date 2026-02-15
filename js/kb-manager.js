@@ -730,6 +730,18 @@ const StorageManager = (() => {
     };
     await save('kb-text', `kb_index_${botId}`, index, { botId });
 
+    // Supabase mcw_kb_items에도 동기화 (클라우드 백업)
+    if (getSupabase()) {
+      try {
+        await supabaseSave('mcw_kb_items', {
+          id: `kb_${botId}`,
+          bot_id: botId,
+          category: 'knowledge-base',
+          data: { qaPairs: kb.qaPairs || [], freeText: kb.freeText || '', urls: kb.urls || [], fileNames: (kb.files || []).map(f => f.name) }
+        });
+      } catch (e) { console.warn('[KB] cloud sync failed:', e); }
+    }
+
     return { botId, results, index };
   }
 
@@ -739,6 +751,7 @@ const StorageManager = (() => {
   async function loadKnowledgeBase(botId) {
     const kb = { qaPairs: [], freeText: '', files: [], urls: [] };
 
+    // 로컬(IndexedDB)에서 먼저 시도
     const qaPairs = await load('kb-qa', `kb_qa_${botId}`);
     if (qaPairs) kb.qaPairs = qaPairs;
 
@@ -759,6 +772,21 @@ const StorageManager = (() => {
         }
         if (content != null) kb.files.push({ name, content });
       }
+    }
+
+    // 로컬에 없으면 Supabase에서 복원
+    if (!kb.qaPairs.length && !kb.freeText && !kb.urls.length && getSupabase()) {
+      try {
+        const cloudKB = await supabaseGet('mcw_kb_items', `kb_${botId}`);
+        if (cloudKB && cloudKB.data) {
+          kb.qaPairs = cloudKB.data.qaPairs || [];
+          kb.freeText = cloudKB.data.freeText || '';
+          kb.urls = cloudKB.data.urls || [];
+          if (kb.qaPairs.length || kb.freeText || kb.urls.length) {
+            console.log('[KB] Restored from cloud for', botId);
+          }
+        }
+      } catch (e) { console.warn('[KB] cloud load failed:', e); }
     }
 
     return kb;

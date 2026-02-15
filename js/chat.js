@@ -550,16 +550,33 @@ function autoResizeInput() {
         input.style.height = input.scrollHeight + 'px';
     });
 }
-// === Per-persona 대화/통계 저장 (home.js와 키 일치) ===
+// === Per-persona 대화/통계 저장 (localStorage + Supabase) ===
+var _chatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
 function savePerPersonaMessage(role, content) {
     if (!chatBotData || !currentPersona) return;
     var botId = chatBotData.id;
     var personaId = currentPersona.id;
+    var timestamp = new Date().toISOString();
+
+    // localStorage (기존 호환)
     var key = 'mcw_conv_' + botId + '_' + personaId;
     var convs = JSON.parse(localStorage.getItem(key) || '[]');
-    convs.push({ role: role, content: content, timestamp: new Date().toISOString() });
+    convs.push({ role: role, content: content, timestamp: timestamp });
     if (convs.length > 200) convs.splice(0, convs.length - 200);
     localStorage.setItem(key, JSON.stringify(convs));
+
+    // Supabase mcw_chat_logs (비동기, 실패해도 무시)
+    if (typeof StorageManager !== 'undefined' && StorageManager.supabase && StorageManager.getSupabase()) {
+        StorageManager.supabase.save('mcw_chat_logs', {
+            id: botId + '_' + personaId + '_' + Date.now(),
+            bot_id: botId,
+            persona_id: personaId,
+            role: role,
+            content: content,
+            session_id: _chatSessionId
+        }).catch(function(e) { console.warn('[Chat] cloud log failed:', e); });
+    }
 }
 
 function logPerPersonaStat(type, data) {

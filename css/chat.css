@@ -6,6 +6,7 @@
 .chat-body {
     background: #0f0f1a;
     height: 100vh;
+    height: 100dvh; /* 모바일 주소창 고려 */
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -86,6 +87,7 @@
 /* === Messages === */
 .chat-messages {
     flex: 1;
+    min-height: 0; /* flex 자식 overflow 보장 */
     overflow-y: auto;
     padding: var(--space-3) var(--space-4) var(--space-4);
     display: flex;
@@ -274,7 +276,9 @@
 
 /* === Input Area === */
 .chat-input-area {
+    flex-shrink: 0; /* 모바일에서 밀려나지 않게 */
     padding: var(--space-3) var(--space-4);
+    padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
     background: rgba(15, 15, 26, 0.95);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
