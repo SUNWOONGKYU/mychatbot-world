@@ -139,11 +139,7 @@
     <script src="../js/app.js"></script>
     <script>
         (async () => {
-            console.log('[Login] supabase global:', typeof supabase);
-            console.log('[Login] MCW_SECRETS:', typeof MCW_SECRETS, typeof MCW_SECRETS !== 'undefined' ? !!MCW_SECRETS.SUPABASE_URL : 'N/A');
-            const u = await MCW.ready;
-            console.log('[Login] MCW.ready resolved, user:', u);
-            console.log('[Login] client:', !!MCW.auth.getClient());
+            await MCW.ready;
             if (MCW.user.getCurrentUser()) {
                 window.location.href = 'home/index.html';
             }
@@ -158,14 +154,10 @@
             const pw = document.getElementById('password').value;
 
             try {
-                const client = MCW.auth.getClient();
-                console.log('[Login] client ready:', !!client);
-                console.log('[Login] attempting:', email);
                 await MCW.user.login(email, pw);
                 window.location.href = 'home/index.html';
             } catch (err) {
-                console.error('[Login] error:', err.message, err.status, err);
-                errorEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다. (' + (err.message || '') + ')';
+                errorEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
                 errorEl.style.display = 'block';
             }
         }
