@@ -78,6 +78,24 @@ html.chat-page {
     gap: var(--space-2);
 }
 
+/* Voice selector */
+.voice-select {
+    height: 30px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
+    padding: 0 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+.voice-select option {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+
 .chat-header-btn {
     width: 30px;
     height: 30px;
@@ -823,6 +841,17 @@ html.chat-page {
 
 .chat-body.light .chat-input::placeholder {
     color: rgba(0, 0, 0, 0.35);
+}
+
+.chat-body.light .voice-select {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.chat-body.light .voice-select option {
+    background: #fff;
+    color: #333;
 }
 
 .chat-body.light .chat-voice-btn:hover {

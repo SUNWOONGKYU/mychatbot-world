@@ -10,6 +10,7 @@ let voiceOutputEnabled = true;
 // Mobile Audio: 전역 Audio 요소 (사용자 제스처로 unlock 후 재사용)
 var _ttsPlayer = new Audio();
 var _ttsUnlocked = false;
+var _ttsVoice = localStorage.getItem('mcw_tts_voice') || 'fable';
 // 대기 중인 TTS 텍스트 (API 응답 후 재생할 내용)
 var _ttsPending = null;
 document.addEventListener('DOMContentLoaded', async () => {
@@ -30,6 +31,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             voiceOutputEnabled = !voiceOutputEnabled;
             voiceBtn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
             if (!voiceOutputEnabled) { _ttsPlayer.pause(); }
+        });
+    }
+    // Voice Select
+    const voiceSelect = document.getElementById('voiceSelect');
+    if (voiceSelect) {
+        voiceSelect.value = _ttsVoice;
+        voiceSelect.addEventListener('change', () => {
+            _ttsVoice = voiceSelect.value;
+            localStorage.setItem('mcw_tts_voice', _ttsVoice);
         });
     }
     // Theme: restore saved preference
@@ -542,7 +552,7 @@ function speak(text) {
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, voice: 'fable' })
+        body: JSON.stringify({ text: clean, voice: _ttsVoice })
     }).then(function (res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
         var ct = res.headers.get('content-type') || '';
@@ -707,7 +717,7 @@ function playMsgTTS(btn) {
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, voice: 'fable' })
+        body: JSON.stringify({ text: clean, voice: _ttsVoice })
     }).then(function(res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
         var ct = res.headers.get('content-type') || '';
