@@ -316,8 +316,8 @@ function switchPersona(id) {
         (newPersona.role || '') + ' | ' + (newPersona.model || 'MODEL').toUpperCase() +
         '</span>'
     );
-    const welcomeDescEl = document.getElementById('welcomeDesc');
-    if (welcomeDescEl) welcomeDescEl.textContent = newPersona.role || '';
+    const welcomeEl = document.getElementById('chatWelcome');
+    if (welcomeEl) welcomeEl.style.display = 'none';
     if (typeof updateAvatar === 'function') {
         updateAvatar(newPersona);
     }

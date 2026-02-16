@@ -7,7 +7,7 @@
   if (typeof SunnyBotData === 'undefined') return;
 
   var SunnyDemoBotData = Object.assign({}, SunnyBotData, {
-    botName: SunnyBotData.botName + ' DEMO',
+    botName: SunnyBotData.botName + '(Demo)',
     greeting: SunnyBotData.greeting.replace('Sunny Bot', 'Sunny Bot 데모'),
     personas: SunnyBotData.personas.map(function(p) {
       return Object.assign({}, p, {
