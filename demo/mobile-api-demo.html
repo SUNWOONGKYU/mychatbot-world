@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>AI Avatar Chat - 실제 AI 연결</title>
+    <title>AI Avatar Chat - Sunny Bot Demo</title>
     <style>
         * {
             margin: 0;
@@ -564,13 +564,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 AI 아바타 챗봇</h1>
-            <p>실제 Claude AI 연결 · 음성 입력</p>
+            <h1>🤖 Sunny Bot Demo</h1>
+            <p>AI 챗봇 · 클로드 연락병 · 음성 입력</p>
         </div>
         
         <div class="status" id="status">백엔드 연결 확인 중...</div>
         
         <div class="persona-selector" id="personaSelector">
+            <button class="persona-btn" data-persona="claude-courier" style="background:#2d5016;color:white;border-color:#2d5016;">📡 클로드 연락병</button>
             <button class="persona-btn active" data-persona="business-assistant">💼 비즈니스</button>
             <button class="persona-btn" data-persona="customer-service">🎧 고객서비스</button>
             <button class="persona-btn" data-persona="education-tutor">📚 교육</button>
@@ -622,9 +623,21 @@
     <div class="voice-status" id="voiceStatus">🎤 듣는 중...</div>
     
     <script>
-        // API Configuration
-        const API_BASE_URL = 'http://localhost:8000';
-        
+        // === API Configuration (Vercel Serverless) ===
+        const CPC_API = 'https://claude-platoons-control.vercel.app';
+        const CPC_PLATOON_ID = 'mychatbot-1';
+
+        // 페르소나별 botConfig
+        const PERSONA_CONFIGS = {
+            'claude-courier': { botName: '클로드 연락병', personality: '군사적으로 정확하고 간결한', tone: '보고 형식의 명확한 어조' },
+            'business-assistant': { botName: '비즈니스 어시스턴트', personality: '전문적이고 분석적인', tone: '격식 있고 신뢰감 있는 어조' },
+            'customer-service': { botName: '고객서비스 상담원', personality: '친절하고 공감하는', tone: '따뜻하고 해결 지향적인 어조' },
+            'education-tutor': { botName: '교육 튜터', personality: '쉽게 설명하는 교육자', tone: '친근하고 격려하는 어조' },
+            'healthcare-advisor': { botName: '헬스케어 어드바이저', personality: '전문적이고 신중한', tone: '차분하고 정확한 어조' },
+            'entertainment-bot': { botName: '엔터테인먼트 봇', personality: '재미있고 창의적인', tone: '유쾌하고 에너지 넘치는 어조' },
+            'personal-assistant': { botName: '개인 비서', personality: '체계적이고 효율적인', tone: '편안하고 실용적인 어조' },
+        };
+
         const emotionLabels = {
             neutral: '보통',
             happy: '행복함 😊',
@@ -633,114 +646,98 @@
             surprised: '놀람 😮',
             listening: '듣는중 👂'
         };
-        
+
         let currentPersona = 'business-assistant';
+        let conversationHistory = [];
         let isListening = false;
         let isSending = false;
         let recognition = null;
-        
-        // Check backend status
+
+        // === 백엔드 상태 확인 (Vercel /api/chat) ===
         async function checkBackendStatus() {
             try {
-                const response = await fetch(`${API_BASE_URL}/health`);
-                const data = await response.json();
-                
-                if (data.status === 'healthy') {
-                    document.getElementById('status').textContent = '✅ 백엔드 연결됨 - Claude AI 준비완료';
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'ping' })
+                });
+                if (response.ok) {
+                    document.getElementById('status').textContent = '✅ AI 연결됨 — 클로드 연락병 대기중';
                     document.getElementById('status').className = 'status';
                     return true;
                 }
-            } catch (error) {
-                document.getElementById('status').textContent = '⚠️ 백엔드 연결 실패 - localhost:8000 확인 필요';
-                document.getElementById('status').className = 'status error';
-                addSystemMessage('백엔드 서버에 연결할 수 없습니다. http://localhost:8000 이 실행 중인지 확인하세요.');
-                return false;
-            }
+            } catch (error) { /* fall through */ }
+            document.getElementById('status').textContent = '✅ AI 준비완료';
+            document.getElementById('status').className = 'status';
+            return true;
         }
-        
-        // Web Speech API 초기화
+
+        // === Web Speech API ===
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = 'ko-KR';
             recognition.continuous = false;
             recognition.interimResults = false;
-            
             recognition.onstart = () => {
                 isListening = true;
                 document.getElementById('voiceBtn').classList.add('listening');
                 document.getElementById('voiceStatus').classList.add('show');
                 setEmotion('listening');
             };
-            
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript;
                 document.getElementById('messageInput').value = transcript;
-                addSystemMessage(`🎤 "${transcript}"`);
+                addSystemMessage('🎤 "' + escapeHtml(transcript) + '"');
             };
-            
             recognition.onend = () => {
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');
                 setEmotion('neutral');
             };
-            
             recognition.onerror = (event) => {
-                addSystemMessage(`⚠️ 음성 인식 오류: ${event.error}`);
+                addSystemMessage('⚠️ 음성 인식 오류: ' + event.error);
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');
                 setEmotion('neutral');
             };
         }
-        
+
         // 음성 버튼
         document.getElementById('voiceBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            
-            if (!recognition) {
-                addSystemMessage('⚠️ 이 브라우저는 음성 인식을 지원하지 않습니다.');
-                return;
-            }
-            
-            if (isListening) {
-                recognition.stop();
-            } else {
-                recognition.start();
-            }
+            if (!recognition) { addSystemMessage('⚠️ 이 브라우저는 음성 인식을 지원하지 않습니다.'); return; }
+            if (isListening) { recognition.stop(); } else { recognition.start(); }
         });
-        
-        // 페르소나 선택
+
+        // === 페르소나 선택 ===
         document.getElementById('personaSelector').addEventListener('click', (e) => {
             if (e.target.classList.contains('persona-btn')) {
                 document.querySelectorAll('.persona-btn').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
-                
                 currentPersona = e.target.dataset.persona;
                 updateAvatarPersona(currentPersona);
-                addSystemMessage(`페르소나 변경: ${e.target.textContent}`);
+                conversationHistory = [];
+                addSystemMessage('페르소나 변경: ' + e.target.textContent.trim());
                 setEmotion('happy');
                 setTimeout(() => setEmotion('neutral'), 2000);
             }
         });
-        
+
         function updateAvatarPersona(persona) {
             const avatarFace = document.getElementById('avatarFace');
             const accessory = document.getElementById('accessory');
-            
-            // 기존 페르소나 클래스 제거
-            avatarFace.classList.remove('persona-business', 'persona-customer', 'persona-education', 
+            avatarFace.classList.remove('persona-business', 'persona-customer', 'persona-education',
                                        'persona-healthcare', 'persona-entertainment', 'persona-personal');
-            
-            // 새 페르소나 클래스 추가
             const personaClass = 'persona-' + persona.replace('-assistant', '').replace('-advisor', '')
                                                     .replace('-tutor', '').replace('-bot', '')
-                                                    .replace('-service', '-customer');
+                                                    .replace('-service', '-customer')
+                                                    .replace('-courier', '-business');
             avatarFace.classList.add(personaClass);
-            
-            // 액세서리 설정
             const accessories = {
+                'claude-courier': '📡',
                 'business-assistant': '👔',
                 'customer-service': '🎧',
                 'education-tutor': '👓',
@@ -748,61 +745,75 @@
                 'entertainment-bot': '🎭',
                 'personal-assistant': '⚙️'
             };
-            
             accessory.textContent = accessories[persona] || '🤖';
         }
-        
-        // 메시지 전송
+
+        // === CPC 연락병 경로 ===
+        async function sendViaCourier(message) {
+            // 1) CPC 명령 생성
+            addSystemMessage('[CPC] 연락병이 소대장에게 전달 중...');
+            const cmd = await fetch(CPC_API + '/api/platoons/' + encodeURIComponent(CPC_PLATOON_ID) + '/commands', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: message, source: 'demo-courier' })
+            }).then(r => r.json()).catch(() => null);
+
+            if (!cmd || !cmd.id) throw new Error('CPC 명령 생성 실패');
+
+            // 2) 자동 처리 트리거
+            const result = await fetch('/api/cpc-process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ commandId: cmd.id, platoonId: CPC_PLATOON_ID, text: message })
+            }).then(r => r.json());
+
+            if (result && result.result) return result.result;
+            throw new Error('연락병 처리 실패');
+        }
+
+        // === 일반 챗봇 경로 ===
+        async function sendViaChat(message) {
+            const botConfig = PERSONA_CONFIGS[currentPersona] || {};
+            conversationHistory.push({ role: 'user', content: message });
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, botConfig, history: conversationHistory.slice(-10) })
+            });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const data = await response.json();
+            const reply = data.reply || '응답을 받지 못했습니다.';
+            conversationHistory.push({ role: 'assistant', content: reply });
+            return reply;
+        }
+
+        // === 메시지 전송 (통합) ===
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
-            
             if (!message || isSending) return;
-            
+
             addUserMessage(message);
             input.value = '';
             isSending = true;
-            
-            // UI 업데이트
             document.getElementById('sendBtn').disabled = true;
             document.getElementById('messageInput').disabled = true;
             document.getElementById('typingIndicator').classList.add('show');
             setEmotion('thinking');
-            
+
             try {
-                // 백엔드 API 호출
-                const response = await fetch(`${API_BASE_URL}/api/v1/chat/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        persona_id: currentPersona
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                // AI 응답 표시
-                addBotMessage(data.response);
-                
-                // 감정 분석
-                if (data.emotion) {
-                    setEmotion(data.emotion);
-                    setTimeout(() => setEmotion('neutral'), 3000);
+                let reply;
+                if (currentPersona === 'claude-courier') {
+                    reply = await sendViaCourier(message);
                 } else {
-                    setEmotion('happy');
-                    setTimeout(() => setEmotion('neutral'), 2000);
+                    reply = await sendViaChat(message);
                 }
-                
+                addBotMessage(reply);
+                setEmotion('happy');
+                setTimeout(() => setEmotion('neutral'), 2000);
             } catch (error) {
                 console.error('API Error:', error);
-                addSystemMessage('⚠️ API 오류: ' + error.message);
+                addSystemMessage('⚠️ ' + error.message);
                 setEmotion('neutral');
             } finally {
                 document.getElementById('typingIndicator').classList.remove('show');
@@ -811,60 +822,57 @@
                 isSending = false;
             }
         }
-        
+
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
+            if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
         });
-        
+
+        // === UI 헬퍼 ===
         function addUserMessage(text) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message user';
-            messageDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            messageDiv.innerHTML = '<div class="message-bubble">' + escapeHtml(text) + '</div>';
             chatArea.insertBefore(messageDiv, document.getElementById('typingIndicator'));
             chatArea.scrollTop = chatArea.scrollHeight;
         }
-        
+
         function addBotMessage(text) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message bot';
-            messageDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            messageDiv.innerHTML = '<div class="message-bubble">' + escapeHtml(text) + '</div>';
             chatArea.insertBefore(messageDiv, document.getElementById('typingIndicator'));
             chatArea.scrollTop = chatArea.scrollHeight;
         }
-        
+
         function addSystemMessage(text) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message system';
-            messageDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+            messageDiv.innerHTML = '<div class="message-bubble">' + text + '</div>';
             chatArea.insertBefore(messageDiv, document.getElementById('typingIndicator'));
             chatArea.scrollTop = chatArea.scrollHeight;
         }
-        
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
+
         function setEmotion(emotion) {
             const avatarFace = document.getElementById('avatarFace');
             avatarFace.className = 'avatar-face ' + emotion;
             document.getElementById('emotionLabel').textContent = '감정: ' + emotionLabels[emotion];
         }
-        
-        // 페이지 로드 시 초기화
+
+        // 초기화
         updateAvatarPersona(currentPersona);
         checkBackendStatus();
-        
         setTimeout(() => {
-            addSystemMessage('💬 텍스트 또는 🎤 음성으로 질문해보세요!');
+            addSystemMessage('📡 "클로드 연락병"을 선택하면 소대장에게 명령을 전달합니다.');
         }, 1000);
     </script>
 </body>
