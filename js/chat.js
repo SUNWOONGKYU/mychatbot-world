@@ -554,7 +554,7 @@ function speak(text) {
     if (!voiceOutputEnabled) return;
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
-    if (clean.length > 200) clean = clean.substring(0, 200);
+    if (clean.length > 4096) clean = clean.substring(0, 4096);
 
     // 1차: /api/tts (OpenAI TTS-1)
     fetch('/api/tts', {
@@ -710,7 +710,7 @@ function playMsgTTS(btn) {
     if (!bubble) return;
     var clean = bubble.textContent.replace(/🔊/g, '').trim();
     if (!clean) return;
-    if (clean.length > 200) clean = clean.substring(0, 200);
+    if (clean.length > 4096) clean = clean.substring(0, 4096);
     if (btn.classList.contains('playing')) {
         _ttsPlayer.pause();
         _ttsPlayer.currentTime = 0;
