@@ -160,69 +160,138 @@ async function loadBotData() {
         setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
         logPerPersonaStat('conversation_start');
     }
-    // URL로 sunny_helper_work 직접 진입 시 CPC 바 자동 표시
-    if (currentPersona && currentPersona.id === 'sunny_helper_work') {
+    // 도우미 페르소나 직접 진입 시 CPC 바 자동 표시
+    if (cpcIsHelper(currentPersona)) {
         cpcShowBar();
     }
 }
-// === CPC (Claude Platoons Control) API 연동 ===
+// === CPC (Claude Platoons Control) 양방향 연동 ===
 const CPC_API_BASE = 'https://claude-platoons-control.vercel.app';
-let _cpcPlatoons = [];       // 캐시된 소대 목록
-let _cpcSelectedId = '';     // 현재 선택된 소대 ID
+let _cpcPlatoons = [];           // 캐시된 소대 목록
+let _cpcSelectedId = '';         // 현재 선택된 소대 ID
+let _cpcTrackedCmds = [];       // 추적 중인 명령 [{id, status, text}]
+let _cpcPollTimer = null;        // 폴링 타이머
+const CPC_POLL_INTERVAL = 3000;  // 3초 폴링
 
-async function cpcGetPlatoons() {
+// --- CPC API 호출 ---
+async function cpcFetch(path, options = {}) {
     try {
-        const res = await fetch(`${CPC_API_BASE}/api/platoons`);
-        if (!res.ok) throw new Error('소대 목록 조회 실패');
+        const res = await fetch(`${CPC_API_BASE}${path}`, {
+            headers: { 'Content-Type': 'application/json' },
+            ...options
+        });
+        if (!res.ok) throw new Error(`CPC ${res.status}`);
         return await res.json();
     } catch (e) {
-        console.warn('[CPC] getPlatoons 실패', e);
-        return [];
-    }
-}
-async function cpcAddCommand(platoonId, text, source = 'chatbot') {
-    try {
-        const res = await fetch(
-            `${CPC_API_BASE}/api/platoons/${encodeURIComponent(platoonId)}/commands`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, source })
-            }
-        );
-        if (!res.ok) throw new Error('소대 명령 추가 실패');
-        return await res.json();
-    } catch (e) {
-        console.warn('[CPC] addCommand 실패', e);
+        console.warn('[CPC]', path, e.message);
         return null;
     }
 }
-async function cpcGetPendingCommands(platoonId) {
-    try {
-        const res = await fetch(
-            `${CPC_API_BASE}/api/platoons/${encodeURIComponent(platoonId)}/commands?status=PENDING`
-        );
-        if (!res.ok) throw new Error('소대 명령 조회 실패');
-        return await res.json();
-    } catch (e) {
-        console.warn('[CPC] getPendingCommands 실패', e);
-        return [];
+
+async function cpcGetPlatoons() {
+    return (await cpcFetch('/api/platoons')) || [];
+}
+
+async function cpcAddCommand(platoonId, text, source = 'chatbot') {
+    return await cpcFetch(
+        `/api/platoons/${encodeURIComponent(platoonId)}/commands`,
+        { method: 'POST', body: JSON.stringify({ text, source }) }
+    );
+}
+
+async function cpcGetCommands(platoonId, status) {
+    const qs = status ? `?status=${status}` : '';
+    return (await cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands${qs}`)) || [];
+}
+
+async function cpcUpdatePlatoonStatus(platoonId, status) {
+    return await cpcFetch(
+        `/api/platoons/${encodeURIComponent(platoonId)}/status`,
+        { method: 'PATCH', body: JSON.stringify({ status }) }
+    );
+}
+
+// --- 양방향: 명령 추적 + 폴링 ---
+function cpcTrackCommand(cmd) {
+    if (!cmd || !cmd.id) return;
+    _cpcTrackedCmds.push({ id: cmd.id, status: cmd.status, text: cmd.text });
+    cpcStartPolling();
+}
+
+function cpcStartPolling() {
+    if (_cpcPollTimer) return;
+    _cpcPollTimer = setInterval(cpcPollTrackedCommands, CPC_POLL_INTERVAL);
+}
+
+function cpcStopPolling() {
+    if (_cpcPollTimer) { clearInterval(_cpcPollTimer); _cpcPollTimer = null; }
+}
+
+async function cpcPollTrackedCommands() {
+    if (_cpcTrackedCmds.length === 0 || !_cpcSelectedId) { cpcStopPolling(); return; }
+
+    const allCmds = await cpcGetCommands(_cpcSelectedId);
+    if (!allCmds) return;
+
+    const remaining = [];
+    for (const tracked of _cpcTrackedCmds) {
+        const fresh = allCmds.find(c => c.id === tracked.id);
+        if (!fresh) { remaining.push(tracked); continue; }
+
+        if (fresh.status !== tracked.status) {
+            if (fresh.status === 'ACKED' && tracked.status === 'PENDING') {
+                addMessage('system', `[CPC] 소대장이 명령을 수신했습니다: "${tracked.text}"`);
+            }
+            if (fresh.status === 'DONE') {
+                const resultMsg = fresh.result
+                    ? `[CPC] 명령 완료: "${tracked.text}"\n결과: ${fresh.result}`
+                    : `[CPC] 명령 완료: "${tracked.text}"`;
+                addMessage('system', resultMsg);
+                continue; // DONE이면 추적 종료
+            }
+            tracked.status = fresh.status;
+        }
+        remaining.push(tracked);
+    }
+    _cpcTrackedCmds = remaining;
+    if (_cpcTrackedCmds.length === 0) cpcStopPolling();
+
+    // 소대 상태 실시간 업데이트
+    cpcRefreshPlatoonStatus();
+}
+
+async function cpcRefreshPlatoonStatus() {
+    const fresh = await cpcGetPlatoons();
+    if (!fresh || fresh.length === 0) return;
+    _cpcPlatoons = fresh;
+    // 드롭다운의 상태 텍스트 업데이트
+    const select = document.getElementById('cpcPlatoonSelect');
+    if (!select) return;
+    for (const p of fresh) {
+        const opt = select.querySelector(`option[value="${p.id}"]`);
+        if (opt) opt.textContent = (p.name || p.id) + ' [' + p.status + ']';
+    }
+    // CPC 바 상태 표시
+    const statusEl = document.getElementById('cpcStatus');
+    if (statusEl && _cpcSelectedId) {
+        const sel = fresh.find(p => p.id === _cpcSelectedId);
+        statusEl.textContent = sel ? sel.status : '';
+        statusEl.className = 'cpc-status' + (sel && sel.status === 'RUNNING' ? ' cpc-running' : '');
     }
 }
 
-// CPC 소대 선택 바 — 소대 목록을 API에서 동적 로딩
+// --- CPC 소대 선택 바 ---
 async function cpcShowBar() {
     const bar = document.getElementById('cpcBar');
     const select = document.getElementById('cpcPlatoonSelect');
     if (!bar || !select) return;
     bar.style.display = '';
 
-    // 이미 로딩했으면 재사용
     if (_cpcPlatoons.length === 0) {
         _cpcPlatoons = await cpcGetPlatoons();
     }
 
-    // 프로젝트별 그룹핑 (prefix 기준: mychatbot-1 → mychatbot)
+    // 프로젝트별 그룹핑
     const groups = {};
     _cpcPlatoons.forEach(p => {
         const parts = p.id.match(/^(.+)-(\d+)$/);
@@ -241,40 +310,32 @@ async function cpcShowBar() {
             const opt = document.createElement('option');
             opt.value = p.id;
             opt.textContent = (p.name || p.id) + ' [' + p.status + ']';
-            select.appendChild(opt);
+            optgroup.appendChild(opt);
         });
-        // optgroup이 의미있으면 사용, 아니면 flat
-        if (groups[project].length > 1) {
-            groups[project].forEach(p => {
-                const opt = select.querySelector(`option[value="${p.id}"]`);
-                if (opt) {
-                    select.removeChild(opt);
-                    optgroup.appendChild(opt);
-                }
-            });
-            select.appendChild(optgroup);
-        }
+        select.appendChild(optgroup);
     });
 
-    // 이전 선택 복원
     if (_cpcSelectedId) select.value = _cpcSelectedId;
 
-    // 변경 이벤트
     select.onchange = function () {
         _cpcSelectedId = this.value;
-        const statusEl = document.getElementById('cpcStatus');
-        if (statusEl) {
-            statusEl.textContent = _cpcSelectedId ? '연결됨' : '';
-        }
+        cpcRefreshPlatoonStatus();
+        if (_cpcSelectedId) cpcStartPolling();
     };
-    // 현재 상태 표시
-    const statusEl = document.getElementById('cpcStatus');
-    if (statusEl) statusEl.textContent = _cpcSelectedId ? '연결됨' : '';
+    cpcRefreshPlatoonStatus();
+    // 기존 추적 중인 명령이 있으면 폴링 시작
+    if (_cpcTrackedCmds.length > 0) cpcStartPolling();
 }
 
 function cpcHideBar() {
     const bar = document.getElementById('cpcBar');
     if (bar) bar.style.display = 'none';
+    cpcStopPolling();
+}
+
+function cpcIsHelper(persona) {
+    if (!persona) return false;
+    return persona.category === 'helper' || (persona.id && persona.id.includes('helper'));
 }
 let currentPersona = null;
 function renderPersonaSelector() {
@@ -345,8 +406,8 @@ function switchPersona(id) {
     }
     // 페르소나 전환 시 FAQ 버튼도 갱신
     renderFaqButtons();
-    // CPC 바: 업무 도우미 페르소나일 때만 표시
-    if (newPersona.id === 'sunny_helper_work') {
+    // CPC 바: 도우미 페르소나(helper)일 때 표시
+    if (cpcIsHelper(newPersona)) {
         cpcShowBar();
     } else {
         cpcHideBar();
@@ -378,11 +439,17 @@ async function sendMessage() {
     conversationHistory.push({ role: 'user', content: text });
     // 페르소나별 대화 저장
     savePerPersonaMessage('user', text);
-    // === CPC 연동: 업무 도우미 + 소대 선택 시 해당 소대로 명령 전달 ===
+    // === CPC 양방향 연동: 도우미 + 소대 선택 시 해당 소대로 명령 전달 + 추적 ===
     try {
-        if (currentPersona && currentPersona.id === 'sunny_helper_work' && _cpcSelectedId) {
+        if (cpcIsHelper(currentPersona) && _cpcSelectedId) {
             cpcAddCommand(_cpcSelectedId, text, 'chatbot')
-                .then(r => { if (r) console.log('[CPC] 명령 전송 →', _cpcSelectedId); })
+                .then(cmd => {
+                    if (cmd) {
+                        console.log('[CPC] 명령 전송 →', _cpcSelectedId, cmd.id);
+                        cpcTrackCommand(cmd);
+                        addMessage('system', '[CPC] 명령 전송됨 → ' + _cpcSelectedId);
+                    }
+                })
                 .catch(e => console.warn('[CPC] 명령 전송 실패', e));
         }
     } catch (e) {

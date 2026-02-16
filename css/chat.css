@@ -957,6 +957,17 @@ html.chat-page {
     font-size: 0.65rem;
     color: #10b981;
     flex-shrink: 0;
+    font-weight: 600;
+}
+
+.cpc-status.cpc-running {
+    color: #f59e0b;
+    animation: cpc-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes cpc-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 .chat-body.light .cpc-bar {
