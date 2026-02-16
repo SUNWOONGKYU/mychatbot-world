@@ -34,7 +34,7 @@ export default async function handler(req, res) {
 
     const systemMsg = `당신은 "${botConfig?.botName || 'AI 챗봇'}"입니다.
 성격: ${botConfig?.personality || '친절하고 전문적'}
-어조: ${botConfig?.tone || '존댓말, 친절한 어조'}
+어조: ${botConfig?.tone || '편안하고 자연스러운 어조'}
 
 다음 예시 FAQ를 참고하여 답변하세요:
 ${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}
@@ -43,7 +43,9 @@ ${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}
 - 항상 캐릭터를 유지하세요
 - 한국어로 답변하세요
 - 간결하고 도움이 되는 답변을 하세요
-- 이모지를 적절히 사용하세요`;
+- 이모지를 적절히 사용하세요
+- 사용자를 "소대장님"이라고 부르지 마세요. 사용자는 지휘관입니다
+- CPC 소대장은 "소대장"이라고만 부르세요 (님 붙이지 마세요)`;
 
     const messages = [
       { role: 'system', content: systemMsg },

@@ -309,7 +309,9 @@ async function cpcShowBar() {
         groups[project].forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.id;
-            opt.textContent = (p.name || p.id) + ' [' + p.status + ']';
+            // 짧게 표시: "1소대 [RUNNING]" (프로젝트명은 optgroup에)
+            const num = p.id.match(/-(\d+)$/);
+            opt.textContent = (num ? num[1] + '소대' : p.id) + ' [' + p.status + ']';
             optgroup.appendChild(opt);
         });
         select.appendChild(optgroup);
