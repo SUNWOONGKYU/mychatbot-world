@@ -461,6 +461,16 @@ async function sendMessage() {
                         console.log('[CPC] 명령 전송 →', _cpcSelectedId, cmd.id);
                         cpcTrackCommand(cmd);
                         addMessage('system', '[CPC] 명령 전송됨 → ' + _cpcSelectedId);
+                        // 서버 자동 처리 트리거 (fire-and-forget)
+                        fetch('/api/cpc-process', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                commandId: cmd.id,
+                                platoonId: _cpcSelectedId,
+                                text: text
+                            })
+                        }).catch(e => console.warn('[CPC] auto-process failed', e));
                     }
                 })
                 .catch(e => console.warn('[CPC] 명령 전송 실패', e));
