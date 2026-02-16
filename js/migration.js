@@ -74,15 +74,15 @@ const SunnyBotData = {
     // 도우미 3개 (비공개 — 소유자만)
     {
       id: 'sunny_helper_work',
-      name: 'Claude Messenger',
-      role: '클로드 소대와 연결되어 업무 지시를 전달하고, 처리 결과를 다시 알려주는 AI 메신저입니다.',
+      name: '클로드 연락병',
+      role: '지휘관과 클로드 소대장 사이에서 명령을 전달하고, 처리 결과를 보고하는 연락병입니다.',
       model: 'logic',
       iqEq: 70,
       isVisible: true,
       category: 'helper',
       helperType: 'work',
       isPublic: false,
-      greeting: '안녕하세요! Claude Messenger입니다. 업무 지시를 전달해주세요.',
+      greeting: '클로드 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요.',
       faqs: [
         { q: '업무 지시 전달해줘', a: '' },
         { q: '처리 결과 알려줘', a: '' },
@@ -137,7 +137,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v15.0';
+var SUNNY_DATA_VERSION = 'v15.1';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
