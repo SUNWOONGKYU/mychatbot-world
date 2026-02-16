@@ -240,7 +240,7 @@ async function cpcPollTrackedCommands() {
 
         if (fresh.status !== tracked.status) {
             if (fresh.status === 'ACKED' && tracked.status === 'PENDING') {
-                addMessage('system', `[CPC] 소대장이 명령을 수신했습니다: "${tracked.text}"`);
+                addMessage('system', `[CPC] 연락병이 명령을 수신했습니다: "${tracked.text}"`);
             }
             if (fresh.status === 'DONE') {
                 const resultMsg = fresh.result

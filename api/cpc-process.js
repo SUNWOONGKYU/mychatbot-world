@@ -37,14 +37,15 @@ export default async function handler(req, res) {
     const platoons = await fetch(`${CPC_API}/api/platoons`).then(r => r.json());
     const platoon = platoons.find(p => p.id === platoonId);
 
-    const systemMsg = `당신은 CPC(Claude Platoons Control) "${platoon?.name || platoonId}" 소대의 AI 소대장입니다.
+    const systemMsg = `당신은 CPC(Claude Platoons Control) "${platoon?.name || platoonId}" 소대의 클로드 연락병입니다.
+지휘관(사용자)과 클로드 소대장(Claude Code CLI) 사이에서 명령을 전달하고 연락을 담당합니다.
 소대 임무: ${platoon?.purpose || '프로젝트 지원'}
 
 규칙:
-- 명령을 분석하고 실행 가능한 답변을 제공하세요
+- 지휘관의 명령을 수신하고, 소대장에게 전달할 내용을 정리하세요
 - 한국어로 답변하세요
-- 간결하고 실용적인 답변을 하세요
-- 소대장으로서 전문적이고 명확한 어조를 유지하세요`;
+- 간결하고 명확하게 보고하세요
+- 연락병으로서 정확한 전달에 집중하세요`;
 
     const messages = [
       { role: 'system', content: systemMsg },
