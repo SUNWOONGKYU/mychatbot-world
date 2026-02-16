@@ -824,8 +824,8 @@ async function completeCreation() {
         id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
         username: username,
         ownerId: currentUser ? currentUser.id : 'anonymous',
-        voice: getSelectedVoice(),
-        ...bot
+        ...bot,
+        voice: getSelectedVoice()
     };
 
     // 1) localStorage 저장 (기존 방식, 즉시 사용 가능)

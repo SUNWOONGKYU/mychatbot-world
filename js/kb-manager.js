@@ -814,6 +814,7 @@ const StorageManager = (() => {
       greeting: botData.greeting || '',
       faqs: botData.faqs || [],
       input_text: botData.inputText || '',
+      voice: botData.voice || 'fable',
       created_at: botData.createdAt || new Date().toISOString()
     };
 
@@ -859,6 +860,7 @@ const StorageManager = (() => {
       emoji: bot.emoji,
       greeting: bot.greeting,
       faqs: bot.faqs,
+      voice: bot.voice || 'fable',
       personas: personas.map(p => ({
         id: p.id,
         name: p.name,
@@ -887,7 +889,7 @@ const StorageManager = (() => {
       result.push({
         id: bot.id, username: bot.username, ownerId: bot.owner_id,
         botName: bot.bot_name, botDesc: bot.bot_desc, emoji: bot.emoji,
-        greeting: bot.greeting, faqs: bot.faqs, inputText: bot.input_text,
+        greeting: bot.greeting, faqs: bot.faqs, voice: bot.voice || 'fable', inputText: bot.input_text,
         personas: personas.map(p => ({
           id: p.id, name: p.name, role: p.role, category: p.category,
           model: p.model, iqEq: p.iq_eq, isPublic: p.is_public,
