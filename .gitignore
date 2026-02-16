@@ -1,6 +1,8 @@
 # Secrets and Environment
 .env
 *.local
+js/secrets.js
+js/config.js
 .vercel/
 .DS_Store
 .vercel
