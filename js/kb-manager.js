@@ -31,8 +31,9 @@ const StorageManager = (() => {
     if (_sb) return _sb;
     // supabase-js CDN은 window.supabase.createClient 제공
     if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
-      const url = (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.SUPABASE_URL) || '';
-      const key = (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.SUPABASE_ANON_KEY) || '';
+      // Supabase anon key is public (RLS enforced) — safe to hardcode
+      const url = 'https://gybgkehtonqhosuutoxx.supabase.co';
+      const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5YmdrZWh0b25xaG9zdXV0b3h4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQ1OTEsImV4cCI6MjA4Njc1MDU5MX0.Xk4JRkJwdTps95vXq3dXklgsTl7Yz_G1I4kbItPr2kw';
       if (url && key) {
         _sb = window.supabase.createClient(url, key);
         capabilities.supabase = true;

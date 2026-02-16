@@ -1,8 +1,15 @@
-# Secrets and Environment
+# Secrets and Environment — NEVER commit these
 .env
+.env.*
 *.local
 js/secrets.js
 js/config.js
+
+# Build artifacts
 .vercel/
-.DS_Store
 .vercel
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

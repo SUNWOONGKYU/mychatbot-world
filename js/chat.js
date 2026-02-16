@@ -15,11 +15,8 @@ var _ttsVoice = localStorage.getItem('mcw_tts_voice') || 'fable';
 var _ttsPending = null;
 document.addEventListener('DOMContentLoaded', async () => {
     if (typeof MCW !== 'undefined' && MCW.ready) await MCW.ready;
-    console.log("%c[AI SHIELD] v10.9 SECURITY PATCH LOADED (Cache Bypassed)", "color: #ff00ff; font-weight: bold; font-size: 16px;");
-    const storedKey = localStorage.getItem('mcw_openrouter_key');
-    if (storedKey && storedKey.startsWith("sk-or-v1-7")) {
-        localStorage.removeItem('mcw_openrouter_key');
-    }
+    // Security: purge any leaked API keys from localStorage
+    localStorage.removeItem('mcw_openrouter_key');
     await loadBotData();
     renderPersonaSelector();
     autoResizeInput();
@@ -492,62 +489,8 @@ async function generateResponse(userText) {
     } catch (e) {
         console.warn('[API] /api/chat error', e);
     }
-    // 2차: 개발 환경용 직접 OpenRouter 호출 (로컬 secrets/config 있을 때만)
-    const BAD_KEY_HASH = 'sk-or-v1-6a0bbf03';
-    let storedKey = localStorage.getItem('mcw_openrouter_key');
-    if (storedKey && storedKey.includes(BAD_KEY_HASH)) {
-        console.warn('[AI SECURITY] Compomised key detected in storage. PURGING.');
-        localStorage.removeItem('mcw_openrouter_key');
-        storedKey = null;
-    }
-    let API_KEY = null;
-    if (typeof MCW_SECRETS !== 'undefined' && MCW_SECRETS.OPENROUTER_API_KEY) {
-        API_KEY = MCW_SECRETS.OPENROUTER_API_KEY;
-        localStorage.setItem('mcw_openrouter_key', API_KEY);
-    } else if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
-        API_KEY = CONFIG.OPENROUTER_API_KEY;
-        localStorage.setItem('mcw_openrouter_key', API_KEY);
-    } else {
-        API_KEY = storedKey;
-    }
-    if (!API_KEY || API_KEY.length < 50 || API_KEY.includes(BAD_KEY_HASH)) {
-        return '[시스템 오류] API 키가 유효하지 않습니다. (원인: User not found / Key Invalid). 캐시를 삭제하고 다시 접속해주세요.';
-    }
-    const modelStack = (typeof MCW !== 'undefined' && MCW.models)
-        ? [...MCW.models.chat, MCW.models.free]
-        : ['google/gemini-2.5-flash', 'openai/gpt-4o', 'anthropic/claude-sonnet-4.5', 'deepseek/deepseek-chat', 'openrouter/free'];
-    let lastError = '';
-    for (let currentModel of modelStack) {
-        try {
-            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + API_KEY,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': window.location.origin,
-                    'X-Title': 'MCW_MOBILE_V10.5'
-                },
-                body: JSON.stringify({
-                    model: currentModel,
-                    messages: [
-                        { role: 'system', content: 'You are a professional assistant. Reply in Korean.' },
-                        ...conversationHistory.slice(-5),
-                        { role: 'user', content: userText }
-                    ]
-                })
-            });
-            const data = await res.json();
-            if (res.ok && data.choices && data.choices[0]) {
-                const latency = Date.now() - start;
-                console.log('[AI SUCCESS] ' + currentModel + ' (' + latency + 'ms)');
-                return data.choices[0].message.content;
-            }
-            lastError = (data.error && data.error.message) || res.statusText;
-        } catch (e) {
-            lastError = e.message;
-        }
-    }
-    return '[AI 오류] 접속 실패 (' + lastError + ')';
+    // All AI calls go through server-side /api/chat only (API key is in Vercel env vars)
+    return '죄송합니다. 서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.';
 }
 // TTS: 1차 /api/tts (OpenAI TTS-1) → 2차 SpeechSynthesis → 3차 Google Translate
 function speak(text) {

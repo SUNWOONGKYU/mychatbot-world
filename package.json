@@ -8,6 +8,6 @@
         "form-data": "^4.0.5"
     },
     "scripts": {
-        "build": "node scripts/generate-config.cjs"
+        "build": "echo 'No build step needed'"
     }
 }
