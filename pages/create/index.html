@@ -152,6 +152,47 @@
                 <div class="analysis-result hidden" id="analysisResult">
                     <h2 class="step-title">챗봇이 탄생했습니다!</h2>
                     <div class="result-preview" id="resultPreview"></div>
+
+                    <!-- 음성 선택 -->
+                    <div class="voice-pick" id="voicePick">
+                        <h3 class="voice-pick-title">챗봇 목소리를 선택하세요</h3>
+                        <div class="voice-pick-grid" id="voicePickGrid">
+                            <label class="voice-pick-card active" data-voice="fable">
+                                <input type="radio" name="botVoice" value="fable" checked>
+                                <span class="voice-pick-name">Fable</span>
+                                <span class="voice-pick-desc">부드러운 톤</span>
+                            </label>
+                            <label class="voice-pick-card" data-voice="nova">
+                                <input type="radio" name="botVoice" value="nova">
+                                <span class="voice-pick-name">Nova</span>
+                                <span class="voice-pick-desc">밝고 친근한</span>
+                            </label>
+                            <label class="voice-pick-card" data-voice="shimmer">
+                                <input type="radio" name="botVoice" value="shimmer">
+                                <span class="voice-pick-name">Shimmer</span>
+                                <span class="voice-pick-desc">따뜻한 톤</span>
+                            </label>
+                            <label class="voice-pick-card" data-voice="alloy">
+                                <input type="radio" name="botVoice" value="alloy">
+                                <span class="voice-pick-name">Alloy</span>
+                                <span class="voice-pick-desc">중성 균형</span>
+                            </label>
+                            <label class="voice-pick-card" data-voice="echo">
+                                <input type="radio" name="botVoice" value="echo">
+                                <span class="voice-pick-name">Echo</span>
+                                <span class="voice-pick-desc">차분한 톤</span>
+                            </label>
+                            <label class="voice-pick-card" data-voice="onyx">
+                                <input type="radio" name="botVoice" value="onyx">
+                                <span class="voice-pick-name">Onyx</span>
+                                <span class="voice-pick-desc">깊고 낮은</span>
+                            </label>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="previewVoice()" id="voicePreviewBtn">
+                            미리듣기
+                        </button>
+                    </div>
+
                     <button class="btn btn-primary btn-xl" style="width:100%; margin-top:1.5rem"
                         onclick="completeCreation()">
                         챗봇 설치하기

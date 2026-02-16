@@ -232,6 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupTextCounter();
     setupAutoUsername();
     addPersonaCard('avatar');
+    initVoicePicker();
 
     // 저장된 초안이 있으면 복원
     const draft = loadDraft();
@@ -823,6 +824,7 @@ async function completeCreation() {
         id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
         username: username,
         ownerId: currentUser ? currentUser.id : 'anonymous',
+        voice: getSelectedVoice(),
         ...bot
     };
 
@@ -868,6 +870,54 @@ function copyUrl() {
     }).catch(() => {
         document.execCommand('copy');
         alert('URL이 복사되었습니다!');
+    });
+}
+
+// === Voice Picker ===
+function initVoicePicker() {
+    const grid = document.getElementById('voicePickGrid');
+    if (!grid) return;
+    grid.addEventListener('click', (e) => {
+        const card = e.target.closest('.voice-pick-card');
+        if (!card) return;
+        grid.querySelectorAll('.voice-pick-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        card.querySelector('input').checked = true;
+    });
+}
+
+function getSelectedVoice() {
+    const checked = document.querySelector('input[name="botVoice"]:checked');
+    return checked ? checked.value : 'fable';
+}
+
+var _voicePreviewPlayer = new Audio();
+function previewVoice() {
+    var voice = getSelectedVoice();
+    var btn = document.getElementById('voicePreviewBtn');
+    if (btn) btn.textContent = '재생 중...';
+    fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: '안녕하세요, 반갑습니다! 무엇이든 물어보세요.', voice: voice })
+    }).then(function(res) {
+        if (!res.ok) throw new Error('TTS ' + res.status);
+        var ct = res.headers.get('content-type') || '';
+        if (ct.indexOf('audio') === -1) throw new Error('Not audio');
+        return res.blob();
+    }).then(function(blob) {
+        var url = URL.createObjectURL(blob);
+        _voicePreviewPlayer.pause();
+        _voicePreviewPlayer.src = url;
+        _voicePreviewPlayer.play();
+        _voicePreviewPlayer.onended = function() { URL.revokeObjectURL(url); if (btn) btn.textContent = '미리듣기'; };
+    }).catch(function() {
+        if (window.speechSynthesis) {
+            var u = new SpeechSynthesisUtterance('안녕하세요, 반갑습니다!');
+            u.lang = 'ko-KR';
+            window.speechSynthesis.speak(u);
+        }
+        if (btn) btn.textContent = '미리듣기';
     });
 }
 

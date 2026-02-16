@@ -139,6 +139,14 @@ async function loadBotData() {
     if (nameEl) nameEl.textContent = chatBotData.botName;
     document.title = `${chatBotData.botName} - My Chatbot World`;
 
+    // 봇에 저장된 음성이 있으면 기본값으로 사용
+    if (chatBotData.voice) {
+        _ttsVoice = chatBotData.voice;
+        localStorage.setItem('mcw_tts_voice', _ttsVoice);
+        const voiceSelect = document.getElementById('voiceSelect');
+        if (voiceSelect) voiceSelect.value = _ttsVoice;
+    }
+
     // 환영 문구: 페르소나가 1개면 바로 인사, 여러 개면 선택 안내
     const welcomeTitleEl = document.getElementById('welcomeTitle');
     const welcomeDescEl = document.getElementById('welcomeDesc');
