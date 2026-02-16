@@ -160,8 +160,8 @@ async function loadBotData() {
         setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
         logPerPersonaStat('conversation_start');
     }
-    // 도우미 페르소나 직접 진입 시 CPC 바 자동 표시
-    if (cpcIsHelper(currentPersona)) {
+    // 소유자이거나 도우미 페르소나 직접 진입 시 CPC 바 자동 표시
+    if (cpcIsOwner() || cpcIsHelper(currentPersona)) {
         cpcShowBar();
     }
 }
@@ -337,6 +337,17 @@ function cpcIsHelper(persona) {
     if (!persona) return false;
     return persona.category === 'helper' || (persona.id && persona.id.includes('helper'));
 }
+
+// 봇 소유자인지 확인
+function cpcIsOwner() {
+    try {
+        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser && chatBotData && chatBotData.ownerId) {
+            const u = MCW.user.getCurrentUser();
+            return u && u.id === chatBotData.ownerId;
+        }
+    } catch (e) {}
+    return false;
+}
 let currentPersona = null;
 function renderPersonaSelector() {
     const container = document.getElementById('personaContainer');
@@ -406,8 +417,8 @@ function switchPersona(id) {
     }
     // 페르소나 전환 시 FAQ 버튼도 갱신
     renderFaqButtons();
-    // CPC 바: 도우미 페르소나(helper)일 때 표시
-    if (cpcIsHelper(newPersona)) {
+    // CPC 바: 소유자이거나 도우미 페르소나면 표시
+    if (cpcIsOwner() || cpcIsHelper(newPersona)) {
         cpcShowBar();
     } else {
         cpcHideBar();
@@ -439,9 +450,9 @@ async function sendMessage() {
     conversationHistory.push({ role: 'user', content: text });
     // 페르소나별 대화 저장
     savePerPersonaMessage('user', text);
-    // === CPC 양방향 연동: 도우미 + 소대 선택 시 해당 소대로 명령 전달 + 추적 ===
+    // === CPC 양방향 연동: 소대 선택 시 해당 소대로 명령 전달 + 추적 ===
     try {
-        if (cpcIsHelper(currentPersona) && _cpcSelectedId) {
+        if (_cpcSelectedId) {
             cpcAddCommand(_cpcSelectedId, text, 'chatbot')
                 .then(cmd => {
                     if (cmd) {
