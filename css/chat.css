@@ -911,7 +911,7 @@ html.chat-page {
 /* === CPC Platoon Selector Bar === */
 .cpc-bar {
     flex-shrink: 0;
-    padding: 6px 16px;
+    padding: 4px 12px;
     background: rgba(16, 185, 129, 0.08);
     border-top: 1px solid rgba(16, 185, 129, 0.2);
 }
@@ -919,11 +919,11 @@ html.chat-page {
 .cpc-bar-inner {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .cpc-bar-label {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 700;
     color: #10b981;
     letter-spacing: 0.05em;
@@ -934,10 +934,11 @@ html.chat-page {
     flex: 1;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: 6px;
+    border-radius: 4px;
     color: rgba(255, 255, 255, 0.85);
-    font-size: 0.75rem;
-    padding: 5px 8px;
+    font-size: 0.6rem;
+    padding: 3px 6px;
+    height: 24px;
     outline: none;
     cursor: pointer;
 }
@@ -945,12 +946,14 @@ html.chat-page {
 .cpc-select option {
     background: #1e293b;
     color: #f1f5f9;
+    font-size: 0.6rem;
 }
 
 .cpc-select optgroup {
     background: #0f172a;
     color: #94a3b8;
     font-weight: 700;
+    font-size: 0.6rem;
 }
 
 .cpc-status {
