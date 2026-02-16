@@ -542,7 +542,7 @@ function speak(text) {
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, voice: 'alloy' })
+        body: JSON.stringify({ text: clean, voice: 'fable' })
     }).then(function (res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
         var ct = res.headers.get('content-type') || '';
@@ -707,7 +707,7 @@ function playMsgTTS(btn) {
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, voice: 'alloy' })
+        body: JSON.stringify({ text: clean, voice: 'fable' })
     }).then(function(res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
         var ct = res.headers.get('content-type') || '';
