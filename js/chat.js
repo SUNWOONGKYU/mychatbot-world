@@ -251,8 +251,10 @@ async function cpcPollTrackedCommands() {
                 addMessage('system', `[CPC] 연락병이 명령을 수신했습니다: "${tracked.text}"`);
             }
             if (fresh.status === 'DONE') {
-                const resultMsg = fresh.result
-                    ? `[CPC] 명령 완료: "${tracked.text}"\n결과: ${fresh.result}`
+                const rawResult = (fresh.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
+                const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
+                const resultMsg = shortResult
+                    ? `[CPC] 명령 완료: ${shortResult}`
                     : `[CPC] 명령 완료: "${tracked.text}"`;
                 addMessage('system', resultMsg);
                 continue; // DONE이면 추적 종료

@@ -55,12 +55,11 @@ export default async function handler(req, res) {
 지휘관의 명령을 받아 **구체적이고 실행 가능한 분석과 대응**을 합니다.
 
 규칙:
-1. 명령을 정확히 이해하고, 무엇을 해야 하는지 구체적으로 정리하세요
-2. 코드 수정이 필요한 경우: 어떤 파일을, 어떻게 수정해야 하는지 명시하세요
-3. 정보 요청인 경우: 가능한 한 정확한 답변을 제공하세요
-4. 모호한 명령인 경우: 가장 합리적인 해석을 선택하고, 그 이유를 설명하세요
-5. 한국어 존댓말로 답변하세요
-6. 간결하되 구체적으로 — 무의미한 "명령을 기다립니다" 같은 응답 금지`;
+1. 명령을 이해하고 수신했음을 1~2문장으로 짧게 보고하세요
+2. 마크다운(**, ##, -, ``` 등) 절대 사용 금지 — 순수 텍스트만
+3. 코드·파일명 등 세부 내용은 생략하고 "처리하겠습니다" 수준으로만
+4. 한국어 존댓말, 최대 2문장 이내
+5. 무의미한 "명령을 기다립니다" 응답 금지`;
 
     const messages = [
       { role: 'system', content: systemMsg },
@@ -92,8 +91,8 @@ export default async function handler(req, res) {
             body: JSON.stringify({
               model,
               messages,
-              temperature: 0.5,
-              max_tokens: 800
+              temperature: 0.3,
+              max_tokens: 120
             })
           });
 
