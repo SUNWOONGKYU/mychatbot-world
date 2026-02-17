@@ -106,7 +106,9 @@ const MCW = {
         return null;
       }
 
-      this._supabase = supabase.createClient(url, key);
+      this._supabase = supabase.createClient(url, key, {
+        auth: { flowType: 'implicit' }
+      });
 
       // Restore session — getUser() validates against server (not just local cache)
       const { data: { user: serverUser } } = await this._supabase.auth.getUser();
