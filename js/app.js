@@ -110,13 +110,7 @@ const MCW = {
         auth: { flowType: 'implicit' }
       });
 
-      // Restore session — getUser() validates against server (not just local cache)
-      const { data: { user: serverUser } } = await this._supabase.auth.getUser();
-      if (serverUser) {
-        this._user = MCW.auth._toUserObj(serverUser);
-      }
-
-      // Listen for auth changes
+      // onAuthStateChange를 getUser() 이전에 등록 — PASSWORD_RECOVERY 이벤트 놓치지 않도록
       this._supabase.auth.onAuthStateChange((_event, session) => {
         if (session?.user) {
           this._user = MCW.auth._toUserObj(session.user);
@@ -128,6 +122,12 @@ const MCW = {
           window.dispatchEvent(new CustomEvent('mcw:password-recovery'));
         }
       });
+
+      // Restore session — getUser() validates against server (not just local cache)
+      const { data: { user: serverUser } } = await this._supabase.auth.getUser();
+      if (serverUser) {
+        this._user = MCW.auth._toUserObj(serverUser);
+      }
 
       return this._user;
     },
