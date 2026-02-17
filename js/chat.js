@@ -652,11 +652,13 @@ function speakFallback(clean) {
         console.warn('[TTS] All TTS methods failed');
     });
 }
-// STT
+// STT — 단일 발화 모드 (continuous=false)
+// Chrome 한국어 continuous 모드에서 텍스트 반복 버그 회피
 let chatRecognition = null;
 function toggleChatVoice() {
-    unlockTTS(); // Unlock audio context when using STT too
+    unlockTTS();
     const btn = document.getElementById('chatVoiceBtn');
+    const input = document.getElementById('chatInput');
     if (chatRecognition) {
         chatRecognition.stop();
         chatRecognition = null;
@@ -664,72 +666,36 @@ function toggleChatVoice() {
         return;
     }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-        alert('이 브라우저는 음성 인식을 지원하지 않습니다.');
-        return;
-    }
+    if (!SR) { alert('이 브라우저는 음성 인식을 지원하지 않습니다.'); return; }
+
     chatRecognition = new SR();
     chatRecognition.lang = 'ko-KR';
-    chatRecognition.continuous = true;
+    chatRecognition.continuous = false;
     chatRecognition.interimResults = true;
-    chatRecognition.maxAlternatives = 1;
 
-    var _sttFinalParts = [];    // 확정된 텍스트 조각들
-    var _sttSilenceTimer = null;
-    var _sttSilenceMs = 6000;   // 6초 무음 → 전송 (한국어 자연 발화 고려)
+    chatRecognition.onstart = () => { btn?.classList.add('recording'); };
 
-    function _sttResetSilenceTimer() {
-        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-        _sttSilenceTimer = setTimeout(function() {
-            if (chatRecognition) { try { chatRecognition.stop(); } catch(e){} }
-        }, _sttSilenceMs);
-    }
-
-    chatRecognition.onstart = () => {
-        _sttFinalParts = [];
-        btn?.classList.add('recording');
-        // 타이머는 첫 발화(onresult) 시 시작 — 여기선 시작 안 함
-    };
     chatRecognition.onresult = (e) => {
-        // 확정된 결과만 저장, interim은 표시만
-        var finalText = '';
-        var interimText = '';
+        var text = '';
         for (var i = 0; i < e.results.length; i++) {
-            if (e.results[i].isFinal) {
-                // 이미 저장한 인덱스는 건너뜀
-                if (i < _sttFinalParts.length) {
-                    finalText += _sttFinalParts[i];
-                } else {
-                    var t = e.results[i][0].transcript;
-                    _sttFinalParts[i] = t;
-                    finalText += t;
-                }
-            } else {
-                interimText += e.results[i][0].transcript;
-            }
+            text += e.results[i][0].transcript;
         }
-        var input = document.getElementById('chatInput');
-        if (input) {
-            input.value = finalText + interimText;
-        }
-        _sttResetSilenceTimer();
+        if (input) input.value = text;
     };
+
     chatRecognition.onerror = (e) => {
         if (e.error === 'no-speech' || e.error === 'aborted') return;
         console.error("STT Error", e.error);
     };
+
     chatRecognition.onend = () => {
-        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
         chatRecognition = null;
         btn?.classList.remove('recording');
-        var finalText = _sttFinalParts.join('');
-        var input = document.getElementById('chatInput');
-        if (input && finalText.trim()) {
-            input.value = finalText.trim();
+        if (input && input.value.trim()) {
             sendMessage();
         }
-        _sttFinalParts = [];
     };
+
     chatRecognition.start();
 }
 function autoResizeInput() {

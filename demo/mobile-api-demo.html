@@ -672,63 +672,36 @@
             return true;
         }
 
-        // === Web Speech API (continuous + 6초 무음 타이머) ===
-        var _sttFinalParts = [];
-        var _sttSilenceTimer = null;
-        var _sttSilenceMs = 6000;   // 6초 무음 → 전송 (한국어 자연 발화 고려)
-
-        function _sttResetTimer() {
-            if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-            _sttSilenceTimer = setTimeout(function() {
-                if (recognition && isListening) { try { recognition.stop(); } catch(e){} }
-            }, _sttSilenceMs);
-        }
-
+        // === Web Speech API — 단일 발화 모드 (continuous=false) ===
+        // Chrome 한국어 continuous 모드 텍스트 반복 버그 회피
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = 'ko-KR';
-            recognition.continuous = true;
+            recognition.continuous = false;
             recognition.interimResults = true;
             recognition.onstart = () => {
                 isListening = true;
-                _sttFinalParts = [];
                 document.getElementById('voiceBtn').classList.add('listening');
                 document.getElementById('voiceStatus').classList.add('show');
                 setEmotion('listening');
-                // 타이머는 첫 발화(onresult) 시 시작 — 여기선 시작 안 함
             };
             recognition.onresult = (event) => {
-                var finalText = '';
-                var interimText = '';
+                var text = '';
                 for (var i = 0; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) {
-                        if (i < _sttFinalParts.length) {
-                            finalText += _sttFinalParts[i];
-                        } else {
-                            var t = event.results[i][0].transcript;
-                            _sttFinalParts[i] = t;
-                            finalText += t;
-                        }
-                    } else {
-                        interimText += event.results[i][0].transcript;
-                    }
+                    text += event.results[i][0].transcript;
                 }
-                document.getElementById('messageInput').value = finalText + interimText;
-                _sttResetTimer();
+                document.getElementById('messageInput').value = text;
             };
             recognition.onend = () => {
-                if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');
                 setEmotion('neutral');
-                var finalText = _sttFinalParts.join('');
-                if (finalText.trim()) {
-                    document.getElementById('messageInput').value = finalText.trim();
+                var input = document.getElementById('messageInput');
+                if (input && input.value.trim()) {
                     sendMessage();
                 }
-                _sttFinalParts = [];
             };
             recognition.onerror = (event) => {
                 if (event.error === 'no-speech' || event.error === 'aborted') return;
