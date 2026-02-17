@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Chatbot World</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=16.5">
-    <link rel="stylesheet" href="../../css/chat.css?v=16.5">
+    <link rel="stylesheet" href="../../css/styles.css?v=16.6">
+    <link rel="stylesheet" href="../../css/chat.css?v=16.6">
 </head>
 
 <body class="chat-body">
@@ -86,10 +86,10 @@
             bots.forEach(function(bot) {
                 if (!bot.personas) return;
                 bot.personas.forEach(function(p) {
-                    if (p.name === 'Claude Messenger' || p.name === '클로드 메신저' || p.name === '클로드 연락병') {
-                        p.name = 'Claude 연락병';
-                        p.role = '지휘관과 Claude 소대장 사이에서 명령을 전달하고, 처리 결과를 보고하는 연락병입니다.';
-                        p.greeting = 'Claude 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요.';
+                    if (p.name === 'Claude Messenger' || p.name === '클로드 메신저' || p.name === '클로드 연락병' || p.name === 'Claude 연락병') {
+                        p.name = 'CC 연락병';
+                        p.role = '지휘관의 명령을 CPC를 통해 Claude Code 소대장에게 전달하고, 소대장의 답변을 보고하는 연락병입니다.';
+                        p.greeting = 'CC 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요. 명령을 접수하면 소대장에게 즉시 전달하고 답변을 받아오겠습니다.';
                         changed = true;
                     }
                 });
@@ -102,10 +102,10 @@
     })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../js/app.js?v=16.5"></script>
-    <script src="../../js/kb-manager.js?v=16.5"></script>
-    <script src="../../js/migration.js?v=16.5"></script>
-    <script src="../../js/chat.js?v=16.5"></script>
+    <script src="../../js/app.js?v=16.6"></script>
+    <script src="../../js/kb-manager.js?v=16.6"></script>
+    <script src="../../js/migration.js?v=16.6"></script>
+    <script src="../../js/chat.js?v=16.6"></script>
 </body>
 
 </html>

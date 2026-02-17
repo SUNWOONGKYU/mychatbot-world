@@ -480,17 +480,7 @@ async function sendMessage() {
                     if (cmd) {
                         console.log('[CPC] 연락병 → 소대장 전달:', _cpcSelectedId, cmd.id);
                         cpcTrackCommand(cmd);
-                        addMessage('system', '[CPC] 연락병이 소대장에게 전달 중 → ' + _cpcSelectedId);
-                        // 서버 자동 처리 트리거 (fire-and-forget)
-                        fetch('/api/cpc-process', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                commandId: cmd.id,
-                                platoonId: _cpcSelectedId,
-                                text: text
-                            })
-                        }).catch(e => console.warn('[CPC] auto-process failed', e));
+                        addMessage('system', '[CC연락병] 소대장에게 전달 완료 → ' + _cpcSelectedId + ' · 답변 대기 중...');
                     }
                 })
                 .catch(e => console.warn('[CPC] 명령 전송 실패', e));
