@@ -452,10 +452,9 @@ async function sendMessage() {
     conversationHistory.push({ role: 'user', content: text });
     // 페르소나별 대화 저장
     savePerPersonaMessage('user', text);
-    // === CPC 양방향 연동: Claude 연락병 페르소나일 때만 CPC 명령 전달 ===
-    var isCourierPersona = currentPersona && currentPersona.id === 'sunny_helper_work';
+    // === CPC 양방향 연동: 소대 선택 시 해당 소대로 명령 전달 + 연락병 자동 처리 ===
     try {
-        if (_cpcSelectedId && isCourierPersona) {
+        if (_cpcSelectedId) {
             cpcAddCommand(_cpcSelectedId, text, 'chatbot')
                 .then(cmd => {
                     if (cmd) {
