@@ -124,6 +124,23 @@ const SunnyBotData = {
       ],
     },
     {
+      id: 'sunny_helper_star',
+      name: '별 애호가',
+      role: '별자리·천문학·우주에 대해 이야기하고, 밤하늘 관측과 천체 정보를 안내하는 도우미입니다.',
+      model: 'emotion',
+      iqEq: 65,
+      isVisible: true,
+      category: 'helper',
+      helperType: 'life',
+      isPublic: false,
+      greeting: '별 애호가입니다! 오늘 밤하늘에 대해 이야기해볼까요?',
+      faqs: [
+        { q: '오늘 볼 수 있는 별자리 알려줘', a: '' },
+        { q: '다음 유성우는 언제야?', a: '' },
+        { q: '행성 관측 팁 알려줘', a: '' },
+      ],
+    },
+    {
       id: 'sunny_helper_life',
       name: '생활 도우미',
       role: '생활 루틴, 건강, 감정, 가계부를 함께 관리해주는 AI 도우미입니다.',
@@ -154,7 +171,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v15.3';
+var SUNNY_DATA_VERSION = 'v15.4';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {

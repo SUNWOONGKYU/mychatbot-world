@@ -585,6 +585,12 @@ async function generateResponse(userText) {
 // TTS: 1차 /api/tts (OpenAI TTS-1) → 2차 SpeechSynthesis → 3차 Google Translate
 function speak(text) {
     if (!voiceOutputEnabled) return;
+    // TTS 재생 전 STT 중지 — 스피커 음성이 마이크에 잡히는 헛소리 방지
+    if (chatRecognition) {
+        try { chatRecognition.stop(); } catch(e) {}
+        chatRecognition = null;
+        document.getElementById('chatVoiceBtn')?.classList.remove('recording');
+    }
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
     if (clean.length > 4096) clean = clean.substring(0, 4096);
@@ -616,6 +622,12 @@ function speak(text) {
 }
 // 2차: SpeechSynthesis (모바일 최우선) → 3차: Google Translate TTS
 function speakFallback(clean) {
+    // TTS fallback에서도 STT 중지
+    if (chatRecognition) {
+        try { chatRecognition.stop(); } catch(e) {}
+        chatRecognition = null;
+        document.getElementById('chatVoiceBtn')?.classList.remove('recording');
+    }
     if (window.speechSynthesis) {
         try {
             window.speechSynthesis.cancel();
@@ -664,7 +676,7 @@ function toggleChatVoice() {
 
     var _sttFinalParts = [];    // 확정된 텍스트 조각들
     var _sttSilenceTimer = null;
-    var _sttSilenceMs = 3000;   // 3초 무음 → 전송
+    var _sttSilenceMs = 6000;   // 6초 무음 → 전송 (한국어 자연 발화 고려)
 
     function _sttResetSilenceTimer() {
         if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
@@ -676,7 +688,7 @@ function toggleChatVoice() {
     chatRecognition.onstart = () => {
         _sttFinalParts = [];
         btn?.classList.add('recording');
-        _sttResetSilenceTimer();
+        // 타이머는 첫 발화(onresult) 시 시작 — 여기선 시작 안 함
     };
     chatRecognition.onresult = (e) => {
         // 확정된 결과만 저장, interim은 표시만

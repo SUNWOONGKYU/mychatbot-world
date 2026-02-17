@@ -672,10 +672,10 @@
             return true;
         }
 
-        // === Web Speech API (continuous + 3초 무음 타이머) ===
+        // === Web Speech API (continuous + 6초 무음 타이머) ===
         var _sttFinalParts = [];
         var _sttSilenceTimer = null;
-        var _sttSilenceMs = 3000;
+        var _sttSilenceMs = 6000;   // 6초 무음 → 전송 (한국어 자연 발화 고려)
 
         function _sttResetTimer() {
             if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
@@ -696,7 +696,7 @@
                 document.getElementById('voiceBtn').classList.add('listening');
                 document.getElementById('voiceStatus').classList.add('show');
                 setEmotion('listening');
-                _sttResetTimer();
+                // 타이머는 첫 발화(onresult) 시 시작 — 여기선 시작 안 함
             };
             recognition.onresult = (event) => {
                 var finalText = '';
