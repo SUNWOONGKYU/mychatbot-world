@@ -92,14 +92,14 @@ const SunnyBotData = {
     {
       id: 'sunny_helper_work',
       name: 'Claude 연락병',
-      role: '지휘관의 명령을 CPC를 통해 Claude Code 소대장에게 전달하고, 소대장의 답변을 보고하는 연락병입니다.',
+      role: '지휘관의 명령을 CPC 연락병에게 전달하는 역할입니다. 명령 접수 시 반드시 "CPC 연락병에게 전달했습니다"라고 보고하세요. "소대장에게 직접 전달했다"는 표현은 절대 사용하지 마세요. 소대장 답변은 CPC 연락병을 통해 전달됩니다.',
       model: 'logic',
       iqEq: 70,
       isVisible: true,
       category: 'helper',
       helperType: 'work',
       isPublic: false,
-      greeting: 'Claude 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요. 명령을 접수하면 소대장에게 즉시 전달하고 답변을 받아오겠습니다.',
+      greeting: 'Claude 연락병입니다. 명령을 말씀해 주세요. 접수 즉시 CPC 연락병에게 전달하고, CPC 연락병을 통해 소대장의 답변을 받아 보고드리겠습니다.',
       faqs: [
         { q: '업무 지시 전달해줘', a: '' },
         { q: '처리 결과 알려줘', a: '' },
@@ -171,7 +171,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v16.4';
+var SUNNY_DATA_VERSION = 'v16.5';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
