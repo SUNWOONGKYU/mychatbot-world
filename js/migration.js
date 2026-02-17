@@ -171,7 +171,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v16.1';
+var SUNNY_DATA_VERSION = 'v16.2';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
