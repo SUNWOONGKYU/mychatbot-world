@@ -733,7 +733,8 @@ function toggleChatVoice() {
                     if (input) input.placeholder = '메시지를 입력하세요...';
                     if (data.text && data.text.trim()) {
                         input.value = data.text.trim();
-                        sendMessage();
+                        input.focus();
+                        // 자동 전송 안 함 — 유저가 직접 확인 후 전송 (TTS 모바일 autoplay 허용 위해)
                     }
                 })
                 .catch(function(err) {
