@@ -672,52 +672,108 @@
             return true;
         }
 
-        // === Web Speech API — 단일 발화 모드 (continuous=false) ===
-        // Chrome 한국어 continuous 모드 텍스트 반복 버그 회피
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = 'ko-KR';
-            recognition.continuous = false;
-            recognition.interimResults = true;
-            recognition.onstart = () => {
-                isListening = true;
-                document.getElementById('voiceBtn').classList.add('listening');
-                document.getElementById('voiceStatus').classList.add('show');
-                setEmotion('listening');
-            };
-            recognition.onresult = (event) => {
-                var text = '';
-                for (var i = 0; i < event.results.length; i++) {
-                    text += event.results[i][0].transcript;
+        // === STT — Whisper API via MediaRecorder ===
+        var _demoRecorder = null;
+        var _demoChunks = [];
+        var _demoSilenceCtx = null;
+        var _demoSilenceTimer = null;
+
+        function _demoStartSilence(stream) {
+            try {
+                _demoSilenceCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var source = _demoSilenceCtx.createMediaStreamSource(stream);
+                var analyser = _demoSilenceCtx.createAnalyser();
+                analyser.fftSize = 512;
+                source.connect(analyser);
+                var fdata = new Uint8Array(analyser.frequencyBinCount);
+                var silStart = null, hasSpeech = false;
+                function chk() {
+                    if (!_demoRecorder || _demoRecorder.state !== 'recording') return;
+                    analyser.getByteFrequencyData(fdata);
+                    var avg = 0; for (var i=0;i<fdata.length;i++) avg+=fdata[i]; avg/=fdata.length;
+                    if (avg > 10) { hasSpeech=true; silStart=null; }
+                    else if (hasSpeech) { if(!silStart) silStart=Date.now(); if(Date.now()-silStart>4000) { _demoRecorder.stop(); return; } }
+                    _demoSilenceTimer = requestAnimationFrame(chk);
                 }
-                document.getElementById('messageInput').value = text;
-            };
-            recognition.onend = () => {
-                isListening = false;
-                document.getElementById('voiceBtn').classList.remove('listening');
-                document.getElementById('voiceStatus').classList.remove('show');
-                setEmotion('neutral');
-                var input = document.getElementById('messageInput');
-                if (input && input.value.trim()) {
-                    sendMessage();
-                }
-            };
-            recognition.onerror = (event) => {
-                if (event.error === 'no-speech' || event.error === 'aborted') return;
-                addSystemMessage('⚠️ 음성 인식 오류: ' + event.error);
-                isListening = false;
-                document.getElementById('voiceBtn').classList.remove('listening');
-                document.getElementById('voiceStatus').classList.remove('show');
-                setEmotion('neutral');
-            };
+                chk();
+            } catch(e) {}
+        }
+        function _demoStopSilence() {
+            if (_demoSilenceTimer) { cancelAnimationFrame(_demoSilenceTimer); _demoSilenceTimer=null; }
+            if (_demoSilenceCtx) { _demoSilenceCtx.close().catch(function(){}); _demoSilenceCtx=null; }
         }
 
         // 음성 버튼
         document.getElementById('voiceBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            if (!recognition) { addSystemMessage('⚠️ 이 브라우저는 음성 인식을 지원하지 않습니다.'); return; }
-            if (isListening) { recognition.stop(); } else { recognition.start(); }
+
+            // 녹음 중이면 중지
+            if (_demoRecorder && _demoRecorder.state === 'recording') {
+                _demoRecorder.stop();
+                return;
+            }
+
+            // 녹음 시작
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+                _demoChunks = [];
+                var mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
+                _demoRecorder = new MediaRecorder(stream, { mimeType: mime });
+
+                _demoRecorder.ondataavailable = function(ev) { if (ev.data.size > 0) _demoChunks.push(ev.data); };
+
+                _demoRecorder.onstart = function() {
+                    isListening = true;
+                    document.getElementById('voiceBtn').classList.add('listening');
+                    document.getElementById('voiceStatus').classList.add('show');
+                    setEmotion('listening');
+                    _demoStartSilence(stream);
+                };
+
+                _demoRecorder.onstop = function() {
+                    isListening = false;
+                    document.getElementById('voiceBtn').classList.remove('listening');
+                    document.getElementById('voiceStatus').classList.remove('show');
+                    _demoStopSilence();
+                    stream.getTracks().forEach(function(t) { t.stop(); });
+
+                    if (_demoChunks.length === 0) { setEmotion('neutral'); return; }
+                    var blob = new Blob(_demoChunks, { type: mime });
+                    _demoChunks = [];
+                    if (blob.size < 5000) { setEmotion('neutral'); return; }
+
+                    setEmotion('thinking');
+                    var msgInput = document.getElementById('messageInput');
+                    if (msgInput) msgInput.placeholder = '음성 변환 중...';
+
+                    var reader = new FileReader();
+                    reader.onloadend = function() {
+                        var b64 = reader.result.split(',')[1];
+                        fetch('/api/stt', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ audio: b64, language: 'ko' })
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            if (msgInput) msgInput.placeholder = '메시지를 입력하세요...';
+                            if (data.text && data.text.trim()) {
+                                msgInput.value = data.text.trim();
+                                sendMessage();
+                            } else { setEmotion('neutral'); }
+                        })
+                        .catch(function(err) {
+                            console.error('[STT]', err);
+                            if (msgInput) msgInput.placeholder = '메시지를 입력하세요...';
+                            setEmotion('neutral');
+                        });
+                    };
+                    reader.readAsDataURL(blob);
+                };
+
+                _demoRecorder.start();
+            }).catch(function(err) {
+                addSystemMessage('⚠️ 마이크 접근 실패: ' + err.message);
+            });
         });
 
         // === 페르소나 선택 ===

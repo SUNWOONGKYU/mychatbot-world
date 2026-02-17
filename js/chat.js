@@ -652,51 +652,136 @@ function speakFallback(clean) {
         console.warn('[TTS] All TTS methods failed');
     });
 }
-// STT — 단일 발화 모드 (continuous=false)
-// Chrome 한국어 continuous 모드에서 텍스트 반복 버그 회피
-let chatRecognition = null;
+// STT — Whisper API (OpenAI) via MediaRecorder
+// 마이크 녹음 → /api/stt (Whisper) → 정확한 한국어 텍스트
+let _sttRecorder = null;
+let _sttStream = null;
+let _sttChunks = [];
+let _sttSilenceCtx = null;
+let _sttSilenceTimer = null;
+
 function toggleChatVoice() {
     unlockTTS();
     const btn = document.getElementById('chatVoiceBtn');
     const input = document.getElementById('chatInput');
-    if (chatRecognition) {
-        chatRecognition.stop();
-        chatRecognition = null;
-        btn?.classList.remove('recording');
+
+    // 녹음 중이면 → 중지 & 전송
+    if (_sttRecorder && _sttRecorder.state === 'recording') {
+        _sttRecorder.stop();
         return;
     }
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('이 브라우저는 음성 인식을 지원하지 않습니다.'); return; }
 
-    chatRecognition = new SR();
-    chatRecognition.lang = 'ko-KR';
-    chatRecognition.continuous = false;
-    chatRecognition.interimResults = true;
+    // 녹음 시작
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+        _sttStream = stream;
+        _sttChunks = [];
 
-    chatRecognition.onstart = () => { btn?.classList.add('recording'); };
+        var mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+            ? 'audio/webm;codecs=opus' : 'audio/webm';
+        _sttRecorder = new MediaRecorder(stream, { mimeType: mimeType });
 
-    chatRecognition.onresult = (e) => {
-        var text = '';
-        for (var i = 0; i < e.results.length; i++) {
-            text += e.results[i][0].transcript;
+        _sttRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) _sttChunks.push(e.data);
+        };
+
+        _sttRecorder.onstart = function() {
+            btn?.classList.add('recording');
+            if (input) input.placeholder = '말씀하세요... (버튼 누르면 전송)';
+            _sttStartSilenceDetection(stream);
+        };
+
+        _sttRecorder.onstop = function() {
+            btn?.classList.remove('recording');
+            if (input) input.placeholder = '메시지를 입력하세요...';
+            _sttStopSilenceDetection();
+
+            // 스트림 해제
+            stream.getTracks().forEach(function(t) { t.stop(); });
+            _sttStream = null;
+
+            if (_sttChunks.length === 0) return;
+
+            var blob = new Blob(_sttChunks, { type: mimeType });
+            _sttChunks = [];
+
+            // 너무 짧은 녹음 무시 (0.5초 미만)
+            if (blob.size < 5000) { console.log('[STT] too short, skipped'); return; }
+
+            if (input) input.placeholder = '음성 변환 중...';
+
+            // base64 변환 후 /api/stt 호출
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                var base64 = reader.result.split(',')[1];
+                fetch('/api/stt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ audio: base64, language: 'ko' })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (input) input.placeholder = '메시지를 입력하세요...';
+                    if (data.text && data.text.trim()) {
+                        input.value = data.text.trim();
+                        sendMessage();
+                    }
+                })
+                .catch(function(err) {
+                    console.error('[STT] Whisper error:', err);
+                    if (input) input.placeholder = '메시지를 입력하세요...';
+                });
+            };
+            reader.readAsDataURL(blob);
+        };
+
+        _sttRecorder.start();
+
+    }).catch(function(err) {
+        console.error('[STT] mic error:', err);
+        alert('마이크 접근에 실패했습니다.');
+    });
+}
+
+// 무음 감지: 4초 무음 시 자동 녹음 중지
+function _sttStartSilenceDetection(stream) {
+    try {
+        _sttSilenceCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var source = _sttSilenceCtx.createMediaStreamSource(stream);
+        var analyser = _sttSilenceCtx.createAnalyser();
+        analyser.fftSize = 512;
+        source.connect(analyser);
+        var data = new Uint8Array(analyser.frequencyBinCount);
+        var silenceStart = null;
+        var SILENCE_THRESHOLD = 10;
+        var SILENCE_DURATION = 4000;
+        var hasSpeech = false;
+
+        function check() {
+            if (!_sttRecorder || _sttRecorder.state !== 'recording') return;
+            analyser.getByteFrequencyData(data);
+            var avg = 0;
+            for (var i = 0; i < data.length; i++) avg += data[i];
+            avg /= data.length;
+
+            if (avg > SILENCE_THRESHOLD) {
+                hasSpeech = true;
+                silenceStart = null;
+            } else if (hasSpeech) {
+                if (!silenceStart) silenceStart = Date.now();
+                if (Date.now() - silenceStart > SILENCE_DURATION) {
+                    _sttRecorder.stop();
+                    return;
+                }
+            }
+            _sttSilenceTimer = requestAnimationFrame(check);
         }
-        if (input) input.value = text;
-    };
+        check();
+    } catch(e) { console.warn('[STT] silence detection unavailable:', e); }
+}
 
-    chatRecognition.onerror = (e) => {
-        if (e.error === 'no-speech' || e.error === 'aborted') return;
-        console.error("STT Error", e.error);
-    };
-
-    chatRecognition.onend = () => {
-        chatRecognition = null;
-        btn?.classList.remove('recording');
-        if (input && input.value.trim()) {
-            sendMessage();
-        }
-    };
-
-    chatRecognition.start();
+function _sttStopSilenceDetection() {
+    if (_sttSilenceTimer) { cancelAnimationFrame(_sttSilenceTimer); _sttSilenceTimer = null; }
+    if (_sttSilenceCtx) { _sttSilenceCtx.close().catch(function(){}); _sttSilenceCtx = null; }
 }
 function autoResizeInput() {
     const input = document.getElementById('chatInput');

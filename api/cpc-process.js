@@ -1,9 +1,9 @@
 /**
- * CPC Command Auto-Processor
+ * CPC Command Auto-Processor (Smart)
  * POST /api/cpc-process
  *
  * 1. CPC API로 명령 ACK
- * 2. OpenRouter AI로 명령 처리
+ * 2. OpenRouter AI로 명령 분석 & 처리
  * 3. CPC API로 명령 DONE + result 저장
  */
 export default async function handler(req, res) {
@@ -33,26 +33,41 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    // Step 2: 소대 정보 조회 → AI 시스템 프롬프트 구성
+    // Step 2: 소대 정보 조회
     const platoons = await fetch(`${CPC_API}/api/platoons`).then(r => r.json());
     const platoon = platoons.find(p => p.id === platoonId);
 
-    const systemMsg = `당신은 CPC(Claude Platoons Control) "${platoon?.name || platoonId}" 소대의 Claude 연락병입니다.
-지휘관(사용자)과 Claude 소대장(Claude Code CLI) 사이에서 명령을 전달하고 연락을 담당합니다.
-소대 임무: ${platoon?.purpose || '프로젝트 지원'}
+    // Step 3: 똑똑한 시스템 프롬프트
+    const systemMsg = `당신은 CPC(Claude Platoons Control) "${platoon?.name || platoonId}" 소대의 AI 참모입니다.
+
+## 소대 정보
+- 소대명: ${platoon?.name || platoonId}
+- 임무: ${platoon?.purpose || '프로젝트 개발 지원'}
+- 프로젝트: My Chatbot World (멀티페르소나 AI 챗봇 플랫폼)
+
+## 프로젝트 컨텍스트
+- Vercel 배포 (https://mychatbot-world.vercel.app)
+- 기술: HTML/CSS/JS, Vercel Serverless (api/), Supabase, OpenRouter AI
+- 페르소나: AI Master, Startup Accelerator, 공인회계사, 별 애호가 (대외용) + Claude 연락병, 업무 도우미, Trader, 생활 도우미 (비공개)
+- CPC: 소대 편제 시스템으로 Claude Code CLI가 소대장 역할
+
+## 당신의 역할
+지휘관의 명령을 받아 **구체적이고 실행 가능한 분석과 대응**을 합니다.
 
 규칙:
-- 지휘관의 명령을 수신하고, 소대장에게 전달할 내용을 정리하세요
-- 한국어로 답변하세요
-- 간결하고 명확하게 보고하세요
-- 연락병으로서 정확한 전달에 집중하세요`;
+1. 명령을 정확히 이해하고, 무엇을 해야 하는지 구체적으로 정리하세요
+2. 코드 수정이 필요한 경우: 어떤 파일을, 어떻게 수정해야 하는지 명시하세요
+3. 정보 요청인 경우: 가능한 한 정확한 답변을 제공하세요
+4. 모호한 명령인 경우: 가장 합리적인 해석을 선택하고, 그 이유를 설명하세요
+5. 한국어 존댓말로 답변하세요
+6. 간결하되 구체적으로 — 무의미한 "명령을 기다립니다" 같은 응답 금지`;
 
     const messages = [
       { role: 'system', content: systemMsg },
       { role: 'user', content: text }
     ];
 
-    // Step 3: OpenRouter AI 처리 (api/chat.js와 동일한 MODEL_STACK)
+    // Step 4: OpenRouter AI 처리
     const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
     let aiReply = null;
 
@@ -77,8 +92,8 @@ export default async function handler(req, res) {
             body: JSON.stringify({
               model,
               messages,
-              temperature: 0.7,
-              max_tokens: 500
+              temperature: 0.5,
+              max_tokens: 800
             })
           });
 
@@ -100,11 +115,11 @@ export default async function handler(req, res) {
       }
 
       if (!aiReply) {
-        aiReply = `[CPC] 명령 "${text}" 수신 — AI 처리 실패, 수동 확인 필요`;
+        aiReply = `[CPC] 명령 "${text}" 수신 — AI 처리 실패, CLI 소대장의 수동 확인이 필요합니다.`;
       }
     }
 
-    // Step 4: DONE + result
+    // Step 5: DONE + result
     await fetch(`${CPC_API}/api/commands/${commandId}/done`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
