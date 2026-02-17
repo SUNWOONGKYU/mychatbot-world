@@ -971,7 +971,7 @@ html.chat-page {
 }
 
 .cpc-bar-label {
-    font-size: 0.55rem;
+    font-size: 0.75rem;
     font-weight: 700;
     color: #10b981;
     letter-spacing: 0.05em;
@@ -984,9 +984,9 @@ html.chat-page {
     border: 1px solid rgba(16, 185, 129, 0.25);
     border-radius: 4px;
     color: rgba(255, 255, 255, 0.85);
-    font-size: 0.55rem;
-    padding: 2px 4px;
-    height: 22px;
+    font-size: 0.8rem;
+    padding: 3px 6px;
+    height: 28px;
     outline: none;
     cursor: pointer;
 }
@@ -994,14 +994,14 @@ html.chat-page {
 .cpc-select option {
     background: #1e293b;
     color: #f1f5f9;
-    font-size: 0.55rem;
+    font-size: 0.8rem;
 }
 
 .cpc-select optgroup {
     background: #0f172a;
     color: #94a3b8;
     font-weight: 600;
-    font-size: 0.55rem;
+    font-size: 0.8rem;
 }
 
 .cpc-status {
