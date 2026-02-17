@@ -204,7 +204,7 @@
                 } else {
                     document.getElementById('signupForm').classList.add('hidden');
                     const successEl = document.getElementById('successMsg');
-                    successEl.textContent = '인증 이메일을 발송했습니다. 이메일을 확인하여 가입을 완료해주세요.';
+                    successEl.innerHTML = '인증 이메일을 발송했습니다.<br>이메일을 확인하여 가입을 완료해주세요.';
                     successEl.style.display = 'block';
                 }
             } catch (err) {
