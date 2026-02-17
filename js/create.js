@@ -759,7 +759,7 @@ async function completeCreation() {
     if (!bot) return;
 
     const username = document.getElementById('botUsername').value.trim() ||
-        bot.botName.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+        _koreanToUrl(bot.botName);
 
     const currentUser = MCW.user.getCurrentUser();
     const botData = {
