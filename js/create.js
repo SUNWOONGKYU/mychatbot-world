@@ -53,7 +53,7 @@ function _startFieldSTT(input, convertToUrl = false) {
 
     const rec = new SpeechRecognition();
     rec.lang = 'ko-KR';
-    rec.continuous = false;     // 한 번 말하면 자동 종료
+    rec.continuous = true;      // 버튼 누를 때까지 계속 인식
     rec.interimResults = false; // 확정 결과만
 
     // 버튼 시각 피드백
@@ -61,8 +61,12 @@ function _startFieldSTT(input, convertToUrl = false) {
     if (btn) { btn.textContent = '🔴'; btn.classList.add('recording'); }
 
     rec.onresult = (e) => {
-        // 기존 텍스트에 이어붙이기 (여러 번 마이크 누를 수 있도록)
-        const newText = e.results[0][0].transcript;
+        // e.resultIndex 이후의 새 결과만 처리 (누적 중복 방지)
+        let newText = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) newText += e.results[i][0].transcript;
+        }
+        if (!newText) return;
         const existing = input.value.trim();
         const maxLen = input.maxLength > 0 ? input.maxLength : 9999;
         let result = existing ? existing + ' ' + newText : newText;
