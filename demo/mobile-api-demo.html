@@ -672,60 +672,69 @@
             return true;
         }
 
-        // === Web Speech API (개선: continuous + 3초 무음 타이머) ===
-        var _sttFinalText = '';
+        // === Web Speech API (자동 재시작 + 3초 무음 타이머) ===
+        var _sttAccumulated = '';
         var _sttSilenceTimer = null;
         var _sttSilenceMs = 3000;
+        var _sttShouldRestart = true;
+
+        function _sttStopAll() {
+            _sttShouldRestart = false;
+            if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
+            if (recognition && isListening) { try { recognition.stop(); } catch(e){} }
+        }
 
         function _sttResetTimer() {
             if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-            _sttSilenceTimer = setTimeout(function() {
-                if (recognition && isListening) recognition.stop();
-            }, _sttSilenceMs);
+            _sttSilenceTimer = setTimeout(_sttStopAll, _sttSilenceMs);
         }
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = 'ko-KR';
-            recognition.continuous = true;
+            recognition.continuous = false;
             recognition.interimResults = true;
             recognition.onstart = () => {
                 isListening = true;
-                _sttFinalText = '';
                 document.getElementById('voiceBtn').classList.add('listening');
                 document.getElementById('voiceStatus').classList.add('show');
                 setEmotion('listening');
                 _sttResetTimer();
             };
             recognition.onresult = (event) => {
-                var finalParts = '';
-                var interimParts = '';
-                for (var i = 0; i < event.results.length; i++) {
+                var interim = '';
+                var sessionFinal = '';
+                for (var i = event.resultIndex; i < event.results.length; i++) {
                     if (event.results[i].isFinal) {
-                        finalParts += event.results[i][0].transcript;
+                        sessionFinal += event.results[i][0].transcript;
                     } else {
-                        interimParts += event.results[i][0].transcript;
+                        interim += event.results[i][0].transcript;
                     }
                 }
-                _sttFinalText = finalParts;
-                document.getElementById('messageInput').value = _sttFinalText + interimParts;
+                if (sessionFinal) _sttAccumulated += sessionFinal;
+                document.getElementById('messageInput').value = _sttAccumulated + interim;
                 _sttResetTimer();
             };
             recognition.onend = () => {
-                if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
+                if (_sttShouldRestart) {
+                    try { recognition.start(); } catch(e) { _sttShouldRestart = false; }
+                    return;
+                }
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');
                 setEmotion('neutral');
-                if (_sttFinalText.trim()) {
-                    document.getElementById('messageInput').value = _sttFinalText.trim();
+                if (_sttAccumulated.trim()) {
+                    document.getElementById('messageInput').value = _sttAccumulated.trim();
                     sendMessage();
                 }
+                _sttAccumulated = '';
             };
             recognition.onerror = (event) => {
-                if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
+                if (event.error === 'no-speech') { _sttStopAll(); return; }
                 addSystemMessage('⚠️ 음성 인식 오류: ' + event.error);
+                _sttStopAll();
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');

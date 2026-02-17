@@ -658,63 +658,82 @@ function toggleChatVoice() {
     }
     chatRecognition = new SR();
     chatRecognition.lang = 'ko-KR';
-    chatRecognition.continuous = true;
+    chatRecognition.continuous = false;
     chatRecognition.interimResults = true;
     chatRecognition.maxAlternatives = 1;
-    var _sttFinalText = '';
+
+    var _sttAccumulated = '';   // 여러 세션의 최종 텍스트 누적
     var _sttSilenceTimer = null;
-    var _sttSilenceMs = 3000; // 3초 무음 후 자동 전송
+    var _sttSilenceMs = 3000;  // 3초 무음 → 전송
+    var _sttShouldRestart = true; // 자동 재시작 플래그
+
+    function _sttStopAll() {
+        _sttShouldRestart = false;
+        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
+        if (chatRecognition) { try { chatRecognition.stop(); } catch(e){} }
+    }
 
     function _sttResetSilenceTimer() {
         if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
         _sttSilenceTimer = setTimeout(function() {
-            // 3초 동안 추가 음성 없음 → 종료 및 전송
-            if (chatRecognition) {
-                chatRecognition.stop();
-            }
+            _sttStopAll();
         }, _sttSilenceMs);
     }
 
     chatRecognition.onstart = () => {
-        _sttFinalText = '';
         btn?.classList.add('recording');
         _sttResetSilenceTimer();
     };
     chatRecognition.onresult = (e) => {
-        var finalParts = '';
-        var interimParts = '';
-        for (var i = 0; i < e.results.length; i++) {
+        var interim = '';
+        var sessionFinal = '';
+        for (var i = e.resultIndex; i < e.results.length; i++) {
             if (e.results[i].isFinal) {
-                finalParts += e.results[i][0].transcript;
+                sessionFinal += e.results[i][0].transcript;
             } else {
-                interimParts += e.results[i][0].transcript;
+                interim += e.results[i][0].transcript;
             }
         }
-        _sttFinalText = finalParts;
+        if (sessionFinal) {
+            _sttAccumulated += sessionFinal;
+        }
         var input = document.getElementById('chatInput');
         if (input) {
-            input.value = _sttFinalText + interimParts;
+            input.value = _sttAccumulated + interim;
         }
-        // 음성 감지될 때마다 무음 타이머 리셋
         _sttResetSilenceTimer();
     };
     chatRecognition.onerror = (e) => {
-        console.error("STT Error", e);
-        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-        chatRecognition = null;
-        btn?.classList.remove('recording');
+        if (e.error === 'no-speech') {
+            // 무음 → 자동 종료
+            _sttStopAll();
+            return;
+        }
+        console.error("STT Error", e.error);
+        _sttStopAll();
     };
     chatRecognition.onend = () => {
-        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-        chatRecognition = null;
         btn?.classList.remove('recording');
-        // 최종 텍스트가 있으면 자동 전송
+        if (_sttShouldRestart) {
+            // 브라우저가 세션을 끝냈지만 아직 3초 안 지남 → 자동 재시작
+            try {
+                chatRecognition.start();
+            } catch(e) {
+                _sttShouldRestart = false;
+            }
+            return;
+        }
+        // 3초 무음 후 진짜 종료 → 전송
+        chatRecognition = null;
         var input = document.getElementById('chatInput');
-        if (input && _sttFinalText.trim()) {
-            input.value = _sttFinalText.trim();
+        if (input && _sttAccumulated.trim()) {
+            input.value = _sttAccumulated.trim();
             sendMessage();
         }
+        _sttAccumulated = '';
     };
+    _sttShouldRestart = true;
+    _sttAccumulated = '';
     chatRecognition.start();
 }
 function autoResizeInput() {
