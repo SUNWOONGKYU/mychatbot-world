@@ -107,23 +107,6 @@ const SunnyBotData = {
       ],
     },
     {
-      id: 'sunny_helper_work2',
-      name: '업무 도우미',
-      role: '일정·할 일·프로젝트를 정리하고 업무를 관리해주는 AI 도우미입니다.',
-      model: 'logic',
-      iqEq: 68,
-      isVisible: true,
-      category: 'helper',
-      helperType: 'work',
-      isPublic: false,
-      greeting: '안녕하세요! 업무 도우미입니다. 무엇을 도와드릴까요?',
-      faqs: [
-        { q: '오늘 일정 알려줘', a: '' },
-        { q: '이메일 초안 작성해줘', a: '' },
-        { q: '회의 요약해줘', a: '' },
-      ],
-    },
-    {
       id: 'sunny_helper_trader',
       name: 'Trader',
       role: '주식·파생상품·암호화폐 시장을 분석하고, 매매 전략과 리스크 관리를 조언하는 트레이딩 도우미입니다.',
@@ -138,6 +121,23 @@ const SunnyBotData = {
         { q: '오늘 시장 동향 분석해줘', a: '' },
         { q: '매매 전략 세워줘', a: '' },
         { q: '리스크 관리 조언해줘', a: '' },
+      ],
+    },
+    {
+      id: 'sunny_helper_work2',
+      name: '업무 도우미',
+      role: '일정·할 일·프로젝트를 정리하고 업무를 관리해주는 AI 도우미입니다.',
+      model: 'logic',
+      iqEq: 68,
+      isVisible: true,
+      category: 'helper',
+      helperType: 'work',
+      isPublic: false,
+      greeting: '안녕하세요! 업무 도우미입니다. 무엇을 도와드릴까요?',
+      faqs: [
+        { q: '오늘 일정 알려줘', a: '' },
+        { q: '이메일 초안 작성해줘', a: '' },
+        { q: '회의 요약해줘', a: '' },
       ],
     },
     {
@@ -171,7 +171,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v16.0';
+var SUNNY_DATA_VERSION = 'v16.1';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
