@@ -658,82 +658,66 @@ function toggleChatVoice() {
     }
     chatRecognition = new SR();
     chatRecognition.lang = 'ko-KR';
-    chatRecognition.continuous = false;
+    chatRecognition.continuous = true;
     chatRecognition.interimResults = true;
     chatRecognition.maxAlternatives = 1;
 
-    var _sttAccumulated = '';   // 여러 세션의 최종 텍스트 누적
+    var _sttFinalParts = [];    // 확정된 텍스트 조각들
     var _sttSilenceTimer = null;
-    var _sttSilenceMs = 3000;  // 3초 무음 → 전송
-    var _sttShouldRestart = true; // 자동 재시작 플래그
-
-    function _sttStopAll() {
-        _sttShouldRestart = false;
-        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-        if (chatRecognition) { try { chatRecognition.stop(); } catch(e){} }
-    }
+    var _sttSilenceMs = 3000;   // 3초 무음 → 전송
 
     function _sttResetSilenceTimer() {
         if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
         _sttSilenceTimer = setTimeout(function() {
-            _sttStopAll();
+            if (chatRecognition) { try { chatRecognition.stop(); } catch(e){} }
         }, _sttSilenceMs);
     }
 
     chatRecognition.onstart = () => {
+        _sttFinalParts = [];
         btn?.classList.add('recording');
         _sttResetSilenceTimer();
     };
     chatRecognition.onresult = (e) => {
-        var interim = '';
-        var sessionFinal = '';
-        for (var i = e.resultIndex; i < e.results.length; i++) {
+        // 확정된 결과만 저장, interim은 표시만
+        var finalText = '';
+        var interimText = '';
+        for (var i = 0; i < e.results.length; i++) {
             if (e.results[i].isFinal) {
-                sessionFinal += e.results[i][0].transcript;
+                // 이미 저장한 인덱스는 건너뜀
+                if (i < _sttFinalParts.length) {
+                    finalText += _sttFinalParts[i];
+                } else {
+                    var t = e.results[i][0].transcript;
+                    _sttFinalParts[i] = t;
+                    finalText += t;
+                }
             } else {
-                interim += e.results[i][0].transcript;
+                interimText += e.results[i][0].transcript;
             }
-        }
-        if (sessionFinal) {
-            _sttAccumulated += sessionFinal;
         }
         var input = document.getElementById('chatInput');
         if (input) {
-            input.value = _sttAccumulated + interim;
+            input.value = finalText + interimText;
         }
         _sttResetSilenceTimer();
     };
     chatRecognition.onerror = (e) => {
-        if (e.error === 'no-speech') {
-            // 무음 → 자동 종료
-            _sttStopAll();
-            return;
-        }
+        if (e.error === 'no-speech' || e.error === 'aborted') return;
         console.error("STT Error", e.error);
-        _sttStopAll();
     };
     chatRecognition.onend = () => {
-        btn?.classList.remove('recording');
-        if (_sttShouldRestart) {
-            // 브라우저가 세션을 끝냈지만 아직 3초 안 지남 → 자동 재시작
-            try {
-                chatRecognition.start();
-            } catch(e) {
-                _sttShouldRestart = false;
-            }
-            return;
-        }
-        // 3초 무음 후 진짜 종료 → 전송
+        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
         chatRecognition = null;
+        btn?.classList.remove('recording');
+        var finalText = _sttFinalParts.join('');
         var input = document.getElementById('chatInput');
-        if (input && _sttAccumulated.trim()) {
-            input.value = _sttAccumulated.trim();
+        if (input && finalText.trim()) {
+            input.value = finalText.trim();
             sendMessage();
         }
-        _sttAccumulated = '';
+        _sttFinalParts = [];
     };
-    _sttShouldRestart = true;
-    _sttAccumulated = '';
     chatRecognition.start();
 }
 function autoResizeInput() {

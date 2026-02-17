@@ -107,6 +107,23 @@ const SunnyBotData = {
       ],
     },
     {
+      id: 'sunny_helper_trader',
+      name: 'Trader',
+      role: '주식·파생상품·암호화폐 시장을 분석하고, 매매 전략과 리스크 관리를 조언하는 트레이딩 도우미입니다.',
+      model: 'logic',
+      iqEq: 75,
+      isVisible: true,
+      category: 'helper',
+      helperType: 'work',
+      isPublic: false,
+      greeting: 'Trader 도우미입니다. 시장 분석, 매매 전략, 리스크 관리를 도와드리겠습니다.',
+      faqs: [
+        { q: '오늘 시장 동향 분석해줘', a: '' },
+        { q: '매매 전략 세워줘', a: '' },
+        { q: '리스크 관리 조언해줘', a: '' },
+      ],
+    },
+    {
       id: 'sunny_helper_life',
       name: '생활 도우미',
       role: '생활 루틴, 건강, 감정, 가계부를 함께 관리해주는 AI 도우미입니다.',
@@ -137,7 +154,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v15.2';
+var SUNNY_DATA_VERSION = 'v15.3';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {

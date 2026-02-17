@@ -672,69 +672,67 @@
             return true;
         }
 
-        // === Web Speech API (자동 재시작 + 3초 무음 타이머) ===
-        var _sttAccumulated = '';
+        // === Web Speech API (continuous + 3초 무음 타이머) ===
+        var _sttFinalParts = [];
         var _sttSilenceTimer = null;
         var _sttSilenceMs = 3000;
-        var _sttShouldRestart = true;
-
-        function _sttStopAll() {
-            _sttShouldRestart = false;
-            if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-            if (recognition && isListening) { try { recognition.stop(); } catch(e){} }
-        }
 
         function _sttResetTimer() {
             if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
-            _sttSilenceTimer = setTimeout(_sttStopAll, _sttSilenceMs);
+            _sttSilenceTimer = setTimeout(function() {
+                if (recognition && isListening) { try { recognition.stop(); } catch(e){} }
+            }, _sttSilenceMs);
         }
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = 'ko-KR';
-            recognition.continuous = false;
+            recognition.continuous = true;
             recognition.interimResults = true;
             recognition.onstart = () => {
                 isListening = true;
+                _sttFinalParts = [];
                 document.getElementById('voiceBtn').classList.add('listening');
                 document.getElementById('voiceStatus').classList.add('show');
                 setEmotion('listening');
                 _sttResetTimer();
             };
             recognition.onresult = (event) => {
-                var interim = '';
-                var sessionFinal = '';
-                for (var i = event.resultIndex; i < event.results.length; i++) {
+                var finalText = '';
+                var interimText = '';
+                for (var i = 0; i < event.results.length; i++) {
                     if (event.results[i].isFinal) {
-                        sessionFinal += event.results[i][0].transcript;
+                        if (i < _sttFinalParts.length) {
+                            finalText += _sttFinalParts[i];
+                        } else {
+                            var t = event.results[i][0].transcript;
+                            _sttFinalParts[i] = t;
+                            finalText += t;
+                        }
                     } else {
-                        interim += event.results[i][0].transcript;
+                        interimText += event.results[i][0].transcript;
                     }
                 }
-                if (sessionFinal) _sttAccumulated += sessionFinal;
-                document.getElementById('messageInput').value = _sttAccumulated + interim;
+                document.getElementById('messageInput').value = finalText + interimText;
                 _sttResetTimer();
             };
             recognition.onend = () => {
-                if (_sttShouldRestart) {
-                    try { recognition.start(); } catch(e) { _sttShouldRestart = false; }
-                    return;
-                }
+                if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');
                 setEmotion('neutral');
-                if (_sttAccumulated.trim()) {
-                    document.getElementById('messageInput').value = _sttAccumulated.trim();
+                var finalText = _sttFinalParts.join('');
+                if (finalText.trim()) {
+                    document.getElementById('messageInput').value = finalText.trim();
                     sendMessage();
                 }
-                _sttAccumulated = '';
+                _sttFinalParts = [];
             };
             recognition.onerror = (event) => {
-                if (event.error === 'no-speech') { _sttStopAll(); return; }
+                if (event.error === 'no-speech' || event.error === 'aborted') return;
                 addSystemMessage('⚠️ 음성 인식 오류: ' + event.error);
-                _sttStopAll();
                 isListening = false;
                 document.getElementById('voiceBtn').classList.remove('listening');
                 document.getElementById('voiceStatus').classList.remove('show');
