@@ -27,25 +27,33 @@ html.chat-page {
 /* === Header === */
 .chat-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     padding: var(--space-3) var(--space-4);
     background: rgba(15, 15, 26, 0.95);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(20px);
     z-index: 10;
+    gap: 6px;
+}
+
+.chat-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .chat-header-left {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    flex: 1;
     min-width: 0;
 }
 
 .chat-info {
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     min-width: 0;
 }
 
@@ -789,13 +797,11 @@ html.chat-page {
 
 @media (max-width: 600px) {
   .chat-header-right {
-      position: absolute;
-      top: 10px;
-      right: 16px;
+      gap: 4px;
   }
 
   .chat-bot-name {
-      padding-right: 100px; /* prevent overlap with 3 header buttons */
+      padding-right: 0;
   }
 }
 

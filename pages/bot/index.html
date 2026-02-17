@@ -12,30 +12,31 @@
 <body class="chat-body">
     <!-- Chat Header -->
     <header class="chat-header" id="chatHeader">
-        <div class="chat-header-left">
-            <div class="chat-avatar" id="chatAvatar"></div>
-            <div class="chat-info">
-                <h1 class="chat-bot-name" id="chatBotName">로딩 중...</h1>
-                <div class="chat-header-meta">
+        <!-- 1줄: 봇 이름 + 상태 + 헤더 버튼들 -->
+        <div class="chat-header-top">
+            <div class="chat-header-left">
+                <div class="chat-info">
+                    <h1 class="chat-bot-name" id="chatBotName">로딩 중...</h1>
                     <span class="chat-status">● 온라인</span>
-                    <div id="personaContainer" class="persona-selection-container">
-                        <!-- 분신 아바타 3개 + AI 도우미 3개가 여기 렌더링됨 -->
-                    </div>
                 </div>
             </div>
+            <div class="chat-header-right">
+                <select class="voice-select" id="voiceSelect" title="음성 선택">
+                    <option value="fable">Fable - 부드러운</option>
+                    <option value="nova">Nova - 밝고 친근</option>
+                    <option value="shimmer">Shimmer - 따뜻한</option>
+                    <option value="alloy">Alloy - 중성 균형</option>
+                    <option value="echo">Echo - 차분한</option>
+                    <option value="onyx">Onyx - 깊고 낮은</option>
+                </select>
+                <button class="chat-header-btn" id="voiceToggle" title="음성 출력 ON/OFF">🔊</button>
+                <button class="chat-header-btn" onclick="location.href='../home/index.html'" title="홈으로">🏠</button>
+                <button class="chat-header-btn" id="themeToggle" onclick="toggleTheme()" title="다크/라이트 모드">☀️</button>
+            </div>
         </div>
-        <div class="chat-header-right">
-            <select class="voice-select" id="voiceSelect" title="음성 선택">
-                <option value="fable">Fable - 부드러운</option>
-                <option value="nova">Nova - 밝고 친근</option>
-                <option value="shimmer">Shimmer - 따뜻한</option>
-                <option value="alloy">Alloy - 중성 균형</option>
-                <option value="echo">Echo - 차분한</option>
-                <option value="onyx">Onyx - 깊고 낮은</option>
-            </select>
-            <button class="chat-header-btn" id="voiceToggle" title="음성 출력 ON/OFF">🔊</button>
-            <button class="chat-header-btn" onclick="location.href='../home/index.html'" title="홈으로">🏠</button>
-            <button class="chat-header-btn" id="themeToggle" onclick="toggleTheme()" title="다크/라이트 모드">☀️</button>
+        <!-- 2~3줄: 페르소나 선택 -->
+        <div id="personaContainer" class="persona-selection-container">
+            <!-- renderPersonaSelector()가 여기 렌더링 -->
         </div>
     </header>
 
