@@ -140,7 +140,7 @@
         (async () => {
             await MCW.ready;
             if (MCW.user.getCurrentUser()) {
-                window.location.href = 'home/index.html';
+                window.location.href = '../index.html';
             }
         })();
 
@@ -154,7 +154,7 @@
 
             try {
                 await MCW.user.login(email, pw);
-                window.location.href = 'home/index.html';
+                window.location.href = '../index.html';
             } catch (err) {
                 errorEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
                 errorEl.style.display = 'block';

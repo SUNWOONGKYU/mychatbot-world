@@ -108,10 +108,10 @@ const MCW = {
 
       this._supabase = supabase.createClient(url, key);
 
-      // Restore session
-      const { data: { session } } = await this._supabase.auth.getSession();
-      if (session?.user) {
-        this._user = MCW.auth._toUserObj(session.user);
+      // Restore session — getUser() validates against server (not just local cache)
+      const { data: { user: serverUser } } = await this._supabase.auth.getUser();
+      if (serverUser) {
+        this._user = MCW.auth._toUserObj(serverUser);
       }
 
       // Listen for auth changes
@@ -120,6 +120,10 @@ const MCW = {
           this._user = MCW.auth._toUserObj(session.user);
         } else {
           this._user = null;
+        }
+        if (_event === 'PASSWORD_RECOVERY') {
+          this._passwordRecovery = true;
+          window.dispatchEvent(new CustomEvent('mcw:password-recovery'));
         }
       });
 
@@ -162,11 +166,16 @@ const MCW = {
       const { data, error } = await client.auth.signUp({
         email,
         password,
-        options: { data: { name } }
+        options: {
+          data: { name },
+          emailRedirectTo: 'https://mychatbot.world/'
+        }
       });
       if (error) throw error;
-      MCW.auth._user = MCW.auth._toUserObj(data.user);
-      return MCW.auth._user;
+      if (data.session) {
+        MCW.auth._user = MCW.auth._toUserObj(data.user);
+      }
+      return { user: data.user, session: data.session };
     },
 
     async logout() {
