@@ -88,25 +88,33 @@ function _startFieldSTT(input, convertToUrl = false) {
     rec.start();
 }
 
-// 한글 → URL-safe 영문 변환 (간단 로마자 변환)
+// 한글 → URL-safe 영문 변환 (유니코드 자모 분해 방식)
 function _koreanToUrl(text) {
-    const map = {
-        '가':'ga','나':'na','다':'da','라':'ra','마':'ma','바':'ba','사':'sa','아':'a','자':'ja','차':'cha','카':'ka','타':'ta','파':'pa','하':'ha',
-        '고':'go','노':'no','도':'do','로':'ro','모':'mo','보':'bo','소':'so','오':'o','조':'jo','초':'cho','코':'ko','토':'to','포':'po','호':'ho',
-        '구':'gu','누':'nu','두':'du','루':'ru','무':'mu','부':'bu','수':'su','우':'u','주':'ju','추':'chu','쿠':'ku','투':'tu','푸':'pu','후':'hu',
-        '김':'kim','이':'lee','박':'park','정':'jung','홍':'hong','길':'gil','동':'dong','순':'sun','신':'shin','강':'kang',
-        '서':'seo','윤':'yun','장':'jang','임':'lim','한':'han','오':'oh','배':'bae','허':'heo','유':'yu','안':'an',
-        '송':'song','전':'jeon','황':'hwang','양':'yang','권':'kwon','민':'min','최':'choi','조':'cho','문':'moon',
-        '시':'si','시장':'mayor','의원':'member','대표':'ceo','원장':'director','선생':'teacher','사장':'boss'
-    };
-    // 먼저 긴 단어부터 매칭
-    let result = text;
-    const sorted = Object.keys(map).sort((a, b) => b.length - a.length);
-    for (const k of sorted) {
-        result = result.split(k).join(map[k]);
+    // 한글 자모 로마자 매핑
+    const CHO = ['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'];
+    const JUNG = ['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'];
+    const JONG = ['','g','kk','gs','n','nj','nh','d','l','lg','lm','lb','ls','lt','lp','lh','m','b','bs','s','ss','ng','j','ch','k','t','p','h'];
+
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+        const code = text.charCodeAt(i);
+        if (code >= 0xAC00 && code <= 0xD7A3) {
+            const offset = code - 0xAC00;
+            const cho = Math.floor(offset / (21 * 28));
+            const jung = Math.floor((offset % (21 * 28)) / 28);
+            const jong = offset % 28;
+            result += CHO[cho] + JUNG[jung] + JONG[jong];
+        } else {
+            result += text[i];
+        }
     }
-    // 남은 한글 제거, 공백→하이픈, 소문자
-    return result.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase().replace(/-+/g, '-').replace(/^-|-$/g, '');
+    // 영숫자·하이픈만 남기고, 공백→하이픈, 소문자, 중복하이픈·앞뒤하이픈 제거
+    return result
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .toLowerCase()
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
 }
 
 // (KB는 마이페이지에서 관리)
@@ -281,6 +289,14 @@ function goToStep(step) {
             document.getElementById('botUsername').value = _koreanToUrl(name);
         }
         const finalUsername = document.getElementById('botUsername').value.trim();
+        // 중복 체크
+        const existing = MCW.storage.getBotByUsername(finalUsername);
+        if (existing) {
+            alert(`"${finalUsername}"은(는) 이미 사용 중인 주소입니다.\n다른 사용자명을 입력해주세요.`);
+            document.getElementById('botUsername').focus();
+            _usernameManuallyEdited = true;
+            return;
+        }
         if (!confirm(`사용자명(URL)을 "${finalUsername}"(으)로 하시겠습니까?\n\n챗봇 주소: mychatbot.world/bot/${finalUsername}\n\n수정하려면 "취소"를 누르세요.`)) {
             document.getElementById('botUsername').focus();
             _usernameManuallyEdited = true;
@@ -564,7 +580,8 @@ function startRecording() {
     }
     isRecording = true;
     remainingTime = 300;
-    transcriptText = '';
+    // transcriptText 초기화하지 않음 — 이어녹음 지원 (처음 시작 시에만 초기화)
+    if (!transcriptText) transcriptText = '';
     document.getElementById('voiceCircle')?.classList.add('recording');
     document.getElementById('voiceIcon').textContent = '⏹';
     document.getElementById('voiceHint').textContent = '녹음 중... 탭하여 정지';
