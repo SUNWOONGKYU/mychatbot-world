@@ -659,27 +659,62 @@ function toggleChatVoice() {
     }
     chatRecognition = new SR();
     chatRecognition.lang = 'ko-KR';
-    chatRecognition.interimResults = false;
+    chatRecognition.continuous = true;
+    chatRecognition.interimResults = true;
     chatRecognition.maxAlternatives = 1;
-    chatRecognition.onstart = () => {
-        btn?.classList.add('recording');
+    var _sttFinalText = '';
+    var _sttSilenceTimer = null;
+    var _sttSilenceMs = 3000; // 3초 무음 후 자동 전송
+
+    function _sttResetSilenceTimer() {
+        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
+        _sttSilenceTimer = setTimeout(function() {
+            // 3초 동안 추가 음성 없음 → 종료 및 전송
+            if (chatRecognition) {
+                chatRecognition.stop();
+            }
+        }, _sttSilenceMs);
     }
+
+    chatRecognition.onstart = () => {
+        _sttFinalText = '';
+        btn?.classList.add('recording');
+        _sttResetSilenceTimer();
+    };
     chatRecognition.onresult = (e) => {
-        const text = e.results[0][0].transcript;
-        const input = document.getElementById('chatInput');
-        if (input) {
-            input.value = text;
-            sendMessage(); // Auto-send
+        var finalParts = '';
+        var interimParts = '';
+        for (var i = 0; i < e.results.length; i++) {
+            if (e.results[i].isFinal) {
+                finalParts += e.results[i][0].transcript;
+            } else {
+                interimParts += e.results[i][0].transcript;
+            }
         }
+        _sttFinalText = finalParts;
+        var input = document.getElementById('chatInput');
+        if (input) {
+            input.value = _sttFinalText + interimParts;
+        }
+        // 음성 감지될 때마다 무음 타이머 리셋
+        _sttResetSilenceTimer();
     };
     chatRecognition.onerror = (e) => {
         console.error("STT Error", e);
+        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
         chatRecognition = null;
         btn?.classList.remove('recording');
     };
     chatRecognition.onend = () => {
+        if (_sttSilenceTimer) clearTimeout(_sttSilenceTimer);
         chatRecognition = null;
         btn?.classList.remove('recording');
+        // 최종 텍스트가 있으면 자동 전송
+        var input = document.getElementById('chatInput');
+        if (input && _sttFinalText.trim()) {
+            input.value = _sttFinalText.trim();
+            sendMessage();
+        }
     };
     chatRecognition.start();
 }
