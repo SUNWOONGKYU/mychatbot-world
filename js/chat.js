@@ -501,7 +501,7 @@ async function sendMessage() {
         if (cmd) {
             console.log('[CPC] 연락병 → 소대장 전달:', _cpcSelectedId, cmd.id);
             cpcTrackCommand(cmd);
-            addMessage('system', '[CPC연락병] CPC 연락병에게 전달 완료 → ' + _cpcSelectedId + ' · 답변 대기 중...');
+            addMessage('system', '[CPC] 소대장에게 전달됨 → ' + _cpcSelectedId + ' · 답변 대기 중...');
         }
     }
 }
