@@ -7,12 +7,13 @@ let chatBotData = null;
 let conversationHistory = [];
 let isBotTyping = false;
 let voiceOutputEnabled = true;
-// Mobile Audio: 전역 Audio 요소 (사용자 제스처로 unlock 후 재사용)
-var _ttsPlayer = new Audio();
+// Mobile Audio: AudioContext 방식 (unlock 후 async에서도 재생 가능)
+var _ttsPlayer = new Audio(); // fallback용 유지
 var _ttsUnlocked = false;
 var _ttsVoice = localStorage.getItem('mcw_tts_voice') || 'fable';
-// 대기 중인 TTS 텍스트 (API 응답 후 재생할 내용)
 var _ttsPending = null;
+var _audioCtx = null;        // AudioContext (iOS 호환 TTS)
+var _audioSource = null;     // 현재 재생 중인 BufferSource
 document.addEventListener('DOMContentLoaded', async () => {
     if (typeof MCW !== 'undefined' && MCW.ready) await MCW.ready;
     // Security: purge any leaked API keys from localStorage
@@ -27,7 +28,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         voiceBtn.addEventListener('click', () => {
             voiceOutputEnabled = !voiceOutputEnabled;
             voiceBtn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
-            if (!voiceOutputEnabled) { _ttsPlayer.pause(); }
+            if (!voiceOutputEnabled) {
+                // 재생 중인 AudioContext 소스 + Audio 모두 중지
+                if (_audioSource) { try { _audioSource.stop(); } catch(e) {} _audioSource = null; }
+                _ttsPlayer.pause();
+            }
         });
     }
     // Voice Select
@@ -42,18 +47,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Theme: restore saved preference
     initTheme();
 });
-// 사용자 제스처 시점에 Audio 요소를 unlock (전송 버튼, 터치 등에서 호출)
+// 사용자 제스처 시점에 AudioContext unlock (전송 버튼, 터치 등에서 호출)
 function unlockTTS() {
     if (_ttsUnlocked) return;
-    // 짧은 무음 MP3 data URI로 Audio 요소 unlock
-    _ttsPlayer.src = 'data:audio/mpeg;base64,/+NIxAAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
-    _ttsPlayer.volume = 0.01;
-    _ttsPlayer.play().then(function () {
+    try {
+        if (!_audioCtx) {
+            _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (_audioCtx.state === 'suspended') {
+            _audioCtx.resume();
+        }
         _ttsUnlocked = true;
-        console.log('[TTS] Audio player unlocked');
-    }).catch(function (e) {
-        console.warn('[TTS] Unlock failed:', e.message);
-    });
+        console.log('[TTS] AudioContext unlocked, state:', _audioCtx.state);
+    } catch (e) {
+        console.warn('[TTS] AudioContext unlock failed:', e.message);
+    }
 }
 // === Theme (Dark/Light) ===
 function initTheme() {
@@ -592,41 +600,44 @@ async function generateResponse(userText) {
     // All AI calls go through server-side /api/chat only (API key is in Vercel env vars)
     return '죄송합니다. 서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.';
 }
-// TTS: 1차 /api/tts (OpenAI TTS-1) → 2차 SpeechSynthesis → 3차 Google Translate
+// TTS: 1차 /api/tts + AudioContext (모바일 async 재생) → 2차 SpeechSynthesis
 function speak(text) {
     if (!voiceOutputEnabled) return;
-    // TTS 재생 전 STT 중지 — 스피커 음성이 마이크에 잡히는 헛소리 방지
-    if (chatRecognition) {
-        try { chatRecognition.stop(); } catch(e) {}
-        chatRecognition = null;
-        document.getElementById('chatVoiceBtn')?.classList.remove('recording');
-    }
     var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
     if (clean.length > 4096) clean = clean.substring(0, 4096);
 
-    // 1차: /api/tts (OpenAI TTS-1)
+    // 이전 재생 중지
+    if (_audioSource) { try { _audioSource.stop(); } catch(e) {} _audioSource = null; }
+
+    // AudioContext 확보 (없으면 생성)
+    if (!_audioCtx) {
+        try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+
+    // 1차: /api/tts → ArrayBuffer → AudioContext.decodeAudioData → play
     fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: clean, voice: _ttsVoice })
-    }).then(function (res) {
+    }).then(function(res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
         var ct = res.headers.get('content-type') || '';
-        if (ct.indexOf('audio') === -1) throw new Error('TTS response not audio');
-        return res.blob();
-    }).then(function (blob) {
-        var blobUrl = URL.createObjectURL(blob);
-        _ttsPlayer.pause();
-        _ttsPlayer.currentTime = 0;
-        _ttsPlayer.src = blobUrl;
-        _ttsPlayer.volume = 1.0;
-        _ttsPlayer.play().then(function () {
-            console.log('[TTS] OpenAI TTS-1');
-        }).catch(function () { speakFallback(clean); });
-        _ttsPlayer.onended = function () { URL.revokeObjectURL(blobUrl); };
-    }).catch(function (e) {
-        console.warn('[TTS] API fallback:', e.message);
+        if (ct.indexOf('audio') === -1) throw new Error('TTS not audio');
+        return res.arrayBuffer();
+    }).then(function(arrayBuf) {
+        if (!_audioCtx) throw new Error('No AudioContext');
+        return _audioCtx.decodeAudioData(arrayBuf);
+    }).then(function(audioBuffer) {
+        if (!voiceOutputEnabled) return;
+        if (_audioSource) { try { _audioSource.stop(); } catch(e) {} }
+        _audioSource = _audioCtx.createBufferSource();
+        _audioSource.buffer = audioBuffer;
+        _audioSource.connect(_audioCtx.destination);
+        _audioSource.start(0);
+        console.log('[TTS] OpenAI TTS-1 via AudioContext');
+    }).catch(function(e) {
+        console.warn('[TTS] fallback:', e.message);
         speakFallback(clean);
     });
 }
