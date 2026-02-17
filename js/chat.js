@@ -472,21 +472,11 @@ async function sendMessage() {
     conversationHistory.push({ role: 'user', content: text });
     // 페르소나별 대화 저장
     savePerPersonaMessage('user', text);
-    // === CPC 양방향 연동: 소대 선택 시 해당 소대로 명령 전달 + 연락병 자동 처리 ===
-    try {
-        if (_cpcSelectedId) {
-            cpcAddCommand(_cpcSelectedId, text, 'chatbot')
-                .then(cmd => {
-                    if (cmd) {
-                        console.log('[CPC] 연락병 → 소대장 전달:', _cpcSelectedId, cmd.id);
-                        cpcTrackCommand(cmd);
-                        addMessage('system', '[CPC연락병] 소대장에게 전달 완료 → ' + _cpcSelectedId + ' · 답변 대기 중...');
-                    }
-                })
-                .catch(e => console.warn('[CPC] 명령 전송 실패', e));
-        }
-    } catch (e) {
-        console.warn('[CPC] 연동 중 예외', e);
+    // === CPC 양방향 연동: 소대 선택 시 해당 소대로 명령 전달 (병렬 실행, 표시는 봇 응답 후) ===
+    let _cpcCmdPromise = null;
+    if (_cpcSelectedId) {
+        _cpcCmdPromise = cpcAddCommand(_cpcSelectedId, text, 'chatbot')
+            .catch(e => { console.warn('[CPC] 명령 전송 실패', e); return null; });
     }
     // Safety timeout - if AI doesn't respond in 15s, release lock
     const safetyTimer = setTimeout(() => {
@@ -505,6 +495,15 @@ async function sendMessage() {
     logPerPersonaStat('message', { role: 'user', content: text });
     logPerPersonaStat('message', { role: 'assistant', content: response });
     if (voiceOutputEnabled) speak(response);
+    // CPC 시스템 메시지: 봇 응답 표시 후에 나와야 함
+    if (_cpcCmdPromise) {
+        const cmd = await _cpcCmdPromise;
+        if (cmd) {
+            console.log('[CPC] 연락병 → 소대장 전달:', _cpcSelectedId, cmd.id);
+            cpcTrackCommand(cmd);
+            addMessage('system', '[CPC연락병] 소대장에게 전달 완료 → ' + _cpcSelectedId + ' · 답변 대기 중...');
+        }
+    }
 }
 function askFaq(q, a) {
     unlockTTS();
