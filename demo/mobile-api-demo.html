@@ -565,13 +565,13 @@
     <div class="container">
         <div class="header">
             <h1>🤖 Sunny Bot Demo</h1>
-            <p>AI 챗봇 · 클로드 연락병 · 음성 입력</p>
+            <p>AI 챗봇 · Claude 연락병 · 음성 입력</p>
         </div>
         
         <div class="status" id="status">백엔드 연결 확인 중...</div>
         
         <div class="persona-selector" id="personaSelector">
-            <button class="persona-btn" data-persona="claude-courier" style="background:#2d5016;color:white;border-color:#2d5016;">📡 클로드 연락병</button>
+            <button class="persona-btn" data-persona="claude-courier" style="background:#2d5016;color:white;border-color:#2d5016;">📡 Claude 연락병</button>
             <button class="persona-btn active" data-persona="business-assistant">💼 비즈니스</button>
             <button class="persona-btn" data-persona="customer-service">🎧 고객서비스</button>
             <button class="persona-btn" data-persona="education-tutor">📚 교육</button>
@@ -629,7 +629,7 @@
 
         // 페르소나별 botConfig
         const PERSONA_CONFIGS = {
-            'claude-courier': { botName: '클로드 연락병', personality: '군사적으로 정확하고 간결한', tone: '보고 형식의 명확한 어조' },
+            'claude-courier': { botName: 'Claude 연락병', personality: '군사적으로 정확하고 간결한', tone: '보고 형식의 명확한 어조' },
             'business-assistant': { botName: '비즈니스 어시스턴트', personality: '전문적이고 분석적인', tone: '격식 있고 신뢰감 있는 어조' },
             'customer-service': { botName: '고객서비스 상담원', personality: '친절하고 공감하는', tone: '따뜻하고 해결 지향적인 어조' },
             'education-tutor': { botName: '교육 튜터', personality: '쉽게 설명하는 교육자', tone: '친근하고 격려하는 어조' },
@@ -662,7 +662,7 @@
                     body: JSON.stringify({ message: 'ping' })
                 });
                 if (response.ok) {
-                    document.getElementById('status').textContent = '✅ AI 연결됨 — 클로드 연락병 대기중';
+                    document.getElementById('status').textContent = '✅ AI 연결됨 — Claude 연락병 대기중';
                     document.getElementById('status').className = 'status';
                     return true;
                 }
@@ -872,7 +872,7 @@
         updateAvatarPersona(currentPersona);
         checkBackendStatus();
         setTimeout(() => {
-            addSystemMessage('📡 "클로드 연락병"을 선택하면 소대장에게 명령을 전달합니다.');
+            addSystemMessage('📡 "Claude 연락병"을 선택하면 소대장에게 명령을 전달합니다.');
         }, 1000);
     </script>
 </body>

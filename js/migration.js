@@ -74,15 +74,15 @@ const SunnyBotData = {
     // 도우미 3개 (비공개 — 소유자만)
     {
       id: 'sunny_helper_work',
-      name: '클로드 연락병',
-      role: '지휘관과 클로드 소대장 사이에서 명령을 전달하고, 처리 결과를 보고하는 연락병입니다.',
+      name: 'Claude 연락병',
+      role: '지휘관과 Claude 소대장 사이에서 명령을 전달하고, 처리 결과를 보고하는 연락병입니다.',
       model: 'logic',
       iqEq: 70,
       isVisible: true,
       category: 'helper',
       helperType: 'work',
       isPublic: false,
-      greeting: '클로드 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요.',
+      greeting: 'Claude 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요.',
       faqs: [
         { q: '업무 지시 전달해줘', a: '' },
         { q: '처리 결과 알려줘', a: '' },
@@ -126,7 +126,7 @@ const SunnyBotData = {
   ],
 
   // Step 3: 인터뷰 텍스트
-  inputText: '안녕하세요, 써니입니다. AI 전략과 스타트업 컨설팅을 전문으로 하고 있습니다. 공인회계사 자격을 보유하고 있으며, 세무·회계 분야에서도 전문 상담이 가능합니다. 평소 클로드 AI를 활용해 업무를 처리하고, 일정과 생활도 AI 도우미와 함께 관리하고 있습니다.',
+  inputText: '안녕하세요, 써니입니다. AI 전략과 스타트업 컨설팅을 전문으로 하고 있습니다. 공인회계사 자격을 보유하고 있으며, 세무·회계 분야에서도 전문 상담이 가능합니다. 평소 Claude AI를 활용해 업무를 처리하고, 일정과 생활도 AI 도우미와 함께 관리하고 있습니다.',
 
   // Step 5: 완성 메타
   createdAt: '2025-01-01T00:00:00.000Z',
@@ -137,7 +137,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v15.1';
+var SUNNY_DATA_VERSION = 'v15.2';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
