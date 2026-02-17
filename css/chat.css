@@ -404,9 +404,15 @@ html.chat-page {
 
 .persona-selection-container {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 6px;
+    flex-direction: column;
+    gap: 4px;
     padding-bottom: 4px;
+    width: 100%;
+}
+
+.persona-row {
+    display: flex;
+    gap: 5px;
     width: 100%;
 }
 
@@ -443,6 +449,40 @@ html.chat-page {
     border-color: var(--primary-400);
     color: white;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* 대외용 (avatar) — 파란 계열 */
+.chip-public {
+    background: rgba(99, 130, 241, 0.12);
+    border-color: rgba(99, 130, 241, 0.25);
+    color: rgba(180, 200, 255, 0.85);
+}
+.chip-public:hover {
+    background: rgba(99, 130, 241, 0.22);
+    border-color: rgba(99, 130, 241, 0.4);
+}
+.chip-public.active {
+    background: var(--primary-500);
+    border-color: var(--primary-400);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* 대내용 (helper) — 초록 계열 */
+.chip-private {
+    background: rgba(52, 211, 153, 0.1);
+    border-color: rgba(52, 211, 153, 0.2);
+    color: rgba(167, 230, 200, 0.85);
+}
+.chip-private:hover {
+    background: rgba(52, 211, 153, 0.2);
+    border-color: rgba(52, 211, 153, 0.35);
+}
+.chip-private.active {
+    background: #059669;
+    border-color: #34d399;
+    color: white;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
 }
 
 .persona-chip-icon {
@@ -722,17 +762,19 @@ html.chat-page {
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Mobile: 3 per row, full width */
+/* Mobile: 4 per row, 2 rows */
 @media (max-width: 600px) {
   .persona-selection-container {
-      flex-wrap: wrap;
       width: calc(100vw - 32px);
       max-width: none;
   }
+  .persona-row {
+      gap: 4px;
+  }
   .persona-chip {
-      flex: 1 1 calc((100% - 12px) / 3);
-      max-width: calc((100% - 12px) / 3);
-      font-size: 0.65rem;
+      flex: 1 1 calc((100% - 12px) / 4);
+      max-width: calc((100% - 12px) / 4);
+      font-size: 0.6rem;
       padding: 5px 2px;
   }
 }

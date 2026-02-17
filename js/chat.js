@@ -379,13 +379,23 @@ function renderPersonaSelector() {
     const visiblePersonas = chatBotData.personas
         .filter(p => p.isVisible !== false)
         .filter(p => isDemo || isOwnerView || p.isPublic !== false);
-    // 플랫 렌더링: PC는 6개 한 줄, 모바일은 3개씩 2줄 (CSS가 처리)
-    container.innerHTML = visiblePersonas.map(p => {
-        const activeClass = (currentPersona && currentPersona.id === p.id) ? 'active' : '';
-        return '<div class="persona-chip ' + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
+    // 대외용(avatar) / 대내용(helper) 구분 렌더링: 4개씩 2줄
+    var avatars = visiblePersonas.filter(function(p) { return p.category === 'avatar'; });
+    var helpers = visiblePersonas.filter(function(p) { return p.category !== 'avatar'; });
+    function chipHTML(p, typeClass) {
+        var activeClass = (currentPersona && currentPersona.id === p.id) ? ' active' : '';
+        return '<div class="persona-chip ' + typeClass + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
             '<span class="persona-chip-name">' + p.name + '</span>' +
         '</div>';
-    }).join('');
+    }
+    var html = '';
+    if (avatars.length) {
+        html += '<div class="persona-row persona-row-public">' + avatars.map(function(p) { return chipHTML(p, 'chip-public'); }).join('') + '</div>';
+    }
+    if (helpers.length) {
+        html += '<div class="persona-row persona-row-private">' + helpers.map(function(p) { return chipHTML(p, 'chip-private'); }).join('') + '</div>';
+    }
+    container.innerHTML = html;
     container.style.display = visiblePersonas.length ? 'flex' : 'none';
 }
 function switchPersona(id) {
