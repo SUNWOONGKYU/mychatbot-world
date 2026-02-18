@@ -178,7 +178,7 @@ async function loadBotData() {
         logPerPersonaStat('conversation_start');
     }
     // 소유자이거나 도우미 페르소나 직접 진입 시 CPC 바 자동 표시
-    if (cpcIsOwner() || cpcIsHelper(currentPersona)) {
+    if (cpcIsHelper(currentPersona)) {
         cpcShowBar();
     }
 }
@@ -356,7 +356,8 @@ function cpcHideBar() {
 
 function cpcIsHelper(persona) {
     if (!persona) return false;
-    return persona.category === 'helper' || (persona.id && persona.id.includes('helper'));
+    // 오직 'Claude 연락병' 페르소나일 때만 CPC 바 표시
+    return persona.name === 'Claude 연락병' || persona.id === 'sunny_helper_work';
 }
 
 // 봇 소유자인지 확인
@@ -448,8 +449,8 @@ function switchPersona(id) {
     }
     // 페르소나 전환 시 FAQ 버튼도 갱신
     renderFaqButtons();
-    // CPC 바: 소유자이거나 도우미 페르소나면 표시
-    if (cpcIsOwner() || cpcIsHelper(newPersona)) {
+    // CPC 바: Claude 연락병 페르소나일 때만 표시
+    if (cpcIsHelper(newPersona)) {
         cpcShowBar();
     } else {
         cpcHideBar();
