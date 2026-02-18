@@ -1,10 +1,6 @@
 /**
- * CPC Command Auto-Processor (Smart)
+ * CPC Command Auto-Processor
  * POST /api/cpc-process
- *
- * 1. CPC API로 명령 ACK
- * 2. OpenRouter AI로 명령 분석 & 처리
- * 3. CPC API로 명령 DONE + result 저장
  */
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,20 +10,20 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // body 파싱 안전 처리
-  let body = req.body;
-  if (!body || typeof body === 'string') {
-    try { body = JSON.parse(body || '{}'); } catch(e) { body = {}; }
-  }
-  const { commandId, platoonId, text } = body;
-
-  if (!commandId || !platoonId || !text) {
-    return res.status(400).json({ error: 'commandId, platoonId, text are required' });
-  }
-
-  const CPC_API = 'https://claude-platoons-control.vercel.app';
-
   try {
+    // body 파싱 안전 처리
+    let body = req.body;
+    if (!body || typeof body === 'string') {
+      try { body = JSON.parse(body || '{}'); } catch(e) { body = {}; }
+    }
+    const { commandId, platoonId, text } = body || {};
+
+    if (!commandId || !platoonId || !text) {
+      return res.status(400).json({ error: 'commandId, platoonId, text are required' });
+    }
+
+    const CPC_API = 'https://claude-platoons-control.vercel.app';
+
     // Step 1: ACK
     const ackRes = await fetch(`${CPC_API}/api/commands/${commandId}/ack`, {
       method: 'PATCH',
@@ -36,10 +32,15 @@ export default async function handler(req, res) {
     console.log(`[CPC Process] ACK status: ${ackRes.status}`);
 
     // Step 2: 소대 정보 조회
-    const platoons = await fetch(`${CPC_API}/api/platoons`).then(r => r.json());
-    const platoon = platoons.find(p => p.id === platoonId);
+    let platoon = null;
+    try {
+      const platoons = await fetch(`${CPC_API}/api/platoons`).then(r => r.json());
+      platoon = platoons.find(p => p.id === platoonId);
+    } catch(e) {
+      console.warn('[CPC Process] platoon fetch failed:', e.message);
+    }
 
-    // Step 3: 똑똑한 시스템 프롬프트
+    // Step 3: 시스템 프롬프트
     const systemMsg = `당신은 CPC(Claude Platoons Control) "${platoon?.name || platoonId}" 소대의 AI 참모입니다.
 
 ## 소대 정보
@@ -58,7 +59,7 @@ export default async function handler(req, res) {
 
 규칙:
 1. 명령을 이해하고 수신했음을 1~2문장으로 짧게 보고하세요
-2. 마크다운(**, ##, -, ``` 등) 절대 사용 금지 — 순수 텍스트만
+2. 마크다운(**, ##, -, \`\`\` 등) 절대 사용 금지 — 순수 텍스트만
 3. 코드·파일명 등 세부 내용은 생략하고 "처리하겠습니다" 수준으로만
 4. 한국어 존댓말, 최대 2문장 이내
 5. 무의미한 "명령을 기다립니다" 응답 금지`;
@@ -78,7 +79,7 @@ export default async function handler(req, res) {
       const MODEL_STACK = [
         'google/gemini-2.5-flash',
         'openai/gpt-4o',
-        'anthropic/claude-sonnet-4.5',
+        'anthropic/claude-sonnet-4-5',
         'deepseek/deepseek-chat',
       ];
 
@@ -128,8 +129,13 @@ export default async function handler(req, res) {
     });
 
     return res.status(200).json({ ok: true, result: aiReply });
+
   } catch (error) {
     console.error('[CPC Process] error:', error.message, error.stack);
-    return res.status(500).json({ error: 'CPC process failed', detail: error.message, stack: error.stack?.split('\n')[0] });
+    return res.status(500).json({
+      error: 'CPC process failed',
+      detail: String(error.message || error),
+      stack: String(error.stack || '').split('\n')[0]
+    });
   }
 }
