@@ -517,11 +517,18 @@ async function sendMessage() {
             console.log('[CPC] 연락병 → 소대장 전달:', _cpcSelectedId, cmd.id);
             cpcTrackCommand(cmd);
             addMessage('system', '[CPC] 소대장에게 전달됨 → ' + _cpcSelectedId + ' · 답변 대기 중...');
-            // 서버 자동 처리 트리거 (fire-and-forget)
+            // 서버 자동 처리 — 응답 직접 수신해서 표시
             fetch('/api/cpc-process', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ commandId: cmd.id, platoonId: _cpcSelectedId, text: text })
+            }).then(r => r.json()).then(data => {
+                if (data && data.result) {
+                    const rawResult = (data.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
+                    const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
+                    addMessage('system', '[CPC] 소대 응답: ' + (shortResult || '처리 완료'));
+                    if (voiceOutputEnabled && rawResult) speak(rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult);
+                }
             }).catch(e => console.warn('[CPC] auto-process failed', e));
         }
     }
