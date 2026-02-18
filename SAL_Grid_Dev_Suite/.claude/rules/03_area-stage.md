@@ -125,9 +125,9 @@ S1BA1
 | F | frontend-developer | code-reviewer |
 | BI | backend-developer | code-reviewer |
 | BA | backend-developer | code-reviewer |
-| D | database-specialist | database-specialist |
+| D | database-developer | database-developer |
 | S | security-specialist | security-auditor |
-| T | test-engineer | qa-specialist |
+| T | test-runner | qa-specialist |
 | O | devops-troubleshooter | code-reviewer |
 | E | backend-developer | code-reviewer |
 | C | content-specialist | qa-specialist |

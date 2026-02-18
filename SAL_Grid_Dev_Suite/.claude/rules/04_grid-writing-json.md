@@ -82,9 +82,9 @@
 | F (Frontend) | `frontend-developer` |
 | BI (Backend Infra) | `backend-developer`, `devops-troubleshooter` |
 | BA (Backend APIs) | `backend-developer` |
-| D (Database) | `database-specialist` |
+| D (Database) | `database-developer` |
 | S (Security) | `security-specialist` |
-| T (Testing) | `test-engineer` |
+| T (Testing) | `test-runner` |
 | O (DevOps) | `devops-troubleshooter` |
 | E (External) | `backend-developer`, `devops-troubleshooter` |
 | C (Content) | `content-specialist` |
