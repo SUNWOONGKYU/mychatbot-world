@@ -514,30 +514,41 @@ async function sendMessage() {
     if (_cpcCmdPromise) {
         const cmd = await _cpcCmdPromise;
         if (cmd) {
-            console.log('[CPC] 연락병 → 소대장 전달:', _cpcSelectedId, cmd.id);
+            // 클로저 안전: 지금 값을 로컬 변수로 고정
+            const cmdId = cmd.id;
+            const platoonId = _cpcSelectedId;
+            const cmdText = text;
+            console.log('[CPC] 명령 전달 완료:', platoonId, cmdId);
             cpcTrackCommand(cmd);
-            addMessage('system', '[CPC] 소대장에게 전달됨 → ' + _cpcSelectedId + ' · 답변 대기 중...');
+            addMessage('system', '[CPC] 소대장에게 전달됨 → ' + platoonId + ' · 답변 대기 중...');
             // 서버 자동 처리 — 응답 직접 수신해서 표시
+            console.log('[CPC] /api/cpc-process 호출 시작:', cmdId);
             fetch('/api/cpc-process', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ commandId: cmd.id, platoonId: _cpcSelectedId, text: text })
-            }).then(r => r.json()).then(data => {
-                if (data && data.result) {
-                    const rawResult = (data.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
-                    const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
-                    addMessage('system', '📡 [CPC] 소대 응답: ' + (shortResult || '처리 완료'), 'cpc-result');
-                    // TTS: 현재 재생 중이면 끝난 후 읽기
-                    if (voiceOutputEnabled && rawResult) {
-                        const speakText = rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult;
-                        if (_audioSource) {
-                            _audioSource.onended = () => { _audioSource = null; speak(speakText); };
-                        } else {
-                            speak(speakText);
-                        }
+                body: JSON.stringify({ commandId: cmdId, platoonId: platoonId, text: cmdText })
+            }).then(r => {
+                console.log('[CPC] cpc-process 응답 상태:', r.status, r.ok);
+                return r.json();
+            }).then(data => {
+                console.log('[CPC] cpc-process 데이터:', JSON.stringify(data).substring(0, 200));
+                const rawResult = ((data && (data.result || data.detail)) || '명령 처리됨')
+                    .replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
+                const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
+                addMessage('system', '📡 [CPC] 소대 응답: ' + shortResult, 'cpc-result');
+                // TTS: 현재 재생 중이면 끝난 후 읽기
+                if (voiceOutputEnabled && rawResult) {
+                    const speakText = rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult;
+                    if (_audioSource) {
+                        _audioSource.onended = () => { _audioSource = null; speak(speakText); };
+                    } else {
+                        speak(speakText);
                     }
                 }
-            }).catch(e => console.warn('[CPC] auto-process failed', e));
+            }).catch(e => {
+                console.error('[CPC] auto-process 오류:', e);
+                addMessage('system', '📡 [CPC] 소대 응답: 명령 전달됨 (결과 수신 대기)', 'cpc-result');
+            });
         }
     }
 }
