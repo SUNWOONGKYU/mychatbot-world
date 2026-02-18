@@ -1,67 +1,95 @@
 # SAL Grid Dev Suite
 
 **SAL Grid 3D 좌표계 개발방법론** 기반의 Claude Code 완전 패키지.
-스킬 · 서브에이전트 · CPC 커맨드를 한 곳에 모아 관리한다.
+스킬 · 에이전트 · 커맨드를 한 곳에 모아 관리한다.
 
 ---
 
-## 구성
+## 구성 현황
 
 ```
 SAL_Grid_Dev_Suite/
-├── skills/          # Core Skills (9개)
-├── agents/          # Core Sub-Agent Package (10개)
-└── commands/        # CPC 커맨드 (3개)
+├── .claude/
+│   ├── skills/      # Core Skills (9개)
+│   ├── agents/      # Sub-Agent Package (Core 11 + Auxiliary 5 = 16개)
+│   └── commands/    # 커맨드 (5개)
+└── README.md
 ```
 
 ---
 
 ## skills/ — Sunny Core Skill Package (9개)
 
-| 슬래시 커맨드 | 레이어 | 설명 |
-|---|---|---|
-| `/sal-grid-dev-슈퍼스킬-core` | METHODOLOGY ⭐ | SAL Grid 개발방법론 — 프로젝트 전 과정 일괄 관리 |
-| `/review-evaluate-core` | 명령·통제 (C2) | 산출물 검토 + 5가지 기준 100점 품질 평가 |
-| `/deploy-subagent-core` | DEPLOYMENT | Claude Code 서브에이전트 편성 + 최적 모델 선택 전략 |
-| `/deploy-skill-core` | DEPLOYMENT | 스킬 조합 편성 / 커뮤니티 검색 |
-| `/create-image-core` | CAPABILITY | 이미지 생성 (SVG / HTML / Mermaid / Pillow) |
-| `/doc-generator-core` | CAPABILITY | 문서 생성 (PDF / DOCX / PPTX / XLSX / HWP) |
-| `/youtube-generate-core` | CAPABILITY | YouTube 영상 올인원 제작 |
-| `/find-skills-core` | CAPABILITY | 스킬 검색 + 설치 (skills.sh 오픈 생태계) |
-| `/cpc-setup` | CPC 인프라 | CPC 1회 인프라 구축 (Supabase + Vercel + 소대 등록) |
-
 > 설치 위치: `~/.claude/skills/{폴더명}/SKILL.md`
 
+| 레이어 | 슬래시 커맨드 | 설명 |
+|--------|-------------|------|
+| **METHODOLOGY** | `/sal-grid-dev-슈퍼스킬-core` | SAL Grid 개발방법론 — 프로젝트 전 과정 일괄 관리 (S0~S4) |
+| **명령·통제** | `/review-evaluate-core` | 산출물 검토 + 5기준 100점 품질 평가 |
+| **DEPLOYMENT** | `/deploy-subagent-core` | 서브에이전트 편성 + 최적 모델 선택 전략 |
+| **DEPLOYMENT** | `/deploy-skill-core` | 스킬 조합 편성 / 커뮤니티 검색 |
+| **CAPABILITY** | `/create-image-core` | 이미지 생성 (SVG / HTML / Mermaid / Pillow) |
+| **CAPABILITY** | `/doc-generator-core` | 문서 생성 (PDF / DOCX / PPTX / XLSX / HWP) |
+| **CAPABILITY** | `/youtube-generate-core` | YouTube 영상 올인원 제작 (리서치 → 대본 → 음성 → 블로그) |
+| **CAPABILITY** | `/find-skills-core` | 스킬 검색 + 설치 (skills.sh 오픈 생태계) |
+| **CPC 인프라** | `/cpc-setup` | CPC 인프라 구축 (Supabase + Vercel + 소대 등록, 1회용) |
+
 ---
 
-## agents/ — Sunny Core Sub-Agent Package (10개)
-
-| 파일명 | 역할 | 모델 |
-|---|---|---|
-| `frontend-developer-core.md` | UI/UX 구현, 컴포넌트 개발 | Sonnet |
-| `backend-developer-core.md` | API, 서버 로직, 인증 | Sonnet |
-| `database-developer-core.md` | 스키마 설계, 쿼리 최적화 | Sonnet |
-| `ui-designer-core.md` | 디자인 시스템, 레이아웃 | Sonnet |
-| `code-reviewer-core.md` | 코드 품질 검토, 개선 제안 | Sonnet |
-| `test-runner-core.md` | 테스트 실행 및 결과 보고 | Haiku |
-| `debugger-core.md` | 버그 추적 및 수정 | Sonnet |
-| `security-specialist-core.md` | 보안 취약점 분석 및 대응 | Sonnet |
-| `documentation-writer-core.md` | 문서 작성 (README / API docs) | Haiku |
-| `devops-troubleshooter-core.md` | 배포, CI/CD, 인프라 트러블슈팅 | Sonnet |
+## agents/ — Sub-Agent Package (Core 11 + Auxiliary 5 = 16개)
 
 > 설치 위치: `~/.claude/agents/{파일명}.md`
+> 모든 에이전트는 오케스트레이터(메인 세션) 지시에 따라 Task tool로 투입된다.
+
+### Core Agents (11개) — 주요 개발 역할
+
+| 파일명 | 역할 | SAL Grid Area | 모델 |
+|--------|------|--------------|------|
+| `frontend-developer-core.md` | HTML/CSS/JS UI 구현, 반응형 레이아웃 | F (Frontend) | Sonnet |
+| `ux-ui-designer-core.md` | UX 설계 → UI 시각화, 와이어프레임 | DS (Design) | Sonnet |
+| `api-developer-core.md` | REST API 설계·구현·문서화 | BA (Backend APIs) | Sonnet |
+| `backend-developer-core.md` | 비즈니스 로직, 인증, 인프라, 외부 연동 | BA·BI·E | Sonnet |
+| `database-developer-core.md` | 스키마 설계, 마이그레이션, Supabase/RLS | D (Database) | Sonnet |
+| `security-specialist-core.md` | 보안 취약점 분석, OWASP, 인증·인가 | S (Security) | Sonnet |
+| `test-runner-core.md` | 테스트 작성·실행·커버리지 보고 | T (Testing) | Haiku |
+| `code-reviewer-core.md` | 코드 품질 검토, 개선 제안 (Read-only) | 전 영역 | Sonnet |
+| `debugger-core.md` | 버그 추적·근본 원인 분석·수정 | 전 영역 | Sonnet |
+| `documentation-writer-core.md` | 개발 문서 작성 (README, API docs) | M (Documentation) | Haiku |
+| `devops-troubleshooter-core.md` | 배포, CI/CD, Vercel/GitHub 트러블슈팅 | O (DevOps) | Sonnet |
+
+### Auxiliary Agents (5개) — 지원 역할
+
+| 파일명 | 역할 | 모델 |
+|--------|------|------|
+| `refactoring-specialist.md` | 코드 구조 개선 (기능 변경 없이 직접 수정) | Sonnet |
+| `performance-optimizer.md` | 성능 측정·병목 분석·최적화 | Sonnet |
+| `qa-specialist.md` | 기능·UI·통합 테스트 검증 및 품질 판정 (Read-only) | Sonnet |
+| `content-specialist.md` | 사용자 가이드, FAQ, 릴리즈 노트 작성 | Sonnet |
+| `copywriter.md` | 마케팅 카피, 광고 문구, 브랜드 메시지 작성 | Sonnet |
 
 ---
 
-## commands/ — CPC 커맨드 (3개)
-
-| 커맨드 | 설명 |
-|---|---|
-| `cpc-engage-1.md` | 1소대장으로 CPC 접속 (매 세션 실행) |
-| `cpc-engage-2.md` | 2소대장으로 CPC 접속 |
-| `cpc-engage-3.md` | 3소대장으로 CPC 접속 |
+## commands/ — 커맨드 (5개)
 
 > 설치 위치: `~/.claude/commands/{파일명}.md`
+
+| 커맨드 파일 | 설명 | 사용 시점 |
+|------------|------|----------|
+| `cpc-engage-1.md` | 1소대장으로 CPC 접속 + 대기 명령 수신 | 매 세션 시작 시 |
+| `cpc-engage-2.md` | 2소대장으로 CPC 접속 + 대기 명령 수신 | 2소대 세션 |
+| `cpc-engage-3.md` | 3소대장으로 CPC 접속 + 대기 명령 수신 | 3소대 세션 |
+| `build-web.md` | 웹 자산 빌드 (Manual MD→HTML + 진행률 JSON) | 배포 전 빌드 |
+| `deploy.md` | GitHub Pages 배포 실행 | 배포 시 |
+
+---
+
+## 사용 권한 모델
+
+| 대상 | 모델 | 사용 가능 스킬 |
+|------|------|--------------|
+| 소대장 (메인 세션) | Opus | 모든 스킬 |
+| 분대장 (Teammate) | Sonnet | `/deploy-subagent-core` 제외 전부 |
+| 서브에이전트 | Haiku/Sonnet | `/deploy-subagent-core` 제외 전부 |
 
 ---
 
@@ -69,40 +97,43 @@ SAL_Grid_Dev_Suite/
 
 ```bash
 # skills 복사
-cp -r skills/* ~/.claude/skills/
+cp -r SAL_Grid_Dev_Suite/.claude/skills/* ~/.claude/skills/
 
 # agents 복사
-cp agents/* ~/.claude/agents/
+cp SAL_Grid_Dev_Suite/.claude/agents/* ~/.claude/agents/
 
 # commands 복사
-cp commands/* ~/.claude/commands/
+cp SAL_Grid_Dev_Suite/.claude/commands/* ~/.claude/commands/
 ```
-
----
-
-## 사용 권한 모델
-
-| 대상 | 사용 가능 스킬 |
-|---|---|
-| 소대장 (메인 세션, Opus) | 모든 스킬 |
-| 분대장 (Teammate, Sonnet) | `/deploy-subagent-core` 제외 전부 |
-| 서브에이전트 (Haiku/Sonnet) | `/deploy-subagent-core` 제외 전부 |
 
 ---
 
 ## SAL Grid 개발방법론
 
-**SAL** = **S**tage × **A**rea × **L**evel (3D 좌표계)
+**SAL** = **S**tage × **A**rea × **L**evel (3D 좌표계 특허 출원)
 
-| Stage | 한글명 | 설명 |
-|---|---|---|
-| S0 | Project SAL Grid 생성 | 방법론 인프라 셋업 |
-| S1 | 개발 준비 | 환경 구성, 기획 확정 |
-| S2 | 개발 1차 | 핵심 기능 구현 |
-| S3 | 개발 2차 | 추가 기능 구현 |
-| S4 | 개발 마무리 | 안정화, 배포 |
+| Stage | 코드 | 한글명 | 설명 |
+|-------|------|--------|------|
+| 0 | S0 | Project SAL Grid 생성 | 방법론 인프라 셋업 |
+| 1 | S1 | 개발 준비 | 환경 구성, 기획 확정 |
+| 2 | S2 | 개발 1차 | 핵심 기능 구현 |
+| 3 | S3 | 개발 2차 | 추가 기능 구현 |
+| 4 | S4 | 개발 마무리 | 안정화, 배포 |
 
 슈퍼스킬 `/sal-grid-dev-슈퍼스킬-core` 하나로 S0~S4 전 과정을 자동 관리한다.
+
+---
+
+## PENDING — 향후 추가 예정 스킬
+
+> 현재 스킬 9개로 어지간한 AI 활용 업무는 커버되나, 아래 영역은 추후 스킬로 확장한다.
+
+| 우선순위 | 스킬명 (예정) | 커버 영역 | 비고 |
+|---------|-------------|---------|------|
+| ⭐ 1 | `data-analyst-core` | 데이터 분석, 시각화, 인사이트 도출 | CSV/JSON/Excel → 리포트 |
+| ⭐ 2 | `research-core` | 시장 조사, 경쟁사 분석, 트렌드 리서치 | 웹 검색 + 문서화 |
+| ⭐ 3 | `email-marketing-core` | 이메일 캠페인, 뉴스레터, 시퀀스 작성 | Mailchimp 등 연동 |
+| ⭐ 4 | `web-scraping-core` | 웹 스크래핑, 데이터 수집·정제 자동화 | Playwright/BeautifulSoup |
 
 ---
 
