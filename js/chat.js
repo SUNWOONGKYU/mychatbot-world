@@ -519,7 +519,6 @@ async function sendMessage() {
             const platoonId = _cpcSelectedId;
             const cmdText = text;
             console.log('[CPC] 명령 전달 완료:', platoonId, cmdId);
-            cpcTrackCommand(cmd);
             addMessage('system', '[CPC] 소대장에게 전달됨 → ' + platoonId + ' · 답변 대기 중...');
             // 서버 자동 처리 — 응답 직접 수신해서 표시
             console.log('[CPC] /api/cpc-process 호출 시작:', cmdId);
