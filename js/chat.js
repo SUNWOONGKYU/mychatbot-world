@@ -266,6 +266,11 @@ async function cpcPollTrackedCommands() {
                     ? `[CPC] 명령 완료: ${shortResult}`
                     : `[CPC] 명령 완료: "${tracked.text}"`;
                 addMessage('system', resultMsg);
+                // CPC 결과 음성 읽기
+                if (voiceOutputEnabled && rawResult) {
+                    const speakText = rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult;
+                    speak(speakText);
+                }
                 continue; // DONE이면 추적 종료
             }
             tracked.status = fresh.status;
