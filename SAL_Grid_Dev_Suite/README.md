@@ -22,8 +22,6 @@ SAL_Grid_Dev_Suite/
 
 > 설치 위치: `~/.claude/skills/{폴더명}/SKILL.md`
 
-### 핵심 스킬 (9개) — 방법론·통제·범용
-
 | 레이어 | 슬래시 커맨드 | 설명 |
 |--------|-------------|------|
 | **METHODOLOGY** | `/sal-grid-dev-슈퍼스킬-core` | SAL Grid 개발방법론 — 프로젝트 전 과정 일괄 관리 (S0~S4) |
@@ -34,21 +32,16 @@ SAL_Grid_Dev_Suite/
 | **CAPABILITY** | `/doc-generator-core` | 문서 생성 (PDF / DOCX / PPTX / XLSX / HWP) |
 | **CAPABILITY** | `/youtube-generate-core` | YouTube 영상 올인원 제작 (리서치 → 대본 → 음성 → 블로그) |
 | **CAPABILITY** | `/find-skills-core` | 스킬 검색 + 설치 (skills.sh 오픈 생태계) |
-| **CPC 인프라** | `/cpc-setup` | CPC 인프라 구축 (Supabase + Vercel + 소대 등록, 1회용) |
-
-### 개발 전문 스킬 (9개) — 개발·테스트·보안·운영
-
-| 레이어 | 슬래시 커맨드 | 설명 |
-|--------|-------------|------|
-| **DATABASE** | `/db-schema-core` | Supabase/PostgreSQL 스키마 설계, RLS 정책, 마이그레이션 |
 | **CAPABILITY** | `/api-builder-core` | REST API 구축, CRUD 템플릿, Zod 검증, 표준 응답 구조 |
 | **CAPABILITY** | `/ui-builder-core` | React+Tailwind 컴포넌트 패턴, 접근성(A11y), 반응형 레이아웃 |
+| **DATABASE** | `/db-schema-core` | Supabase/PostgreSQL 스키마 설계, RLS 정책, 마이그레이션 |
 | **SECURITY** | `/security-audit-core` | OWASP Top 10 보안 감사, 취약점 분석, 보안 헤더, 의존성 검사 |
 | **TESTING** | `/e2e-test-core` | Playwright E2E 테스트 전체 패턴, 시나리오 자동화 |
 | **TESTING** | `/api-test-core` | Jest/Supertest 단위·통합 테스트 + Artillery 부하·보안 테스트 |
 | **DEBUGGING** | `/troubleshoot-core` | Next.js/Supabase 에러 플레이북, 근본 원인 분석(RCA) |
 | **PERFORMANCE** | `/performance-check-core` | Lighthouse, Core Web Vitals, DB N+1, 번들 최적화 |
 | **DEVOPS** | `/cicd-setup-core` | GitHub Actions 워크플로우 5종, 자동 배포 파이프라인 |
+| **CPC 인프라** | `/cpc-setup` | CPC 인프라 구축 (Supabase + Vercel + 소대 등록, 1회용) |
 
 ---
 
