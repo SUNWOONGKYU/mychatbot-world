@@ -526,8 +526,16 @@ async function sendMessage() {
                 if (data && data.result) {
                     const rawResult = (data.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
                     const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
-                    addMessage('system', '[CPC] 소대 응답: ' + (shortResult || '처리 완료'));
-                    if (voiceOutputEnabled && rawResult) speak(rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult);
+                    addMessage('system', '📡 [CPC] 소대 응답: ' + (shortResult || '처리 완료'), 'cpc-result');
+                    // TTS: 현재 재생 중이면 끝난 후 읽기
+                    if (voiceOutputEnabled && rawResult) {
+                        const speakText = rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult;
+                        if (_audioSource) {
+                            _audioSource.onended = () => { _audioSource = null; speak(speakText); };
+                        } else {
+                            speak(speakText);
+                        }
+                    }
                 }
             }).catch(e => console.warn('[CPC] auto-process failed', e));
         }
@@ -543,13 +551,13 @@ function askFaq(q, a) {
         if (voiceOutputEnabled) speak(a);
     }, 500);
 }
-function addMessage(sender, text) {
+function addMessage(sender, text, extraClass) {
     const container = document.getElementById('chatMessages');
     if (!container) return;
     const div = document.createElement('div');
     div.className = `message message-${sender}`;
     if (sender === 'system') {
-        div.innerHTML = `<div class="message-bubble">${text}</div>`;
+        div.innerHTML = `<div class="message-bubble${extraClass ? ' ' + extraClass : ''}">${text}</div>`;
     } else if (sender === 'bot') {
         div.innerHTML = `
             <div class="message-avatar">🤖</div>
