@@ -228,6 +228,61 @@ async function cpcUpdatePlatoonStatus(platoonId, status) {
     );
 }
 
+// --- 소대장 응답 대기: 폴링 → 타임아웃 시 Vercel AI 폴백 ---
+function cpcWaitForResult(cmdId, platoonId, cmdText) {
+    const POLL_MS = 2000;    // 2초 간격 폴링
+    const TIMEOUT_MS = 30000; // 30초 타임아웃
+    const start = Date.now();
+    let shown = false;
+
+    function showResult(rawResult) {
+        if (shown) return;
+        shown = true;
+        const cleaned = rawResult.replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
+        const short = cleaned.length > 80 ? cleaned.substring(0, 80) + '...' : cleaned;
+        addMessage('system', '📡 [CPC] 소대 응답: ' + short, 'cpc-result');
+        if (voiceOutputEnabled && cleaned) {
+            const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
+            if (_audioSource) {
+                _audioSource.onended = () => { _audioSource = null; speak(speakText); };
+            } else {
+                speak(speakText);
+            }
+        }
+    }
+
+    function poll() {
+        if (shown) return;
+        if (Date.now() - start > TIMEOUT_MS) {
+            // 30초 타임아웃 → Vercel AI 폴백
+            console.log('[CPC] 타임아웃 → Vercel AI 폴백:', cmdId);
+            fetch('/api/cpc-process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
+            }).then(r => r.json()).then(data => {
+                showResult((data && (data.result || data.detail)) || '명령 처리됨');
+            }).catch(() => showResult('명령 전달됨'));
+            return;
+        }
+        // CPC API에서 해당 명령 DONE 여부 확인
+        cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands`)
+            .then(cmds => {
+                if (!cmds) { setTimeout(poll, POLL_MS); return; }
+                const c = cmds.find(x => x.id === cmdId);
+                if (c && c.status === 'DONE' && c.result) {
+                    console.log('[CPC] 소대장 응답 수신:', c.result.substring(0, 60));
+                    showResult(c.result);
+                } else {
+                    setTimeout(poll, POLL_MS);
+                }
+            }).catch(() => setTimeout(poll, POLL_MS));
+    }
+
+    // 3초 후 첫 폴링 시작 (주입 후 소대장 처리 시간 여유)
+    setTimeout(poll, 3000);
+}
+
 // --- 양방향: 명령 추적 + 폴링 ---
 function cpcTrackCommand(cmd) {
     if (!cmd || !cmd.id) return;
@@ -520,34 +575,8 @@ async function sendMessage() {
             const cmdText = text;
             console.log('[CPC] 명령 전달 완료:', platoonId, cmdId);
             addMessage('system', '[CPC] 소대장에게 전달됨 → ' + platoonId + ' · 답변 대기 중...');
-            // 서버 자동 처리 — 응답 직접 수신해서 표시
-            console.log('[CPC] /api/cpc-process 호출 시작:', cmdId);
-            fetch('/api/cpc-process', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ commandId: cmdId, platoonId: platoonId, text: cmdText })
-            }).then(r => {
-                console.log('[CPC] cpc-process 응답 상태:', r.status, r.ok);
-                return r.json();
-            }).then(data => {
-                console.log('[CPC] cpc-process 데이터:', JSON.stringify(data).substring(0, 200));
-                const rawResult = ((data && (data.result || data.detail)) || '명령 처리됨')
-                    .replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
-                const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
-                addMessage('system', '📡 [CPC] 소대 응답: ' + shortResult, 'cpc-result');
-                // TTS: 현재 재생 중이면 끝난 후 읽기
-                if (voiceOutputEnabled && rawResult) {
-                    const speakText = rawResult.length > 100 ? rawResult.substring(0, 100) : rawResult;
-                    if (_audioSource) {
-                        _audioSource.onended = () => { _audioSource = null; speak(speakText); };
-                    } else {
-                        speak(speakText);
-                    }
-                }
-            }).catch(e => {
-                console.error('[CPC] auto-process 오류:', e);
-                addMessage('system', '📡 [CPC] 소대 응답: 명령 전달됨 (결과 수신 대기)', 'cpc-result');
-            });
+            // 소대장(Claude Code) 처리 대기 폴링 → 타임아웃 시 Vercel AI 폴백
+            cpcWaitForResult(cmdId, platoonId, cmdText);
         }
     }
 }
