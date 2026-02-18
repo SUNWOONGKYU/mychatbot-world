@@ -7,42 +7,12 @@
 
 ---
 
-## 프로젝트 컨텍스트
+## 원칙 요약
 
-**프로젝트**: {PROJECT_NAME}
-**기술 스택** (예시 — 실제 프로젝트에 맞게 조정):
-- Backend: Next.js API Routes 또는 Express
-- Database: Supabase (PostgreSQL) 또는 기타 DB
-- Auth: Supabase Auth 또는 기타 인증 라이브러리
-- Testing: Jest, Supertest
-
----
-
-## AI-only 개발 원칙 (필수 준수)
-
-### 허용
-- CLI 명령어로 API 테스트 실행
-- 자동화된 API 테스트 스크립트
-- 테스트 결과를 파일로 저장
-
-### 금지
-- Postman GUI로 수동 테스트
-- 웹 브라우저에서 API 수동 호출
-- 사용자에게 수동 API 테스트 요청
-
-**위반 발견 시 즉시 작업 중단 및 대안 탐색**
-
----
-
-## 역할 및 책임
-
-당신은 이 프로젝트의 API 테스트 전문가입니다:
-
-1. **엔드포인트 테스트**: 모든 API 엔드포인트 기능 검증
-2. **Request/Response 검증**: 입출력 데이터 형식 확인
-3. **에러 핸들링**: 예외 상황 처리 테스트
-4. **성능 테스트**: 응답 시간 및 부하 테스트
-5. **보안 테스트**: 인증/인가, 입력 검증 확인
+- **허용**: CLI로 테스트 실행, 자동화 스크립트, 결과 파일 저장
+- **금지**: Postman GUI 수동 테스트, 브라우저 수동 호출, 사용자에게 수동 테스트 요청
+- **역할**: 엔드포인트 기능 검증 · Request/Response 형식 확인 · 에러 핸들링 테스트 · 인증/인가 확인
+- **주의**: 부하 테스트·성능 측정은 `/performance-check-core` 스킬 사용
 
 ---
 
@@ -492,107 +462,10 @@ describe('DELETE /api/items/[id]', () => {
 
 ---
 
-## 성능 테스트
+## 성능 / 부하 테스트
 
-### 응답 시간 측정
-
-```typescript
-// tests/api/performance/response-time.test.ts
-describe('API Performance', () => {
-  it('should respond within 100ms', async () => {
-    const start = performance.now();
-
-    const request = new NextRequest('http://localhost:3000/api/items');
-    await GET(request);
-
-    const duration = performance.now() - start;
-
-    expect(duration).toBeLessThan(100);
-  });
-
-  it('should handle concurrent requests', async () => {
-    const requests = Array.from({ length: 10 }, () =>
-      GET(new NextRequest('http://localhost:3000/api/items'))
-    );
-
-    const start = performance.now();
-    await Promise.all(requests);
-    const duration = performance.now() - start;
-
-    expect(duration).toBeLessThan(500);
-  });
-});
-```
-
----
-
-## 부하 테스트 (Artillery)
-
-### Artillery 설정
-```bash
-npm install -D artillery
-```
-
-### 부하 테스트 시나리오
-```yaml
-# tests/load/items.yml
-config:
-  target: 'http://localhost:3000'
-  phases:
-    - duration: 60
-      arrivalRate: 10
-      name: Warm up
-    - duration: 120
-      arrivalRate: 50
-      name: Ramp up load
-    - duration: 60
-      arrivalRate: 100
-      name: Sustained load
-  defaults:
-    headers:
-      Content-Type: 'application/json'
-
-scenarios:
-  - name: Browse items
-    flow:
-      - get:
-          url: '/api/items'
-          expect:
-            - statusCode: 200
-            - contentType: json
-      - think: 2
-      - get:
-          url: '/api/items?page=2'
-          expect:
-            - statusCode: 200
-      - think: 1
-      - get:
-          url: '/api/items?status=active'
-          expect:
-            - statusCode: 200
-
-  - name: Create item
-    flow:
-      - post:
-          url: '/api/items'
-          json:
-            name: 'Test item from load test'
-            description: 'Test description from Artillery load test'
-            score: 4.5
-          beforeRequest: 'setAuthToken'
-          expect:
-            - statusCode: 201
-```
-
-### 부하 테스트 실행
-```bash
-# 부하 테스트 실행
-npx artillery run tests/load/items.yml
-
-# 리포트 생성
-npx artillery run --output report.json tests/load/items.yml
-npx artillery report report.json
-```
+> **부하 테스트 / 성능 측정은 `/performance-check-core` 스킬을 사용하세요.**
+> 이 스킬은 API 기능 정확성 테스트(단위·통합·계약 테스트)에 집중합니다.
 
 ---
 
@@ -685,8 +558,8 @@ describe('Rate Limiting', () => {
 
 ### 카테고리별 결과
 - 기능 테스트: 40/42 (95%)
-- 성능 테스트: 5/5 (100%)
 - 보안 테스트: 0/0 (N/A)
+- 성능/부하 테스트: `/performance-check-core` 스킬로 별도 수행
 
 ---
 
@@ -803,22 +676,11 @@ echo "API 테스트 시작..."
 echo "\n기능 테스트 실행 중..."
 npm test -- --config=jest.config.api.js --coverage
 
-# 2. 성능 테스트
-echo "\n성능 테스트 실행 중..."
-npm test -- --config=jest.config.api.js --testPathPattern=performance
-
-# 3. 보안 테스트
+# 2. 보안 테스트
 echo "\n보안 테스트 실행 중..."
 npm test -- --config=jest.config.api.js --testPathPattern=security
 
-# 4. 부하 테스트 (선택적)
-if [ "$RUN_LOAD_TEST" = "true" ]; then
-  echo "\n부하 테스트 실행 중..."
-  npx artillery run tests/load/items.yml --output load-report.json
-  npx artillery report load-report.json
-fi
-
-echo "\n모든 API 테스트 완료!"
+echo "\n모든 API 기능 테스트 완료! (부하 테스트는 /performance-check-core 스킬 사용)"
 ```
 
 ---

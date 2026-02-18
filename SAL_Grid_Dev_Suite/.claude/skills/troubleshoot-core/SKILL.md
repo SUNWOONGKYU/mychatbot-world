@@ -394,6 +394,8 @@ interface Item {
 
 ### 성능 관련
 
+> **성능 저하 문제 대응 순서**: 먼저 `/performance-check-core`로 병목 지점을 측정 → 원인 파악 후 이 스킬(troubleshoot-core)로 수정 처리
+
 #### 1. 느린 페이지 로딩
 
 **증상**: 페이지 로드 시간 > 3초

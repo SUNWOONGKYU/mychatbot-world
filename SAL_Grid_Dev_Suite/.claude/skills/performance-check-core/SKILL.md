@@ -1,5 +1,7 @@
 # /performance-check-core
 
+> **이 스킬의 역할**: 성능 지표 측정 + 병목 지점 식별. 수정/디버깅은 `/troubleshoot-core` 사용
+
 > **SAL Grid Dev Suite** — 프론트엔드/백엔드 성능 분석 및 최적화 스킬
 >
 > **사용 시점**: Core Web Vitals 측정, DB 쿼리 최적화, 번들 크기 분석, API 응답 시간 개선이 필요할 때

@@ -5,6 +5,9 @@ user-invocable: true
 
 # /deploy-skill — 최강 스킬 조합 편성 및 장착 전략 (세계 최고 수준)
 
+> **이 스킬이 다루는 것**: `~/.claude/commands/*.md` 스킬 파일 선발 → Skill tool로 슬래시 커맨드 호출 → 스킬 조합 순서 설계
+> **이 스킬이 다루지 않는 것**: Task tool 서브에이전트 스폰 → `/deploy-subagent-core` 사용
+
 **최강 스킬(슬래시 커맨드) 선발 및 장착 커맨드**. 3가지 소스에서 최적의 스킬을 찾아 분대장의 능력을 확장한다.
 
 > 이것은 범용 스킬 장착 시스템이다. `/deploy-subagent`가 "사람(에이전트)"을 선발하듯, `/deploy-skill`은 "무기(스킬)"를 편성한다.
