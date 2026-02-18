@@ -194,6 +194,7 @@ const CPC_POLL_INTERVAL = 3000;  // 3초 폴링
 async function cpcFetch(path, options = {}) {
     try {
         const res = await fetch(`${CPC_API_BASE}${path}`, {
+            cache: 'no-store',
             headers: { 'Content-Type': 'application/json' },
             ...options
         });
@@ -231,7 +232,7 @@ async function cpcUpdatePlatoonStatus(platoonId, status) {
 // --- 소대장 응답 대기: 폴링 → 타임아웃 시 Vercel AI 폴백 ---
 function cpcWaitForResult(cmdId, platoonId, cmdText) {
     const POLL_MS = 2000;    // 2초 간격 폴링
-    const TIMEOUT_MS = 30000; // 30초 타임아웃
+    const TIMEOUT_MS = 60000; // 60초 타임아웃
     const start = Date.now();
     let shown = false;
 
