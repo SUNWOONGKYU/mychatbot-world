@@ -120,17 +120,17 @@ S1BA1
 
 | Area | Task Agent | Verification Agent |
 |------|------------|-------------------|
-| M | documentation-specialist | code-reviewer |
-| U | frontend-developer | qa-specialist |
-| F | frontend-developer | code-reviewer |
-| BI | backend-developer | code-reviewer |
-| BA | backend-developer | code-reviewer |
-| D | database-developer | database-developer |
-| S | security-specialist | security-auditor |
-| T | test-runner | qa-specialist |
-| O | devops-troubleshooter | code-reviewer |
-| E | backend-developer | code-reviewer |
-| C | content-specialist | qa-specialist |
+| M | `documentation-writer-core` | `code-reviewer-core` |
+| U | `ux-ui-designer-core` | `qa-specialist` |
+| F | `frontend-developer-core` | `code-reviewer-core` |
+| BI | `backend-developer-core` | `code-reviewer-core` |
+| BA | `api-developer-core`, `backend-developer-core` | `code-reviewer-core` |
+| D | `database-developer-core` | `database-developer-core` |
+| S | `security-specialist-core` | `security-specialist-core` |
+| T | `test-runner-core` | `qa-specialist` |
+| O | `devops-troubleshooter-core` | `code-reviewer-core` |
+| E | `backend-developer-core` | `code-reviewer-core` |
+| C | `content-specialist` | `qa-specialist` |
 
 ---
 

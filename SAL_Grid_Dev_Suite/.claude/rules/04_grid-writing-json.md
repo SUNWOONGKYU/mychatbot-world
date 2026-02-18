@@ -77,16 +77,16 @@
 
 | Area | Task Agent |
 |------|------------|
-| M (Documentation) | `documentation-specialist` |
-| U (Design) | `frontend-developer` |
-| F (Frontend) | `frontend-developer` |
-| BI (Backend Infra) | `backend-developer`, `devops-troubleshooter` |
-| BA (Backend APIs) | `backend-developer` |
-| D (Database) | `database-developer` |
-| S (Security) | `security-specialist` |
-| T (Testing) | `test-runner` |
-| O (DevOps) | `devops-troubleshooter` |
-| E (External) | `backend-developer`, `devops-troubleshooter` |
+| M (Documentation) | `documentation-writer-core` |
+| U (Design) | `ux-ui-designer-core` |
+| F (Frontend) | `frontend-developer-core` |
+| BI (Backend Infra) | `backend-developer-core`, `devops-troubleshooter-core` |
+| BA (Backend APIs) | `api-developer-core`, `backend-developer-core` |
+| D (Database) | `database-developer-core` |
+| S (Security) | `security-specialist-core` |
+| T (Testing) | `test-runner-core` |
+| O (DevOps) | `devops-troubleshooter-core` |
+| E (External) | `backend-developer-core`, `devops-troubleshooter-core` |
 | C (Content) | `content-specialist` |
 
 ---
@@ -95,10 +95,10 @@
 
 | 용도 | Verification Agent |
 |------|-------------------|
-| 코드 리뷰 | `code-reviewer` |
+| 코드 리뷰 | `code-reviewer-core` |
 | 품질 보증 | `qa-specialist` |
-| 보안 감사 | `security-auditor` |
-| DB 검증 | `database-specialist` |
+| 보안 감사 | `security-specialist-core` |
+| DB 검증 | `database-developer-core` |
 
 **핵심 원칙:** Task Agent ≠ Verification Agent (작성자와 검증자 분리)
 
