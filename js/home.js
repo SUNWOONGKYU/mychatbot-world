@@ -1013,6 +1013,11 @@ const HomePage = (() => {
     MCW.storage.deleteBot(botId);
     MCW.showToast('챗봇이 삭제되었습니다.');
     renderBotList();
+
+    // 클라우드(Supabase)에서도 삭제 — 없으면 새로고침 시 부활함
+    if (typeof StorageManager !== 'undefined' && StorageManager.deleteBotFromCloud) {
+      StorageManager.deleteBotFromCloud(botId).catch(e => console.warn('[Home] cloud delete failed:', e));
+    }
   }
 
 

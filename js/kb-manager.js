@@ -902,6 +902,25 @@ const StorageManager = (() => {
     return result;
   }
 
+  /**
+   * Supabase에서 봇 및 관련 페르소나 삭제
+   */
+  async function deleteBotFromCloud(botId) {
+    const sb = getSupabase();
+    if (!sb) return false;
+    try {
+      // 페르소나 먼저 삭제 (bot_id FK)
+      await sb.from('mcw_personas').delete().eq('bot_id', botId);
+      // 봇 삭제
+      await supabaseDelete('mcw_bots', botId);
+      console.log('[StorageManager] Bot deleted from cloud:', botId);
+      return true;
+    } catch (e) {
+      console.warn('[StorageManager] deleteBotFromCloud error:', e);
+      return false;
+    }
+  }
+
   // ─── Init: 자동 연결 시도 ───
   if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {
@@ -929,6 +948,7 @@ const StorageManager = (() => {
     syncBotToCloud,
     loadBotFromCloud,
     loadUserBotsFromCloud,
+    deleteBotFromCloud,
 
     // Info / Debug
     route: getRoute,
