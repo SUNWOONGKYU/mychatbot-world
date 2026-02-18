@@ -28,10 +28,11 @@ export default async function handler(req, res) {
 
   try {
     // Step 1: ACK
-    await fetch(`${CPC_API}/api/commands/${commandId}/ack`, {
+    const ackRes = await fetch(`${CPC_API}/api/commands/${commandId}/ack`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' }
     });
+    console.log(`[CPC Process] ACK status: ${ackRes.status}`);
 
     // Step 2: 소대 정보 조회
     const platoons = await fetch(`${CPC_API}/api/platoons`).then(r => r.json());
@@ -127,7 +128,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true, result: aiReply });
   } catch (error) {
-    console.error('[CPC Process] error:', error);
-    return res.status(500).json({ error: 'CPC process failed', detail: error.message });
+    console.error('[CPC Process] error:', error.message, error.stack);
+    return res.status(500).json({ error: 'CPC process failed', detail: error.message, stack: error.stack?.split('\n')[0] });
   }
 }
