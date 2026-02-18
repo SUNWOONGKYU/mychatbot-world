@@ -14,7 +14,7 @@ let helperPersonaCount = 0;
 // Voice (STT)
 let isRecording = false;
 let recordingTimer = null;
-let remainingTime = 300;
+let remainingTime = 180;
 let recognition = null;
 let transcriptText = '';
 
@@ -583,7 +583,7 @@ function startRecording() {
         return;
     }
     isRecording = true;
-    remainingTime = 300;
+    remainingTime = 180;
     // transcriptText 초기화하지 않음 — 이어녹음 지원 (처음 시작 시에만 초기화)
     if (!transcriptText) transcriptText = '';
     document.getElementById('voiceCircle')?.classList.add('recording');
@@ -799,6 +799,14 @@ async function completeCreation() {
 
     goToStep(5);
 
+    // 모든 단계 완료로 표시 (5단계도 초록색 completed)
+    document.querySelectorAll('.progress-step').forEach(el => {
+        el.classList.remove('active');
+        el.classList.add('completed');
+    });
+    const fillEl = document.getElementById('progressFill');
+    if (fillEl) fillEl.style.width = '100%';
+
     // URL & QR
     const baseUrl = window.location.origin;
     const url = baseUrl + '/bot/' + username;
@@ -806,6 +814,22 @@ async function completeCreation() {
     document.getElementById('chatLink').href = '/bot/' + username;
     document.getElementById('qrCode').innerHTML =
         '<img src="' + MCW.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
+}
+
+async function downloadQR() {
+    const img = document.querySelector('#qrCode img');
+    if (!img) return;
+    try {
+        const res = await fetch(img.src);
+        const blob = await res.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'chatbot-qr.png';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    } catch (e) {
+        window.open(img.src, '_blank');
+    }
 }
 
 function copyUrl() {
