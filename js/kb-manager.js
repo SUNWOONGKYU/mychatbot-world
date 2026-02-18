@@ -842,14 +842,28 @@ const StorageManager = (() => {
   }
 
   /**
-   * Supabase에서 봇 프로필 로드
+   * Supabase에서 봇 프로필 로드 (id 또는 username으로 검색)
    */
-  async function loadBotFromCloud(botId) {
-    if (!getSupabase()) return null;
+  async function loadBotFromCloud(botIdOrUsername) {
+    const sb = getSupabase();
+    if (!sb) return null;
 
-    const bot = await supabaseGet('mcw_bots', botId);
+    // 1) ID로 먼저 검색
+    let bot = await supabaseGet('mcw_bots', botIdOrUsername);
+
+    // 2) ID 검색 실패 시 username으로 재검색
+    if (!bot) {
+      const { data, error } = await sb
+        .from('mcw_bots')
+        .select('*')
+        .eq('username', botIdOrUsername)
+        .single();
+      if (!error && data) bot = data;
+    }
+
     if (!bot) return null;
 
+    const botId = bot.id;
     const personas = await supabaseQuery('mcw_personas', { bot_id: botId });
 
     return {
