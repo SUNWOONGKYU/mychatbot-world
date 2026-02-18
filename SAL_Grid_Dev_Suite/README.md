@@ -137,4 +137,45 @@ cp SAL_Grid_Dev_Suite/.claude/commands/* ~/.claude/commands/
 
 ---
 
+## .claude/rules/ — 7대 작업 규칙
+
+> Claude Code가 작업 전 반드시 참조하는 규칙 파일. 파일명 앞 번호 순으로 적용한다.
+
+| 파일 | 확인 시점 | 핵심 내용 |
+|------|----------|---------|
+| `01_file-naming.md` | 파일명 정할 때 | kebab-case 강제, Task ID는 파일 상단 주석에 |
+| `02_save-location.md` | 파일 저장할 때 ⭐ | Stage 폴더 원본 저장 → Pre-commit Hook이 루트로 자동 복사 |
+| `03_area-stage.md` | 폴더 선택할 때 | 11 Area + 5 Stage 매핑, SAL ID 의존성 규칙 |
+| `04_grid-writing-json.md` | Grid/JSON/Viewer 작업할 때 ⭐ | 22속성 정의, JSON CRUD, Viewer 확인 방법 |
+| `05_execution-process.md` | Task 실행할 때 | 6단계 실행 프로세스 (Task → PO 요청 → 검증 → Gate → 배포) |
+| `06_verification.md` | 검증할 때 | 상태 전이 규칙, Task/Stage 검증 기준, PO 승인 |
+| `07_task-crud.md` | Task 추가/삭제/수정할 때 ⭐ | 5개 위치 동시 업데이트, SAL ID Finalization |
+
+**핵심 규칙 요약:**
+- `Stage 폴더 → 루트 자동 복사` (F→pages/, BA→api/Backend_APIs/ 등)
+- `Completed = Verified 후에만` (상태 건너뛰기 절대 금지)
+- `Task Agent ≠ Verification Agent` (작성자·검증자 분리)
+
+---
+
+## .claude/compliance/ — AI 행동 준수사항
+
+| 파일 | 내용 |
+|------|------|
+| `AI_12_COMPLIANCE.md` | AI 협업 12대 준수사항 — 작업 규칙과 별개로 AI의 기본 행동 원칙 정의 |
+
+> 작업 규칙(rules/)이 "무엇을·어디에 저장하는가"라면,
+> compliance는 "AI가 어떻게 행동해야 하는가"를 정의한다.
+
+---
+
+## .claude/methods/ — 작업 방법 가이드
+
+| 파일 | 적용 시점 | 핵심 내용 |
+|------|----------|---------|
+| `00_initial-setup.md` | Dev Package 첫 실행 시 ⭐ | 개발 도구 확인, git 초기화, 프로젝트 설정 파일 생성 |
+| `01_json-crud.md` | JSON CRUD 작업 시 | Edit tool로 직접 수정, index.json + grid_records/ 동기화 유지 |
+
+---
+
 *Built with Claude Code · Opus 4.6 · 2026*
