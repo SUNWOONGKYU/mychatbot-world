@@ -319,9 +319,9 @@ async function cpcShowBar() {
         groups[project].forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.id;
-            // 짧게 표시: "1소대 [RUNNING]" (프로젝트명은 optgroup에)
-            const num = p.id.match(/-(\d+)$/);
-            opt.textContent = (num ? num[1] + '소대' : p.id) + ' [' + p.status + ']';
+            // 소대 풀 이름 표시: "My Chatbot World 1소대 [RUNNING]"
+            const label = p.name || p.id;
+            opt.textContent = label + ' [' + p.status + ']';
             optgroup.appendChild(opt);
         });
         select.appendChild(optgroup);
