@@ -695,7 +695,7 @@ async function analyzeInput() {
         </div>
         ${faqs.length > 0 ? `
         <div class="result-item">
-            <div class="result-label">AI 생성 FAQ (${faqs.length}개)</div>
+            <div class="result-label">예상 Q&A</div>
             <ul class="result-faq-list">${faqs.slice(0, 5).map(f =>
                 '<li><strong>Q:</strong> ' + f.q + (f.a ? '<br><strong>A:</strong> ' + f.a : '') + '</li>'
             ).join('')}</ul>
