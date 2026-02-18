@@ -761,6 +761,7 @@ function generateDefaultFaqs(persona) {
 async function completeCreation() {
     const bot = window._createdBot;
     if (!bot) return;
+    window._createdBot = null; // 중복 실행 방지
 
     const username = document.getElementById('botUsername').value.trim() ||
         _koreanToUrl(bot.botName);
@@ -798,6 +799,7 @@ async function completeCreation() {
     clearDraft();
 
     goToStep(5);
+    clearDraft(); // goToStep() 내부 saveDraft() 덮어쓰기 방지
 
     // 모든 단계 완료로 표시 (5단계도 초록색 completed)
     document.querySelectorAll('.progress-step').forEach(el => {
