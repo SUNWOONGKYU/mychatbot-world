@@ -88,18 +88,27 @@ function toggleTheme() {
 async function loadBotData() {
     const urlParams = new URLSearchParams(window.location.search);
     const idParam = urlParams.get('id');
+    // /bot/:username 경로에서 username 추출
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const usernameFromPath = pathParts[0] === 'bot' ? pathParts[1] : null;
+
     const bots = MCW.storage.getBots();
     if (idParam) {
         chatBotData = bots.find(b => b.id === idParam);
     }
+    // id로 못 찾으면 username으로 로컬 검색
+    if (!chatBotData && usernameFromPath) {
+        chatBotData = MCW.storage.getBotByUsername(usernameFromPath);
+    }
     // 로컬에 없으면 클라우드에서 로드
-    if (!chatBotData && idParam && typeof StorageManager !== 'undefined' && StorageManager.loadBotFromCloud) {
+    if (!chatBotData && typeof StorageManager !== 'undefined' && StorageManager.loadBotFromCloud) {
         try {
-            const cloudBot = await StorageManager.loadBotFromCloud(idParam);
+            const key = idParam || usernameFromPath;
+            const cloudBot = key ? await StorageManager.loadBotFromCloud(key) : null;
             if (cloudBot) {
                 MCW.storage.saveBot(cloudBot);
                 chatBotData = cloudBot;
-                console.log('[Chat] Bot loaded from cloud:', idParam);
+                console.log('[Chat] Bot loaded from cloud:', key);
             }
         } catch (e) { console.warn('[Chat] cloud bot load failed:', e); }
     }
