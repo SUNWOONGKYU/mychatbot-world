@@ -397,10 +397,15 @@ async function cpcShowBar() {
         select.appendChild(optgroup);
     });
 
-    if (_cpcSelectedId) select.value = _cpcSelectedId;
+    // localStorage에서 이전 선택 소대 복원 (없으면 mychatbot-1 기본값)
+    if (!_cpcSelectedId) {
+        _cpcSelectedId = localStorage.getItem('cpc_selected_platoon') || 'mychatbot-1';
+    }
+    select.value = _cpcSelectedId;
 
     select.onchange = function () {
         _cpcSelectedId = this.value;
+        localStorage.setItem('cpc_selected_platoon', _cpcSelectedId);
         cpcRefreshPlatoonStatus();
         if (_cpcSelectedId) cpcStartPolling();
     };

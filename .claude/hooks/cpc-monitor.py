@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
 """
-CPC Real-time Monitor v4
-Supabase Realtime (async) -> 즉시 감지 + Windows 팝업
-폴백: 3초 간격 REST 폴링
-시작 이후 새 명령만 알림 (기존 명령 무시)
+CPC Real-time Monitor v6
+새 명령 감지 → AI 자동처리 + Claude Code 소대장에게 직접 주입
 """
 import asyncio, json, os, sys, time, subprocess, threading, urllib.request, datetime
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 CPC_SUPABASE_URL = "https://hlpovizxnrnspobddxmq.supabase.co"
 CPC_SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhscG92aXp4bnJuc3BvYmRkeG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQ2MTQsImV4cCI6MjA4Njc1MDYxNH0.rOYmy0OlD5tI-Jlt_sD0PpSdjvkjfAQScvVELAKPiMI"
 CPC_API = "https://claude-platoons-control.vercel.app"
-PLATOONS = ["mychatbot-1", "mychatbot-2", "mychatbot-3"]
+PLATOONS = ["mychatbot-1"]  # 이 세션(1소대장)은 mychatbot-1만 처리
 POLL_INTERVAL = 3
+PROJECT_DIR = r"G:\내 드라이브\mychatbot-world"
+
+# Claude Code 창 주입 설정
+INJECT_TO_CLAUDE = True   # False로 바꾸면 주입 비활성화
+CLAUDE_WINDOW_KEYWORD = "Claude"
 
 
 def windows_popup(title, msg):
-    """Windows 팝업 알림 (mshta WScript.Shell.Popup)"""
     try:
         safe_msg = msg[:150].replace('"', "'").replace("'", "`").replace('\n', ' ')
         safe_title = title.replace('"', "'").replace("'", "`")
@@ -24,21 +28,165 @@ def windows_popup(title, msg):
             f'sh.Popup(\'{safe_msg}\',8,\'{safe_title}\',48);close()"'
         )
         subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception as e:
+    except Exception:
         pass
 
 
-def alert(platoon_id, cmd):
-    text = (cmd.get("text") or "")[:100]
-    status = cmd.get("status", "?")
-    source = cmd.get("source", "?")
+CLAUDE_CODE_PID_FILE = r"C:\Users\wksun\claude_code_pid.txt"
+CPC_TARGET_FILE = r"C:\Users\wksun\cpc_target.json"
+
+
+def load_target():
+    """cpc_target.json에서 WT PID + 탭 인덱스 로드
+    find_my_wt.ps1로 생성된 파일 (이 Claude Code 세션 내에서 실행)
+    Returns: (wt_pid, tab_idx) — 실패 시 (None, None)
+    """
+    try:
+        with open(CPC_TARGET_FILE, encoding='utf-8-sig') as f:
+            data = json.load(f)
+        wt_pid = data.get('wt_pid')
+        tab_idx = data.get('tab_idx')
+        if wt_pid:
+            print(f"  [타겟] WT={wt_pid} TAB={tab_idx}")
+            return wt_pid, tab_idx
+    except Exception as e:
+        print(f"  [타겟] cpc_target.json 읽기 실패: {e}")
+    # 폴백: PID 파일
+    try:
+        with open(CLAUDE_CODE_PID_FILE) as f:
+            pid = int(f.read().strip())
+        if pid:
+            return pid, None
+    except Exception:
+        pass
+    return None, None
+
+
+def inject_to_claude_code(cmd_id, platoon_id, text):
+    """WT PID + 탭 전환으로 특정 Claude Code 세션에 직접 주입"""
+    try:
+        prompt = (
+            f"[CPC 소대명령] 소대: {platoon_id} | 명령ID: {cmd_id}\n"
+            f"지시사항: {text}\n\n"
+            f"처리 후 결과 보고 (한글 OK):\n"
+            f'powershell -File "C:\\Users\\wksun\\cpc-done.ps1" "{cmd_id}" "결과한줄요약"'
+        )
+
+        # cpc_target.json에서 wt_pid + oc_pid 로드
+        wt_pid, tab_idx = load_target()
+        oc_pid = None
+        try:
+            with open(CPC_TARGET_FILE, encoding='utf-8-sig') as f:
+                d = json.load(f)
+            oc_pid = d.get('oc_pid')
+            wt_pid = d.get('wt_pid') or wt_pid
+        except Exception:
+            pass
+
+        if not wt_pid or not oc_pid:
+            print("  [주입] wt_pid/oc_pid 없음 — find_my_wt.ps1 재실행 필요")
+            return
+
+        # cpc_inject_wt.py v5: OC PID로 실시간 탭 위치 계산 → 정확한 탭에만 주입
+        inject_script = r"G:\내 드라이브\mychatbot-world\.claude\hooks\cpc_inject_wt.py"
+        pythonw = sys.executable.replace("python.exe", "pythonw.exe")
+        if not os.path.exists(pythonw):
+            pythonw = sys.executable  # fallback
+
+        # 한글 인코딩 문제 방지: 프롬프트를 UTF-8 임시 파일로 저장 후 경로 전달
+        import tempfile
+        tmp = tempfile.NamedTemporaryFile(mode='w', suffix='.txt', encoding='utf-8', delete=False)
+        tmp.write(prompt)
+        tmp.close()
+
+        subprocess.Popen(
+            [pythonw, inject_script, str(wt_pid), str(oc_pid), "@" + tmp.name],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=0x08000000  # CREATE_NO_WINDOW
+        )
+        print(f"  [주입] WT={wt_pid} OC={oc_pid} → 전달 완료")
+
+        # 큐 파일 백업
+        queue_path = r"C:\Users\wksun\cpc_inject_queue.txt"
+        try:
+            with open(queue_path, "a", encoding="utf-8") as f:
+                f.write(prompt + "\n---CPC_END---\n")
+        except Exception:
+            pass
+    except Exception as e:
+        print(f"  [주입] 실패: {e}")
+
+
+def cpc_patch(path, body=None):
+    data = json.dumps(body or {}).encode()
+    req = urllib.request.Request(
+        f"{CPC_API}{path}", data=data,
+        headers={"Content-Type": "application/json"}, method="PATCH"
+    )
+    urllib.request.urlopen(req, timeout=10)
+
+
+def process_command(platoon_id, cmd):
+    """새 명령: AI 빠른 응답 + Claude Code 소대장 주입"""
+    cmd_id = cmd["id"]
+    text = (cmd.get("text") or "").strip()
+
     print(f"\n{'='*52}")
-    print(f"  CPC 새 명령 수신! [{platoon_id}]")
-    print(f"  상태: {status} | 출처: {source}")
-    print(f"  내용: {text}")
+    print(f"  [CPC] {platoon_id}: {text[:80]}")
     print(f"{'='*52}")
     sys.stdout.flush()
-    windows_popup(f"CPC [{platoon_id}]", text)
+
+    windows_popup(f"CPC 명령 [{platoon_id}]", text[:80])
+
+    # 1. ACK
+    try:
+        cpc_patch(f"/api/commands/{cmd_id}/ack")
+    except Exception as e:
+        print(f"  ACK 실패: {e}")
+
+    # 2. Claude Code 소대장에게 직접 주입 (활성화 시 AI 자동처리 건너뜀)
+    if INJECT_TO_CLAUDE:
+        inject_to_claude_code(cmd_id, platoon_id, text)
+        print(f"  [주입 모드] 소대장이 직접 처리 - AI 자동처리 생략")
+        sys.stdout.flush()
+        return  # 소대장이 직접 DONE 처리
+
+    # 3. Vercel AI 자동처리 (INJECT_TO_CLAUDE=False일 때만)
+    result = ""
+    try:
+        payload = json.dumps({
+            "commandId": cmd_id,
+            "platoonId": platoon_id,
+            "text": text
+        }).encode()
+        req2 = urllib.request.Request(
+            "https://mychatbot-world.vercel.app/api/cpc-process",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        resp = urllib.request.urlopen(req2, timeout=60)
+        r_data = json.loads(resp.read().decode("utf-8"))
+        result = r_data.get("result", "처리 완료")
+        print(f"  AI 응답: {result[:100]}")
+    except Exception as e:
+        result = f"자동처리 실패: {e}"
+        print(f"  오류: {e}")
+
+    # 4. 결과 큐 파일 기록 (Claude Code 화면 표시용)
+    QUEUE_FILE = r"C:\Users\home\cpc_results_queue.txt"
+    try:
+        now = datetime.datetime.now().strftime("%H:%M:%S")
+        line = f"[{now}] [{platoon_id}] {text[:50]} → {result[:120]}\n"
+        with open(QUEUE_FILE, "a", encoding="utf-8") as f:
+            f.write(line)
+    except Exception as e:
+        print(f"  큐 파일 쓰기 실패: {e}")
+
+    # 5. Windows 완료 팝업
+    windows_popup(f"CPC 완료 [{platoon_id}]", result[:120])
+
+    sys.stdout.flush()
 
 
 def fetch_commands(platoon_id):
@@ -53,32 +201,30 @@ def fetch_commands(platoon_id):
 
 
 def polling_thread_fn(seen_ref):
-    """폴백: 3초 간격 REST 폴링"""
     seen = seen_ref
-    print(f"[CPC Monitor] 폴링 백업 시작 ({POLL_INTERVAL}초)")
+    print(f"[CPC Monitor] 폴링 시작 ({POLL_INTERVAL}초)")
     sys.stdout.flush()
     while True:
         for pid in PLATOONS:
             cmds = fetch_commands(pid)
             for c in cmds:
-                if c["id"] not in seen:
+                if c["id"] not in seen and c.get("status") == "PENDING":
                     seen.add(c["id"])
-                    alert(pid, c)
+                    threading.Thread(target=process_command, args=(pid, c), daemon=True).start()
+                elif c["id"] not in seen:
+                    seen.add(c["id"])
         time.sleep(POLL_INTERVAL)
 
 
 async def realtime_main():
-    """Supabase Realtime async 구독"""
     from supabase import acreate_client
 
     seen = set()
-
-    # 시작 시 기존 명령 ID 모두 seen 등록 (알림 없이 무시)
     print("[CPC Monitor] 초기화 중...")
     for pid in PLATOONS:
         for c in fetch_commands(pid):
             seen.add(c["id"])
-    print(f"[CPC Monitor] 기존 {len(seen)}개 무시 -- 이후 신규 명령만 알림")
+    print(f"[CPC Monitor] 기존 {len(seen)}개 무시 — 이후 신규 명령 자동처리")
     sys.stdout.flush()
 
     client = await acreate_client(CPC_SUPABASE_URL, CPC_SUPABASE_KEY)
@@ -91,18 +237,14 @@ async def realtime_main():
         platoon_id = record.get("platoon_id", "?")
         if cmd_id and cmd_id not in seen:
             seen.add(cmd_id)
-            alert(platoon_id, record)
+            if record.get("status") == "PENDING":
+                threading.Thread(target=process_command, args=(platoon_id, record), daemon=True).start()
 
     channel = client.channel("cpc-realtime-monitor")
-    channel.on_postgres_changes(
-        event="INSERT",
-        schema="public",
-        table="cpc_commands",
-        callback=on_insert
-    )
+    channel.on_postgres_changes(event="INSERT", schema="public", table="cpc_commands", callback=on_insert)
     await channel.subscribe()
 
-    print("[CPC Monitor] Supabase Realtime 연결 성공 -- 즉시 감지 활성!")
+    print("[CPC Monitor] Supabase Realtime 연결 성공 - 자동처리 + 소대장 주입 활성!")
     sys.stdout.flush()
 
     poll_t = threading.Thread(target=polling_thread_fn, args=(seen,), daemon=True)
@@ -113,22 +255,21 @@ async def realtime_main():
 
 
 def main():
-    print("[CPC Monitor v4] 시작")
+    print("[CPC Monitor v6] 시작 - AI자동처리 + Claude Code 소대장 주입 모드")
     print(f"  감시 소대: {', '.join(PLATOONS)}")
-    print("  Supabase Realtime 연결 시도...")
+    print(f"  소대장 주입: {'활성' if INJECT_TO_CLAUDE else '비활성'}")
+    print(f"  프로젝트: {PROJECT_DIR}")
     sys.stdout.flush()
 
     try:
         asyncio.run(realtime_main())
     except Exception as e:
-        print(f"[CPC Monitor] Realtime 실패: {e} -> 폴링 전용 모드")
+        print(f"[CPC Monitor] Realtime 실패: {e} → 폴링 모드")
         sys.stdout.flush()
         seen = set()
         for pid in PLATOONS:
             for c in fetch_commands(pid):
                 seen.add(c["id"])
-        print(f"[CPC Monitor] 폴링 모드 ({POLL_INTERVAL}초 간격)")
-        sys.stdout.flush()
         polling_thread_fn(seen)
 
 
