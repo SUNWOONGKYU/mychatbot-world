@@ -232,7 +232,7 @@ async function cpcUpdatePlatoonStatus(platoonId, status) {
 // --- 소대장 응답 대기: 폴링 → 타임아웃 시 Vercel AI 폴백 ---
 function cpcWaitForResult(cmdId, platoonId, cmdText) {
     const POLL_MS = 2000;    // 2초 간격 폴링
-    const TIMEOUT_MS = 60000; // 60초 타임아웃
+    const TIMEOUT_MS = 300000; // 5분 타임아웃 (Claude Code 처리 시간 고려)
     const start = Date.now();
     let shown = false;
 
@@ -576,6 +576,8 @@ async function sendMessage() {
             const cmdText = text;
             console.log('[CPC] 명령 전달 완료:', platoonId, cmdId);
             addMessage('system', '[CPC] 소대장에게 전달됨 → ' + platoonId + ' · 답변 대기 중...');
+            // 연속 폴러에 등록 (페이지 새로고침 전까지 계속 추적)
+            cpcTrackCommand(cmd);
             // 소대장(Claude Code) 처리 대기 폴링 → 타임아웃 시 Vercel AI 폴백
             cpcWaitForResult(cmdId, platoonId, cmdText);
         }
