@@ -239,6 +239,8 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
     function showResult(rawResult) {
         if (shown) return;
         shown = true;
+        // cpcPollTrackedCommands 중복 표시 방지: 추적 목록에서 제거
+        _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
         const cleaned = rawResult.replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
         const short = cleaned.length > 80 ? cleaned.substring(0, 80) + '...' : cleaned;
         addMessage('system', '📡 [CPC] 소대 응답: ' + short, 'cpc-result');
