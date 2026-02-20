@@ -1,0 +1,9 @@
+{
+  "project_id": "{PROJECT_ID}",
+  "project_name": "{PROJECT_NAME}",
+  "created_at": "{YYYY-MM-DD}",
+  "updated_at": "{YYYY-MM-DD}",
+  "total_tasks": 0,
+  "description": "{프로젝트 설명}",
+  "task_ids": []
+}

@@ -1,24 +1,60 @@
 # SAL Grid Dev Suite
 
 **SAL Grid 3D 좌표계 개발방법론** 기반의 Claude Code 완전 패키지.
-스킬 · 에이전트 · 커맨드를 한 곳에 모아 관리한다.
+새 프로젝트마다 이 패키지를 복사해서 독립적으로 운영한다.
 
 ---
 
-## 구성 현황
+## 사용 방법 (신규 프로젝트)
+
+```
+1. 이 폴더를 복사
+      SAL_Grid_Dev_Suite/ → SAL_Grid_Dev_Suite_for_{ProjectName}/
+
+2. Claude Code로 새 폴더 열기
+
+3. /sal-grid-dev-슈퍼스킬-core 실행
+      → .claude/, Process/, scripts/ 자동 생성 + SAL Grid 데이터 셋업
+```
+
+**명명 규칙:** `SAL_Grid_Dev_Suite_for_MyChatbotWorld`, `SAL_Grid_Dev_Suite_for_PoliticianFinder` 등
+
+---
+
+## 전체 구조
 
 ```
 SAL_Grid_Dev_Suite/
 ├── .claude/
-│   ├── skills/      # Core Skills (18개)
-│   ├── agents/      # Sub-Agent Package (Core 11 + Auxiliary 5 = 16개)
-│   └── commands/    # 커맨드 (5개)
+│   ├── CLAUDE.md              ← 7대 작업 규칙 + 절대 규칙 5개
+│   ├── CAUTION.md
+│   ├── pre-commit-hooks.md
+│   ├── mcp_servers.json
+│   ├── rules/                 ← 7개 규칙 파일
+│   ├── methods/               ← 2개 방법 가이드
+│   ├── compliance/            ← AI 12대 준수사항
+│   ├── agents/                ← Sub-Agent 16개
+│   ├── skills/                ← Core Skill 19개
+│   ├── commands/              ← 커맨드 5개
+│   └── work_logs/current.md   ← 세션 작업 기록
+├── Human_ClaudeCode_Bridge/   ← PO-Claude 협업 브릿지
+├── Process/
+│   ├── P1_사업계획/
+│   ├── P2_프로젝트_기획/
+│   ├── S0_Project-SAL-Grid_생성/  ← SAL Grid 데이터 + Viewer
+│   ├── S1_개발_준비/          ← 11 Area 폴더
+│   ├── S2_개발-1차/           ← 11 Area 폴더
+│   ├── S3_개발-2차/           ← 11 Area 폴더
+│   └── S4_개발_마무리/        ← 11 Area 폴더
+├── scripts/                   ← sync-to-root.js 등 (슈퍼스킬이 생성)
+├── .gitignore
+├── .env.sample
 └── README.md
 ```
 
 ---
 
-## skills/ — Sunny Core Skill Package (18개)
+## skills/ — Core Skill Package (19개)
 
 > 설치 위치: `~/.claude/skills/{폴더명}/SKILL.md`
 
@@ -33,11 +69,11 @@ SAL_Grid_Dev_Suite/
 | **CAPABILITY** | `/youtube-generate-core` | YouTube 영상 올인원 제작 (리서치 → 대본 → 음성 → 블로그) |
 | **CAPABILITY** | `/find-skills-core` | 스킬 검색 + 설치 (skills.sh 오픈 생태계) |
 | **CAPABILITY** | `/api-builder-core` | REST API 구축, CRUD 템플릿, Zod 검증, 표준 응답 구조 |
-| **CAPABILITY** | `/ui-builder-core` | React+Tailwind 컴포넌트 패턴, 접근성(A11y), 반응형 레이아웃 |
+| **CAPABILITY** | `/ui-ux-builder-core` | UX 경험 설계 + UI 컴포넌트 구현 통합 |
 | **DATABASE** | `/db-schema-core` | Supabase/PostgreSQL 스키마 설계, RLS 정책, 마이그레이션 |
-| **SECURITY** | `/security-audit-core` | OWASP Top 10 보안 감사, 취약점 분석, 보안 헤더, 의존성 검사 |
+| **SECURITY** | `/security-audit-core` | OWASP Top 10 보안 감사, 취약점 분석 |
 | **TESTING** | `/e2e-test-core` | Playwright E2E 테스트 전체 패턴, 시나리오 자동화 |
-| **TESTING** | `/api-test-core` | Jest/Supertest 단위·통합 테스트 + Artillery 부하·보안 테스트 |
+| **TESTING** | `/api-test-core` | Jest/Supertest 단위·통합 테스트 + Artillery 부하 테스트 |
 | **DEBUGGING** | `/troubleshoot-core` | Next.js/Supabase 에러 플레이북, 근본 원인 분석(RCA) |
 | **PERFORMANCE** | `/performance-check-core` | Lighthouse, Core Web Vitals, DB N+1, 번들 최적화 |
 | **DEVOPS** | `/cicd-setup-core` | GitHub Actions 워크플로우 5종, 자동 배포 파이프라인 |
@@ -50,12 +86,12 @@ SAL_Grid_Dev_Suite/
 > 설치 위치: `~/.claude/agents/{파일명}.md`
 > 모든 에이전트는 오케스트레이터(메인 세션) 지시에 따라 Task tool로 투입된다.
 
-### Core Agents (11개) — 주요 개발 역할
+### Core Agents (11개)
 
 | 파일명 | 역할 | SAL Grid Area | 모델 |
 |--------|------|--------------|------|
 | `frontend-developer-core.md` | HTML/CSS/JS UI 구현, 반응형 레이아웃 | F (Frontend) | Sonnet |
-| `ux-ui-designer-core.md` | UX 설계 → UI 시각화, 와이어프레임 | DS (Design) | Sonnet |
+| `ux-ui-designer-core.md` | UX 설계 → UI 시각화, 와이어프레임 | U (Design) | Sonnet |
 | `api-developer-core.md` | REST API 설계·구현·문서화 | BA (Backend APIs) | Sonnet |
 | `backend-developer-core.md` | 비즈니스 로직, 인증, 인프라, 외부 연동 | BA·BI·E | Sonnet |
 | `database-developer-core.md` | 스키마 설계, 마이그레이션, Supabase/RLS | D (Database) | Sonnet |
@@ -66,7 +102,7 @@ SAL_Grid_Dev_Suite/
 | `documentation-writer-core.md` | 개발 문서 작성 (README, API docs) | M (Documentation) | Haiku |
 | `devops-troubleshooter-core.md` | 배포, CI/CD, Vercel/GitHub 트러블슈팅 | O (DevOps) | Sonnet |
 
-### Auxiliary Agents (5개) — 지원 역할
+### Auxiliary Agents (5개)
 
 | 파일명 | 역할 | 모델 |
 |--------|------|------|
@@ -92,6 +128,85 @@ SAL_Grid_Dev_Suite/
 
 ---
 
+## Human_ClaudeCode_Bridge/
+
+PO(사용자)와 Claude Code 간 비동기 협업 브릿지.
+
+| 파일 | 역할 |
+|------|------|
+| `bridge_server.js` | 로컬 API 서버 (Orders/Reports 폴더 감시) |
+| `order_watcher.ps1` | Orders 폴더 감시 → Claude에 자동 입력 |
+| `result_notifier.ps1` | Reports 폴더 감시 → PO에게 알림 |
+| `claude_auto_typer.ps1` | Claude Code 창에 자동 타이핑 |
+| `HUMAN_CLAUDECODE_BRIDGE_GUIDE.md` | 전체 사용 가이드 |
+
+---
+
+## Process/ — SAL Grid 데이터 구조
+
+```
+Process/S0_Project-SAL-Grid_생성/
+├── sal-grid/
+│   ├── task-instructions/           ← Task 수행 지침 (샘플 3개 포함)
+│   ├── verification-instructions/   ← 검증 지침 (샘플 3개 포함)
+│   ├── stage-gates/                 ← Stage Gate 리포트
+│   ├── task-results/
+│   ├── TASK_PLAN.md                 ← 빈 템플릿
+│   └── _reference/                  ← SSAL Works 샘플 자료 (참고용)
+│       ├── devpackage_provided/
+│       │   ├── task-instructions_sample/     ← 70+ 샘플
+│       │   └── verification-instructions_sample/ ← 70+ 샘플
+│       └── chatgpt_created/
+├── method/json/data/
+│   ├── index.json                   ← 빈 템플릿
+│   ├── grid_records/                ← Task JSON (_TEMPLATE.json)
+│   └── stage_gate_records/          ← Stage Gate JSON (_TEMPLATE.json)
+├── manual/                          ← SAL Grid 매뉴얼
+└── viewer/                          ← viewer_json.html
+```
+
+**샘플 파일 (각 3개):**
+- `task-instructions/`: S1M1(문서화), S1BI1(백엔드인프라), S2F1(프론트엔드) + TEMPLATE
+- `verification-instructions/`: S1M1, S1BI1, S2F1
+- 전체 샘플(70+개)은 `_reference/devpackage_provided/`에서 참고
+
+---
+
+## .claude/rules/ — 7대 작업 규칙
+
+| 파일 | 확인 시점 | 핵심 내용 |
+|------|----------|---------|
+| `01_file-naming.md` | 파일명 정할 때 | kebab-case 강제, Task ID는 파일 상단 주석에 |
+| `02_save-location.md` | 파일 저장할 때 ⭐ | Stage 폴더 원본 저장 → Pre-commit Hook이 루트로 자동 복사 |
+| `03_area-stage.md` | 폴더 선택할 때 | 11 Area + 5 Stage 매핑, SAL ID 의존성 규칙 |
+| `04_grid-writing-json.md` | Grid/JSON/Viewer 작업할 때 ⭐ | 22속성 정의, JSON CRUD, Viewer 확인 방법 |
+| `05_execution-process.md` | Task 실행할 때 | 6단계 실행 프로세스 |
+| `06_verification.md` | 검증할 때 | 상태 전이 규칙, Task/Stage 검증 기준, PO 승인 |
+| `07_task-crud.md` | Task 추가/삭제/수정할 때 ⭐ | 5개 위치 동시 업데이트, SAL ID Finalization |
+
+**핵심 규칙 요약:**
+- `Stage 폴더 → 루트 자동 복사` (F→pages/, BA→api/Backend_APIs/ 등)
+- `Completed = Verified 후에만` (상태 건너뛰기 절대 금지)
+- `Task Agent ≠ Verification Agent` (작성자·검증자 분리)
+
+---
+
+## SAL Grid 개발방법론
+
+**SAL** = **S**tage × **A**rea × **L**evel (3D 좌표계 특허 출원)
+
+| Stage | 코드 | 한글명 | 설명 |
+|-------|------|--------|------|
+| 0 | S0 | Project SAL Grid 생성 | 방법론 인프라 셋업 (슈퍼스킬 자동 생성) |
+| 1 | S1 | 개발 준비 | 환경 구성, 인프라 초기화 |
+| 2 | S2 | 개발 1차 | 핵심 기능 구현 |
+| 3 | S3 | 개발 2차 | 추가 기능 구현 |
+| 4 | S4 | 개발 마무리 | 안정화, 배포 |
+
+슈퍼스킬 `/sal-grid-dev-슈퍼스킬-core` 하나로 S0~S4 전 과정을 자동 관리한다.
+
+---
+
 ## 사용 권한 모델
 
 | 대상 | 모델 | 사용 가능 스킬 |
@@ -102,7 +217,7 @@ SAL_Grid_Dev_Suite/
 
 ---
 
-## 설치 방법
+## skills/agents/commands 설치
 
 ```bash
 # skills 복사
@@ -114,76 +229,6 @@ cp SAL_Grid_Dev_Suite/.claude/agents/* ~/.claude/agents/
 # commands 복사
 cp SAL_Grid_Dev_Suite/.claude/commands/* ~/.claude/commands/
 ```
-
----
-
-## SAL Grid 개발방법론
-
-**SAL** = **S**tage × **A**rea × **L**evel (3D 좌표계 특허 출원)
-
-| Stage | 코드 | 한글명 | 설명 |
-|-------|------|--------|------|
-| 0 | S0 | Project SAL Grid 생성 | 방법론 인프라 셋업 |
-| 1 | S1 | 개발 준비 | 환경 구성, 기획 확정 |
-| 2 | S2 | 개발 1차 | 핵심 기능 구현 |
-| 3 | S3 | 개발 2차 | 추가 기능 구현 |
-| 4 | S4 | 개발 마무리 | 안정화, 배포 |
-
-슈퍼스킬 `/sal-grid-dev-슈퍼스킬-core` 하나로 S0~S4 전 과정을 자동 관리한다.
-
----
-
-## PENDING — 향후 추가 예정 스킬
-
-> 현재 스킬 18개로 개발·테스트·보안·운영을 커버하나, 아래 영역은 추후 스킬로 확장한다.
-
-| 우선순위 | 스킬명 (예정) | 커버 영역 | 비고 |
-|---------|-------------|---------|------|
-| ⭐ 1 | `data-analyst-core` | 데이터 분석, 시각화, 인사이트 도출 | CSV/JSON/Excel → 리포트 |
-| ⭐ 2 | `research-core` | 시장 조사, 경쟁사 분석, 트렌드 리서치 | 웹 검색 + 문서화 |
-| ⭐ 3 | `email-marketing-core` | 이메일 캠페인, 뉴스레터, 시퀀스 작성 | Mailchimp 등 연동 |
-| ⭐ 4 | `web-scraping-core` | 웹 스크래핑, 데이터 수집·정제 자동화 | Playwright/BeautifulSoup |
-
----
-
-## .claude/rules/ — 7대 작업 규칙
-
-> Claude Code가 작업 전 반드시 참조하는 규칙 파일. 파일명 앞 번호 순으로 적용한다.
-
-| 파일 | 확인 시점 | 핵심 내용 |
-|------|----------|---------|
-| `01_file-naming.md` | 파일명 정할 때 | kebab-case 강제, Task ID는 파일 상단 주석에 |
-| `02_save-location.md` | 파일 저장할 때 ⭐ | Stage 폴더 원본 저장 → Pre-commit Hook이 루트로 자동 복사 |
-| `03_area-stage.md` | 폴더 선택할 때 | 11 Area + 5 Stage 매핑, SAL ID 의존성 규칙 |
-| `04_grid-writing-json.md` | Grid/JSON/Viewer 작업할 때 ⭐ | 22속성 정의, JSON CRUD, Viewer 확인 방법 |
-| `05_execution-process.md` | Task 실행할 때 | 6단계 실행 프로세스 (Task → PO 요청 → 검증 → Gate → 배포) |
-| `06_verification.md` | 검증할 때 | 상태 전이 규칙, Task/Stage 검증 기준, PO 승인 |
-| `07_task-crud.md` | Task 추가/삭제/수정할 때 ⭐ | 5개 위치 동시 업데이트, SAL ID Finalization |
-
-**핵심 규칙 요약:**
-- `Stage 폴더 → 루트 자동 복사` (F→pages/, BA→api/Backend_APIs/ 등)
-- `Completed = Verified 후에만` (상태 건너뛰기 절대 금지)
-- `Task Agent ≠ Verification Agent` (작성자·검증자 분리)
-
----
-
-## .claude/compliance/ — AI 행동 준수사항
-
-| 파일 | 내용 |
-|------|------|
-| `AI_12_COMPLIANCE.md` | AI 협업 12대 준수사항 — 작업 규칙과 별개로 AI의 기본 행동 원칙 정의 |
-
-> 작업 규칙(rules/)이 "무엇을·어디에 저장하는가"라면,
-> compliance는 "AI가 어떻게 행동해야 하는가"를 정의한다.
-
----
-
-## .claude/methods/ — 작업 방법 가이드
-
-| 파일 | 적용 시점 | 핵심 내용 |
-|------|----------|---------|
-| `00_initial-setup.md` | Dev Package 첫 실행 시 ⭐ | 개발 도구 확인, git 초기화, 프로젝트 설정 파일 생성 |
-| `01_json-crud.md` | JSON CRUD 작업 시 | Edit tool로 직접 수정, index.json + grid_records/ 동기화 유지 |
 
 ---
 

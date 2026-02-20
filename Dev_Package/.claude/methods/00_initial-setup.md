@@ -139,7 +139,7 @@ git init
 
 ```bash
 # Step 1: users 테이블에서 user_id 조회
-SUPABASE_URL="https://zwjmfewyshhwpgwdtrus.supabase.co"
+SUPABASE_URL="https://gybgkehtonqhosuutoxx.supabase.co"
 SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI2NTk5MDUsImV4cCI6MjA0ODIzNTkwNX0.2MzKf9o08rsVjNGzUkdgaGpULBvDVSQ1_X8QXhopPmg"
 USER_EMAIL="사용자이메일@example.com"
 
@@ -158,7 +158,7 @@ PROJECT_DATA=$(curl -s "${SUPABASE_URL}/rest/v1/projects?select=project_id,proje
 
 ```javascript
 async function getProjectId(userEmail) {
-    const SUPABASE_URL = "https://zwjmfewyshhwpgwdtrus.supabase.co";
+    const SUPABASE_URL = "https://gybgkehtonqhosuutoxx.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
     // 1. email → user_id
@@ -329,7 +329,7 @@ SSAL Works 플랫폼의 users 테이블에 GitHub 레포지토리 URL을 등록�
 
 ```bash
 # REST API로 users 테이블 업데이트
-curl -X PATCH "https://zwjmfewyshhwpgwdtrus.supabase.co/rest/v1/users?email=eq.{사용자이메일}" \
+curl -X PATCH "https://gybgkehtonqhosuutoxx.supabase.co/rest/v1/users?email=eq.{사용자이메일}" \
   -H "apikey: {SUPABASE_ANON_KEY}" \
   -H "Authorization: Bearer {SUPABASE_ANON_KEY}" \
   -H "Content-Type: application/json" \

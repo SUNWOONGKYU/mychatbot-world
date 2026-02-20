@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 1400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#10b981"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1400" fill="#f8fafc"/>
+
+  <!-- ============================================================ -->
+  <!-- TITLE -->
+  <!-- ============================================================ -->
+  <rect x="50" y="20" width="1100" height="85" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="10" filter="url(#shadow)"/>
+  <text x="600" y="52" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold" fill="#1e293b" text-anchor="middle">CPC (Claude Platoons Control) 시스템 구조 v3</text>
+  <text x="600" y="78" font-family="Malgun Gothic, sans-serif" font-size="14" fill="#475569" text-anchor="middle">챗봇 → cpc-monitor VBS 주입 → Claude Code 소대장 직접 처리 + 30초 폴백 — 2026.02.19</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 1: 프로젝트 + 소대 구성 -->
+  <!-- ============================================================ -->
+
+  <!-- Left: 5 Projects -->
+  <rect x="50" y="125" width="530" height="195" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="10" filter="url(#shadow)"/>
+  <rect x="50" y="125" width="530" height="35" fill="#3b82f6" rx="10"/>
+  <rect x="50" y="143" width="530" height="17" fill="#3b82f6"/>
+  <text x="315" y="148" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">5개 프로젝트 x 3소대 = 15개 소대</text>
+
+  <text x="75" y="183" font-family="monospace" font-size="13" fill="#1e293b">mychatbot-world</text>
+  <text x="290" y="183" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">mychatbot-1 / 2 / 3</text>
+  <text x="75" y="205" font-family="monospace" font-size="13" fill="#1e293b">!SSAL_Works_Private</text>
+  <text x="290" y="205" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">ssalworks-1 / 2 / 3</text>
+  <text x="75" y="227" font-family="monospace" font-size="13" fill="#1e293b">AI_Study_Circle</text>
+  <text x="290" y="227" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">studycircle-1 / 2 / 3</text>
+  <text x="75" y="249" font-family="monospace" font-size="13" fill="#1e293b">Development_PoliticianFinder_com</text>
+  <text x="75" y="271" font-family="monospace" font-size="13" fill="#1e293b">ValueLink</text>
+  <text x="290" y="249" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">politician-1 / 2 / 3</text>
+  <text x="290" y="271" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">valuelink-1 / 2 / 3</text>
+
+  <!-- Right: Sunny Bot Personas -->
+  <rect x="610" y="125" width="540" height="195" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="10" filter="url(#shadow)"/>
+  <rect x="610" y="125" width="540" height="35" fill="#7c3aed" rx="10"/>
+  <rect x="610" y="143" width="540" height="17" fill="#7c3aed"/>
+  <text x="880" y="148" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">Sunny Bot 페르소나 (대외 4 + 대내 4)</text>
+
+  <!-- Public row -->
+  <text x="630" y="180" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#3b82f6">대외용 (공개)</text>
+  <rect x="630" y="188" width="115" height="28" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="687" y="207" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#1e40af" text-anchor="middle">AI Master</text>
+  <rect x="755" y="188" width="115" height="28" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="812" y="207" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#1e40af" text-anchor="middle">Startup Accel.</text>
+  <rect x="880" y="188" width="115" height="28" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="937" y="207" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#1e40af" text-anchor="middle">공인회계사</text>
+  <rect x="1005" y="188" width="115" height="28" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="1062" y="207" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#1e40af" text-anchor="middle">별 애호가</text>
+
+  <!-- Private row -->
+  <text x="630" y="240" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#10b981">대내용 (비공개)</text>
+  <rect x="630" y="248" width="115" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="6"/>
+  <text x="687" y="267" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#065f46" text-anchor="middle">Claude 연락병</text>
+  <rect x="755" y="248" width="115" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="6"/>
+  <text x="812" y="267" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#065f46" text-anchor="middle">Trader</text>
+  <rect x="880" y="248" width="115" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="6"/>
+  <text x="937" y="267" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#065f46" text-anchor="middle">업무 도우미</text>
+  <rect x="1005" y="248" width="115" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="6"/>
+  <text x="1062" y="267" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#065f46" text-anchor="middle">생활 도우미</text>
+
+  <text x="880" y="305" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="bold">Claude 연락병 = CPC 소대 제어 전용 페르소나</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 2: 두 가지 경로 (CLI vs Chatbot) -->
+  <!-- ============================================================ -->
+  <text x="600" y="355" font-family="Malgun Gothic, sans-serif" font-size="20" font-weight="bold" fill="#1e293b" text-anchor="middle">두 가지 명령 경로</text>
+
+  <!-- PATH A: CLI -->
+  <rect x="50" y="375" width="540" height="220" fill="#ffffff" stroke="#3b82f6" stroke-width="2" rx="10" filter="url(#shadow)"/>
+  <rect x="50" y="375" width="540" height="35" fill="#3b82f6" rx="10"/>
+  <rect x="50" y="393" width="540" height="17" fill="#3b82f6"/>
+  <text x="320" y="398" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">경로 A: Claude Code CLI (소대장 직접 투입)</text>
+
+  <!-- Step boxes for CLI path -->
+  <rect x="70" y="425" width="155" height="65" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" rx="8"/>
+  <text x="147" y="448" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle">1. /cpc-engage-N</text>
+  <text x="147" y="468" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">슬래시 커맨드 실행</text>
+  <text x="147" y="482" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">디렉토리 자동 감지</text>
+
+  <line x1="225" y1="457" x2="245" y2="457" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <rect x="245" y="425" width="155" height="65" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" rx="8"/>
+  <text x="322" y="448" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle">2. API 조회</text>
+  <text x="322" y="468" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">GET /api/platoons</text>
+  <text x="322" y="482" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">상태 RUNNING 전환</text>
+
+  <line x1="400" y1="457" x2="420" y2="457" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <rect x="420" y="425" width="155" height="65" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" rx="8"/>
+  <text x="497" y="448" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle">3. 명령 수신+작업</text>
+  <text x="497" y="468" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">PENDING 명령 ACK</text>
+  <text x="497" y="482" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">소대장이 직접 수행</text>
+
+  <text x="320" y="515" font-family="Malgun Gothic, sans-serif" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">보조 수신 메커니즘</text>
+  <text x="150" y="540" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">cpc-monitor.py (15초 폴링, 백그라운드)</text>
+  <text x="150" y="558" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">cpc-check.sh (UserPromptSubmit hook)</text>
+  <text x="150" y="576" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">새 PENDING 명령 감지 시 소대장에게 알림</text>
+
+  <!-- PATH B: Chatbot -->
+  <rect x="620" y="375" width="530" height="220" fill="#ffffff" stroke="#10b981" stroke-width="2" rx="10" filter="url(#shadow)"/>
+  <rect x="620" y="375" width="530" height="35" fill="#10b981" rx="10"/>
+  <rect x="620" y="393" width="530" height="17" fill="#10b981"/>
+  <text x="885" y="398" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">경로 B: 챗봇 → Claude Code 소대장 직접 처리</text>
+
+  <rect x="640" y="425" width="150" height="65" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" rx="8"/>
+  <text x="715" y="448" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">1. 음성/텍스트</text>
+  <text x="715" y="468" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">Claude 연락병에게</text>
+  <text x="715" y="482" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">명령 전달</text>
+
+  <line x1="790" y1="457" x2="810" y2="457" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <rect x="810" y="425" width="150" height="65" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" rx="8"/>
+  <text x="885" y="448" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">2. CPC 명령 생성</text>
+  <text x="885" y="468" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">cpcAddCommand()</text>
+  <text x="885" y="482" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">상태: PENDING</text>
+
+  <line x1="960" y1="457" x2="980" y2="457" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <rect x="980" y="425" width="150" height="65" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" rx="8"/>
+  <text x="1055" y="448" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">3. 소대장 주입</text>
+  <text x="1055" y="468" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">cpc-monitor.py</text>
+  <text x="1055" y="482" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569" text-anchor="middle">VBS PID 기반 주입</text>
+
+  <text x="885" y="515" font-family="Malgun Gothic, sans-serif" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">처리 흐름 (v3)</text>
+  <text x="700" y="540" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">cpc-monitor.py 3초 폴링 → VBS → Claude Code 창에 명령 주입</text>
+  <text x="700" y="558" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">소대장 처리 → cpc-done.ps1 → DONE + result (한글 UTF-8)</text>
+  <text x="700" y="576" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#7c3aed">폴백: 30초 타임아웃 → /api/cpc-process (Vercel AI)</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 3: 핵심 자동 처리 파이프라인 상세 -->
+  <!-- ============================================================ -->
+  <text x="600" y="630" font-family="Malgun Gothic, sans-serif" font-size="20" font-weight="bold" fill="#1e293b" text-anchor="middle">CPC 처리 파이프라인 (경로 B 상세 — v3)</text>
+
+  <!-- Pipeline: 7 steps -->
+  <rect x="50" y="650" width="1100" height="175" fill="#ffffff" stroke="#f59e0b" stroke-width="2" rx="10" filter="url(#shadow)"/>
+
+  <!-- Step 1: User speaks -->
+  <rect x="70" y="670" width="130" height="75" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" rx="8"/>
+  <text x="135" y="693" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#92400e" text-anchor="middle">유저 음성/텍스트</text>
+  <text x="135" y="712" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#78350f" text-anchor="middle">MediaRecorder</text>
+  <text x="135" y="727" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#78350f" text-anchor="middle">+ Whisper STT</text>
+
+  <line x1="200" y1="707" x2="218" y2="707" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-orange)"/>
+
+  <!-- Step 2: Chat API -->
+  <rect x="218" y="670" width="130" height="75" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5" rx="8"/>
+  <text x="283" y="693" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#1e40af" text-anchor="middle">/api/chat</text>
+  <text x="283" y="712" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#1e3a8a" text-anchor="middle">챗봇 인격 응답</text>
+  <text x="283" y="727" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#1e3a8a" text-anchor="middle">(즉시 표시)</text>
+
+  <!-- Step 3: CPC Command -->
+  <rect x="366" y="670" width="130" height="75" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" rx="8"/>
+  <text x="431" y="693" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#92400e" text-anchor="middle">CPC 명령 생성</text>
+  <text x="431" y="712" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#78350f" text-anchor="middle">cpcAddCommand()</text>
+  <text x="431" y="727" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#78350f" text-anchor="middle">PENDING 상태</text>
+
+  <!-- Parallel arrow from step 2 and 3 -->
+  <text x="355" y="700" font-family="Malgun Gothic, sans-serif" font-size="16" fill="#475569" text-anchor="middle">+</text>
+
+  <line x1="496" y1="707" x2="514" y2="707" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-orange)"/>
+
+  <!-- Step 4: cpc-monitor VBS injection -->
+  <rect x="514" y="670" width="130" height="75" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5" rx="8"/>
+  <text x="579" y="690" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#6b21a8" text-anchor="middle">cpc-monitor.py</text>
+  <text x="579" y="708" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#581c87" text-anchor="middle">3초 폴링 감지</text>
+  <text x="579" y="722" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#581c87" text-anchor="middle">VBS PID 주입</text>
+  <text x="579" y="736" font-family="Malgun Gothic, sans-serif" font-size="9" fill="#7c3aed" text-anchor="middle">ACK 처리</text>
+
+  <line x1="644" y1="707" x2="662" y2="707" stroke="#7c3aed" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+  <!-- Step 5: Claude Code direct processing -->
+  <rect x="662" y="670" width="130" height="75" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1.5" rx="8"/>
+  <text x="727" y="690" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#6b21a8" text-anchor="middle">소대장 직접 처리</text>
+  <text x="727" y="708" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#581c87" text-anchor="middle">Claude Code CLI</text>
+  <text x="727" y="722" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#581c87" text-anchor="middle">cpc-done.ps1</text>
+  <text x="727" y="736" font-family="Malgun Gothic, sans-serif" font-size="9" fill="#7c3aed" text-anchor="middle">UTF-8 보고</text>
+
+  <line x1="792" y1="707" x2="810" y2="707" stroke="#7c3aed" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+  <!-- Step 6: DONE -->
+  <rect x="810" y="670" width="130" height="75" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" rx="8"/>
+  <text x="875" y="693" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#065f46" text-anchor="middle">DONE + result</text>
+  <text x="875" y="712" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#064e3b" text-anchor="middle">CPC API 저장</text>
+  <text x="875" y="727" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#064e3b" text-anchor="middle">결과 텍스트</text>
+
+  <line x1="940" y1="707" x2="958" y2="707" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <!-- Step 7: Polling Display -->
+  <rect x="958" y="670" width="170" height="75" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" rx="8"/>
+  <text x="1043" y="690" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#065f46" text-anchor="middle">채팅창 표시 + TTS</text>
+  <text x="1043" y="708" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#064e3b" text-anchor="middle">2초 폴링 감지</text>
+  <text x="1043" y="722" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#064e3b" text-anchor="middle">30초 타임아웃시</text>
+  <text x="1043" y="736" font-family="Malgun Gothic, sans-serif" font-size="9" fill="#7c3aed" text-anchor="middle">Vercel AI 폴백</text>
+
+  <!-- Timeline label -->
+  <text x="283" y="765" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#3b82f6" text-anchor="middle" font-weight="bold">즉시</text>
+  <text x="431" y="765" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#f59e0b" text-anchor="middle" font-weight="bold">병렬</text>
+  <text x="579" y="765" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="bold">3초 이내</text>
+  <text x="727" y="765" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="bold">소대장 처리</text>
+  <text x="1043" y="765" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#10b981" text-anchor="middle" font-weight="bold">폴링 감지</text>
+
+  <!-- Status flow -->
+  <rect x="70" y="780" width="1080" height="30" fill="#f1f5f9" rx="6"/>
+  <text x="600" y="800" font-family="monospace" font-size="13" fill="#334155" text-anchor="middle">PENDING ──→ ACKED ──→ 소대장 처리 중 ──→ DONE (result) ──→ 채팅창 표시 + TTS</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 4: 음성 입력 + API 스택 -->
+  <!-- ============================================================ -->
+
+  <!-- Left: Voice Input (Whisper STT) -->
+  <rect x="50" y="840" width="530" height="210" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="10" filter="url(#shadow)"/>
+  <rect x="50" y="840" width="530" height="35" fill="#ec4899" rx="10"/>
+  <rect x="50" y="858" width="530" height="17" fill="#ec4899"/>
+  <text x="315" y="863" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">음성 입력 시스템 (Whisper STT)</text>
+
+  <text x="75" y="900" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">입력 흐름</text>
+  <text x="95" y="920" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">마이크 버튼 → MediaRecorder (WebM/opus)</text>
+  <text x="95" y="938" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">→ 4초 침묵 자동 중지 (AudioContext + AnalyserNode)</text>
+  <text x="95" y="956" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">→ Base64 인코딩 → POST /api/stt</text>
+  <text x="95" y="974" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">→ OpenAI Whisper API → 텍스트 → 자동 전송</text>
+
+  <text x="75" y="1000" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">핵심 개선</text>
+  <text x="95" y="1020" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">Web Speech API → Whisper (한국어 정확도 대폭 향상)</text>
+  <text x="95" y="1038" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">TTS 재생 시 STT 자동 중지 (할루시네이션 방지)</text>
+
+  <!-- Right: API Stack -->
+  <rect x="610" y="840" width="540" height="210" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="10" filter="url(#shadow)"/>
+  <rect x="610" y="840" width="540" height="35" fill="#f59e0b" rx="10"/>
+  <rect x="610" y="858" width="540" height="17" fill="#f59e0b"/>
+  <text x="880" y="863" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">Vercel Serverless API 스택</text>
+
+  <rect x="635" y="890" width="230" height="32" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="6"/>
+  <text x="750" y="911" font-family="monospace" font-size="12" fill="#92400e" text-anchor="middle">/api/chat — 챗봇 응답</text>
+
+  <rect x="635" y="930" width="230" height="32" fill="#fce7f3" stroke="#ec4899" stroke-width="1" rx="6"/>
+  <text x="750" y="951" font-family="monospace" font-size="12" fill="#9d174d" text-anchor="middle">/api/stt — Whisper STT</text>
+
+  <rect x="635" y="970" width="230" height="32" fill="#f3e8ff" stroke="#7c3aed" stroke-width="1" rx="6"/>
+  <text x="750" y="991" font-family="monospace" font-size="12" fill="#6b21a8" text-anchor="middle">/api/cpc-process — CPC 자동</text>
+
+  <rect x="635" y="1010" width="230" height="32" fill="#ecfdf5" stroke="#10b981" stroke-width="1" rx="6"/>
+  <text x="750" y="1031" font-family="monospace" font-size="12" fill="#065f46" text-anchor="middle">/api/tts — OpenAI TTS</text>
+
+  <!-- Model Stack -->
+  <text x="920" y="905" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">AI MODEL_STACK (fallback)</text>
+  <text x="920" y="928" font-family="monospace" font-size="11" fill="#475569">1. google/gemini-2.5-flash</text>
+  <text x="920" y="948" font-family="monospace" font-size="11" fill="#475569">2. openai/gpt-4o</text>
+  <text x="920" y="968" font-family="monospace" font-size="11" fill="#475569">3. claude-sonnet-4.5</text>
+  <text x="920" y="988" font-family="monospace" font-size="11" fill="#475569">4. deepseek-chat</text>
+  <text x="920" y="1015" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569">chat + cpc-process 공용</text>
+  <text x="920" y="1035" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569">(OpenRouter 경유)</text>
+
+  <!-- ============================================================ -->
+  <!-- ROW 5: CPC 클라우드 인프라 -->
+  <!-- ============================================================ -->
+  <rect x="50" y="1080" width="1100" height="290" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="10" filter="url(#shadow)"/>
+  <rect x="50" y="1080" width="1100" height="35" fill="#0ea5e9" rx="10"/>
+  <rect x="50" y="1098" width="1100" height="17" fill="#0ea5e9"/>
+  <text x="600" y="1103" font-family="Malgun Gothic, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">CPC 클라우드 인프라 (claude-platoons-control.vercel.app)</text>
+
+  <!-- Supabase -->
+  <rect x="75" y="1130" width="330" height="220" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1" rx="8"/>
+  <text x="240" y="1155" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#0c4a6e" text-anchor="middle">Supabase (서울 리전)</text>
+
+  <text x="95" y="1180" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">cpc_platoons</text>
+  <text x="115" y="1198" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569">id, name, project, purpose, status</text>
+  <text x="115" y="1214" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569">15개 소대 (5 x 3)</text>
+
+  <text x="95" y="1240" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">cpc_commands</text>
+  <text x="115" y="1258" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569">id, platoon_id, text, status, result</text>
+  <text x="115" y="1274" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#475569">source, created_at</text>
+
+  <text x="95" y="1300" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#0c4a6e">RLS: anon key 전체 허용</text>
+  <text x="95" y="1318" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#0c4a6e">ref: hlpovizxnrnspobddxmq</text>
+
+  <!-- REST API -->
+  <rect x="430" y="1130" width="350" height="220" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="8"/>
+  <text x="605" y="1155" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#065f46" text-anchor="middle">REST API</text>
+
+  <text x="450" y="1180" font-family="monospace" font-size="11" fill="#334155">GET  /api/platoons</text>
+  <text x="450" y="1198" font-family="monospace" font-size="11" fill="#334155">POST /api/platoons (upsert)</text>
+  <text x="450" y="1216" font-family="monospace" font-size="11" fill="#334155">PATCH /api/platoons/{id}/status</text>
+  <text x="450" y="1240" font-family="monospace" font-size="11" fill="#334155">GET  /api/platoons/{id}/commands</text>
+  <text x="450" y="1258" font-family="monospace" font-size="11" fill="#334155">POST /api/platoons/{id}/commands</text>
+  <text x="450" y="1276" font-family="monospace" font-size="11" fill="#334155">PATCH /api/commands/{id}/ack</text>
+  <text x="450" y="1294" font-family="monospace" font-size="11" fill="#334155">PATCH /api/commands/{id}/done</text>
+  <text x="450" y="1318" font-family="monospace" font-size="11" fill="#334155">POST /api/commands/broadcast</text>
+
+  <!-- Web UI + Access -->
+  <rect x="805" y="1130" width="325" height="220" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="8"/>
+  <text x="967" y="1155" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#92400e" text-anchor="middle">Web UI 대시보드</text>
+
+  <text x="825" y="1180" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#334155">소대 등록/수정/삭제</text>
+  <text x="825" y="1200" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#334155">명령 관리 (생성/ACK/DONE)</text>
+  <text x="825" y="1220" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#334155">실시간 상태 모니터링</text>
+  <text x="825" y="1240" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#334155">챗봇 + CLI 양쪽에서 접근</text>
+
+  <text x="967" y="1275" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#92400e" text-anchor="middle">접근성</text>
+  <text x="825" y="1298" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">인터넷만 있으면 어디서든 접근</text>
+  <text x="825" y="1318" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#475569">모바일/PC/Claude Code CLI 모두 지원</text>
+
+  <!-- ============================================================ -->
+  <!-- Footer -->
+  <!-- ============================================================ -->
+  <text x="600" y="1390" font-family="Malgun Gothic, sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">My Chatbot World — CPC System Architecture v3 — Updated 2026.02.19</text>
+</svg>

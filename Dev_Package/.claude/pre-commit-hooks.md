@@ -9,7 +9,7 @@
 | # | 자동화 내용 | 소스 파일 | 출력 파일 |
 |---|------------|----------|----------|
 | 1 | SAL Grid 매뉴얼 MD → HTML 변환 | `Process/S0_.../manual/PROJECT_SAL_GRID_MANUAL.md` | `참고자료/*.html` |
-| 2 | P0~S5 진행률 → JSON 생성 | `Process/P0~S5 폴더`, `index.json + grid_records/*.json` | `Process_Monitor/data/phase_progress.json` |
+| 2 | P0~S4 진행률 → JSON 생성 | `Process/P0~S4 폴더`, `index.json + grid_records/*.json` | `Process_Monitor/data/phase_progress.json` |
 | 3 | Stage 폴더 → 배포 폴더 자동 복사 | `Process/S?_*/Frontend/`, `Process/S?_*/Backend_APIs/` 등 | `pages/`, `api/` |
 
 ---

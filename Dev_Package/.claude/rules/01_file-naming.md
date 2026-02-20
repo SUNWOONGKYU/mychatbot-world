@@ -64,7 +64,7 @@
 
 ```
 ❌ 파일명에 Task ID 넣지 않음:
-- S2BA1_user-profile.js  (X)
+- S1BA1_user-profile.js  (X)
 
 ✅ 파일명은 기능만, Task ID는 주석에:
 - user-profile.js        (O)
@@ -73,7 +73,7 @@
 **JavaScript 파일:**
 ```javascript
 /**
- * @task S2BA1
+ * @task S1BA1
  * @description 사용자 프로필 API
  */
 export default async function handler(req, res) {
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 **HTML 파일:**
 ```html
 <!--
-@task S2F1
+@task S1F1
 @description Google 로그인 페이지
 -->
 <!DOCTYPE html>
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
 
 | Area | 파일명 규칙 | 예시 |
 |------|-------------|------|
-| D (Database) | `[TaskID]_[설명].sql` | `S1D1_users_table.sql` |
+| D (Database) | `[TaskID]_[설명].sql` | `S0D1_users_table.sql` |
 | T (Testing) | `[대상].test.js` | `auth.test.js` |
 | M (Documentation) | 자유 | `api-specification.md` |
 | U (Design) | 자유 | `wireframe-v1.fig` |

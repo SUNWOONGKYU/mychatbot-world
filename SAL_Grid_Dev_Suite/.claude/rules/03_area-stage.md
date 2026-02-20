@@ -26,10 +26,10 @@
 
 | # | 코드 | 영문명 | 한글명 | 주요 내용 | 폴더명 |
 |---|------|--------|--------|----------|--------|
-| 0 | **S0** | Setup | 개발 준비 | 환경 설정, 초기 구성 | `Process/S0_개발_준비/` |
-| 1 | **S1** | Development Phase 1 | 개발 1차 | 핵심 기능 구현 | `Process/S1_개발-1차/` |
-| 2 | **S2** | Development Phase 2 | 개발 2차 | 추가 기능 구현 | `Process/S2_개발-2차/` |
-| 3 | **S3** | Development Phase 3 | 개발 3차 | 고급 기능 구현 | `Process/S3_개발-3차/` |
+| 0 | **S0** | Project SAL Grid Setup | Project SAL Grid 생성 | SAL Grid 구조 생성, 방법론 초기화 | `Process/S0_Project-SAL-Grid_생성/` |
+| 1 | **S1** | Development Setup | 개발 준비 | 환경 설정, 인프라 구성 | `Process/S1_개발_준비/` |
+| 2 | **S2** | Core Development | 개발 1차 | 핵심 기능 구현 | `Process/S2_개발-1차/` |
+| 3 | **S3** | Additional Development | 개발 2차 | 추가 기능 구현 | `Process/S3_개발-2차/` |
 | 4 | **S4** | Stabilization | 개발 마무리 | 배포 준비, 안정화 | `Process/S4_개발_마무리/` |
 
 ---
@@ -48,10 +48,10 @@ S1BA1
 **예시:**
 | Task ID | Stage | Area | 순서 | 의미 |
 |---------|-------|------|------|------|
-| S0S1 | S0 | S | 1 | 개발준비 - 보안 - 1번 |
-| S1F1 | S1 | F | 1 | 개발1차 - 프론트엔드 - 1번 |
-| S1BA1 | S1 | BA | 1 | 개발1차 - 백엔드API - 1번 |
-| S2E1 | S2 | E | 1 | 개발2차 - 외부연동 - 1번 |
+| S1S1 | S1 | S | 1 | 개발준비 - 보안 - 1번 |
+| S2F1 | S2 | F | 1 | 개발1차 - 프론트엔드 - 1번 |
+| S2BA1 | S2 | BA | 1 | 개발1차 - 백엔드API - 1번 |
+| S3E1 | S3 | E | 1 | 개발2차 - 외부연동 - 1번 |
 
 ### 3.1 SAL ID 의존성 규칙 ⭐
 
@@ -90,11 +90,11 @@ S1BA1
 
 | Task ID | 폴더 경로 |
 |---------|----------|
-| S0S1 | `Process/S0_개발_준비/Security/` |
-| S0M1 | `Process/S0_개발_준비/Documentation/` |
-| S1F1 | `Process/S1_개발-1차/Frontend/` |
-| S1BA1 | `Process/S1_개발-1차/Backend_APIs/` |
-| S2E1 | `Process/S2_개발-2차/External/` |
+| S1S1 | `Process/S1_개발_준비/Security/` |
+| S1M1 | `Process/S1_개발_준비/Documentation/` |
+| S2F1 | `Process/S2_개발-1차/Frontend/` |
+| S2BA1 | `Process/S2_개발-1차/Backend_APIs/` |
+| S3E1 | `Process/S3_개발-2차/External/` |
 
 ---
 

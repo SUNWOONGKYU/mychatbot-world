@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>데이터 정리</title></head>
+<body style="background:#0f172a;color:white;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;">
+<div style="text-align:center;">
+<script>
+  // wksun999@gmail.com 유저 삭제
+  const users = JSON.parse(localStorage.getItem('mcw_users') || '[]');
+  const filtered = users.filter(u => u.id !== 'wksun999@gmail.com' && u.email !== 'wksun999@gmail.com');
+  localStorage.setItem('mcw_users', JSON.stringify(filtered));
+  localStorage.removeItem('mcw_current_user_id');
+
+  const removed = users.length - filtered.length;
+  document.write('<div style="font-size:3rem;margin-bottom:1rem;">✅</div>');
+  document.write('<h2>정리 완료</h2>');
+  document.write('<p style="color:#94a3b8;margin:1rem 0;">wksun999@gmail.com 계정이 삭제되었습니다.<br>(' + removed + '개 삭제, ' + filtered.length + '개 유저 남음)</p>');
+  document.write('<a href="signup.html" style="display:inline-block;margin-top:1rem;padding:12px 24px;background:#8b5cf6;color:white;border-radius:8px;text-decoration:none;font-weight:600;">회원가입 하러 가기</a>');
+</script>
+</div>
+</body>
+</html>

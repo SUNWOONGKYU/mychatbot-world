@@ -1,0 +1,90 @@
+# ============================================
+# SAL Grid Dev Suite - .gitignore
+# ============================================
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Environment Variables — NEVER commit!
+.env
+.env.local
+.env.*
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+
+# Temp files
+*.tmp
+.temp/
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+
+# Supabase
+.supabase/
+
+# Vercel
+.vercel/
+.vercel
+
+# Docker
+.dockerignore
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+
+# Archives
+*.zip
+
+# Coverage
+coverage/
+
+# SAL Grid: 매뉴얼 파일 (비공개 노하우)
+**/PROJECT_SAL_GRID_MANUAL*.md
+**/PROJECT_SAL_GRID_매뉴얼*.md
+
+# SAL Grid: data 폴더는 method 안에만 허용
+S0_Project-SAL-Grid_생성/data/

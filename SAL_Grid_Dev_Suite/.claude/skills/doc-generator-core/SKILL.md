@@ -19,6 +19,47 @@ user-invocable: true
 
 ---
 
+## ⚡ 즉시 실행 (EXECUTE NOW — 설명만 출력 금지)
+
+> **이 스킬이 호출되면 아래 절차를 즉시 실행하라. 방법을 설명하거나 코드 예시만 출력하지 말 것.**
+
+### 실행 절차
+
+1. `$ARGUMENTS`에서 **입력 파일/내용** + **출력 형식** 파악
+2. Phase 0 결정 트리로 형식 결정
+3. 해당 Phase의 명령어를 **Bash 도구로 즉시 실행**
+4. 출력 파일 존재 및 크기 확인 (`ls -la {출력파일}`)
+5. 결과 보고 (성공/실패, 파일 경로, 용량)
+
+### PDF 변환 기본 실행 패턴 (가장 빈번한 케이스)
+
+**MD/내용 → PDF** (즉시 실행 순서):
+
+```bash
+# Step 1: 입력 파일 확인
+ls -la {입력파일}
+
+# Step 2-A: 내용이 있으면 HTML 먼저 생성 (Python 또는 Write 도구)
+# Step 2-B: MD 파일이면 pandoc으로 HTML 변환
+pandoc "{입력파일}" -o "{출력}.html" --standalone --metadata pagetitle="{제목}"
+
+# Step 3: Chrome headless로 PDF 생성
+"/c/Program Files/Google/Chrome/Application/chrome.exe" \
+  --headless --disable-gpu --no-sandbox \
+  --print-to-pdf="{출력절대경로}.pdf" \
+  --print-to-pdf-no-header \
+  --run-all-compositor-stages-before-draw \
+  --virtual-time-budget=10000 \
+  "file:///{HTML절대경로}.html"
+
+# Step 4: 생성 확인
+ls -la "{출력}.pdf"
+```
+
+> **⚠️ 주의**: `$ARGUMENTS`가 파일 경로라면 그 파일을 변환하라. 텍스트/내용이라면 먼저 HTML로 저장 후 변환하라. **어떤 경우에도 설명만 출력하고 끝내지 말 것.**
+
+---
+
 ## Phase 0. 형식 선택 (Decision Tree)
 
 ```

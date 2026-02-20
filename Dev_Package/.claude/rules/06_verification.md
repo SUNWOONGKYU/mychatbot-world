@@ -88,12 +88,15 @@
 
 ---
 
-## 2. Stage Gate 검증 기준
+## 2. Stage Verification (Stage Gate 검증)
+
+> **Task Verification** = 개별 Task 검증 (`grid_records/{TaskID}.json`)
+> **Stage Verification** = Stage 내 모든 Task를 종합 검증 (`stage_gate_records/S{N}_gate.json`)
 
 ### 필수 확인 항목
 
 ```
-[Stage Gate 체크리스트]
+[Stage Verification 체크리스트]
 
 □ Stage 내 모든 Task가 '완료' 상태인가?
 □ 모든 Task의 comprehensive_verification이 'Passed'인가?
@@ -103,16 +106,55 @@
 □ 의존성 체인이 완결되었는가?
 ```
 
-### 검증 리포트 형식
+### Stage Verification 데이터 저장
+
+**저장 위치:** `method/json/data/stage_gate_records/S{N}_gate.json`
+
+```json
+{
+  "stage": 1,
+  "stage_name": "개발 1차",
+  "stage_name_en": "Development Phase 1",
+  "total_tasks": 0,
+  "completed_tasks": 0,
+  "verification_status": "Not Verified",
+  "ai_verification_note": "",
+  "ai_verification_date": "",
+  "verification_report_path": "stage-gates/S1GATE_verification_report.md",
+  "stage_gate_status": "Not Started",
+  "po_approval_status": "Not Started",
+  "po_approval_user": "",
+  "po_approval_note": "",
+  "po_approval_date": "",
+  "checklist": {
+    "all_tasks_completed": false,
+    "all_verifications_passed": false,
+    "no_blockers": false,
+    "build_success": false,
+    "test_success": false
+  },
+  "remarks": ""
+}
+```
+
+**stage_gate_status 값:**
+| 값 | 의미 |
+|---|------|
+| `Not Started` | 아직 검증 시작 안 함 |
+| `AI Verified` | AI 자동 검증 완료 |
+| `Approved` | PO 수동 승인 완료 |
+| `Rejected` | PO 거부 |
+
+### Stage Verification 리포트
 
 ```markdown
-# S{N} Stage Gate Verification Report
+# S{N} Stage Verification Report
 
 ## 1. Task 완료 현황
 | Task ID | Task Name | Status | Verification |
 |---------|-----------|--------|--------------|
-| S2F1 | Google 로그인 UI | ✅ 완료 | ✅ Passed |
-| S2BA1 | 사용자 프로필 API | ✅ 완료 | ✅ Passed |
+| S1F1 | Google 로그인 UI | ✅ 완료 | ✅ Passed |
+| S1BA1 | 사용자 프로필 API | ✅ 완료 | ✅ Passed |
 | ... | ... | ... | ... |
 
 ## 2. 빌드/테스트 결과
@@ -134,11 +176,11 @@
 
 ```
 Process/S0_Project-SAL-Grid_생성/sal-grid/stage-gates/
+├── S0GATE_verification_report.md
 ├── S1GATE_verification_report.md
 ├── S2GATE_verification_report.md
 ├── S3GATE_verification_report.md
-├── S4GATE_verification_report.md
-└── S5GATE_verification_report.md
+└── S4GATE_verification_report.md
 ```
 
 ---
@@ -238,9 +280,10 @@ Process/S0_Project-SAL-Grid_생성/sal-grid/stage-gates/
 - [ ] blockers가 없는가?
 - [ ] comprehensive_verification이 Passed인가?
 
-### Stage Gate 검증
+### Stage Verification
 - [ ] 모든 Task가 완료 상태인가?
-- [ ] 검증 리포트를 생성했는가?
+- [ ] Stage Verification 리포트를 생성했는가? (`stage-gates/`)
+- [ ] Stage Gate JSON을 업데이트했는가? (`stage_gate_records/`)
 - [ ] PO 테스트 가이드를 작성했는가?
 
 ### PO 승인

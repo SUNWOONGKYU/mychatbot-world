@@ -10,7 +10,7 @@
 |---|--------|------|--------|
 | 1 | task_id | Task 고유 ID | 설계 시 |
 | 2 | task_name | Task 이름 | 설계 시 |
-| 3 | stage | Stage 코드 (S1~S5) | 설계 시 |
+| 3 | stage | Stage 코드 (S0~S4) | 설계 시 |
 | 4 | area | Area 코드 (11개) | 설계 시 |
 | 5 | level | Level (1~3) | 설계 시 |
 | 6 | status | 상태 (대기/진행/완료) | Main Agent |
@@ -29,7 +29,7 @@
 | 19 | blockers | 차단 요소 | Main Agent |
 | 20 | comprehensive_verification | 종합 검증 | Main Agent |
 | 21 | ai_verification_note | AI 검증 의견 | Main Agent |
-| 22 | stage_gate_status | Stage Gate 상태 | PO |
+| 22 | stage_gate_status | Stage Verification 상태 (**Stage 단위**, `stage_gate_records/`에 저장) | PO |
 
 ---
 
@@ -42,8 +42,8 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ 1. 선행 Task ID < 후행 Task ID (의존성 방향)                │
-│    → S1D1 → S2F1 (O)  Stage 1이 Stage 2보다 먼저           │
-│    → S2F1 → S1D1 (X)  역방향 의존성 금지                    │
+│    → S0D1 → S1F1 (O)  Stage 0이 Stage 1보다 먼저           │
+│    → S1F1 → S0D1 (X)  역방향 의존성 금지                    │
 │                                                             │
 │ 2. 순환 의존성 금지                                          │
 │    → A → B → A (X)                                         │
@@ -66,10 +66,10 @@
 
 | 후행 Task | dependencies | 유효성 | 이유 |
 |-----------|--------------|:------:|------|
-| S2F1 | S1D1 | ✅ | Stage 1 < Stage 2 |
-| S3BA1 | S2F1, S2BA1 | ✅ | Stage 2 < Stage 3 |
-| S2F1 | S3BA1 | ❌ | **역방향 (2 < 3 위반)** |
-| S2F1 | S9X1 | ❌ | **존재하지 않는 Task** |
+| S1F1 | S0D1 | ✅ | Stage 0 < Stage 1 |
+| S2BA1 | S1F1, S1BA1 | ✅ | Stage 1 < Stage 2 |
+| S1F1 | S2BA1 | ❌ | **역방향 (1 < 2 위반)** |
+| S1F1 | S9X1 | ❌ | **존재하지 않는 Task** |
 
 ---
 
@@ -182,9 +182,9 @@
 {project-root}/Process/S0_Project-SAL-Grid_생성/method/json/data/
 ├── index.json             ← 프로젝트 메타데이터 + task_ids 배열
 └── grid_records/          ← 개별 Task JSON 파일
-    ├── S1BI1.json
-    ├── S1BI2.json
-    ├── S2F1.json
+    ├── S0BI1.json
+    ├── S0BI2.json
+    ├── S1F1.json
     └── ... (Task ID별 파일)
 ```
 
@@ -200,7 +200,7 @@
   "project_id": "프로젝트ID",
   "project_name": "프로젝트명",
   "total_tasks": 66,
-  "task_ids": ["S1BI1", "S1BI2", "S1D1", "S1F1", ...]
+  "task_ids": ["S0BI1", "S0BI2", "S0D1", "S0F1", ...]
 }
 ```
 
@@ -208,9 +208,9 @@
 
 ```json
 {
-  "task_id": "S1F1",
+  "task_id": "S0F1",
   "task_name": "로그인 페이지 구현",
-  "stage": 1,
+  "stage": 0,
   "area": "F",
   "task_status": "Pending",
   "task_progress": 0,
@@ -223,9 +223,9 @@
 
 | 필드 | 설명 | 예시 값 |
 |------|------|--------|
-| task_id | Task 고유 ID | S1F1, S2BA1 |
+| task_id | Task 고유 ID | S0F1, S1BA1 |
 | task_name | Task 이름 | 로그인 페이지 구현 |
-| stage | Stage 번호 | 1, 2, 3, 4, 5 |
+| stage | Stage 번호 | 0, 1, 2, 3, 4 |
 | area | Area 코드 | F, BA, D, S, ... |
 | task_status | 작업 상태 | Pending, In Progress, Executed, Completed |
 | task_progress | 진행률 | 0~100 |
@@ -253,7 +253,7 @@ const indexPath = path.join(__dirname, 'Process/S0_Project-SAL-Grid_생성/metho
 const indexData = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
 
 // 개별 Task 파일 읽기
-const taskPath = path.join(__dirname, 'Process/S0_Project-SAL-Grid_생성/method/json/data/grid_records/S1F1.json');
+const taskPath = path.join(__dirname, 'Process/S0_Project-SAL-Grid_생성/method/json/data/grid_records/S0F1.json');
 const taskData = JSON.parse(fs.readFileSync(taskPath, 'utf-8'));
 ```
 
@@ -278,21 +278,21 @@ fs.writeFileSync(taskPath, JSON.stringify(taskData, null, 2), 'utf-8');
 
 ```javascript
 // 1. index.json의 task_ids 배열에 추가
-indexData.task_ids.push('S4F5');
+indexData.task_ids.push('S3F5');
 indexData.total_tasks = indexData.task_ids.length;
 fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2), 'utf-8');
 
 // 2. 새 Task JSON 파일 생성
 const newTaskData = {
-    task_id: 'S4F5',
+    task_id: 'S3F5',
     task_name: 'Task 이름',
-    stage: 4,
+    stage: 3,
     area: 'F',
     task_status: 'Pending',
     task_progress: 0,
     verification_status: 'Not Verified'
 };
-const newTaskPath = path.join(__dirname, 'Process/S0_Project-SAL-Grid_생성/method/json/data/grid_records/S4F5.json');
+const newTaskPath = path.join(__dirname, 'Process/S0_Project-SAL-Grid_생성/method/json/data/grid_records/S3F5.json');
 fs.writeFileSync(newTaskPath, JSON.stringify(newTaskData, null, 2), 'utf-8');
 ```
 

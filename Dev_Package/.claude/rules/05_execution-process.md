@@ -103,7 +103,7 @@ Main Agent → Verification Agent 서브에이전트 투입 (Task tool 사용)
 
 ---
 
-## 4단계: Stage Gate 검증
+## 4단계: Stage Verification (Stage Gate 검증)
 
 **수행자:** Main Agent (직접 수행)
 
@@ -112,16 +112,20 @@ Main Agent가 직접 검증:
     → Stage 내 모든 Task 완료 확인
     → 전체 빌드/테스트 통과 확인
     → 의존성 체인 완결성 확인
-    → 검증 리포트 생성
+    → Stage Verification 리포트 생성
 ```
 
 **리포트 저장:**
 - 위치: `Process/S0_Project-SAL-Grid_생성/sal-grid/stage-gates/`
 - 파일명: `S{N}GATE_verification_report.md`
 
-**JSON 기록:**
-- JSON 파일의 `stage_gate_status` 필드 업데이트
-- 검증 관련 필드 업데이트
+**Stage Gate JSON 기록:**
+- 위치: `method/json/data/stage_gate_records/S{N}_gate.json`
+- `stage_gate_status` 필드 업데이트
+- 검증 관련 필드 (checklist, ai_verification_note 등) 업데이트
+
+> ⚠️ Task Verification (#16-21)은 개별 Task JSON (`grid_records/`)에 기록
+> ⚠️ Stage Verification은 Stage 단위 JSON (`stage_gate_records/`)에 기록
 
 ---
 
@@ -185,9 +189,9 @@ PO가 수행:
 | 1 | 서브에이전트 | Task 실행 | Grid #10-13 |
 | 2 | AI → PO | 외부 설정 요청 | - |
 | 3 | 서브에이전트 | Task 검증 | Grid #16-21 |
-| 4 | Main Agent | Stage Gate 검증 | stage-gates/ |
+| 4 | Main Agent | Stage Verification | stage-gates/ + stage_gate_records/ |
 | 5 | Main Agent → PO | 테스트 가이드 | - |
-| 6 | PO | 최종 승인 | CSV stage_gate_status |
+| 6 | PO | 최종 승인 | stage_gate_records/S{N}_gate.json |
 
 ---
 

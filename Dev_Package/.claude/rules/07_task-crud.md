@@ -49,7 +49,7 @@ Not Verified → In Review → Verified (또는 Needs Fix)
 
 ```
 형식: S[Stage][Area][번호]
-예시: S4F5 = Stage 4 + Frontend + 5번째
+예시: S3F5 = Stage 3 + Frontend + 5번째
 ```
 
 **⚠️ SAL ID 부여 규칙 (의존성 기반):**
@@ -58,13 +58,13 @@ Not Verified → In Review → Verified (또는 Needs Fix)
 │ SAL ID는 의존성·병렬성·인접성을 인코딩합니다                  │
 │                                                             │
 │ 1. 선행 Task ID < 후행 Task ID (의존성 방향)                │
-│    예: S1D1 → S2F1 (O), S2F1 → S1D1 (X)                    │
+│    예: S0D1 → S1F1 (O), S1F1 → S0D1 (X)                    │
 │                                                             │
 │ 2. 동일 Stage·Area 내 Task는 병렬 실행 가능                 │
-│    예: S2F1, S2F2, S2F3는 동시 실행 가능                    │
+│    예: S1F1, S1F2, S1F3는 동시 실행 가능                    │
 │                                                             │
 │ 3. Stage 번호가 작을수록 먼저 실행됨                         │
-│    S1 → S2 → S3 → S4 → S5 순서                            │
+│    S0 → S1 → S2 → S3 → S4 순서                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -73,7 +73,7 @@ Not Verified → In Review → Verified (또는 Needs Fix)
 
 **기존 Task 확인:**
 ```bash
-ls Process/S0_Project-SAL-Grid_생성/sal-grid/task-instructions/ | grep "S4F"
+ls Process/S0_Project-SAL-Grid_생성/sal-grid/task-instructions/ | grep "S3F"
 ```
 
 ### Step 2: TASK_PLAN.md 업데이트
@@ -127,8 +127,8 @@ ls Process/S0_Project-SAL-Grid_생성/sal-grid/task-instructions/ | grep "S4F"
 ┌─────────────────────────────────────────────────────────────┐
 │ □ 선행 Task ID < 후행 Task ID인가?                          │
 │   → dependencies 필드에 명시된 Task가 현재 Task보다 작아야 함 │
-│   → 예: S2F1의 dependencies가 "S1D1"이면 OK (1 < 2)         │
-│   → 예: S2F1의 dependencies가 "S3BA1"이면 ERROR (2 < 3 위반)│
+│   → 예: S1F1의 dependencies가 "S0D1"이면 OK (0 < 1)         │
+│   → 예: S1F1의 dependencies가 "S2BA1"이면 ERROR (1 < 2 위반)│
 │                                                             │
 │ □ 순환 의존성이 없는가?                                      │
 │   → A → B → A 같은 순환 금지                                │
@@ -162,16 +162,16 @@ Process/S0_Project-SAL-Grid_생성/method/json/data/
   "project_id": "프로젝트ID",
   "project_name": "프로젝트명",
   "total_tasks": 67,  // ← 1 증가
-  "task_ids": ["S1BI1", ..., "S4F5"]  // ← 새 Task ID 추가
+  "task_ids": ["S0BI1", ..., "S3F5"]  // ← 새 Task ID 추가
 }
 ```
 
-**2단계: grid_records/S4F5.json 파일 생성**
+**2단계: grid_records/S3F5.json 파일 생성**
 ```json
 {
-    "task_id": "S4F5",
+    "task_id": "S3F5",
     "task_name": "Task 이름",
-    "stage": 4,
+    "stage": 3,
     "area": "F",
     "task_status": "Pending",
     "task_progress": 0,
@@ -183,12 +183,12 @@ Process/S0_Project-SAL-Grid_생성/method/json/data/
 
 **1단계: index.json에 task_id 추가** (동일)
 
-**2단계: grid_records/S4F5.json 파일 생성**
+**2단계: grid_records/S3F5.json 파일 생성**
 ```json
 {
-    "task_id": "S4F5",
+    "task_id": "S3F5",
     "task_name": "Task 이름",
-    "stage": 4,
+    "stage": 3,
     "area": "F",
     "task_status": "Completed",
     "task_progress": 100,
@@ -200,11 +200,11 @@ Process/S0_Project-SAL-Grid_생성/method/json/data/
 **Stage 번호:**
 | Stage | 번호 |
 |-------|------|
+| S0 | 0 |
 | S1 | 1 |
 | S2 | 2 |
 | S3 | 3 |
 | S4 | 4 |
-| S5 | 5 |
 
 ### Step 7: 작업 로그 업데이트
 
@@ -358,7 +358,7 @@ rm Process/S0_Project-SAL-Grid_생성/method/json/data/grid_records/{TaskID}.jso
 
 1. **5개 위치 모두 수행**: 하나라도 빠지면 불일치 발생
 2. **Task ID 중복 금지**: 기존 Task 확인 후 번호 결정
-3. **Stage 번호는 integer**: S4 → 4 (문자열 아님)
+3. **Stage 번호는 integer**: S3 → 3 (문자열 아님)
 4. **상태 전이 규칙 준수**: Completed는 반드시 Verified 후에만 설정 가능
 5. **verification_status 필수**: 추가 시 반드시 명시적 설정
 6. **⚠️ SAL ID 의존성 규칙**: 선행 Task ID < 후행 Task ID (역방향 금지)
@@ -387,9 +387,9 @@ rm Process/S0_Project-SAL-Grid_생성/method/json/data/grid_records/{TaskID}.jso
 Process/S0_Project-SAL-Grid_생성/method/json/data/
 ├── index.json             ← 프로젝트 메타데이터 + task_ids 배열
 └── grid_records/          ← 개별 Task JSON 파일
-    ├── S1BI1.json
-    ├── S1BI2.json
-    ├── S1D1.json
+    ├── S0BI1.json
+    ├── S0BI2.json
+    ├── S0D1.json
     └── ... (Task ID별 파일)
 ```
 
@@ -399,7 +399,7 @@ Process/S0_Project-SAL-Grid_생성/method/json/data/
   "project_id": "프로젝트ID",
   "project_name": "프로젝트명",
   "total_tasks": 66,
-  "task_ids": ["S1BI1", "S1BI2", "S1D1", ...]
+  "task_ids": ["S0BI1", "S0BI2", "S0D1", ...]
 }
 ```
 
