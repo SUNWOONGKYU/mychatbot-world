@@ -72,14 +72,17 @@ def inject_to_claude_code(cmd_id, platoon_id, text):
             f'powershell -File "C:\\Users\\wksun\\cpc-done.ps1" "{cmd_id}" "결과한줄요약"'
         )
 
-        # cpc_target.json에서 wt_pid + oc_pid 로드
+        # cpc_target.json에서 wt_pid + oc_pid + wt_hwnd + tab_idx 로드
         wt_pid, tab_idx = load_target()
         oc_pid = None
+        wt_hwnd = None
         try:
             with open(CPC_TARGET_FILE, encoding='utf-8-sig') as f:
                 d = json.load(f)
             oc_pid = d.get('oc_pid')
             wt_pid = d.get('wt_pid') or wt_pid
+            wt_hwnd = d.get('wt_hwnd')   # 정확한 WT 창 HWND (find_my_wt.ps1로 저장)
+            tab_idx = d.get('tab_idx') or tab_idx  # UIA로 감지한 시각적 탭 인덱스
         except Exception:
             pass
 
@@ -87,7 +90,12 @@ def inject_to_claude_code(cmd_id, platoon_id, text):
             print("  [주입] wt_pid/oc_pid 없음 — find_my_wt.ps1 재실행 필요")
             return
 
-        # cpc_inject_wt.py v5: OC PID로 실시간 탭 위치 계산 → 정확한 탭에만 주입
+        if wt_hwnd:
+            print(f"  [주입] 저장된 HWND 사용: {hex(wt_hwnd)} (정확한 WT 창)")
+        if tab_idx:
+            print(f"  [주입] 저장된 탭 인덱스 사용: {tab_idx} (UIA 시각적 순서)")
+
+        # cpc_inject_wt.py: OC PID + 저장된 HWND/탭 인덱스로 정확한 탭에만 주입
         inject_script = r"G:\내 드라이브\mychatbot-world\.claude\hooks\cpc_inject_wt.py"
         pythonw = sys.executable.replace("python.exe", "pythonw.exe")
         if not os.path.exists(pythonw):
@@ -99,12 +107,18 @@ def inject_to_claude_code(cmd_id, platoon_id, text):
         tmp.write(prompt)
         tmp.close()
 
+        args = [pythonw, inject_script, str(wt_pid), str(oc_pid), "@" + tmp.name]
+        # 저장된 HWND가 있으면 전달 (여러 WT 창 환경에서 정확한 창 선택)
+        args.append(hex(wt_hwnd) if wt_hwnd else "")
+        # 저장된 탭 인덱스가 있으면 전달 (UIA 시각적 탭 순서 사용)
+        args.append(str(tab_idx) if tab_idx else "")
+
         subprocess.Popen(
-            [pythonw, inject_script, str(wt_pid), str(oc_pid), "@" + tmp.name],
+            args,
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             creationflags=0x08000000  # CREATE_NO_WINDOW
         )
-        print(f"  [주입] WT={wt_pid} OC={oc_pid} → 전달 완료")
+        print(f"  [주입] WT={wt_pid} OC={oc_pid} HWND={hex(wt_hwnd) if wt_hwnd else 'auto'} TAB={tab_idx or 'auto'} → 전달 완료")
 
         # 큐 파일 백업
         queue_path = r"C:\Users\wksun\cpc_inject_queue.txt"
@@ -235,7 +249,7 @@ async def realtime_main():
             record = payload.get("new", payload.get("record", {})) if isinstance(payload, dict) else {}
         cmd_id = record.get("id")
         platoon_id = record.get("platoon_id", "?")
-        if cmd_id and cmd_id not in seen:
+        if cmd_id and cmd_id not in seen and platoon_id in PLATOONS:
             seen.add(cmd_id)
             if record.get("status") == "PENDING":
                 threading.Thread(target=process_command, args=(platoon_id, record), daemon=True).start()

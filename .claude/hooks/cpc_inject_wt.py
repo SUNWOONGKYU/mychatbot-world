@@ -179,12 +179,18 @@ def send_inputs(inputs):
 
 
 # ─── 메인 주입 ───────────────────────────────────────────────
-def inject(wt_pid, oc_pid, text):
-    tab_idx = get_tab_idx(wt_pid, oc_pid)
+def inject(wt_pid, oc_pid, text, hwnd_override=None, tab_idx_override=None):
+    tab_idx = tab_idx_override or get_tab_idx(wt_pid, oc_pid)
     if tab_idx is None:
         return False
 
-    hwnd = find_wt_hwnd(wt_pid)
+    if hwnd_override and user32.IsWindow(hwnd_override):
+        hwnd = hwnd_override
+        log(f"Using saved hwnd={hex(hwnd)} (from cpc_target.json)")
+    else:
+        if hwnd_override:
+            log(f"hwnd_override={hex(hwnd_override)} is invalid, falling back to search")
+        hwnd = find_wt_hwnd(wt_pid)
     if not hwnd:
         log(f"HWND not found for WT={wt_pid}")
         return False
@@ -216,7 +222,7 @@ def inject(wt_pid, oc_pid, text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        log("Usage: cpc_inject_wt.py <wt_pid> <oc_pid> <text|@filepath>")
+        log("Usage: cpc_inject_wt.py <wt_pid> <oc_pid> <text|@filepath> [hwnd_hex] [tab_idx]")
         sys.exit(1)
     text_arg = sys.argv[3]
     if text_arg.startswith("@"):
@@ -230,5 +236,7 @@ if __name__ == "__main__":
             sys.exit(1)
     else:
         text = text_arg
-    ok = inject(int(sys.argv[1]), int(sys.argv[2]), text)
+    hwnd_override = int(sys.argv[4], 16) if len(sys.argv) > 4 and sys.argv[4] else None
+    tab_idx_override = int(sys.argv[5]) if len(sys.argv) > 5 and sys.argv[5] else None
+    ok = inject(int(sys.argv[1]), int(sys.argv[2]), text, hwnd_override, tab_idx_override)
     sys.exit(0 if ok else 1)
