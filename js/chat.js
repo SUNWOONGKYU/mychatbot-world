@@ -651,7 +651,11 @@ async function generateResponse(userText) {
                 botName: chatBotData && chatBotData.botName,
                 personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
                 tone: (chatBotData && chatBotData.tone) || '',
-                faqs: (chatBotData && chatBotData.faqs) || []
+                faqs: (currentPersona && currentPersona.faqs && currentPersona.faqs.length > 0)
+                    ? currentPersona.faqs
+                    : (chatBotData && chatBotData.faqs) || [],
+                personaName: currentPersona && currentPersona.name,
+                personaCategory: currentPersona && currentPersona.category
             },
             history: conversationHistory.slice(-10)
         };

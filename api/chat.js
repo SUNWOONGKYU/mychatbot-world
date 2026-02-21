@@ -32,7 +32,27 @@ export default async function handler(req, res) {
       });
     }
 
-    const systemMsg = `당신은 "${botConfig?.botName || 'AI 챗봇'}"입니다.
+    const personaName = botConfig?.personaName || '';
+    const personaCategory = botConfig?.personaCategory || '';
+    const isCpcLiaison = personaName === 'Claude 연락병';
+
+    let roleRules;
+    if (isCpcLiaison) {
+      // 연락병 모드: 사용자 = 지휘관, 군사 용어 사용
+      roleRules = `- 사용자를 "지휘관님"이라고 부르세요
+- CPC 소대장은 "소대장"이라고만 부르세요 (님 붙이지 마세요)
+- 명령 접수 시 "CPC 연락병에게 전달했습니다"라고 보고하세요`;
+    } else if (personaCategory === 'avatar') {
+      // 아바타 모드: 고객/손님 대상, 군사 용어 절대 금지
+      roleRules = `- 사용자는 고객/방문자입니다. 정중하고 친절하게 대하세요
+- "지휘관", "소대장", "연락병" 등 군사 용어를 절대 사용하지 마세요`;
+    } else {
+      // 도우미 모드: 봇 소유자 대상, 군사 용어 금지
+      roleRules = `- 사용자는 봇 소유자입니다. 편안하고 도움이 되게 대하세요
+- "지휘관", "소대장", "연락병" 등 군사 용어를 절대 사용하지 마세요`;
+    }
+
+    const systemMsg = `당신은 "${botConfig?.botName || 'AI 챗봇'}"의 "${personaName || 'AI 어시스턴트'}" 페르소나입니다.
 성격: ${botConfig?.personality || '친절하고 전문적'}
 어조: ${botConfig?.tone || '편안하고 자연스러운 어조'}
 
@@ -44,8 +64,7 @@ ${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}
 - 한국어로 답변하세요
 - 간결하고 도움이 되는 답변을 하세요
 - 이모지를 적절히 사용하세요
-- 사용자를 "소대장님"이라고 부르지 마세요. 사용자는 지휘관입니다
-- CPC 소대장은 "소대장"이라고만 부르세요 (님 붙이지 마세요)`;
+${roleRules}`;
 
     const messages = [
       { role: 'system', content: systemMsg },
