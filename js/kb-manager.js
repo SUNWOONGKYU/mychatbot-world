@@ -29,9 +29,15 @@ const StorageManager = (() => {
 
   function getSupabase() {
     if (_sb) return _sb;
-    // supabase-js CDN은 window.supabase.createClient 제공
+    // Prefer MCW.auth's shared Supabase client (single source of truth for anon key)
+    if (typeof MCW !== 'undefined' && MCW.auth && MCW.auth.getClient && MCW.auth.getClient()) {
+      _sb = MCW.auth.getClient();
+      capabilities.supabase = true;
+      console.log('[StorageManager] Using shared MCW.auth Supabase client');
+      return _sb;
+    }
+    // Fallback: create own client (when MCW.auth not yet initialized)
     if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
-      // Supabase anon key is public (RLS enforced) — safe to hardcode
       const url = 'https://gybgkehtonqhosuutoxx.supabase.co';
       const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5YmdrZWh0b25xaG9zdXV0b3h4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQ1OTEsImV4cCI6MjA4Njc1MDU5MX0.Xk4JRkJwdTps95vXq3dXklgsTl7Yz_G1I4kbItPr2kw';
       if (url && key) {
@@ -832,7 +838,7 @@ const StorageManager = (() => {
         category: p.category,
         model: p.model,
         iq_eq: p.iqEq,
-        is_public: true,
+        is_public: p.isPublic !== false,
         greeting: p.greeting,
         faqs: p.faqs,
         user_title: p.userTitle || ''

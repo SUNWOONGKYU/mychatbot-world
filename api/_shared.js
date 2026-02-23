@@ -27,10 +27,20 @@ export function markKeyFailed(key) {
 }
 
 // ─── Context Overflow Detection + Compaction ───
-export function isContextOverflow(error, statusCode) {
-  if (statusCode === 400) return true;
-  const msg = (error?.message || '').toLowerCase();
-  return msg.includes('context') || msg.includes('token') || msg.includes('too long');
+// Parses the response body to distinguish context overflow from other 400 errors
+// (e.g., malformed request, invalid parameter). Only triggers compaction for
+// actual token/context limit errors.
+export async function isContextOverflow(resp) {
+  if (!resp || resp.ok) return false;
+  if (resp.status !== 400) return false;
+  try {
+    const body = await resp.clone().json();
+    const msg = (body?.error?.message || body?.error?.code || body?.message || '').toLowerCase();
+    return msg.includes('context') || msg.includes('token') || msg.includes('too long')
+      || msg.includes('maximum') || msg.includes('exceed') || msg.includes('length');
+  } catch {
+    return false;
+  }
 }
 
 export async function compactHistory(history, apiKey) {
@@ -50,7 +60,8 @@ export async function compactHistory(history, apiKey) {
     });
     const data = await resp.json();
     return data.choices?.[0]?.message?.content || '';
-  } catch {
+  } catch (e) {
+    console.warn('[compactHistory] failed:', e.message);
     return '';
   }
 }

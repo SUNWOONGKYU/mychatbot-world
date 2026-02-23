@@ -80,7 +80,7 @@ export default async function handler(req, res) {
 
           if (!resp.ok) {
             // Context overflow → compact history and retry
-            if (!contextCompacted && isContextOverflow(null, resp.status)) {
+            if (!contextCompacted && await isContextOverflow(resp)) {
               console.warn(`[Chat API] Context overflow detected, compacting history...`);
               const summary = await compactHistory(history.slice(-10), apiKey);
               if (summary) {

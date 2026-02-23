@@ -23,6 +23,10 @@ export default async function handler(req, res) {
   const { id } = req.query;
 
   if (id) {
+    // Validate id: alphanumeric + dash only (prevent path traversal)
+    if (!/^[a-z0-9-]+$/.test(id)) {
+      return res.status(400).json({ error: 'Invalid skill id' });
+    }
     // Return specific SKILL.md
     const skillPath = join(process.cwd(), 'skills', id, 'SKILL.md');
     if (!existsSync(skillPath)) {
@@ -37,7 +41,12 @@ export default async function handler(req, res) {
   if (!existsSync(indexPath)) {
     return res.status(200).json([]);
   }
-  const raw = await readFile(indexPath, 'utf-8');
-  const catalog = JSON.parse(raw);
-  return res.status(200).json(catalog);
+  try {
+    const raw = await readFile(indexPath, 'utf-8');
+    const catalog = JSON.parse(raw);
+    return res.status(200).json(catalog);
+  } catch (e) {
+    console.error('[Skills API] Failed to read index.json:', e.message);
+    return res.status(500).json({ error: 'Failed to load skill catalog' });
+  }
 }

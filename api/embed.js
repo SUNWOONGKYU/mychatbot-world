@@ -34,8 +34,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Rate limit check
-  const clientIp = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  // Rate limit check (x-vercel-forwarded-for is trusted on Vercel)
+  const clientIp = req.headers['x-vercel-forwarded-for'] || req.headers['x-forwarded-for'] || 'unknown';
   if (!checkRateLimit(clientIp)) {
     return res.status(429).json({ error: 'Too many requests. Try again later.' });
   }

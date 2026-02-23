@@ -75,7 +75,7 @@ export default async function handler(req, res) {
         });
 
         if (!resp.ok) {
-          if (!contextCompacted && isContextOverflow(null, resp.status)) {
+          if (!contextCompacted && await isContextOverflow(resp)) {
             const summary = await compactHistory(history.slice(-10), apiKey);
             if (summary) {
               messages = [

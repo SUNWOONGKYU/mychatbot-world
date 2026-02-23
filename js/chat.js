@@ -186,6 +186,12 @@ async function loadBotData() {
         cpcShowBar();
     }
 }
+// HTML escape for untrusted content in system messages
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
 // === CPC (Claude Platoons Control) 양방향 연동 ===
 const CPC_API_BASE = 'https://claude-platoons-control.vercel.app';
 let _cpcPlatoons = [];           // 캐시된 소대 목록
@@ -247,7 +253,7 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
         _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
         const cleaned = rawResult.replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
         const short = cleaned.length > 80 ? cleaned.substring(0, 80) + '...' : cleaned;
-        addMessage('system', '📡 [CPC] 소대 응답: ' + short, 'cpc-result');
+        addMessage('system', '📡 [CPC] 소대 응답: ' + escapeHtml(short), 'cpc-result');
         if (voiceOutputEnabled && cleaned) {
             const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
             if (_audioSource) {
@@ -319,14 +325,14 @@ async function cpcPollTrackedCommands() {
 
         if (fresh.status !== tracked.status) {
             if (fresh.status === 'ACKED' && tracked.status === 'PENDING') {
-                addMessage('system', `[CPC] 연락병이 명령을 수신했습니다: "${tracked.text}"`);
+                addMessage('system', '[CPC] 연락병이 명령을 수신했습니다: "' + escapeHtml(tracked.text) + '"');
             }
             if (fresh.status === 'DONE') {
                 const rawResult = (fresh.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
                 const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
                 const resultMsg = shortResult
-                    ? `[CPC] 명령 완료: ${shortResult}`
-                    : `[CPC] 명령 완료: "${tracked.text}"`;
+                    ? '[CPC] 명령 완료: ' + escapeHtml(shortResult)
+                    : '[CPC] 명령 완료: "' + escapeHtml(tracked.text) + '"';
                 addMessage('system', resultMsg);
                 // CPC 결과 음성 읽기
                 if (voiceOutputEnabled && rawResult) {
@@ -474,20 +480,29 @@ function renderPersonaSelector() {
     // 대외용(avatar) / 대내용(helper) 구분 렌더링: 4개씩 2줄
     var avatars = visiblePersonas.filter(function(p) { return p.category === 'avatar'; });
     var helpers = visiblePersonas.filter(function(p) { return p.category !== 'avatar'; });
-    function chipHTML(p, typeClass) {
-        var activeClass = (currentPersona && currentPersona.id === p.id) ? ' active' : '';
-        return '<div class="persona-chip ' + typeClass + activeClass + '" onclick="switchPersona(\'' + p.id + '\')">' +
-            '<span class="persona-chip-name">' + p.name + '</span>' +
-        '</div>';
+    function createChip(p, typeClass) {
+        var chip = document.createElement('div');
+        chip.className = 'persona-chip ' + typeClass + ((currentPersona && currentPersona.id === p.id) ? ' active' : '');
+        chip.onclick = function() { switchPersona(p.id); };
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'persona-chip-name';
+        nameSpan.textContent = p.name;
+        chip.appendChild(nameSpan);
+        return chip;
     }
-    var html = '';
+    container.innerHTML = '';
     if (avatars.length) {
-        html += '<div class="persona-row persona-row-public">' + avatars.map(function(p) { return chipHTML(p, 'chip-public'); }).join('') + '</div>';
+        var row1 = document.createElement('div');
+        row1.className = 'persona-row persona-row-public';
+        avatars.forEach(function(p) { row1.appendChild(createChip(p, 'chip-public')); });
+        container.appendChild(row1);
     }
     if (helpers.length) {
-        html += '<div class="persona-row persona-row-private">' + helpers.map(function(p) { return chipHTML(p, 'chip-private'); }).join('') + '</div>';
+        var row2 = document.createElement('div');
+        row2.className = 'persona-row persona-row-private';
+        helpers.forEach(function(p) { row2.appendChild(createChip(p, 'chip-private')); });
+        container.appendChild(row2);
     }
-    container.innerHTML = html;
     container.style.display = visiblePersonas.length ? 'flex' : 'none';
 }
 function switchPersona(id) {
@@ -536,9 +551,14 @@ function renderFaqButtons() {
         ? currentPersona.faqs
         : chatBotData?.faqs;
     if (!faqs || faqs.length === 0) { container.innerHTML = ''; return; }
-    container.innerHTML = faqs.map(f =>
-        `<button class="faq-btn" onclick="askFaq('${f.q.replace(/'/g, "\\'")}', '${(f.a || '').replace(/'/g, "\\'")}')">${f.q}</button>`
-    ).join('');
+    container.innerHTML = '';
+    faqs.forEach(function(f) {
+        var btn = document.createElement('button');
+        btn.className = 'faq-btn';
+        btn.textContent = f.q;
+        btn.onclick = function() { askFaq(f.q, f.a || ''); };
+        container.appendChild(btn);
+    });
 }
 async function sendMessage() {
     // 사용자 제스처 시점에 Audio unlock (이 시점이어야 모바일에서 작동)
@@ -571,8 +591,8 @@ async function sendMessage() {
     clearTimeout(safetyTimer);
     hideTyping();
 
-    // Silent Reply: CPC 릴레이 시 AI 응답 표시 생략
-    const isSilent = response === '__SILENT__' || (response && response.includes('__SILENT__'));
+    // Silent Reply: CPC 릴레이 시 AI 응답 표시 생략 (exact match only)
+    const isSilent = response && response.trim() === '__SILENT__';
     if (isSilent) {
         console.log('[Silent Reply] CPC relay — AI response suppressed');
     } else {
@@ -596,7 +616,7 @@ async function sendMessage() {
             const platoonId = _cpcSelectedId;
             const cmdText = text;
             console.log('[CPC] 명령 전달 완료:', platoonId, cmdId);
-            addMessage('system', '[CPC] 소대장에게 전달됨 → ' + platoonId + ' · 답변 대기 중...');
+            addMessage('system', '[CPC] 소대장에게 전달됨 → ' + escapeHtml(platoonId) + ' · 답변 대기 중...');
             // 연속 폴러에 등록 (페이지 새로고침 전까지 계속 추적)
             cpcTrackCommand(cmd);
             // 소대장(Claude Code) 처리 대기 폴링 → 타임아웃 시 Vercel AI 폴백
