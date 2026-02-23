@@ -3,6 +3,7 @@
  * Used by: api/chat.js, api/chat-stream.js
  *
  * Extracted to eliminate code duplication (DRY principle).
+ * @module _shared
  */
 
 // ─── API Key Rotation + Cooldown ───
@@ -12,6 +13,11 @@
 const KEY_COOLDOWNS = {};
 const COOLDOWN_MS = 30000;
 
+/**
+ * Returns API keys sorted by availability (cooled-down keys last).
+ * Reads from OPENROUTER_API_KEY env var (comma-separated).
+ * @returns {string[]} Sorted API keys with available keys first
+ */
 export function getAvailableKeys() {
   const keys = (process.env.OPENROUTER_API_KEY || '').split(',').map(k => k.trim()).filter(Boolean);
   const now = Date.now();
@@ -22,14 +28,22 @@ export function getAvailableKeys() {
   });
 }
 
+/**
+ * Marks an API key as failed, triggering a 30-second cooldown.
+ * @param {string} key - The API key to mark as failed
+ */
 export function markKeyFailed(key) {
   KEY_COOLDOWNS[key] = Date.now();
 }
 
 // ─── Context Overflow Detection + Compaction ───
-// Parses the response body to distinguish context overflow from other 400 errors
-// (e.g., malformed request, invalid parameter). Only triggers compaction for
-// actual token/context limit errors.
+
+/**
+ * Detects context/token overflow from a 400 response by parsing the error body.
+ * Only returns true for actual context/token limit errors, not other 400s.
+ * @param {Response} resp - Fetch response to check
+ * @returns {Promise<boolean>} True if the error is a context overflow
+ */
 export async function isContextOverflow(resp) {
   if (!resp || resp.ok) return false;
   if (resp.status !== 400) return false;
@@ -43,6 +57,13 @@ export async function isContextOverflow(resp) {
   }
 }
 
+/**
+ * Compacts conversation history into a 3-sentence summary using AI.
+ * Used when context overflow is detected to reduce token count.
+ * @param {Array<{role: string, content: string}>} history - Conversation messages
+ * @param {string} apiKey - OpenRouter API key
+ * @returns {Promise<string>} Summary text, or empty string on failure
+ */
 export async function compactHistory(history, apiKey) {
   try {
     const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -69,6 +90,13 @@ export async function compactHistory(history, apiKey) {
 // ─── Skill System Prompt Builder (token budget) ───
 const SILENT_REPLY_TOKEN = '__SILENT__';
 
+/**
+ * Builds a token-budgeted skill section for the system prompt.
+ * Concatenates skill systemPrompts until the character limit is reached.
+ * @param {Array<{name: string, systemPrompt: string}>} skills - Active skills
+ * @param {number} [maxTokens=300] - Approximate token budget (1 token ≈ 2.5 chars)
+ * @returns {string} Formatted skill section or empty string
+ */
 export function buildSkillSection(skills, maxTokens = 300) {
   if (!skills || skills.length === 0) return '';
   const charLimit = maxTokens * 2.5;
@@ -85,6 +113,13 @@ export function buildSkillSection(skills, maxTokens = 300) {
   return section;
 }
 
+/**
+ * Builds a token-budgeted FAQ section for the system prompt.
+ * Includes Q&A pairs until the character limit is reached.
+ * @param {Array<{q: string, a: string}>} faqs - FAQ pairs
+ * @param {number} [maxTokens=500] - Approximate token budget
+ * @returns {string} Formatted FAQ section or empty string
+ */
 export function buildFaqSection(faqs, maxTokens = 500) {
   if (!faqs || faqs.length === 0) return '';
   const charLimit = maxTokens * 2.5;
@@ -100,6 +135,14 @@ export function buildFaqSection(faqs, maxTokens = 500) {
 }
 
 // ─── DM Security Policy ───
+
+/**
+ * Checks DM access policy for a bot.
+ * Supports 3 modes: 'public' (default), 'allowlist', 'pairing'.
+ * @param {Object} botConfig - Bot configuration with dmPolicy, allowedUsers, pairingCode
+ * @param {string} userId - User identifier (email or 'anon')
+ * @returns {{blocked: boolean, reply?: string}} Access decision
+ */
 export function checkDmPolicy(botConfig, userId) {
   const dmPolicy = botConfig?.dmPolicy || 'public';
 
@@ -122,6 +165,21 @@ export function checkDmPolicy(botConfig, userId) {
 }
 
 // ─── System Message Builder ───
+
+/**
+ * Builds the full system message for AI chat, including persona, FAQs, skills, and rules.
+ * Applies persona-specific role rules (CPC liaison, avatar, default).
+ * @param {Object} botConfig - Full bot configuration
+ * @param {string} [botConfig.botName] - Bot display name
+ * @param {string} [botConfig.personaName] - Active persona name
+ * @param {string} [botConfig.personaCategory] - Persona category ('avatar', etc.)
+ * @param {string} [botConfig.personality] - Personality description
+ * @param {string} [botConfig.tone] - Tone description
+ * @param {string} [botConfig.userTitle] - How to address the user
+ * @param {Array} [botConfig.faqs] - FAQ pairs
+ * @param {Array} [botConfig.skills] - Active skills with systemPrompt
+ * @returns {string} Complete system message for AI model
+ */
 export function buildSystemMessage(botConfig) {
   const personaName = botConfig?.personaName || '';
   const personaCategory = botConfig?.personaCategory || '';
@@ -160,7 +218,11 @@ ${skillSection}
 ${roleRules}`;
 }
 
-// ─── Model Stack ───
+/**
+ * AI model priority stack for chat completions.
+ * Order: cost-effective first, quality fallbacks after.
+ * @type {string[]}
+ */
 export const MODEL_STACK = [
   'google/gemini-2.5-flash',
   'openai/gpt-4o',
