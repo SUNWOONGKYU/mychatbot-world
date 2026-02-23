@@ -15,6 +15,8 @@ let _audioCtx = null;        // AudioContext (iOS 호환 TTS)
 let _audioSource = null;     // 현재 재생 중인 BufferSource
 document.addEventListener('DOMContentLoaded', async () => {
     if (typeof MCW !== 'undefined' && MCW.ready) await MCW.ready;
+    // Sync skill catalog from server (non-blocking)
+    if (typeof MCW !== 'undefined' && MCW.syncSkills) MCW.syncSkills();
     // Security: purge any leaked API keys from localStorage
     localStorage.removeItem('mcw_openrouter_key');
     await loadBotData();
@@ -726,7 +728,9 @@ function getInstalledSkillsForPersona() {
     if (!chatBotData || !currentPersona) return [];
     let botId = chatBotData.id;
     let personaId = currentPersona.id;
-    let installed = JSON.parse(localStorage.getItem('mcw_skills_' + botId + '_' + personaId) || '[]');
+    let installed;
+    try { installed = JSON.parse(localStorage.getItem('mcw_skills_' + botId + '_' + personaId) || '[]'); }
+    catch (e) { installed = []; }
     // Merge with full skill data (including systemPrompt) from MCW.skills
     if (typeof MCW !== 'undefined' && MCW.skills) {
         return installed.map(function(s) {
@@ -746,8 +750,8 @@ async function generateResponse(userText) {
     // Resolve userId for DM policy (allowlist/pairing)
     let userId = 'anon';
     try {
-        if (typeof MCW !== 'undefined' && MCW.auth) {
-            const u = MCW.auth.getCurrentUser ? MCW.auth.getCurrentUser() : MCW.auth._user;
+        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser) {
+            const u = MCW.user.getCurrentUser();
             if (u && u.email) userId = u.email;
         }
     } catch (e) {}

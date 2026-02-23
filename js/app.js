@@ -302,7 +302,6 @@ const MCW = {
       'deepseek/deepseek-chat',
     ],
     search: 'perplexity/sonar',
-    free: 'openrouter/free',
     // 음성 (원소스 — 플랫폼/텔레그램 동일)
     stt: 'whisper-1',
     tts: 'tts-1',
@@ -313,7 +312,6 @@ const MCW = {
       'anthropic/claude-sonnet-4.5': 'Claude Sonnet 4.5',
       'deepseek/deepseek-chat': 'DeepSeek V3',
       'perplexity/sonar': 'Perplexity Sonar',
-      'openrouter/free': 'Free Model',
     }
   },
 
