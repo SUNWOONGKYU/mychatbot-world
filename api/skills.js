@@ -32,8 +32,13 @@ export default async function handler(req, res) {
     if (!existsSync(skillPath)) {
       return res.status(404).json({ error: 'Skill not found' });
     }
-    const content = await readFile(skillPath, 'utf-8');
-    return res.status(200).json({ id, content });
+    try {
+      const content = await readFile(skillPath, 'utf-8');
+      return res.status(200).json({ id, content });
+    } catch (e) {
+      console.error('[Skills API] Failed to read SKILL.md:', e.message);
+      return res.status(500).json({ error: 'Failed to read skill file' });
+    }
   }
 
   // Return full catalog

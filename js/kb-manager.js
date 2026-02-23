@@ -737,15 +737,40 @@ const StorageManager = (() => {
     };
     await save('kb-text', `kb_index_${botId}`, index, { botId });
 
-    // Supabase mcw_kb_items에도 동기화 (클라우드 백업)
+    // Supabase mcw_kb_items에도 동기화 (클라우드 백업 + 벡터 임베딩)
     if (getSupabase()) {
       try {
-        await supabaseSave('mcw_kb_items', {
+        // Build combined text for embedding
+        const textParts = [];
+        if (kb.qaPairs) kb.qaPairs.forEach(qa => textParts.push(`Q: ${qa.q} A: ${qa.a}`));
+        if (kb.freeText) textParts.push(kb.freeText);
+        const combinedText = textParts.join('\n').slice(0, 8000);
+
+        // Generate embedding vector via /api/embed
+        let embedding = null;
+        if (combinedText.length > 0) {
+          try {
+            const embedRes = await fetch('/api/embed', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: combinedText })
+            });
+            if (embedRes.ok) {
+              const embedData = await embedRes.json();
+              embedding = embedData.vector || null;
+            }
+          } catch (e) { console.warn('[KB] embedding generation skipped:', e.message); }
+        }
+
+        const kbRecord = {
           id: `kb_${botId}`,
           bot_id: botId,
           category: 'knowledge-base',
           data: { qaPairs: kb.qaPairs || [], freeText: kb.freeText || '', urls: kb.urls || [], fileNames: (kb.files || []).map(f => f.name) }
-        });
+        };
+        if (embedding) kbRecord.embedding = embedding;
+
+        await supabaseSave('mcw_kb_items', kbRecord);
       } catch (e) { console.warn('[KB] cloud sync failed:', e); }
     }
 

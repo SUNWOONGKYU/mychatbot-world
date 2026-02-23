@@ -36,60 +36,6 @@ const MCW = {
     getConversations(botId) {
       return JSON.parse(localStorage.getItem(`mcw_conv_${botId}`) || '[]');
     },
-    saveMessage(botId, role, content) {
-      const convs = this.getConversations(botId);
-      convs.push({ role, content, timestamp: new Date().toISOString() });
-      // 최대 200개 메시지만 유지
-      if (convs.length > 200) convs.splice(0, convs.length - 200);
-      localStorage.setItem(`mcw_conv_${botId}`, JSON.stringify(convs));
-    },
-    getStats(botId) {
-      return JSON.parse(localStorage.getItem(`mcw_stats_${botId}`) || '{"totalConversations":0,"totalMessages":0,"daily":{},"topQuestions":{}}');
-    },
-    saveStats(botId, stats) {
-      localStorage.setItem(`mcw_stats_${botId}`, JSON.stringify(stats));
-    },
-    logEvent(botId, type, data = {}) {
-      const stats = this.getStats(botId);
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-
-      // Initialize daily stats if needed
-      stats.daily = stats.daily || {};
-      stats.daily[today] = stats.daily[today] || { conversations: 0, messages: 0 };
-
-      if (type === 'conversation_start') {
-        stats.totalConversations = (stats.totalConversations || 0) + 1;
-        stats.daily[today].conversations++;
-      } else if (type === 'message') {
-        stats.totalMessages = (stats.totalMessages || 0) + 1;
-        stats.daily[today].messages++;
-
-        // Track top questions (user messages only)
-        if (data.role === 'user' && data.content) {
-          stats.topQuestions = stats.topQuestions || {};
-          const q = data.content.trim();
-          if (q.length < 50) { // Only track short questions
-            stats.topQuestions[q] = (stats.topQuestions[q] || 0) + 1;
-          }
-        }
-      }
-
-      this.saveStats(botId, stats);
-    },
-    getInstalledSkills(botId) {
-      return JSON.parse(localStorage.getItem(`mcw_skills_${botId}`) || '[]');
-    },
-    installSkill(botId, skill) {
-      const skills = this.getInstalledSkills(botId);
-      if (!skills.find(s => s.id === skill.id)) {
-        skills.push({ ...skill, installed_at: new Date().toISOString() });
-        localStorage.setItem(`mcw_skills_${botId}`, JSON.stringify(skills));
-      }
-    },
-    uninstallSkill(botId, skillId) {
-      const skills = this.getInstalledSkills(botId).filter(s => s.id !== skillId);
-      localStorage.setItem(`mcw_skills_${botId}`, JSON.stringify(skills));
-    },
     getSkill(skillId) {
       return MCW.skills.find(s => s.id === skillId);
     },
@@ -438,3 +384,25 @@ MCW.ready = (async () => {
     return null;
   }
 })();
+
+// ─── Skill catalog sync: merge server-side index.json into MCW.skills ───
+MCW.syncSkills = async () => {
+  try {
+    const res = await fetch('/api/skills');
+    if (!res.ok) return;
+    const catalog = await res.json();
+    if (!Array.isArray(catalog)) return;
+    for (const remote of catalog) {
+      const local = MCW.skills.find(s => s.id === remote.id);
+      if (local) {
+        if (remote.description) local.description = remote.description;
+        if (remote.installs) local.installs = remote.installs;
+        if (remote.rating) local.rating = remote.rating;
+      } else {
+        MCW.skills.push(remote);
+      }
+    }
+  } catch (e) {
+    console.warn('[MCW] skill sync skipped:', e.message);
+  }
+};

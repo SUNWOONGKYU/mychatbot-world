@@ -8,12 +8,11 @@ let conversationHistory = [];
 let isBotTyping = false;
 let voiceOutputEnabled = true;
 // Mobile Audio: AudioContext 방식 (unlock 후 async에서도 재생 가능)
-var _ttsPlayer = new Audio(); // fallback용 유지
-var _ttsUnlocked = false;
-var _ttsVoice = localStorage.getItem('mcw_tts_voice') || 'fable';
-var _ttsPending = null;
-var _audioCtx = null;        // AudioContext (iOS 호환 TTS)
-var _audioSource = null;     // 현재 재생 중인 BufferSource
+let _ttsPlayer = new Audio(); // fallback용 유지
+let _ttsUnlocked = false;
+let _ttsVoice = localStorage.getItem('mcw_tts_voice') || 'fable';
+let _audioCtx = null;        // AudioContext (iOS 호환 TTS)
+let _audioSource = null;     // 현재 재생 중인 BufferSource
 document.addEventListener('DOMContentLoaded', async () => {
     if (typeof MCW !== 'undefined' && MCW.ready) await MCW.ready;
     // Security: purge any leaked API keys from localStorage
@@ -65,11 +64,11 @@ function unlockTTS() {
 }
 // === Theme (Dark/Light) ===
 function initTheme() {
-    var saved = localStorage.getItem('mcw_theme') || 'dark';
+    let saved = localStorage.getItem('mcw_theme') || 'dark';
     applyTheme(saved);
 }
 function applyTheme(theme) {
-    var body = document.querySelector('.chat-body');
+    let body = document.querySelector('.chat-body');
     if (!body) return;
     if (theme === 'light') {
         body.classList.add('light');
@@ -77,11 +76,11 @@ function applyTheme(theme) {
         body.classList.remove('light');
     }
     localStorage.setItem('mcw_theme', theme);
-    var btn = document.getElementById('themeToggle');
+    let btn = document.getElementById('themeToggle');
     if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
 }
 function toggleTheme() {
-    var current = localStorage.getItem('mcw_theme') || 'dark';
+    let current = localStorage.getItem('mcw_theme') || 'dark';
     applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
@@ -188,7 +187,7 @@ async function loadBotData() {
 }
 // HTML escape for untrusted content in system messages
 function escapeHtml(str) {
-    var div = document.createElement('div');
+    let div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
 }
@@ -230,13 +229,6 @@ async function cpcAddCommand(platoonId, text, source = 'chatbot') {
 async function cpcGetCommands(platoonId, status) {
     const qs = status ? `?status=${status}` : '';
     return (await cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands${qs}`)) || [];
-}
-
-async function cpcUpdatePlatoonStatus(platoonId, status) {
-    return await cpcFetch(
-        `/api/platoons/${encodeURIComponent(platoonId)}/status`,
-        { method: 'PATCH', body: JSON.stringify({ status }) }
-    );
 }
 
 // --- 소대장 응답 대기: 폴링 → 타임아웃 시 Vercel AI 폴백 ---
@@ -438,16 +430,6 @@ function cpcIsHelper(persona) {
     return persona.name === 'Claude 연락병' || persona.id === 'sunny_helper_work';
 }
 
-// 봇 소유자인지 확인
-function cpcIsOwner() {
-    try {
-        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser && chatBotData && chatBotData.ownerId) {
-            const u = MCW.user.getCurrentUser();
-            return u && u.id === chatBotData.ownerId;
-        }
-    } catch (e) {}
-    return false;
-}
 let currentPersona = null;
 function renderPersonaSelector() {
     const container = document.getElementById('personaContainer');
@@ -478,14 +460,14 @@ function renderPersonaSelector() {
         .filter(p => p.isVisible !== false)
         .filter(p => isDemo || isOwnerView || p.isPublic !== false);
     // 대외용(avatar) / 대내용(helper) 구분 렌더링: 4개씩 2줄
-    var avatars = visiblePersonas.filter(function(p) { return p.category === 'avatar'; });
-    var helpers = visiblePersonas.filter(function(p) { return p.category !== 'avatar'; });
+    let avatars = visiblePersonas.filter(function(p) { return p.category === 'avatar'; });
+    let helpers = visiblePersonas.filter(function(p) { return p.category !== 'avatar'; });
     function createChip(p, typeClass) {
-        var chip = document.createElement('div');
+        let chip = document.createElement('div');
         chip.className = 'persona-chip ' + typeClass + ((currentPersona && currentPersona.id === p.id) ? ' active' : '');
         chip.setAttribute('data-persona-id', p.id);
         chip.onclick = function() { switchPersona(p.id); };
-        var nameSpan = document.createElement('span');
+        let nameSpan = document.createElement('span');
         nameSpan.className = 'persona-chip-name';
         nameSpan.textContent = p.name;
         chip.appendChild(nameSpan);
@@ -493,13 +475,13 @@ function renderPersonaSelector() {
     }
     container.innerHTML = '';
     if (avatars.length) {
-        var row1 = document.createElement('div');
+        let row1 = document.createElement('div');
         row1.className = 'persona-row persona-row-public';
         avatars.forEach(function(p) { row1.appendChild(createChip(p, 'chip-public')); });
         container.appendChild(row1);
     }
     if (helpers.length) {
-        var row2 = document.createElement('div');
+        let row2 = document.createElement('div');
         row2.className = 'persona-row persona-row-private';
         helpers.forEach(function(p) { row2.appendChild(createChip(p, 'chip-private')); });
         container.appendChild(row2);
@@ -552,7 +534,7 @@ function renderFaqButtons() {
     if (!faqs || faqs.length === 0) { container.innerHTML = ''; return; }
     container.innerHTML = '';
     faqs.forEach(function(f) {
-        var btn = document.createElement('button');
+        let btn = document.createElement('button');
         btn.className = 'faq-btn';
         btn.textContent = f.q;
         btn.onclick = function() { askFaq(f.q, f.a || ''); };
@@ -569,6 +551,11 @@ async function sendMessage() {
     // Reset height
     input.style.height = 'auto';
     addMessage('user', text);
+    // Channel adapter: relay user input
+    if (typeof MCW !== 'undefined' && MCW.channels) {
+        const wc = MCW.channels.get('webchat');
+        if (wc && wc.relayUserMessage) wc.relayUserMessage(text);
+    }
     showTyping();
     conversationHistory.push({ role: 'user', content: text });
     // 페르소나별 대화 저장
@@ -643,10 +630,10 @@ function addMessage(sender, text, extraClass) {
         div.innerHTML = `<div class="message-bubble${extraClass ? ' ' + extraClass : ''}">${text}</div>`;
     } else {
         // User/bot messages: use textContent to prevent XSS
-        var avatar = document.createElement('div');
+        let avatar = document.createElement('div');
         avatar.className = 'message-avatar';
         avatar.textContent = sender === 'bot' ? '🤖' : '👤';
-        var bubble = document.createElement('div');
+        let bubble = document.createElement('div');
         bubble.className = 'message-bubble';
         bubble.textContent = text;
         div.appendChild(avatar);
@@ -682,24 +669,24 @@ function getDefaultUserTitle(persona) {
     return persona.category === 'avatar' ? '고객님' : '님';
 }
 // ─── Pairing Code (DM policy) ───
-var _userPairingCode = '';
+let _userPairingCode = '';
 
 function showPairingPrompt() {
-    var container = document.getElementById('chatMessages');
+    let container = document.getElementById('chatMessages');
     if (!container) return;
-    var div = document.createElement('div');
+    let div = document.createElement('div');
     div.className = 'message message-system';
     div.id = 'pairingPrompt';
-    var bubble = document.createElement('div');
+    let bubble = document.createElement('div');
     bubble.className = 'message-bubble';
     bubble.style.textAlign = 'center';
 
-    var label = document.createElement('span');
+    let label = document.createElement('span');
     label.textContent = '🔒 이 봇은 페어링 코드가 필요합니다.';
     bubble.appendChild(label);
     bubble.appendChild(document.createElement('br'));
 
-    var input = document.createElement('input');
+    let input = document.createElement('input');
     input.type = 'text';
     input.id = 'pairingCodeInput';
     input.placeholder = '페어링 코드 입력';
@@ -708,7 +695,7 @@ function showPairingPrompt() {
     bubble.appendChild(input);
     bubble.appendChild(document.createElement('br'));
 
-    var btn = document.createElement('button');
+    let btn = document.createElement('button');
     btn.textContent = '확인';
     btn.style.cssText = 'margin-top:8px;padding:6px 16px;border-radius:8px;border:none;background:#6366f1;color:white;cursor:pointer;';
     btn.onclick = submitPairingCode;
@@ -724,10 +711,10 @@ function showPairingPrompt() {
 }
 
 function submitPairingCode() {
-    var input = document.getElementById('pairingCodeInput');
+    let input = document.getElementById('pairingCodeInput');
     if (!input) return;
     _userPairingCode = input.value.trim().toUpperCase();
-    var prompt = document.getElementById('pairingPrompt');
+    let prompt = document.getElementById('pairingPrompt');
     if (prompt) prompt.remove();
     if (_userPairingCode) {
         addMessage('system', '🔓 페어링 코드가 입력되었습니다.');
@@ -737,13 +724,13 @@ function submitPairingCode() {
 // ─── Collect installed skills for botConfig ───
 function getInstalledSkillsForPersona() {
     if (!chatBotData || !currentPersona) return [];
-    var botId = chatBotData.id;
-    var personaId = currentPersona.id;
-    var installed = JSON.parse(localStorage.getItem('mcw_skills_' + botId + '_' + personaId) || '[]');
+    let botId = chatBotData.id;
+    let personaId = currentPersona.id;
+    let installed = JSON.parse(localStorage.getItem('mcw_skills_' + botId + '_' + personaId) || '[]');
     // Merge with full skill data (including systemPrompt) from MCW.skills
     if (typeof MCW !== 'undefined' && MCW.skills) {
         return installed.map(function(s) {
-            var full = MCW.skills.find(function(sk) { return sk.id === s.id; });
+            let full = MCW.skills.find(function(sk) { return sk.id === s.id; });
             return full ? { id: full.id, name: full.name, systemPrompt: full.systemPrompt || '' } : s;
         });
     }
@@ -756,8 +743,18 @@ async function generateResponse(userText) {
     // Collect installed skills with systemPrompt
     const skills = getInstalledSkillsForPersona();
 
+    // Resolve userId for DM policy (allowlist/pairing)
+    let userId = 'anon';
+    try {
+        if (typeof MCW !== 'undefined' && MCW.auth) {
+            const u = MCW.auth.getCurrentUser ? MCW.auth.getCurrentUser() : MCW.auth._user;
+            if (u && u.email) userId = u.email;
+        }
+    } catch (e) {}
+
     const payload = {
         message: userText,
+        userId: userId,
         botConfig: {
             botName: chatBotData && chatBotData.botName,
             personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
@@ -887,7 +884,7 @@ async function generateResponse(userText) {
 // TTS: 1차 /api/tts + AudioContext (모바일 async 재생) → 2차 SpeechSynthesis
 function speak(text) {
     if (!voiceOutputEnabled) return;
-    var clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    let clean = text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     if (!clean) return;
     if (clean.length > 4096) clean = clean.substring(0, 4096);
 
@@ -906,7 +903,7 @@ function speak(text) {
         body: JSON.stringify({ text: clean, voice: _ttsVoice })
     }).then(function(res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
-        var ct = res.headers.get('content-type') || '';
+        let ct = res.headers.get('content-type') || '';
         if (ct.indexOf('audio') === -1) throw new Error('TTS not audio');
         return res.arrayBuffer();
     }).then(function(arrayBuf) {
@@ -928,15 +925,14 @@ function speak(text) {
 // 2차: SpeechSynthesis (모바일 최우선) → 3차: Google Translate TTS
 function speakFallback(clean) {
     // TTS fallback에서도 STT 중지
-    if (chatRecognition) {
-        try { chatRecognition.stop(); } catch(e) {}
-        chatRecognition = null;
+    if (typeof _sttRecorder !== 'undefined' && _sttRecorder && _sttRecorder.state === 'recording') {
+        try { _sttRecorder.stop(); } catch(e) {}
         document.getElementById('chatVoiceBtn')?.classList.remove('recording');
     }
     if (window.speechSynthesis) {
         try {
             window.speechSynthesis.cancel();
-            var u = new SpeechSynthesisUtterance(clean);
+            let u = new SpeechSynthesisUtterance(clean);
             u.lang = 'ko-KR';
             u.rate = 1.0;
             window.speechSynthesis.speak(u);
@@ -946,7 +942,7 @@ function speakFallback(clean) {
             console.warn('[TTS] SpeechSynthesis failed:', e);
         }
     }
-    var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
+    let url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
     _ttsPlayer.pause();
     _ttsPlayer.currentTime = 0;
     _ttsPlayer.src = url;
@@ -981,7 +977,7 @@ function toggleChatVoice() {
         _sttStream = stream;
         _sttChunks = [];
 
-        var mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        let mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
             ? 'audio/webm;codecs=opus' : 'audio/webm';
         _sttRecorder = new MediaRecorder(stream, { mimeType: mimeType });
 
@@ -1006,7 +1002,7 @@ function toggleChatVoice() {
 
             if (_sttChunks.length === 0) return;
 
-            var blob = new Blob(_sttChunks, { type: mimeType });
+            let blob = new Blob(_sttChunks, { type: mimeType });
             _sttChunks = [];
 
             // 너무 짧은 녹음 무시 (0.5초 미만)
@@ -1015,9 +1011,9 @@ function toggleChatVoice() {
             if (input) input.placeholder = '음성 변환 중...';
 
             // base64 변환 후 /api/stt 호출
-            var reader = new FileReader();
+            let reader = new FileReader();
             reader.onloadend = function() {
-                var base64 = reader.result.split(',')[1];
+                let base64 = reader.result.split(',')[1];
                 fetch('/api/stt', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1052,21 +1048,21 @@ function toggleChatVoice() {
 function _sttStartSilenceDetection(stream) {
     try {
         _sttSilenceCtx = new (window.AudioContext || window.webkitAudioContext)();
-        var source = _sttSilenceCtx.createMediaStreamSource(stream);
-        var analyser = _sttSilenceCtx.createAnalyser();
+        let source = _sttSilenceCtx.createMediaStreamSource(stream);
+        let analyser = _sttSilenceCtx.createAnalyser();
         analyser.fftSize = 512;
         source.connect(analyser);
-        var data = new Uint8Array(analyser.frequencyBinCount);
-        var silenceStart = null;
-        var SILENCE_THRESHOLD = 10;
-        var SILENCE_DURATION = 4000;
-        var hasSpeech = false;
+        let data = new Uint8Array(analyser.frequencyBinCount);
+        let silenceStart = null;
+        let SILENCE_THRESHOLD = 10;
+        let SILENCE_DURATION = 4000;
+        let hasSpeech = false;
 
         function check() {
             if (!_sttRecorder || _sttRecorder.state !== 'recording') return;
             analyser.getByteFrequencyData(data);
-            var avg = 0;
-            for (var i = 0; i < data.length; i++) avg += data[i];
+            let avg = 0;
+            for (let i = 0; i < data.length; i++) avg += data[i];
             avg /= data.length;
 
             if (avg > SILENCE_THRESHOLD) {
@@ -1098,24 +1094,26 @@ function autoResizeInput() {
     });
 }
 // === Per-persona 대화/통계 저장 (localStorage + Supabase) ===
-var _chatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+let _chatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 
 function savePerPersonaMessage(role, content) {
     if (!chatBotData || !currentPersona) return;
-    var botId = chatBotData.id;
-    var personaId = currentPersona.id;
-    var timestamp = new Date().toISOString();
+    let botId = chatBotData.id;
+    let personaId = currentPersona.id;
+    let timestamp = new Date().toISOString();
 
     // localStorage (기존 호환)
-    var key = 'mcw_conv_' + botId + '_' + personaId;
-    var convs = JSON.parse(localStorage.getItem(key) || '[]');
+    let key = 'mcw_conv_' + botId + '_' + personaId;
+    let convs;
+    try { convs = JSON.parse(localStorage.getItem(key) || '[]'); }
+    catch (e) { convs = []; }
     convs.push({ role: role, content: content, timestamp: timestamp });
     if (convs.length > 200) convs.splice(0, convs.length - 200);
     localStorage.setItem(key, JSON.stringify(convs));
 
     // Supabase mcw_chat_logs (비동기, 실패해도 무시)
     if (typeof StorageManager !== 'undefined' && StorageManager.getSupabase) {
-        var sb = StorageManager.getSupabase();
+        let sb = StorageManager.getSupabase();
         if (sb) {
             sb.from('mcw_chat_logs').insert({
                 bot_id: botId,
@@ -1132,10 +1130,14 @@ function savePerPersonaMessage(role, content) {
 
 function logPerPersonaStat(type, data) {
     if (!chatBotData || !currentPersona) return;
-    var botId = chatBotData.id;
-    var personaId = currentPersona.id;
-    var key = 'mcw_stats_' + botId + '_' + personaId;
-    var stats = JSON.parse(localStorage.getItem(key) || '{"totalConversations":0,"totalMessages":0}');
+    let botId = chatBotData.id;
+    let personaId = currentPersona.id;
+    let key = 'mcw_stats_' + botId + '_' + personaId;
+    let stats;
+    try { stats = JSON.parse(localStorage.getItem(key) || '{}'); }
+    catch (e) { stats = {}; }
+    stats.totalConversations = stats.totalConversations || 0;
+    stats.totalMessages = stats.totalMessages || 0;
     if (type === 'conversation_start') {
         stats.totalConversations = (stats.totalConversations || 0) + 1;
     } else if (type === 'message') {
@@ -1146,9 +1148,9 @@ function logPerPersonaStat(type, data) {
 
 // === Per-message TTS: 사용자가 직접 탭하여 재생 (모바일 제스처 보장) ===
 function playMsgTTS(btn) {
-    var bubble = btn.parentElement;
+    let bubble = btn.parentElement;
     if (!bubble) return;
-    var clean = bubble.textContent.replace(/🔊/g, '').trim();
+    let clean = bubble.textContent.replace(/🔊/g, '').trim();
     if (!clean) return;
     if (clean.length > 4096) clean = clean.substring(0, 4096);
     if (btn.classList.contains('playing')) {
@@ -1168,11 +1170,11 @@ function playMsgTTS(btn) {
         body: JSON.stringify({ text: clean, voice: _ttsVoice })
     }).then(function(res) {
         if (!res.ok) throw new Error('TTS API ' + res.status);
-        var ct = res.headers.get('content-type') || '';
+        let ct = res.headers.get('content-type') || '';
         if (ct.indexOf('audio') === -1) throw new Error('Not audio');
         return res.blob();
     }).then(function(blob) {
-        var blobUrl = URL.createObjectURL(blob);
+        let blobUrl = URL.createObjectURL(blob);
         _ttsPlayer.pause();
         _ttsPlayer.currentTime = 0;
         _ttsPlayer.src = blobUrl;
@@ -1187,7 +1189,7 @@ function playMsgTTS(btn) {
         if (window.speechSynthesis) {
             try {
                 window.speechSynthesis.cancel();
-                var u = new SpeechSynthesisUtterance(clean);
+                let u = new SpeechSynthesisUtterance(clean);
                 u.lang = 'ko-KR';
                 u.onend = function() { btn.classList.remove('playing'); };
                 window.speechSynthesis.speak(u);
@@ -1195,7 +1197,7 @@ function playMsgTTS(btn) {
             } catch (e) { /* fall through */ }
         }
         // Google Translate TTS (최후 수단)
-        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
+        let url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ko&client=tw-ob&q=' + encodeURIComponent(clean);
         _ttsPlayer.pause();
         _ttsPlayer.currentTime = 0;
         _ttsPlayer.src = url;

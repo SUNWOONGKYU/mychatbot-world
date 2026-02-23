@@ -67,7 +67,7 @@ export async function compactHistory(history, apiKey) {
 }
 
 // ─── Skill System Prompt Builder (token budget) ───
-export const SILENT_REPLY_TOKEN = '__SILENT__';
+const SILENT_REPLY_TOKEN = '__SILENT__';
 
 export function buildSkillSection(skills, maxTokens = 300) {
   if (!skills || skills.length === 0) return '';
@@ -78,6 +78,20 @@ export function buildSkillSection(skills, maxTokens = 300) {
     const prompt = s.systemPrompt || '';
     if (!prompt) continue;
     const line = `- ${s.name}: ${prompt}\n`;
+    if (charCount + line.length > charLimit) break;
+    section += line;
+    charCount += line.length;
+  }
+  return section;
+}
+
+export function buildFaqSection(faqs, maxTokens = 500) {
+  if (!faqs || faqs.length === 0) return '';
+  const charLimit = maxTokens * 2.5;
+  let section = '';
+  let charCount = 0;
+  for (const f of faqs) {
+    const line = `Q: ${f.q}\nA: ${f.a}\n`;
     if (charCount + line.length > charLimit) break;
     section += line;
     charCount += line.length;
@@ -129,13 +143,14 @@ export function buildSystemMessage(botConfig) {
   }
 
   const skillSection = buildSkillSection(botConfig?.skills || []);
+  const faqSection = buildFaqSection(botConfig?.faqs || []);
 
   return `당신은 "${botConfig?.botName || 'AI 챗봇'}"의 "${personaName || 'AI 어시스턴트'}" 페르소나입니다.
 성격: ${botConfig?.personality || '친절하고 전문적'}
 어조: ${botConfig?.tone || '편안하고 자연스러운 어조'}
 
 다음 예시 FAQ를 참고하여 답변하세요:
-${(botConfig?.faqs || []).map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n')}
+${faqSection}
 ${skillSection}
 규칙:
 - 항상 캐릭터를 유지하세요
