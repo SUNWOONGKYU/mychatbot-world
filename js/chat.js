@@ -566,13 +566,23 @@ async function sendMessage() {
     const response = await generateResponse(text);
     clearTimeout(safetyTimer);
     hideTyping();
-    addMessage('bot', response);
-    conversationHistory.push({ role: 'assistant', content: response });
-    // 페르소나별 대화 + 통계 저장
-    savePerPersonaMessage('assistant', response);
-    logPerPersonaStat('message', { role: 'user', content: text });
-    logPerPersonaStat('message', { role: 'assistant', content: response });
-    if (voiceOutputEnabled) speak(response);
+
+    // Silent Reply: CPC 릴레이 시 AI 응답 표시 생략
+    const isSilent = response === '__SILENT__' || (response && response.includes('__SILENT__'));
+    if (isSilent) {
+        console.log('[Silent Reply] CPC relay — AI response suppressed');
+    } else {
+        // 스트리밍으로 이미 표시된 경우 중복 방지
+        const streamedDiv = document.querySelector('.message-bot:last-child');
+        if (!streamedDiv || !streamedDiv._streamComplete) {
+            addMessage('bot', response);
+        }
+        conversationHistory.push({ role: 'assistant', content: response });
+        savePerPersonaMessage('assistant', response);
+        logPerPersonaStat('message', { role: 'user', content: text });
+        logPerPersonaStat('message', { role: 'assistant', content: response });
+        if (voiceOutputEnabled) speak(response);
+    }
     // CPC 시스템 메시지: 봇 응답 표시 후에 나와야 함
     if (_cpcCmdPromise) {
         const cmd = await _cpcCmdPromise;
@@ -641,24 +651,144 @@ function hideTyping() {
     const el = document.getElementById('typingIndicator');
     if (el) el.remove();
 }
+function getDefaultUserTitle(persona) {
+    if (!persona) return '';
+    if (persona.name === 'Claude 연락병') return '지휘관님';
+    return persona.category === 'avatar' ? '고객님' : '님';
+}
+// ─── Session Routing Key ───
+function buildSessionKey(opts) {
+    var botId = (opts && opts.botId) || 'unknown';
+    var personaId = (opts && opts.personaId) || 'default';
+    var channel = (opts && opts.channel) || 'webchat';
+    var userId = (opts && opts.userId) || 'anon';
+    var type = (opts && opts.type) || 'chat';
+    return 'mcw:' + type + ':' + botId + ':' + personaId + ':' + channel + ':' + userId;
+}
+
+// ─── Collect installed skills for botConfig ───
+function getInstalledSkillsForPersona() {
+    if (!chatBotData || !currentPersona) return [];
+    var botId = chatBotData.id;
+    var personaId = currentPersona.id;
+    var installed = JSON.parse(localStorage.getItem('mcw_skills_' + botId + '_' + personaId) || '[]');
+    // Merge with full skill data (including systemPrompt) from MCW.skills
+    if (typeof MCW !== 'undefined' && MCW.skills) {
+        return installed.map(function(s) {
+            var full = MCW.skills.find(function(sk) { return sk.id === s.id; });
+            return full ? { id: full.id, name: full.name, systemPrompt: full.systemPrompt || '' } : s;
+        });
+    }
+    return installed;
+}
+
 async function generateResponse(userText) {
     const start = Date.now();
-    // 1차: 서버리스 API (/api/chat) 사용 - 키는 서버에서만 사용됩니다.
+
+    // Collect installed skills with systemPrompt
+    const skills = getInstalledSkillsForPersona();
+
+    const payload = {
+        message: userText,
+        botConfig: {
+            botName: chatBotData && chatBotData.botName,
+            personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
+            tone: (chatBotData && chatBotData.tone) || '',
+            faqs: (currentPersona && currentPersona.faqs && currentPersona.faqs.length > 0)
+                ? currentPersona.faqs
+                : (chatBotData && chatBotData.faqs) || [],
+            personaName: currentPersona && currentPersona.name,
+            personaCategory: currentPersona && currentPersona.category,
+            userTitle: (currentPersona && currentPersona.userTitle)
+                || getDefaultUserTitle(currentPersona),
+            skills: skills,
+            dmPolicy: chatBotData && chatBotData.dmPolicy,
+            allowedUsers: chatBotData && chatBotData.allowedUsers,
+            pairingCode: chatBotData && chatBotData.pairingCode
+        },
+        history: conversationHistory.slice(-10)
+    };
+
+    // Run before_send hook
+    if (typeof MCW !== 'undefined' && MCW.hooks) {
+        try {
+            const modified = await MCW.hooks.run('before_send', payload);
+            if (modified && modified.message) payload.message = modified.message;
+        } catch (e) { console.warn('[Hook] before_send error:', e); }
+    }
+
+    // 1차: SSE 스트리밍 시도
     try {
-        const payload = {
-            message: userText,
-            botConfig: {
-                botName: chatBotData && chatBotData.botName,
-                personality: (currentPersona && currentPersona.role) || (chatBotData && chatBotData.personality),
-                tone: (chatBotData && chatBotData.tone) || '',
-                faqs: (currentPersona && currentPersona.faqs && currentPersona.faqs.length > 0)
-                    ? currentPersona.faqs
-                    : (chatBotData && chatBotData.faqs) || [],
-                personaName: currentPersona && currentPersona.name,
-                personaCategory: currentPersona && currentPersona.category
-            },
-            history: conversationHistory.slice(-10)
-        };
+        const streamRes = await fetch('/api/chat-stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (streamRes.ok && streamRes.body) {
+            const reader = streamRes.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+            let buffer = '';
+
+            // 타이핑 인디케이터를 실시간 메시지로 교체
+            hideTyping();
+            const streamDiv = document.createElement('div');
+            streamDiv.className = 'message message-bot';
+            streamDiv.innerHTML = '<div class="message-avatar">🤖</div><div class="message-bubble"><span class="message-text"></span></div>';
+            const container = document.getElementById('chatMessages');
+            if (container) {
+                container.appendChild(streamDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+            const textEl = streamDiv.querySelector('.message-text');
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+
+                // SSE 파싱: data: {...}\n\n
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const raw = line.slice(6).trim();
+                        if (raw === '[DONE]') continue;
+                        try {
+                            const parsed = JSON.parse(raw);
+                            if (parsed.text) {
+                                fullText += parsed.text;
+                                if (textEl) textEl.textContent = fullText;
+                                if (container) container.scrollTop = container.scrollHeight;
+                            }
+                        } catch (e) { /* skip malformed chunk */ }
+                    }
+                }
+            }
+
+            if (fullText) {
+                // 스트리밍으로 이미 DOM에 표시됨 — 플래그로 표시
+                streamDiv._streamComplete = true;
+                const latency = Date.now() - start;
+                console.log('[AI STREAM] /api/chat-stream ' + latency + 'ms');
+
+                // Run after_receive hook
+                if (typeof MCW !== 'undefined' && MCW.hooks) {
+                    try { await MCW.hooks.run('after_receive', { text: fullText }); } catch (e) {}
+                }
+
+                return fullText;
+            }
+            // 빈 응답이면 폴백
+            if (streamDiv.parentNode) streamDiv.remove();
+        }
+    } catch (e) {
+        console.warn('[API] /api/chat-stream error:', e.message);
+    }
+
+    // 2차: 비스트리밍 폴백 (/api/chat)
+    try {
         const res = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -669,6 +799,12 @@ async function generateResponse(userText) {
             if (data.reply) {
                 const latency = Date.now() - start;
                 console.log('[AI SUCCESS] /api/chat ' + latency + 'ms');
+
+                // Run after_receive hook
+                if (typeof MCW !== 'undefined' && MCW.hooks) {
+                    try { await MCW.hooks.run('after_receive', { text: data.reply }); } catch (e) {}
+                }
+
                 return data.reply;
             }
         } else {
@@ -677,7 +813,6 @@ async function generateResponse(userText) {
     } catch (e) {
         console.warn('[API] /api/chat error', e);
     }
-    // All AI calls go through server-side /api/chat only (API key is in Vercel env vars)
     return '죄송합니다. 서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.';
 }
 // TTS: 1차 /api/tts + AudioContext (모바일 async 재생) → 2차 SpeechSynthesis

@@ -1,0 +1,41 @@
+/**
+ * Skills Catalog API
+ * GET /api/skills — returns all skill metadata
+ * GET /api/skills?id=sentiment — returns specific SKILL.md content
+ */
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+
+export default function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { id } = req.query;
+
+  if (id) {
+    // Return specific SKILL.md
+    const skillPath = join(process.cwd(), 'skills', id, 'SKILL.md');
+    if (!existsSync(skillPath)) {
+      return res.status(404).json({ error: 'Skill not found' });
+    }
+    const content = readFileSync(skillPath, 'utf-8');
+    return res.status(200).json({ id, content });
+  }
+
+  // Return full catalog
+  const indexPath = join(process.cwd(), 'skills', 'index.json');
+  if (!existsSync(indexPath)) {
+    return res.status(200).json([]);
+  }
+  const catalog = JSON.parse(readFileSync(indexPath, 'utf-8'));
+  return res.status(200).json(catalog);
+}

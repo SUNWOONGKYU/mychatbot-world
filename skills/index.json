@@ -1,0 +1,23 @@
+[
+  {"id":"stats-analysis","name":"통계 분석 센터","icon":"📊","category":"분석"},
+  {"id":"sentiment","name":"감정 분석","icon":"😊","category":"분석"},
+  {"id":"profanity-filter","name":"욕설 필터","icon":"🛡️","category":"보안"},
+  {"id":"spam-block","name":"스팸 방지","icon":"🚫","category":"보안"},
+  {"id":"backup","name":"백업 & 복구","icon":"💾","category":"관리"},
+  {"id":"pdf-upload","name":"PDF 업로드","icon":"📄","category":"지식"},
+  {"id":"web-crawl","name":"웹 크롤링","icon":"🌐","category":"지식"},
+  {"id":"faq-auto","name":"FAQ 자동 생성","icon":"❓","category":"지식"},
+  {"id":"multilang","name":"다국어 번역","icon":"🌍","category":"UI"},
+  {"id":"tts-basic","name":"음성 답변 TTS","icon":"🔊","category":"UI"},
+  {"id":"emoji-react","name":"이모지 반응","icon":"😀","category":"UI"},
+  {"id":"reservation","name":"예약 시스템","icon":"📅","category":"비즈니스"},
+  {"id":"survey","name":"설문조사","icon":"📋","category":"비즈니스"},
+  {"id":"coupon","name":"쿠폰 발급","icon":"🎫","category":"비즈니스"},
+  {"id":"lead-collect","name":"리드 수집","icon":"📧","category":"비즈니스"},
+  {"id":"google-cal","name":"구글 캘린더","icon":"📆","category":"연동"},
+  {"id":"email-send","name":"이메일 전송","icon":"✉️","category":"연동"},
+  {"id":"kakao-noti","name":"카카오톡 알림","icon":"💬","category":"연동"},
+  {"id":"voice-clone","name":"내 목소리 복제","icon":"🎤","category":"UI"},
+  {"id":"3d-avatar","name":"3D 아바타","icon":"👤","category":"UI"},
+  {"id":"custom-theme","name":"커스텀 테마","icon":"🎨","category":"UI"}
+]

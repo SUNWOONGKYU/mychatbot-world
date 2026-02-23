@@ -834,7 +834,8 @@ const StorageManager = (() => {
         iq_eq: p.iqEq,
         is_public: true,
         greeting: p.greeting,
-        faqs: p.faqs
+        faqs: p.faqs,
+        user_title: p.userTitle || ''
       });
     }
 
@@ -885,7 +886,8 @@ const StorageManager = (() => {
         iqEq: p.iq_eq,
         isPublic: p.is_public,
         greeting: p.greeting,
-        faqs: p.faqs
+        faqs: p.faqs,
+        userTitle: p.user_title || ''
       })),
       createdAt: bot.created_at
     };
@@ -908,7 +910,8 @@ const StorageManager = (() => {
         personas: personas.map(p => ({
           id: p.id, name: p.name, role: p.role, category: p.category,
           model: p.model, iqEq: p.iq_eq, isPublic: p.is_public,
-          isVisible: true, greeting: p.greeting, faqs: p.faqs
+          isVisible: true, greeting: p.greeting, faqs: p.faqs,
+          userTitle: p.user_title || ''
         })),
         createdAt: bot.created_at
       });
@@ -946,6 +949,92 @@ const StorageManager = (() => {
   }
 
 
+  // ═══════════════════════════════════════════════
+  // Vector Memory (Semantic Search via pgvector)
+  // ═══════════════════════════════════════════════
+
+  /**
+   * Semantic search against KB items using pgvector
+   * Requires: Supabase pgvector extension + embedding column on mcw_kb_items
+   * @param {string} botId - Bot ID to filter
+   * @param {string} query - User query text
+   * @param {number} topK - Number of results (default 3)
+   * @returns {Array} Matching KB items with similarity score
+   */
+  async function searchSemantic(botId, query, topK = 3) {
+    try {
+      // 1. Get embedding vector from server
+      const embedResp = await fetch('/api/embed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: query })
+      });
+      if (!embedResp.ok) {
+        console.warn('[KB] Embed API failed:', embedResp.status);
+        return [];
+      }
+      const embedData = await embedResp.json();
+      if (!embedData.vector) return [];
+
+      // 2. Call Supabase RPC for cosine similarity search
+      const sb = getSupabase();
+      if (!sb) return [];
+
+      const { data, error } = await sb.rpc('match_kb_items', {
+        query_embedding: embedData.vector,
+        match_count: topK,
+        filter_bot_id: botId
+      });
+
+      if (error) {
+        console.warn('[KB] Semantic search RPC error:', error.message);
+        return [];
+      }
+
+      return data || [];
+    } catch (e) {
+      console.warn('[KB] searchSemantic error:', e.message);
+      return [];
+    }
+  }
+
+  /**
+   * Fallback keyword search (when pgvector is unavailable)
+   * Simple text matching against local KB
+   */
+  async function searchKeyword(botId, query, topK = 3) {
+    const kb = await loadKnowledgeBase(botId);
+    const results = [];
+    const queryLower = query.toLowerCase();
+
+    // Search Q&A pairs
+    for (const qa of (kb.qaPairs || [])) {
+      const score = (qa.q && qa.q.toLowerCase().includes(queryLower)) ? 0.8 :
+                    (qa.a && qa.a.toLowerCase().includes(queryLower)) ? 0.5 : 0;
+      if (score > 0) {
+        results.push({ content: `Q: ${qa.q}\nA: ${qa.a}`, score, type: 'qa' });
+      }
+    }
+
+    // Search free text
+    if (kb.freeText && kb.freeText.toLowerCase().includes(queryLower)) {
+      results.push({ content: kb.freeText, score: 0.4, type: 'freetext' });
+    }
+
+    return results.sort((a, b) => b.score - a.score).slice(0, topK);
+  }
+
+  /**
+   * Unified search: tries semantic first, falls back to keyword
+   */
+  async function searchKB(botId, query, topK = 3) {
+    // Try semantic search first
+    const semanticResults = await searchSemantic(botId, query, topK);
+    if (semanticResults.length > 0) return semanticResults;
+    // Fallback to keyword search
+    return searchKeyword(botId, query, topK);
+  }
+
   // ─── Public API ───
   return {
     // Core CRUD
@@ -957,6 +1046,11 @@ const StorageManager = (() => {
     // Knowledge Base
     saveKnowledgeBase,
     loadKnowledgeBase,
+
+    // Vector Memory / Search
+    searchSemantic,
+    searchKeyword,
+    searchKB,
 
     // Bot Cloud Sync
     syncBotToCloud,

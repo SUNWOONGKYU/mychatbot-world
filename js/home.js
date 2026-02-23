@@ -10,6 +10,13 @@ const HomePage = (() => {
   let skillFilter = {};
   let botSettingsOpen = {};
 
+  // ─── Smart Default Helper ───
+  function getDefaultUserTitle(persona) {
+    if (!persona) return '';
+    if (persona.name === 'Claude 연락병') return '지휘관님';
+    return persona.category === 'avatar' ? '고객님' : '님';
+  }
+
   // ─── Per-persona Storage Helpers ───
   function getPersonaConversations(botId, personaId) {
     return JSON.parse(localStorage.getItem(`mcw_conv_${botId}_${personaId}`) || '[]');
@@ -275,6 +282,35 @@ const HomePage = (() => {
           <textarea class="form-control-dark" id="settings-desc-${botId}" rows="2">${escHtml(bot.botDesc || '')}</textarea>
         </div>
         <button class="btn-sm-primary" onclick="HomePage.saveBotInfo('${botId}')">정보 저장</button>
+      </div>
+
+      <div class="settings-section" style="margin-top:1.5rem;">
+        <h4>DM 보안 정책</h4>
+        <div class="form-row">
+          <label class="form-label-dark">접근 정책</label>
+          <select class="form-control-dark" id="settings-dm-${botId}" onchange="HomePage.onDmPolicyChange('${botId}', this.value)">
+            <option value="public" ${(bot.dmPolicy || 'public') === 'public' ? 'selected' : ''}>공개 (누구나 대화 가능)</option>
+            <option value="allowlist" ${bot.dmPolicy === 'allowlist' ? 'selected' : ''}>허용 목록 (지정된 사용자만)</option>
+            <option value="pairing" ${bot.dmPolicy === 'pairing' ? 'selected' : ''}>페어링 코드 (코드 입력 필요)</option>
+          </select>
+        </div>
+        <div id="dm-allowlist-${botId}" style="display:${bot.dmPolicy === 'allowlist' ? 'block' : 'none'};">
+          <div class="form-row">
+            <label class="form-label-dark">허용된 이메일 (줄바꿈 구분)</label>
+            <textarea class="form-control-dark" id="settings-allowed-${botId}" rows="3" placeholder="user@example.com">${(bot.allowedUsers || []).join('\n')}</textarea>
+          </div>
+        </div>
+        <div id="dm-pairing-${botId}" style="display:${bot.dmPolicy === 'pairing' ? 'block' : 'none'};">
+          <div class="form-row">
+            <label class="form-label-dark">페어링 코드</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input class="form-control-dark" id="settings-pairing-${botId}" value="${escAttr(bot.pairingCode || '')}" readonly style="flex:1;">
+              <button class="btn-sm-dark" onclick="HomePage.generatePairingCode('${botId}')">생성</button>
+              <button class="btn-sm-dark" onclick="navigator.clipboard.writeText(document.getElementById('settings-pairing-${botId}').value);MCW.showToast('코드 복사됨')">복사</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn-sm-primary" style="margin-top:0.75rem;" onclick="HomePage.saveDmPolicy('${botId}')">보안 정책 저장</button>
       </div>
 
       <div class="delete-bot-zone">
@@ -621,8 +657,22 @@ const HomePage = (() => {
         onclick="HomePage.filterSkills('${bot.id}', '${persona.id}', '${c}')">${c === 'all' ? '전체' : c}</button>
     `).join('');
 
+    // Skill Presets banner
+    let presetHtml = '';
+    if (installed.length === 0 && MCW.skillPresets) {
+      const presetChips = Object.entries(MCW.skillPresets).map(([k, v]) =>
+        `<button class="category-chip" onclick="HomePage.applySkillPreset('${bot.id}', '${persona.id}', '${k}')">${v.label}</button>`
+      ).join('');
+      presetHtml = `
+        <div class="skill-preset-banner" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.5rem;color:rgba(255,255,255,0.8);">추천 스킬 세트</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">${presetChips}</div>
+        </div>`;
+    }
+
     panel.innerHTML = `
       <div class="tool-panel-title">🧩 ${escHtml(persona.name)}의 스킬 관리</div>
+      ${presetHtml}
       <div class="skill-layout">
         <div class="skill-column">
           <h4>✅ 설치된 스킬 (${installed.length})</h4>
@@ -635,6 +685,29 @@ const HomePage = (() => {
         </div>
       </div>
     `;
+  }
+
+  function applySkillPreset(botId, personaId, presetKey) {
+    const preset = MCW.skillPresets && MCW.skillPresets[presetKey];
+    if (!preset) return;
+    const skillIds = preset.skills || [];
+    const skills = getPersonaSkills(botId, personaId);
+    let added = 0;
+    for (const sid of skillIds) {
+      if (skills.find(s => s.id === sid)) continue;
+      const full = (MCW.skills || []).find(s => s.id === sid);
+      if (full) {
+        skills.push({ ...full, installed_at: new Date().toISOString() });
+        added++;
+      }
+    }
+    if (added > 0) {
+      savePersonaSkills(botId, personaId, skills);
+      MCW.showToast(`"${preset.label}" 프리셋 (${added}개 스킬) 설치 완료`);
+      reopenTool(botId, personaId, 'skills');
+    } else {
+      MCW.showToast('이미 모든 프리셋 스킬이 설치되어 있습니다.');
+    }
   }
 
   function installSkill(botId, personaId, skillId) {
@@ -803,6 +876,11 @@ const HomePage = (() => {
             placeholder="예: 친근한 상담사, 전문 코딩 도우미">
         </div>
         <div class="form-row">
+          <label class="form-label-dark">사용자 호칭</label>
+          <input class="form-control-dark" id="pusertitle-${key}" value="${escAttr(persona.userTitle || getDefaultUserTitle(persona))}"
+            placeholder="예: 고객님, 대표님, 선생님">
+        </div>
+        <div class="form-row">
           <label class="form-label-dark">카테고리</label>
           <select class="form-control-dark" id="pcategory-${key}">
             <option value="avatar" ${persona.category === 'avatar' ? 'selected' : ''}>분신 아바타</option>
@@ -836,12 +914,14 @@ const HomePage = (() => {
     const key = `${botId}_${personaId}`;
     const nameEl = document.getElementById(`pname-${key}`);
     const roleEl = document.getElementById(`prole-${key}`);
+    const userTitleEl = document.getElementById(`pusertitle-${key}`);
     const categoryEl = document.getElementById(`pcategory-${key}`);
     const iqSlider = document.querySelector(`#piq-label-${key}`)?.closest('.form-row')?.querySelector('input[type="range"]');
     const greetingEl = document.getElementById(`pgreeting-${key}`);
 
     if (nameEl) persona.name = nameEl.value.trim();
     if (roleEl) persona.role = roleEl.value.trim();
+    if (userTitleEl) persona.userTitle = userTitleEl.value.trim();
     if (categoryEl) persona.category = categoryEl.value;
     if (iqSlider) persona.iqEq = parseInt(iqSlider.value);
     if (greetingEl) persona.greeting = greetingEl.value.trim();
@@ -888,6 +968,11 @@ const HomePage = (() => {
           <input class="form-control-dark" id="newp-role" placeholder="이 페르소나의 역할을 설명해주세요">
         </div>
         <div class="form-row">
+          <label class="form-label-dark">사용자 호칭</label>
+          <input class="form-control-dark" id="newp-usertitle" value="고객님"
+            placeholder="예: 고객님, 대표님, 선생님">
+        </div>
+        <div class="form-row">
           <label class="form-label-dark" id="newp-iq-label">IQ ↔ EQ 밸런스: 50</label>
           <input type="range" class="iq-eq-slider" id="newp-iqeq" min="0" max="100" value="50"
             oninput="document.getElementById('newp-iq-label').textContent='IQ ↔ EQ 밸런스: '+this.value">
@@ -913,12 +998,23 @@ const HomePage = (() => {
     overlay.querySelector('#newp-cancel').onclick = () => overlay.remove();
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
 
+    // 카테고리 변경 시 사용자 호칭 디폴트 연동
+    const categorySelect = overlay.querySelector('#newp-category');
+    const userTitleInput = overlay.querySelector('#newp-usertitle');
+    if (categorySelect && userTitleInput) {
+      categorySelect.addEventListener('change', () => {
+        const defaultTitle = categorySelect.value === 'avatar' ? '고객님' : '님';
+        userTitleInput.value = defaultTitle;
+      });
+    }
+
     overlay.querySelector('#newp-submit').onclick = () => {
       const name = document.getElementById('newp-name').value.trim();
       if (!name) { alert('이름을 입력해주세요.'); return; }
 
       const category = document.getElementById('newp-category').value;
       const role = document.getElementById('newp-role').value.trim();
+      const userTitle = document.getElementById('newp-usertitle').value.trim() || (category === 'avatar' ? '고객님' : '님');
       const iqEq = parseInt(document.getElementById('newp-iqeq').value);
       const model = document.getElementById('newp-model').value;
       const botName = bot.botName || '';
@@ -930,6 +1026,7 @@ const HomePage = (() => {
         category: category,
         model: model,
         iqEq: iqEq,
+        userTitle: userTitle,
         isVisible: true,
         isPublic: category === 'avatar',
         greeting: '',
@@ -1020,6 +1117,43 @@ const HomePage = (() => {
     }
   }
 
+
+  // ═══════════════════════════════════════════════
+  // DM POLICY
+  // ═══════════════════════════════════════════════
+  function onDmPolicyChange(botId, value) {
+    const allowEl = document.getElementById(`dm-allowlist-${botId}`);
+    const pairEl = document.getElementById(`dm-pairing-${botId}`);
+    if (allowEl) allowEl.style.display = value === 'allowlist' ? 'block' : 'none';
+    if (pairEl) pairEl.style.display = value === 'pairing' ? 'block' : 'none';
+  }
+
+  function generatePairingCode(botId) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    const el = document.getElementById(`settings-pairing-${botId}`);
+    if (el) el.value = code;
+  }
+
+  function saveDmPolicy(botId) {
+    const bot = MCW.storage.getBot(botId);
+    if (!bot) return;
+
+    const policyEl = document.getElementById(`settings-dm-${botId}`);
+    if (policyEl) bot.dmPolicy = policyEl.value;
+
+    const allowedEl = document.getElementById(`settings-allowed-${botId}`);
+    if (allowedEl) {
+      bot.allowedUsers = allowedEl.value.split('\n').map(s => s.trim()).filter(Boolean);
+    }
+
+    const pairingEl = document.getElementById(`settings-pairing-${botId}`);
+    if (pairingEl && pairingEl.value) bot.pairingCode = pairingEl.value;
+
+    MCW.storage.saveBot(bot);
+    MCW.showToast('DM 보안 정책이 저장되었습니다.');
+  }
 
   // ─── Helpers ───
   function escHtml(str) {
@@ -1158,6 +1292,14 @@ const HomePage = (() => {
     // Bot
     saveBotInfo,
     deleteBot,
+
+    // Skill Presets
+    applySkillPreset,
+
+    // DM Policy
+    onDmPolicyChange,
+    generatePairingCode,
+    saveDmPolicy,
 
     // Draft
     clearDraft
