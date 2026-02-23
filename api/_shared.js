@@ -37,7 +37,7 @@ export async function isContextOverflow(resp) {
     const body = await resp.clone().json();
     const msg = (body?.error?.message || body?.error?.code || body?.message || '').toLowerCase();
     return msg.includes('context') || msg.includes('token') || msg.includes('too long')
-      || msg.includes('maximum') || msg.includes('exceed') || msg.includes('length');
+      || msg.includes('maximum') || msg.includes('exceed') || msg.includes('context_length');
   } catch {
     return false;
   }

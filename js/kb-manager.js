@@ -38,8 +38,8 @@ const StorageManager = (() => {
     }
     // Fallback: create own client (when MCW.auth not yet initialized)
     if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
-      const url = 'https://gybgkehtonqhosuutoxx.supabase.co';
-      const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5YmdrZWh0b25xaG9zdXV0b3h4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQ1OTEsImV4cCI6MjA4Njc1MDU5MX0.Xk4JRkJwdTps95vXq3dXklgsTl7Yz_G1I4kbItPr2kw';
+      const url = (typeof MCW !== 'undefined' && MCW.SB_URL) || '';
+      const key = (typeof MCW !== 'undefined' && MCW.SB_KEY) || '';
       if (url && key) {
         _sb = window.supabase.createClient(url, key);
         capabilities.supabase = true;

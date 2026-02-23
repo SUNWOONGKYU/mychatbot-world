@@ -483,6 +483,7 @@ function renderPersonaSelector() {
     function createChip(p, typeClass) {
         var chip = document.createElement('div');
         chip.className = 'persona-chip ' + typeClass + ((currentPersona && currentPersona.id === p.id) ? ' active' : '');
+        chip.setAttribute('data-persona-id', p.id);
         chip.onclick = function() { switchPersona(p.id); };
         var nameSpan = document.createElement('span');
         nameSpan.className = 'persona-chip-name';
@@ -511,15 +512,13 @@ function switchPersona(id) {
     if (!newPersona || (currentPersona && currentPersona.id === newPersona.id)) return;
     currentPersona = newPersona;
     document.querySelectorAll('.persona-chip').forEach(chip => {
-        const onClick = chip.getAttribute('onclick') || "";
-        const isTarget = onClick.indexOf("'" + id + "'") !== -1;
-        chip.classList.toggle('active', isTarget);
+        chip.classList.toggle('active', chip.getAttribute('data-persona-id') === String(id));
     });
     addMessage(
         'system',
-        '✅ <strong>' + newPersona.name + '</strong> 역할로 전환되었습니다.<br>' +
+        '✅ <strong>' + escapeHtml(newPersona.name) + '</strong> 역할로 전환되었습니다.<br>' +
         '<span style="font-size:0.7em; opacity:0.7;">' +
-        (newPersona.role || '') + ' | ' + (newPersona.model || 'MODEL').toUpperCase() +
+        escapeHtml(newPersona.role || '') + ' | ' + escapeHtml((newPersona.model || 'MODEL').toUpperCase()) +
         '</span>'
     );
     const welcomeEl = document.getElementById('chatWelcome');

@@ -1,6 +1,5 @@
 /**
  * Channel Adapter - Abstract Layer for Multi-Channel Support
- * [Phase 2 Scaffolding] — not yet integrated into chat.js
  *
  * Provides a unified interface for sending/receiving messages
  * across different channels (webchat, Telegram, Kakao, etc.)
@@ -138,3 +137,9 @@ window.ChannelAdapter = ChannelAdapter;
 window.WebChatAdapter = WebChatAdapter;
 window.TelegramAdapter = TelegramAdapter;
 window.ChannelManager = ChannelManager;
+
+// Register default webchat adapter with MCW
+if (typeof MCW !== 'undefined') {
+  MCW.channels = new ChannelManager();
+  MCW.channels.register(new WebChatAdapter());
+}
