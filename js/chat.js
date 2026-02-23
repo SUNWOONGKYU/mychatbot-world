@@ -177,6 +177,10 @@ async function loadBotData() {
         setTimeout(() => addMessage('system', '대화할 준비가 되었습니다.'), 500);
         logPerPersonaStat('conversation_start');
     }
+    // 페어링 코드 필요 시 프롬프트 표시
+    if (chatBotData.dmPolicy === 'pairing' && !_userPairingCode) {
+        setTimeout(showPairingPrompt, 600);
+    }
     // 소유자이거나 도우미 페르소나 직접 진입 시 CPC 바 자동 표시
     if (cpcIsHelper(currentPersona)) {
         cpcShowBar();
@@ -616,20 +620,22 @@ function addMessage(sender, text, extraClass) {
     const div = document.createElement('div');
     div.className = `message message-${sender}`;
     if (sender === 'system') {
+        // System messages are internal — HTML allowed
         div.innerHTML = `<div class="message-bubble${extraClass ? ' ' + extraClass : ''}">${text}</div>`;
-    } else if (sender === 'bot') {
-        div.innerHTML = `
-            <div class="message-avatar">🤖</div>
-            <div class="message-bubble">${text}</div>
-        `;
     } else {
-        div.innerHTML = `
-            <div class="message-avatar">👤</div>
-            <div class="message-bubble">${text}</div>
-        `;
+        // User/bot messages: use textContent to prevent XSS
+        var avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = sender === 'bot' ? '🤖' : '👤';
+        var bubble = document.createElement('div');
+        bubble.className = 'message-bubble';
+        bubble.textContent = text;
+        div.appendChild(avatar);
+        div.appendChild(bubble);
     }
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
+    return div;
 }
 function showTyping() {
     isBotTyping = true;
@@ -656,14 +662,57 @@ function getDefaultUserTitle(persona) {
     if (persona.name === 'Claude 연락병') return '지휘관님';
     return persona.category === 'avatar' ? '고객님' : '님';
 }
-// ─── Session Routing Key ───
-function buildSessionKey(opts) {
-    var botId = (opts && opts.botId) || 'unknown';
-    var personaId = (opts && opts.personaId) || 'default';
-    var channel = (opts && opts.channel) || 'webchat';
-    var userId = (opts && opts.userId) || 'anon';
-    var type = (opts && opts.type) || 'chat';
-    return 'mcw:' + type + ':' + botId + ':' + personaId + ':' + channel + ':' + userId;
+// ─── Pairing Code (DM policy) ───
+var _userPairingCode = '';
+
+function showPairingPrompt() {
+    var container = document.getElementById('chatMessages');
+    if (!container) return;
+    var div = document.createElement('div');
+    div.className = 'message message-system';
+    div.id = 'pairingPrompt';
+    var bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.style.textAlign = 'center';
+
+    var label = document.createElement('span');
+    label.textContent = '🔒 이 봇은 페어링 코드가 필요합니다.';
+    bubble.appendChild(label);
+    bubble.appendChild(document.createElement('br'));
+
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'pairingCodeInput';
+    input.placeholder = '페어링 코드 입력';
+    input.maxLength = 6;
+    input.style.cssText = 'margin-top:8px;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.3);color:white;text-align:center;font-size:1.1rem;letter-spacing:2px;';
+    bubble.appendChild(input);
+    bubble.appendChild(document.createElement('br'));
+
+    var btn = document.createElement('button');
+    btn.textContent = '확인';
+    btn.style.cssText = 'margin-top:8px;padding:6px 16px;border-radius:8px;border:none;background:#6366f1;color:white;cursor:pointer;';
+    btn.onclick = submitPairingCode;
+    bubble.appendChild(btn);
+
+    div.appendChild(bubble);
+    container.appendChild(div);
+
+    // Enter key support
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') submitPairingCode();
+    });
+}
+
+function submitPairingCode() {
+    var input = document.getElementById('pairingCodeInput');
+    if (!input) return;
+    _userPairingCode = input.value.trim().toUpperCase();
+    var prompt = document.getElementById('pairingPrompt');
+    if (prompt) prompt.remove();
+    if (_userPairingCode) {
+        addMessage('system', '🔓 페어링 코드가 입력되었습니다.');
+    }
 }
 
 // ─── Collect installed skills for botConfig ───
@@ -704,7 +753,8 @@ async function generateResponse(userText) {
             skills: skills,
             dmPolicy: chatBotData && chatBotData.dmPolicy,
             allowedUsers: chatBotData && chatBotData.allowedUsers,
-            pairingCode: chatBotData && chatBotData.pairingCode
+            pairingCode: chatBotData && chatBotData.pairingCode,
+            userPairingCode: _userPairingCode
         },
         history: conversationHistory.slice(-10)
     };

@@ -1,8 +1,14 @@
 /**
  * Channel Adapter - Abstract Layer for Multi-Channel Support
+ * [Phase 2 Scaffolding] — not yet integrated into chat.js
  *
  * Provides a unified interface for sending/receiving messages
  * across different channels (webchat, Telegram, Kakao, etc.)
+ *
+ * Integration plan:
+ *  - chat.js addMessage() → WebChatAdapter.send()
+ *  - telegram.js sendMessage → TelegramAdapter.send()
+ *  - New channels: implement ChannelAdapter subclass + register with ChannelManager
  */
 
 class ChannelAdapter {

@@ -2,9 +2,25 @@
  * Embedding API — Generates text embeddings via OpenRouter
  * POST /api/embed
  *
- * Converts text to a 384-dimensional vector for semantic search.
- * Uses a lightweight embedding model for cost efficiency.
+ * Converts text to a 1536-dimensional vector for semantic search.
+ * Includes per-IP rate limiting to prevent abuse.
  */
+
+// Simple in-memory rate limiter (per Vercel instance)
+const RATE_LIMIT = {};
+const RATE_WINDOW_MS = 60000; // 1 minute
+const RATE_MAX = 30;          // max 30 requests per minute per IP
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  if (!RATE_LIMIT[ip] || now - RATE_LIMIT[ip].start > RATE_WINDOW_MS) {
+    RATE_LIMIT[ip] = { start: now, count: 1 };
+    return true;
+  }
+  RATE_LIMIT[ip].count++;
+  return RATE_LIMIT[ip].count <= RATE_MAX;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -16,6 +32,12 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Rate limit check
+  const clientIp = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+  if (!checkRateLimit(clientIp)) {
+    return res.status(429).json({ error: 'Too many requests. Try again later.' });
   }
 
   const { text } = req.body;

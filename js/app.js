@@ -239,11 +239,6 @@ const MCW = {
     }
   },
 
-  // ─── Utilities ───
-  getQRCodeURL(url, size = 200) {
-    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;
-  },
-
   // ─── Skills Marketplace Data (with systemPrompt) ───
   skills: [
     { id: 'stats-analysis', name: '통계 분석 센터', icon: '📊', category: '분석', description: '일일/주간/월간 대화 통계, 인기 질문 TOP 10',
@@ -336,8 +331,12 @@ const MCW = {
       const handlers = this._handlers[event] || [];
       let result = data;
       for (const h of handlers) {
-        const modified = await h(result);
-        if (modified) result = { ...result, ...modified };
+        try {
+          const modified = await h(result);
+          if (modified) result = { ...result, ...modified };
+        } catch (e) {
+          console.warn(`[Hook] ${event} handler error:`, e);
+        }
       }
       return result;
     }

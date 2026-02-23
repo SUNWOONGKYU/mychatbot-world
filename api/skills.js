@@ -3,10 +3,11 @@
  * GET /api/skills — returns all skill metadata
  * GET /api/skills?id=sentiment — returns specific SKILL.md content
  */
-import { readFileSync, existsSync } from 'fs';
+import { readFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import { join } from 'path';
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (req.method === 'OPTIONS') {
@@ -27,7 +28,7 @@ export default function handler(req, res) {
     if (!existsSync(skillPath)) {
       return res.status(404).json({ error: 'Skill not found' });
     }
-    const content = readFileSync(skillPath, 'utf-8');
+    const content = await readFile(skillPath, 'utf-8');
     return res.status(200).json({ id, content });
   }
 
@@ -36,6 +37,7 @@ export default function handler(req, res) {
   if (!existsSync(indexPath)) {
     return res.status(200).json([]);
   }
-  const catalog = JSON.parse(readFileSync(indexPath, 'utf-8'));
+  const raw = await readFile(indexPath, 'utf-8');
+  const catalog = JSON.parse(raw);
   return res.status(200).json(catalog);
 }
