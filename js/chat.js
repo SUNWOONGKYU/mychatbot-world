@@ -495,6 +495,8 @@ function switchPersona(id) {
     const newPersona = chatBotData.personas.find(p => String(p.id) === String(id));
     if (!newPersona || (currentPersona && currentPersona.id === newPersona.id)) return;
     currentPersona = newPersona;
+    // 페르소나 전환 시 대화 히스토리 초기화 (이전 페르소나 맥락 오염 방지)
+    conversationHistory = [];
     document.querySelectorAll('.persona-chip').forEach(chip => {
         chip.classList.toggle('active', chip.getAttribute('data-persona-id') === String(id));
     });
