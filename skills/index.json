@@ -19,5 +19,6 @@
   {"id":"kakao-noti","name":"카카오톡 알림","icon":"💬","category":"연동"},
   {"id":"voice-clone","name":"내 목소리 복제","icon":"🎤","category":"UI"},
   {"id":"3d-avatar","name":"3D 아바타","icon":"👤","category":"UI"},
-  {"id":"custom-theme","name":"커스텀 테마","icon":"🎨","category":"UI"}
+  {"id":"custom-theme","name":"커스텀 테마","icon":"🎨","category":"UI"},
+  {"id":"trader-expert","name":"트레이딩 전문가","icon":"📈","category":"분석"}
 ]

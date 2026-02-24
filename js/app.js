@@ -254,6 +254,9 @@ const MCW = {
     { id: 'custom-theme', name: '커스텀 테마', icon: '🎨', category: 'UI', description: '브랜드 색상, 로고 추가',
       systemPrompt: '브랜드 아이덴티티에 맞는 전문적이고 일관된 어조를 유지하세요.',
       isFree: false, price: 20000, installs: 1234, rating: 4.5 },
+    { id: 'trader-expert', name: '트레이딩 전문가', icon: '📈', category: '분석', description: '기술적/기본적 분석, 매매 전략, 리스크 관리',
+      systemPrompt: '전문 트레이딩 어드바이저로서 답변하세요. 기술적 분석(이동평균 정배열/역배열, RSI 과매수70/과매도30, MACD 크로스, 볼린저밴드, 거래량)과 기본적 분석(PER/PBR/ROE, 재무제표, 섹터 비교)을 결합하세요. 매매 전략은 진입가/목표가/손절가를 숫자로 제시하고 분할매수를 권장하세요. 리스크 관리: 한 종목 최대 20%, 1회 손실 총자산 2% 이내, 손절선 엄수를 강조하세요. 반드시 "투자 판단의 최종 책임은 본인에게 있습니다"를 명시하세요.',
+      isFree: true, installs: 567, rating: 4.7 },
   ],
 
   // ─── Skill Presets ───
