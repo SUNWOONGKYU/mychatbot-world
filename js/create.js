@@ -407,6 +407,14 @@ function addPersonaCard(type) {
             </div>
         </div>
 
+        <div class="persona-input-group">
+            <label class="persona-input-label">사용자 호칭 *</label>
+            <div class="input-with-mic">
+                <input type="text" class="persona-input p-usertitle" value="${isAvatar ? '고객님' : '님'}" placeholder="${isAvatar ? '예: 고객님, 대표님, 선생님' : '예: 대표님, 사장님'}">
+                <button type="button" class="mic-btn" onclick="voiceToInput(this)" title="음성 입력">🎤</button>
+            </div>
+        </div>
+
         ${typeSpecificHTML}
 
         <div class="persona-input-group">
@@ -507,6 +515,8 @@ function collectPersonas(type) {
             helperType = card.querySelector('input[type=radio][name^="htype"]:checked')?.value || 'work';
         }
 
+        const userTitle = card.querySelector('.p-usertitle')?.value?.trim() || (type === 'avatar' ? '고객님' : '님');
+
         personas.push({
             id: type + '_' + name.replace(/\s/g, '_').toLowerCase() + '_' + Date.now().toString(36),
             name: name,
@@ -515,6 +525,7 @@ function collectPersonas(type) {
             helperType: helperType,
             model: model,
             iqEq: iqEq,
+            userTitle: userTitle,
             isVisible: true,
             isPublic: type === 'avatar',
             greeting: '',

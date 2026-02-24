@@ -30,6 +30,7 @@ const SunnyBotData = {
       category: 'avatar',
       helperType: null,
       isPublic: true,
+      userTitle: '고객님',
       greeting: '안녕하세요. Sunny Bot의 AI Master입니다. 정확하고 전문적인 답변으로 도와드리겠습니다.',
       faqs: [
         { q: 'AI 전략을 세워주세요', a: '' },
@@ -47,6 +48,7 @@ const SunnyBotData = {
       category: 'avatar',
       helperType: null,
       isPublic: true,
+      userTitle: '대표님',
       greeting: '안녕하세요. Sunny Bot의 Startup Accelerator입니다. 사업 전략을 함께 고민하겠습니다.',
       faqs: [
         { q: '사업계획서 도와주세요', a: '' },
@@ -64,6 +66,7 @@ const SunnyBotData = {
       category: 'avatar',
       helperType: null,
       isPublic: true,
+      userTitle: '고객님',
       greeting: '안녕하세요. Sunny Bot의 공인회계사입니다. 세무·회계 관련 질문에 답변드리겠습니다.',
       faqs: [
         { q: '세금 관련 질문이 있어요', a: '' },
@@ -81,6 +84,7 @@ const SunnyBotData = {
       category: 'avatar',
       helperType: null,
       isPublic: true,
+      userTitle: '방문자님',
       greeting: '안녕하세요. Sunny Bot의 별 애호가입니다. 별자리, 천문학, 우주에 관해 궁금하신 점을 도와드리겠습니다.',
       faqs: [
         { q: '오늘 볼 수 있는 별자리를 알려주세요', a: '' },
@@ -99,6 +103,7 @@ const SunnyBotData = {
       category: 'helper',
       helperType: 'work',
       isPublic: false,
+      userTitle: '지휘관님',
       greeting: 'Claude 연락병입니다. 명령을 말씀해 주세요. 접수 즉시 CPC 연락병에게 전달하고, CPC 연락병을 통해 소대장의 답변을 받아 보고드리겠습니다.',
       faqs: [
         { q: '업무 지시 전달해줘', a: '' },
@@ -116,6 +121,7 @@ const SunnyBotData = {
       category: 'helper',
       helperType: 'work',
       isPublic: false,
+      userTitle: '대표님',
       greeting: 'Trader 도우미입니다. 시장 분석, 매매 전략, 리스크 관리를 도와드리겠습니다.',
       faqs: [
         { q: '오늘 시장 동향 분석해줘', a: '' },
@@ -133,6 +139,7 @@ const SunnyBotData = {
       category: 'helper',
       helperType: 'work',
       isPublic: false,
+      userTitle: '대표님',
       greeting: '안녕하세요! 업무 도우미입니다. 무엇을 도와드릴까요?',
       faqs: [
         { q: '오늘 일정 알려줘', a: '' },
@@ -150,6 +157,7 @@ const SunnyBotData = {
       category: 'helper',
       helperType: 'life',
       isPublic: false,
+      userTitle: '써니님',
       greeting: '안녕하세요! 생활 도우미예요. 편하게 말씀해 주세요.',
       faqs: [
         { q: '오늘 날씨 어때?', a: '' },
@@ -171,7 +179,7 @@ if (typeof window !== 'undefined') {
 }
 
 // 버전 기반 강제 리셋
-var SUNNY_DATA_VERSION = 'v16.5';
+var SUNNY_DATA_VERSION = 'v17.0';
 
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
