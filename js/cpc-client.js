@@ -46,7 +46,7 @@ async function cpcGetCommands(platoonId, status) {
 // --- 소대장 응답 대기: 폴링 → 타임아웃 시 Vercel AI 폴백 ---
 function cpcWaitForResult(cmdId, platoonId, cmdText) {
     const POLL_MS = 2000;    // 2초 간격 폴링
-    const TIMEOUT_MS = 300000; // 5분 타임아웃 (Claude Code 처리 시간 고려)
+    const TIMEOUT_MS = 60000; // 1분 타임아웃 (Agent SDK 자동 처리)
     const start = Date.now();
     let shown = false;
 
@@ -71,7 +71,7 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
     function poll() {
         if (shown) return;
         if (Date.now() - start > TIMEOUT_MS) {
-            // 30초 타임아웃 → Vercel AI 폴백
+            // 60초 타임아웃 → Vercel AI 폴백
             console.log('[CPC] 타임아웃 → Vercel AI 폴백:', cmdId);
             fetch('/api/cpc-process', {
                 method: 'POST',
@@ -255,7 +255,9 @@ function cpcDefaultPlatoon(persona) {
     if (!persona) return '';
     if (persona.name === 'Trade 연락병' || persona.id === 'sunny_helper_trader')
         return 'mychatbot-trader';
-    return '';  // 연락병 등은 사용자가 선택
+    if (persona.name === 'Claude 연락병' || persona.id === 'sunny_helper_work')
+        return 'mychatbot-1';
+    return '';  // 기타 연락병은 사용자가 선택
 }
 
 // === 자율모드 (Autonomous Agent Mode) ===

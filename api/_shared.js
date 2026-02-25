@@ -184,7 +184,7 @@ export function buildSystemMessage(botConfig) {
   const personaName = botConfig?.personaName || '';
   const personaCategory = botConfig?.personaCategory || '';
   const userTitle = botConfig?.userTitle || '';
-  const isCpcLiaison = personaName === 'Claude 연락병';
+  const isCpcLiaison = personaName === 'Claude 연락병' || personaName === 'Trade 연락병';
 
   let roleRules;
   if (isCpcLiaison) {
