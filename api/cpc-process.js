@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 ## 프로젝트 컨텍스트
 - Vercel 배포 (https://mychatbot-world.vercel.app)
 - 기술: HTML/CSS/JS, Vercel Serverless (api/), Supabase, OpenRouter AI
-- 페르소나: AI Master, Startup Accelerator, 공인회계사, 별 애호가 (대외용) + Claude 연락병, 업무 도우미, Trader, 생활 도우미 (비공개)
+- 페르소나: AI Master, Startup Accelerator, 공인회계사, 별 애호가 (대외용) + Claude 연락병, 업무 도우미, Trade 연락병, 생활 도우미 (비공개)
 - CPC: 소대 편제 시스템으로 Claude Code CLI가 소대장 역할
 
 ## 당신의 역할

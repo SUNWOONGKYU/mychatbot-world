@@ -243,9 +243,9 @@ function cpcHideBar() {
 
 function cpcIsHelper(persona) {
     if (!persona) return false;
-    // CPC 바 표시 대상: 연락병 + Trader 페르소나
+    // CPC 바 표시 대상: 연락병 페르소나들
     return persona.name === 'Claude 연락병'
-        || persona.name === 'Trader'
+        || persona.name === 'Trade 연락병'
         || persona.id === 'sunny_helper_work'
         || persona.id === 'sunny_helper_trader';
 }
@@ -253,7 +253,7 @@ function cpcIsHelper(persona) {
 // 페르소나별 기본 소대 매핑
 function cpcDefaultPlatoon(persona) {
     if (!persona) return '';
-    if (persona.name === 'Trader' || persona.id === 'sunny_helper_trader')
+    if (persona.name === 'Trade 연락병' || persona.id === 'sunny_helper_trader')
         return 'mychatbot-trader';
     return '';  // 연락병 등은 사용자가 선택
 }
