@@ -213,8 +213,12 @@ async function cpcShowBar() {
         select.appendChild(optgroup);
     });
 
-    // localStorage에서 이전 선택 소대 복원 (없으면 mychatbot-1 기본값)
-    if (!_cpcSelectedId) {
+    // 페르소나별 자동 소대 선택 (Trader → mychatbot-trader)
+    const autoId = (typeof currentPersona !== 'undefined') ? cpcDefaultPlatoon(currentPersona) : '';
+    if (autoId && _cpcPlatoons.some(p => p.id === autoId)) {
+        _cpcSelectedId = autoId;
+        localStorage.setItem('cpc_selected_platoon', autoId);
+    } else if (!_cpcSelectedId) {
         _cpcSelectedId = localStorage.getItem('cpc_selected_platoon') || 'mychatbot-1';
     }
     select.value = _cpcSelectedId;
@@ -239,8 +243,19 @@ function cpcHideBar() {
 
 function cpcIsHelper(persona) {
     if (!persona) return false;
-    // 오직 'Claude 연락병' 페르소나일 때만 CPC 바 표시
-    return persona.name === 'Claude 연락병' || persona.id === 'sunny_helper_work';
+    // CPC 바 표시 대상: 연락병 + Trader 페르소나
+    return persona.name === 'Claude 연락병'
+        || persona.name === 'Trader'
+        || persona.id === 'sunny_helper_work'
+        || persona.id === 'sunny_helper_trader';
+}
+
+// 페르소나별 기본 소대 매핑
+function cpcDefaultPlatoon(persona) {
+    if (!persona) return '';
+    if (persona.name === 'Trader' || persona.id === 'sunny_helper_trader')
+        return 'mychatbot-trader';
+    return '';  // 연락병 등은 사용자가 선택
 }
 
 // === 자율모드 (Autonomous Agent Mode) ===
@@ -263,6 +278,7 @@ function _autonomousUpdateBtn() {
     const btn = document.getElementById('autonomousToggle');
     if (!btn) return;
     btn.classList.toggle('autonomous-on', _autonomousMode);
+    btn.textContent = _autonomousMode ? '♥' : '♡';
     btn.title = _autonomousMode ? '자율모드 ON — 30분마다 자동 점검' : '자율모드 OFF';
 }
 

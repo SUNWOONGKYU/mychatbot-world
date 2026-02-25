@@ -982,22 +982,23 @@ html.chat-page {
 .cpc-autonomous-btn {
     padding: 2px 8px;
     border-radius: 6px;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(160, 160, 160, 0.3);
     background: transparent;
-    color: #10b981;
-    font-size: 0.85rem;
+    color: #999;
+    font-size: 1.05rem;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.2s;
     margin-left: auto;
 }
-.cpc-autonomous-btn:hover { background: rgba(16, 185, 129, 0.15); }
+.cpc-autonomous-btn:hover { background: rgba(220, 60, 60, 0.1); color: #e05555; }
 .cpc-autonomous-btn.autonomous-on {
-    background: rgba(16, 185, 129, 0.25);
-    border-color: #10b981;
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+    background: rgba(220, 40, 40, 0.15);
+    border-color: #e04040;
+    color: #e04040;
+    box-shadow: 0 0 6px rgba(220, 40, 40, 0.35);
 }
-.chat-body.light .cpc-autonomous-btn { color: #059669; border-color: rgba(5,150,105,0.3); }
-.chat-body.light .cpc-autonomous-btn.autonomous-on { background: rgba(5,150,105,0.15); }
+.chat-body.light .cpc-autonomous-btn { color: #aaa; border-color: rgba(160,160,160,0.3); }
+.chat-body.light .cpc-autonomous-btn.autonomous-on { background: rgba(220,40,40,0.1); color: #d03030; }
 
 .cpc-bar-label {
     font-size: 0.75rem;

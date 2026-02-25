@@ -1,3 +1,5 @@
+import { MODEL_STACK } from './_shared.js';
+
 /**
  * Create Bot API - Vercel Serverless Function
  * POST /api/create-bot
@@ -73,14 +75,6 @@ export default async function handler(req, res) {
 - FAQ 답변은 인터뷰 내용에 기반하여 구체적으로 작성하세요
 - 인터뷰에 없는 내용을 지어내지 마세요
 - 한국어로 작성하세요`;
-
-    // 통합 모델 스택 — 가성비 순서 (원소스 멀티유즈)
-    const MODEL_STACK = [
-      'google/gemini-2.5-flash',
-      'openai/gpt-4o',
-      'anthropic/claude-sonnet-4.5',
-      'deepseek/deepseek-chat',
-    ];
 
     for (const model of MODEL_STACK) {
       try {

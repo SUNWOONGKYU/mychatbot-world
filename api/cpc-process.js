@@ -1,3 +1,5 @@
+import { MODEL_STACK } from './_shared.js';
+
 /**
  * CPC Command Auto-Processor
  * POST /api/cpc-process
@@ -76,13 +78,6 @@ export default async function handler(req, res) {
     if (!OPENROUTER_API_KEY) {
       aiReply = `[CPC] API 키 미설정 — 명령 "${text}" 수신 확인됨`;
     } else {
-      const MODEL_STACK = [
-        'google/gemini-2.5-flash',
-        'openai/gpt-4o',
-        'anthropic/claude-sonnet-4-5',
-        'deepseek/deepseek-chat',
-      ];
-
       for (const model of MODEL_STACK) {
         try {
           const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
