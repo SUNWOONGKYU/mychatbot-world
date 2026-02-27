@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UPDATED: Figure 7 - Blockchain-Style ID Chain with Underscore Separator -->
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="80" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="40" font-weight="bold">도 7: SAL ID 체인 데이터 구조 및 관리 모듈</text>
+
+    <!-- 1. Chain List (71) with Blockchain Style -->
+    <g transform="translate(100, 150)">
+        <rect x="0" y="0" width="800" height="280" fill="white" stroke="black" stroke-width="3"/>
+        <text x="400" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="28" font-weight="bold">SAL ID 체인 목록 (71)</text>
+        <text x="400" y="70" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="20" fill="#666">블록체인 방식 (언더바 구분자)</text>
+
+        <!-- Example 1: S4BI1_S1BI2 -->
+        <g transform="translate(50, 100)">
+            <rect x="0" y="0" width="700" height="60" fill="#f0f8ff" stroke="black" stroke-width="3" rx="5"/>
+            <text x="350" y="38" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="28" font-weight="bold">S4BI1_S1BI2</text>
+
+            <!-- Labels for Old ID and Current ID -->
+            <text x="120" y="-15" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="16" fill="#0066cc">구(Old) ID</text>
+            <line x1="120" y1="-5" x2="120" y2="0" stroke="#0066cc" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <text x="580" y="-15" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="16" fill="#cc0000" font-weight="bold">최신 ID</text>
+            <line x1="580" y1="-5" x2="580" y2="0" stroke="#cc0000" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <text x="750" y="38" font-family="Malgun Gothic, sans-serif" font-size="18">(예시 1)</text>
+        </g>
+
+        <!-- Example 2: S4F2_S3F1 -->
+        <g transform="translate(50, 180)">
+            <rect x="0" y="0" width="700" height="60" fill="#f0f8ff" stroke="black" stroke-width="3" rx="5"/>
+            <text x="350" y="38" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="28" font-weight="bold">S4F2_S3F1</text>
+
+            <text x="750" y="38" font-family="Malgun Gothic, sans-serif" font-size="18">(예시 2)</text>
+        </g>
+    </g>
+
+    <!-- Current ID (72) Box -->
+    <g transform="translate(360, 470)">
+        <rect x="0" y="0" width="280" height="80" fill="white" stroke="black" stroke-width="3"/>
+        <text x="140" y="50" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">최신 SAL ID (72)</text>
+    </g>
+
+    <!-- Dotted line from Chain to Current ID -->
+    <line x1="680" y1="430" x2="500" y2="470" stroke="black" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+    <text x="590" y="455" font-family="Malgun Gothic, sans-serif" font-size="16" fill="#cc0000">언더바 뒤 마지막 세그먼트</text>
+
+    <!-- Appender (73) -->
+    <g transform="translate(100, 620)">
+        <rect x="0" y="0" width="320" height="120" fill="white" stroke="black" stroke-width="3"/>
+        <text x="160" y="45" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">체인 덧붙이기 (73)</text>
+        <text x="160" y="75" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">Append-Only</text>
+        <text x="160" y="100" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">(블록체인 방식)</text>
+    </g>
+    <!-- Arrow: Appender -> Chain List -->
+    <path d="M 260,620 L 260,430" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="280" y="525" font-family="Malgun Gothic, sans-serif" font-size="16">언더바(_) 덧붙임</text>
+
+    <!-- Resolver (74) -->
+    <g transform="translate(580, 620)">
+        <rect x="0" y="0" width="320" height="120" fill="white" stroke="black" stroke-width="3"/>
+        <text x="160" y="45" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">리졸버 (74)</text>
+        <text x="160" y="75" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">구ID 조회 시</text>
+        <text x="160" y="100" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">최신 ID 반환</text>
+    </g>
+    <!-- Arrow: Resolver -> Current ID -->
+    <path d="M 640,620 L 560,550" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="590" y="590" font-family="Malgun Gothic, sans-serif" font-size="16">언더바 분리</text>
+
+</svg>

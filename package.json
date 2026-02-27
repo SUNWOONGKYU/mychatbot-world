@@ -12,6 +12,6 @@
     },
     "scripts": {
         "build": "echo 'No build step needed'",
-        "test": "vitest run"
+        "test": "vitest run --config vitest.config.js"
     }
 }

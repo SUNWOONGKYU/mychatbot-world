@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- REDESIGNED: Spec-Compliant Figure 2 (3 Separated Grids, Projections, 2-Line Text) -->
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+    
+    <defs>
+        <marker id="arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="80" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="40" font-weight="bold">도 2: SAL 그리드 좌표계 개념도</text>
+
+    <!-- Drawing Group (Moved Down) -->
+    <g transform="translate(0, 50)">
+        
+        <!-- 3D AXIS -->
+        <!-- Center Point -->
+        <circle cx="300" cy="500" r="8" fill="black"/>
+        
+        <!-- Stage Axis (X) - Horizontal Right -->
+        <line x1="300" y1="500" x2="850" y2="500" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+        <!-- Moved Label Inwards (870 -> 780) -->
+        <text x="780" y="530" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="bold">Stage (21)</text>
+
+        <!-- Area Axis (Y) - Diagonal Down-Left -->
+        <line x1="300" y1="500" x2="100" y2="700" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+        <text x="50" y="730" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="bold">Area (22)</text>
+
+        <!-- Level Axis (Z) - Vertical Up -->
+        <line x1="300" y1="500" x2="300" y2="100" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+        <text x="280" y="80" font-family="Malgun Gothic, sans-serif" font-size="30" font-weight="bold">Level (23)</text>
+
+        <!-- LOGIC: 3 Grids (Solid Lines) -->
+        
+        <!-- GRID 1 (Back/Bottom/Left) -->
+        <!-- Pos: x=400, y=350 -->
+        <rect x="400" y="350" width="120" height="120" fill="white" stroke="black" stroke-width="2"/>
+        <!-- Projection Lines (Dashed) -->
+        <line x1="300" y1="410" x2="400" y2="410" stroke="black" stroke-dasharray="4,4" stroke-width="2"/>
+        <line x1="460" y1="500" x2="460" y2="470" stroke="black" stroke-dasharray="4,4" stroke-width="2"/>
+        
+        <!-- GRID 2 (Middle) -->
+        <!-- Pos: x=500, y=280 -->
+        <rect x="500" y="280" width="120" height="120" fill="white" stroke="black" stroke-width="2"/>
+         <!-- Projection Lines -->
+        <line x1="300" y1="340" x2="500" y2="340" stroke="black" stroke-dasharray="4,4" stroke-width="2"/>
+        <line x1="560" y1="500" x2="560" y2="400" stroke="black" stroke-dasharray="4,4" stroke-width="2"/>
+
+        <!-- GRID 3 (Front/Top/Right - Main) -->
+        <!-- Pos: x=600, y=210 -->
+        <rect x="600" y="210" width="150" height="150" fill="white" stroke="black" stroke-width="3"/>
+        
+        <!-- 2-Line Text (Smaller Font: 22) -->
+        <text x="675" y="285" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold">SAL 그리드</text>
+        <text x="675" y="315" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold">(20)</text>
+
+        <!-- Projection Lines -->
+        <line x1="300" y1="285" x2="600" y2="285" stroke="black" stroke-dasharray="4,4" stroke-width="2"/>
+        <line x1="675" y1="500" x2="675" y2="360" stroke="black" stroke-dasharray="4,4" stroke-width="2"/>
+
+    </g>
+
+</svg>

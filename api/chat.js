@@ -14,7 +14,8 @@
  */
 import {
   getAvailableKeys, markKeyFailed, buildSystemMessage,
-  isContextOverflow, compactHistory, checkDmPolicy, MODEL_STACK
+  isContextOverflow, compactHistory, checkDmPolicy, MODEL_STACK,
+  fetchRagChunks, buildRagSection
 } from './_shared.js';
 
 export default async function handler(req, res) {
@@ -50,7 +51,13 @@ export default async function handler(req, res) {
       });
     }
 
-    const systemMsg = buildSystemMessage(botConfig);
+    // Obsidian RAG: 관련 지식 청크 조회 (persona_id 있는 경우)
+    const personaId = botConfig?.personaId;
+    const ragOwner = botConfig?.ownerId || userId;
+    const ragChunks = personaId ? await fetchRagChunks(message, ragOwner, personaId) : [];
+    const ragSection = buildRagSection(ragChunks);
+
+    const systemMsg = buildSystemMessage(botConfig) + ragSection;
 
     let messages = [
       { role: 'system', content: systemMsg },

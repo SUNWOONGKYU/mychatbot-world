@@ -482,10 +482,109 @@ const HomePage = (() => {
         <div class="file-list" id="file-list-${key}">${filesHtml}</div>
       </div>
 
+      <div class="kb-section">
+        <div class="kb-section-title">
+          <span>🗂️ Obsidian 지식베이스</span>
+          <span style="font-size:0.75rem;color:rgba(255,255,255,0.35);">마크다운 파일 → RAG 검색</span>
+        </div>
+        <div class="file-upload-zone" onclick="document.getElementById('obsidian-input-${key}').click()"
+          style="margin-bottom:0.75rem;">
+          📁 Obsidian .md 파일을 클릭하여 업로드
+          <input type="file" id="obsidian-input-${key}" accept=".md,.txt" multiple
+            onchange="HomePage.handleObsidianUpload('${botId}', '${personaId}', this.files)" style="display:none">
+        </div>
+        <div id="obsidian-list-${key}" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div id="obsidian-status-${key}" style="font-size:0.8rem;color:rgba(255,255,255,0.3);margin-top:6px;"></div>
+      </div>
+
       <div style="margin-top:1.5rem;text-align:right;">
         <button class="btn-sm-primary" onclick="HomePage.saveKB('${botId}', '${personaId}')">지식베이스 저장</button>
       </div>
     `;
+
+    // Obsidian 문서 목록 로드
+    loadObsidianDocs(botId, personaId);
+  }
+
+  async function loadObsidianDocs(botId, personaId) {
+    const key = `${botId}_${personaId}`;
+    const listEl = document.getElementById(`obsidian-list-${key}`);
+    if (!listEl) return;
+
+    const stored = JSON.parse(localStorage.getItem(`mcw_obsidian_${key}`) || '[]');
+    if (stored.length === 0) {
+      listEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:0.8rem;">업로드된 Obsidian 파일이 없습니다.</div>';
+      return;
+    }
+
+    listEl.innerHTML = stored.map((doc, i) => `
+      <div class="file-item">
+        <span>📝 ${escHtml(doc.fileName)} <span style="color:rgba(255,255,255,0.3);font-size:0.75rem;">(${doc.wordCount || 0}단어)</span></span>
+        <button class="qa-remove-btn" onclick="HomePage.removeObsidianDoc('${botId}', '${personaId}', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  async function handleObsidianUpload(botId, personaId, files) {
+    const key = `${botId}_${personaId}`;
+    const statusEl = document.getElementById(`obsidian-status-${key}`);
+    if (statusEl) statusEl.textContent = '처리 중...';
+
+    const stored = JSON.parse(localStorage.getItem(`mcw_obsidian_${key}`) || '[]');
+    let addedCount = 0;
+
+    for (const file of files) {
+      if (!file.name.endsWith('.md') && !file.name.endsWith('.txt')) continue;
+
+      const content = await readFileAsText(file);
+      if (!content.trim()) continue;
+
+      // 마크다운 기본 파싱 (front matter 제거, 태그 추출)
+      const plainText = content
+        .replace(/^---[\s\S]*?---\n/m, '')
+        .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, link, alias) => alias || link)
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/`{3}[\s\S]*?`{3}/g, '')
+        .trim();
+
+      const wordCount = plainText.split(/\s+/).filter(w => w.length > 0).length;
+      const tags = (content.match(/#[\w가-힣]+/g) || []).map(t => t.slice(1));
+
+      stored.push({
+        fileName: file.name,
+        content: plainText,
+        wordCount,
+        tags,
+        addedAt: new Date().toISOString()
+      });
+      addedCount++;
+
+      // 서버 API로 전송 (임베딩 생성 — 비동기, 실패해도 계속)
+      try {
+        const user = MCW.user.getCurrentUser();
+        const jwt = user?.accessToken || '';
+        await fetch('/api/obsidian', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
+          body: JSON.stringify({ content: plainText, fileName: file.name, personaId, botId })
+        });
+      } catch (e) {
+        console.warn('[Obsidian] server upload failed:', e.message);
+      }
+    }
+
+    localStorage.setItem(`mcw_obsidian_${key}`, JSON.stringify(stored));
+    if (statusEl) statusEl.textContent = addedCount > 0 ? `${addedCount}개 파일이 추가되었습니다.` : '지원되는 파일이 없습니다.';
+    loadObsidianDocs(botId, personaId);
+  }
+
+  function removeObsidianDoc(botId, personaId, idx) {
+    const key = `${botId}_${personaId}`;
+    const stored = JSON.parse(localStorage.getItem(`mcw_obsidian_${key}`) || '[]');
+    stored.splice(idx, 1);
+    localStorage.setItem(`mcw_obsidian_${key}`, JSON.stringify(stored));
+    loadObsidianDocs(botId, personaId);
   }
 
   // ─── KB Helpers ───
@@ -1302,7 +1401,11 @@ const HomePage = (() => {
     saveDmPolicy,
 
     // Draft
-    clearDraft
+    clearDraft,
+
+    // Obsidian
+    handleObsidianUpload,
+    removeObsidianDoc
   };
 })();
 

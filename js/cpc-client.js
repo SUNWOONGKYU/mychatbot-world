@@ -11,6 +11,22 @@ let _cpcTrackedCmds = [];       // 추적 중인 명령 [{id, status, text}]
 let _cpcPollTimer = null;        // 폴링 타이머
 const CPC_POLL_INTERVAL = 3000;  // 3초 폴링
 
+// --- URL 안전 렌더링: claude.ai/code URL은 클릭 가능한 링크로 변환 ---
+function cpcSafeHtml(text) {
+    const escaped = escapeHtml(text);
+    // claude.ai/code URL 패턴을 클릭 가능한 <a> 태그로 변환
+    return escaped.replace(
+        /https:\/\/claude\.ai\/code\/[A-Za-z0-9_-]+/g,
+        match => `<a href="${match}" target="_blank" rel="noopener" class="cpc-remote-link">🔗 ${match}</a>`
+    );
+}
+
+// --- 소대 리모트 URL 조회 ---
+function cpcGetRemoteUrl(platoonId) {
+    const p = _cpcPlatoons.find(x => x.name === platoonId);
+    return (p && p.session_url) || null;
+}
+
 // --- CPC API 호출 ---
 async function cpcFetch(path, options = {}) {
     try {
@@ -57,7 +73,7 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
         _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
         const cleaned = rawResult.replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
         const short = cleaned.length > 80 ? cleaned.substring(0, 80) + '...' : cleaned;
-        addMessage('system', '📡 [CPC] 소대 응답: ' + escapeHtml(short), 'cpc-result');
+        addMessage('system', '📡 [CPC] 소대 응답: ' + cpcSafeHtml(short), 'cpc-result');
         if (voiceOutputEnabled && cleaned) {
             const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
             if (_audioSource) {
@@ -135,7 +151,7 @@ async function cpcPollTrackedCommands() {
                 const rawResult = (fresh.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
                 const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
                 const resultMsg = shortResult
-                    ? '[CPC] 명령 완료: ' + escapeHtml(shortResult)
+                    ? '[CPC] 명령 완료: ' + cpcSafeHtml(shortResult)
                     : '[CPC] 명령 완료: "' + escapeHtml(tracked.text) + '"';
                 addMessage('system', resultMsg);
                 // CPC 결과 음성 읽기
@@ -164,13 +180,13 @@ async function cpcRefreshPlatoonStatus() {
     const select = document.getElementById('cpcPlatoonSelect');
     if (!select) return;
     for (const p of fresh) {
-        const opt = select.querySelector(`option[value="${p.id}"]`);
-        if (opt) opt.textContent = (p.name || p.id) + ' [' + p.status + ']';
+        const opt = select.querySelector(`option[value="${p.name}"]`);
+        if (opt) opt.textContent = p.name + ' [' + p.status + ']';
     }
     // CPC 바 상태 표시
     const statusEl = document.getElementById('cpcStatus');
     if (statusEl && _cpcSelectedId) {
-        const sel = fresh.find(p => p.id === _cpcSelectedId);
+        const sel = fresh.find(p => p.name === _cpcSelectedId);
         statusEl.textContent = sel ? sel.status : '';
         statusEl.className = 'cpc-status' + (sel && sel.status === 'RUNNING' ? ' cpc-running' : '');
     }
@@ -190,8 +206,8 @@ async function cpcShowBar() {
     // 프로젝트별 그룹핑
     const groups = {};
     _cpcPlatoons.forEach(p => {
-        const parts = p.id.match(/^(.+)-(\d+)$/);
-        const project = parts ? parts[1] : p.id;
+        const parts = p.name.match(/^(.+)-(\d+)$/);
+        const project = parts ? parts[1] : p.name;
         if (!groups[project]) groups[project] = [];
         groups[project].push(p);
     });
@@ -199,14 +215,11 @@ async function cpcShowBar() {
     select.innerHTML = '<option value="">소대 선택...</option>';
     Object.keys(groups).sort().forEach(project => {
         const optgroup = document.createElement('optgroup');
-        optgroup.label = groups[project][0].name
-            ? groups[project][0].name.replace(/\s*\d소대$/, '')
-            : project;
+        optgroup.label = project;
         groups[project].forEach(p => {
             const opt = document.createElement('option');
-            opt.value = p.id;
-            // 소대 풀 이름 표시: "My Chatbot World 1소대 [RUNNING]"
-            const label = p.name || p.id;
+            opt.value = p.name;
+            const label = p.name;
             opt.textContent = label + ' [' + p.status + ']';
             optgroup.appendChild(opt);
         });
@@ -215,7 +228,7 @@ async function cpcShowBar() {
 
     // 페르소나별 자동 소대 선택 (Trader → mychatbot-trader)
     const autoId = (typeof currentPersona !== 'undefined') ? cpcDefaultPlatoon(currentPersona) : '';
-    if (autoId && _cpcPlatoons.some(p => p.id === autoId)) {
+    if (autoId && _cpcPlatoons.some(p => p.name === autoId)) {
         _cpcSelectedId = autoId;
         localStorage.setItem('cpc_selected_platoon', autoId);
     } else if (!_cpcSelectedId) {
@@ -254,7 +267,7 @@ function cpcIsHelper(persona) {
 function cpcDefaultPlatoon(persona) {
     if (!persona) return '';
     if (persona.name === 'Trade 연락병' || persona.id === 'sunny_helper_trader')
-        return 'mychatbot-trader';
+        return 'trader-bot';
     if (persona.name === 'Claude 연락병' || persona.id === 'sunny_helper_work')
         return 'mychatbot-1';
     return '';  // 기타 연락병은 사용자가 선택

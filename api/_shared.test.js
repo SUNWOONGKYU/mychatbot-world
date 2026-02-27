@@ -7,7 +7,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   getAvailableKeys, markKeyFailed,
   isContextOverflow, buildSkillSection, buildFaqSection,
-  checkDmPolicy, buildSystemMessage, MODEL_STACK
+  checkDmPolicy, buildSystemMessage, MODEL_STACK,
+  buildRagSection
 } from './_shared.js';
 
 // ─── getAvailableKeys + markKeyFailed ───
@@ -260,5 +261,58 @@ describe('MODEL_STACK', () => {
     expect(MODEL_STACK).toHaveLength(4);
     expect(MODEL_STACK[0]).toBe('google/gemini-2.5-flash');
     expect(MODEL_STACK).toContain('openai/gpt-4o');
+  });
+});
+
+// ─── buildRagSection ───
+
+describe('buildRagSection', () => {
+  it('returns empty string for no chunks', () => {
+    expect(buildRagSection([])).toBe('');
+    expect(buildRagSection(null)).toBe('');
+    expect(buildRagSection(undefined)).toBe('');
+  });
+
+  it('returns empty string for chunks with no content', () => {
+    const chunks = [{ content: '' }, { content: null }];
+    expect(buildRagSection(chunks)).toBe('');
+  });
+
+  it('builds section with chunk content', () => {
+    const chunks = [
+      { content: '공인회계사는 세무 신고를 도와드립니다.' },
+      { content: '예약은 전화 또는 온라인으로 가능합니다.' }
+    ];
+    const result = buildRagSection(chunks);
+    expect(result).toContain('[관련 지식베이스]');
+    expect(result).toContain('공인회계사는 세무 신고를 도와드립니다.');
+    expect(result).toContain('예약은 전화 또는 온라인으로 가능합니다.');
+  });
+
+  it('truncates long chunk content to 400 chars', () => {
+    const longContent = 'A'.repeat(600);
+    const chunks = [{ content: longContent }];
+    const result = buildRagSection(chunks);
+    expect(result).toContain('...');
+    // Full 600 chars should NOT appear
+    expect(result).not.toContain('A'.repeat(500));
+  });
+
+  it('respects maxChars budget', () => {
+    const chunks = Array.from({ length: 20 }, (_, i) => ({
+      content: `청크 내용 ${i}: `.padEnd(200, '내용')
+    }));
+    const result = buildRagSection(chunks, 500);
+    // Should be significantly shorter than all 20 chunks × 200 chars
+    expect(result.length).toBeLessThan(1000);
+  });
+
+  it('adds separator between chunks', () => {
+    const chunks = [
+      { content: '첫 번째 청크 내용' },
+      { content: '두 번째 청크 내용' }
+    ];
+    const result = buildRagSection(chunks);
+    expect(result).toContain('---');
   });
 });

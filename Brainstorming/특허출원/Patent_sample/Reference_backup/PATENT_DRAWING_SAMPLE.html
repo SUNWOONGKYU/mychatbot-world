@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디지털자산 회계감사용 AI 기반 지능형 지원시스템 - 전체 도면</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            page-break-before: always;
+        }
+        .diagram-title {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        .section-divider {
+            border-top: 3px solid #34495e;
+            margin: 50px 0;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- =============== 도1: 실시예 1 구성도 =============== -->
+<div class="diagram-container">
+    <div class="diagram-title">
+        <h2>도1: 실시예 1 - 블록체인 거래 상시 모니터링 시스템 구성도 (100)</h2>
+    </div>
+
+    <svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+        </defs>
+
+        <!-- 중앙 메인 시스템 -->
+        <rect x="460" y="300" width="300" height="220" fill="none" stroke="black" stroke-width="3" rx="5"/>
+        <text x="610" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">블록체인 거래 상시</text>
+        <text x="610" y="422" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">모니터링 시스템</text>
+        <text x="610" y="454" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(100)</text>
+
+        <!-- 데이터 수집부 -->
+        <rect x="460" y="60" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="610" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">데이터 수집부</text>
+        <text x="610" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(110)</text>
+        <text x="610" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">블록체인 연동 라이브러리</text>
+        <text x="610" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">실시간 거래 데이터 수집</text>
+
+        <!-- 실시간 분석부 -->
+        <rect x="840" y="120" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="990" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">실시간 분석부</text>
+        <text x="990" y="222" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(120)</text>
+        <text x="990" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">Heuristic 규칙 기반 분석</text>
+        <text x="990" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">복합 이벤트 처리</text>
+
+        <!-- 이상거래 탐지부 -->
+        <rect x="840" y="440" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="990" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">이상거래 탐지부</text>
+        <text x="990" y="542" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(130)</text>
+        <text x="990" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">위험도 평가</text>
+        <text x="990" y="595" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">이상거래 분류</text>
+
+        <!-- 감사 알림부 -->
+        <rect x="460" y="580" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="610" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">감사 알림부</text>
+        <text x="610" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(140)</text>
+        <text x="610" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">실시간 알림 생성</text>
+        <text x="610" y="735" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">감사증거 수집</text>
+
+        <!-- 좌상단: 외부 데이터 연동부 -->
+        <rect x="80" y="120" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="230" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">외부 데이터 연동부</text>
+        <text x="230" y="222" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(150)</text>
+        <text x="230" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">거래소 API 연동</text>
+        <text x="230" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">시세 정보 수집</text>
+
+        <!-- 좌하단: 데이터 검증부 -->
+        <rect x="80" y="440" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="230" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">데이터 검증부</text>
+        <text x="230" y="542" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(160)</text>
+        <text x="230" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">데이터 무결성 검증</text>
+        <text x="230" y="595" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">중복 거래 탐지</text>
+
+        <!-- 화살표 연결 -->
+        <line x1="610" y1="240" x2="610" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead1)"/>
+        <line x1="610" y1="520" x2="610" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrowhead1)"/>
+        <line x1="380" y1="300" x2="460" y2="350" stroke="black" stroke-width="2" marker-end="url(#arrowhead1)"/>
+        <line x1="380" y1="530" x2="460" y2="480" stroke="black" stroke-width="2" marker-end="url(#arrowhead1)"/>
+        <line x1="840" y1="210" x2="760" y2="350" stroke="black" stroke-width="2" marker-end="url(#arrowhead1)"/>
+        <line x1="840" y1="530" x2="760" y2="480" stroke="black" stroke-width="2" marker-end="url(#arrowhead1)"/>
+    </svg>
+</div>
+
+<!-- =============== 도2: 실시예 1 플로차트 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도2: 실시예 1 - 블록체인 거래 상시 모니터링 시스템 플로차트 (6단계)</h2>
+    </div>
+
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead1f" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+      </defs>
+
+      <rect width="1600" height="900" fill="white"/>
+
+      <!-- 1단계 -->
+      <rect x="250" y="60" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">1. 블록체인 거래 데이터 수집</text>
+      <line x1="800" y1="150" x2="800" y2="180" stroke="black" stroke-width="2" marker-end="url(#arrowhead1f)"/>
+
+      <!-- 2단계 -->
+      <rect x="250" y="180" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">2. 원시 데이터 무결성 검증</text>
+      <line x1="800" y1="270" x2="800" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead1f)"/>
+
+      <!-- 3단계 -->
+      <rect x="250" y="300" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">3. 감사 기준 적용 및 실시간 분석</text>
+      <line x1="800" y1="390" x2="800" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead1f)"/>
+
+      <!-- 4단계 -->
+      <rect x="250" y="420" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">4. 이상 거래 패턴 심화 탐지</text>
+      <line x1="800" y1="510" x2="800" y2="540" stroke="black" stroke-width="2" marker-end="url(#arrowhead1f)"/>
+
+      <!-- 5단계 -->
+      <rect x="250" y="540" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">5. 분석 결과 검증 및 알림 생성</text>
+      <line x1="800" y1="630" x2="800" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrowhead1f)"/>
+
+      <!-- 6단계 -->
+      <rect x="250" y="660" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">6. 감사증거 생성 및 실시예 6 전송</text>
+    </svg>
+</div>
+
+<!-- =============== 도3: 실시예 2 구성도 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도3: 실시예 2 - 블록체인 데이터와 회계장부 데이터의 일치성 검증 시스템 구성도 (200)</h2>
+    </div>
+
+    <svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+        </defs>
+
+        <!-- 상단 좌측: 블록체인 데이터 추출부 -->
+        <rect x="80" y="60" width="300" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="230" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">블록체인 데이터</text>
+        <text x="230" y="157" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">추출부</text>
+        <text x="230" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(210)</text>
+
+        <!-- 상단 우측: 회계장부 데이터 수집부 -->
+        <rect x="820" y="60" width="300" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="970" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">회계장부 데이터</text>
+        <text x="970" y="157" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">수집부</text>
+        <text x="970" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(220)</text>
+
+        <!-- 상단 중앙: 데이터 표준화부 -->
+        <rect x="450" y="60" width="300" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">데이터 표준화부</text>
+        <text x="600" y="157" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(230)</text>
+        <text x="600" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">시간대/형식 통일</text>
+        <text x="600" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">매칭 준비</text>
+
+        <!-- 중앙: 일치성 검증 시스템 -->
+        <rect x="350" y="290" width="500" height="180" fill="none" stroke="black" stroke-width="3" rx="5"/>
+        <text x="600" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">블록체인 데이터와 회계장부 데이터의</text>
+        <text x="600" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">일치성 검증 시스템</text>
+        <text x="600" y="424" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(200)</text>
+
+        <!-- 좌측: 자동 매칭 엔진 -->
+        <rect x="60" y="270" width="260" height="140" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="190" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">자동 매칭</text>
+        <text x="190" y="357" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">엔진</text>
+        <text x="190" y="389" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(240)</text>
+
+        <!-- 우측: 원인 분석부 -->
+        <rect x="880" y="270" width="260" height="140" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1010" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">원인 분석부</text>
+        <text x="1010" y="357" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(260)</text>
+        <text x="1010" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">불일치 원인 규명</text>
+
+        <!-- 하단 좌측: 불일치 분석부 -->
+        <rect x="150" y="500" width="280" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="290" y="565" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">불일치 분석부</text>
+        <text x="290" y="597" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(250)</text>
+        <text x="290" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">불일치 분류/평가</text>
+        <text x="290" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">중요도 평가</text>
+
+        <!-- 하단 중앙: 보정 제안부 -->
+        <rect x="460" y="500" width="280" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="565" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">보정 제안부</text>
+        <text x="600" y="597" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(270)</text>
+        <text x="600" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">해결 방안 제시</text>
+        <text x="600" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">자동 보정 제안</text>
+
+        <!-- 하단 우측: 검증 보고서 생성부 -->
+        <rect x="770" y="500" width="280" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="910" y="565" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">검증 보고서</text>
+        <text x="910" y="597" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">생성부</text>
+        <text x="910" y="629" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(280)</text>
+
+        <!-- 화살표 연결 -->
+        <line x1="380" y1="140" x2="450" y2="140" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="820" y1="140" x2="750" y2="140" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="600" y1="220" x2="600" y2="290" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="320" y1="340" x2="350" y2="370" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="880" y1="340" x2="850" y2="370" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="450" y1="470" x2="350" y2="500" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="600" y1="470" x2="600" y2="500" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+        <line x1="750" y1="470" x2="850" y2="500" stroke="black" stroke-width="2" marker-end="url(#arrowhead2)"/>
+    </svg>
+</div>
+
+<!-- =============== 도4: 실시예 2 플로차트 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도4: 실시예 2 - 블록체인 데이터와 회계장부 데이터의 일치성 검증 시스템 플로차트 (6단계)</h2>
+    </div>
+
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead2f" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+      </defs>
+
+      <rect width="1600" height="900" fill="white"/>
+
+      <!-- 1단계 -->
+      <rect x="250" y="60" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">1. 블록체인 및 회계장부 데이터 수집</text>
+      <line x1="800" y1="150" x2="800" y2="180" stroke="black" stroke-width="2" marker-end="url(#arrowhead2f)"/>
+
+      <!-- 2단계 -->
+      <rect x="250" y="180" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">2. 데이터 표준화 및 전처리</text>
+      <line x1="800" y1="270" x2="800" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead2f)"/>
+
+      <!-- 3단계 -->
+      <rect x="250" y="300" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">3. 자동 매칭 및 불일치 탐지</text>
+      <line x1="800" y1="390" x2="800" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead2f)"/>
+
+      <!-- 4단계 -->
+      <rect x="250" y="420" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">4. 원인 분석 및 보정 방안 검토</text>
+      <line x1="800" y1="510" x2="800" y2="540" stroke="black" stroke-width="2" marker-end="url(#arrowhead2f)"/>
+
+      <!-- 5단계 -->
+      <rect x="250" y="540" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">5. 검증 보고서 생성</text>
+      <line x1="800" y1="630" x2="800" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrowhead2f)"/>
+
+      <!-- 6단계 -->
+      <rect x="250" y="660" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">6. 실시예 6의 시스템으로 결과 전송</text>
+    </svg>
+</div>
+
+<!-- =============== 도5: 실시예 3 구성도 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도5: 실시예 3 - 스마트 컨트랙트 코드 분석 및 검증 시스템 구성도 (300)</h2>
+    </div>
+
+    <svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+        </defs>
+
+        <!-- 상단 3개 박스 -->
+        <!-- 좌상: 코드 수집부 -->
+        <rect x="60" y="60" width="320" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="220" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">코드 수집부</text>
+        <text x="220" y="157" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(310)</text>
+        <text x="220" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">컨트랙트 소스코드</text>
+        <text x="220" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">메타데이터 수집</text>
+
+        <!-- 중상: 코드 분석부 -->
+        <rect x="440" y="60" width="320" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">코드 분석부</text>
+        <text x="600" y="157" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(320)</text>
+        <text x="600" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">정적/동적 분석</text>
+        <text x="600" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">구조 검증</text>
+
+        <!-- 우상: 보안 검증부 -->
+        <rect x="820" y="60" width="320" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="980" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">보안 검증부</text>
+        <text x="980" y="157" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(330)</text>
+        <text x="980" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">취약점 탐지</text>
+        <text x="980" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">보안 검사</text>
+
+        <!-- 중앙: 스마트 컨트랙트 코드 분석 및 검증 시스템 -->
+        <rect x="300" y="280" width="600" height="140" fill="none" stroke="black" stroke-width="3" rx="5"/>
+        <text x="600" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">스마트 컨트랙트 코드 분석 및</text>
+        <text x="600" y="367" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">검증 시스템</text>
+        <text x="600" y="399" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(300)</text>
+
+        <!-- 중층 좌측: 비즈니스 로직 분석부 -->
+        <rect x="80" y="300" width="180" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="170" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">비즈니스 로직</text>
+        <text x="170" y="377" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">분석부 (340)</text>
+        <text x="170" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">로직 정확성 확인</text>
+
+        <!-- 중층 우측: 버전 관리부 -->
+        <rect x="940" y="300" width="180" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1030" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">버전 관리부</text>
+        <text x="1030" y="377" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(350)</text>
+        <text x="1030" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">업그레이드 이력 추적</text>
+
+        <!-- 하단 4개 박스 -->
+        <!-- 위험도 평가부 -->
+        <rect x="80" y="520" width="240" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="200" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">위험도 평가부</text>
+        <text x="200" y="612" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(360)</text>
+        <text x="200" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">종합 위험도 산출</text>
+        <text x="200" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">우선순위 결정</text>
+
+        <!-- 감사 증적 생성부 -->
+        <rect x="360" y="520" width="240" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="480" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">감사 증적 생성부</text>
+        <text x="480" y="612" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(375)</text>
+        <text x="480" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">감사 증거 생성</text>
+        <text x="480" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">추적 가능성 확보</text>
+
+        <!-- 모니터링부 -->
+        <rect x="640" y="520" width="240" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="760" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">모니터링부</text>
+        <text x="760" y="612" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(370)</text>
+        <text x="760" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">실시간 실행 모니터링</text>
+        <text x="760" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">이상 동작 확인</text>
+
+        <!-- 보고서 생성부 -->
+        <rect x="920" y="520" width="240" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1040" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">보고서 생성부</text>
+        <text x="1040" y="612" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(380)</text>
+        <text x="1040" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">확인 결과 종합</text>
+        <text x="1040" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">권장 조치사항</text>
+
+        <!-- 화살표 연결 -->
+        <!-- 상단에서 중앙으로 -->
+        <line x1="350" y1="220" x2="450" y2="280" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <line x1="600" y1="220" x2="600" y2="280" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <line x1="850" y1="220" x2="750" y2="280" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <!-- 중층에서 중앙으로 -->
+        <line x1="260" y1="360" x2="300" y2="360" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <line x1="940" y1="360" x2="900" y2="360" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <!-- 중앙에서 하단으로 -->
+        <line x1="400" y1="420" x2="240" y2="520" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <line x1="500" y1="420" x2="480" y2="520" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <line x1="700" y1="420" x2="760" y2="520" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+        <line x1="800" y1="420" x2="1000" y2="520" stroke="black" stroke-width="2" marker-end="url(#arrowhead3)"/>
+    </svg>
+</div>
+
+<!-- =============== 도6: 실시예 3 플로차트 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도6: 실시예 3 - 스마트 컨트랙트 코드 분석 및 검증 시스템 플로차트 (6단계)</h2>
+    </div>
+
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead3f" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+      </defs>
+
+      <rect width="1600" height="900" fill="white"/>
+
+      <!-- 1단계 -->
+      <rect x="250" y="60" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">1. 스마트 컨트랙트 소스코드 수집</text>
+      <line x1="800" y1="150" x2="800" y2="180" stroke="black" stroke-width="2" marker-end="url(#arrowhead3f)"/>
+
+      <!-- 2단계 -->
+      <rect x="250" y="180" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">2. 정적/동적 코드 분석 수행</text>
+      <line x1="800" y1="270" x2="800" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead3f)"/>
+
+      <!-- 3단계 -->
+      <rect x="250" y="300" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">3. 보안 검증 및 취약점 탐지</text>
+      <line x1="800" y1="390" x2="800" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead3f)"/>
+
+      <!-- 4단계 -->
+      <rect x="250" y="420" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">4. 비즈니스 로직 검증 및 버전 관리</text>
+      <line x1="800" y1="510" x2="800" y2="540" stroke="black" stroke-width="2" marker-end="url(#arrowhead3f)"/>
+
+      <!-- 5단계 -->
+      <rect x="250" y="540" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">5. 위험도 평가 및 모니터링</text>
+      <line x1="800" y1="630" x2="800" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrowhead3f)"/>
+
+      <!-- 6단계 -->
+      <rect x="250" y="660" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">6. 보고서 생성 및 실시예 6 전송</text>
+    </svg>
+</div>
+
+<!-- =============== 도7: 실시예 4 구성도 (수정된 버전) =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도7: 실시예 4 - 가치 및 시장 관련 이상징후 탐지 시스템 구성도 (400)</h2>
+    </div>
+
+    <svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+        </defs>
+
+        <!-- 최상단: 시장 데이터 수집부 (410) -->
+        <rect x="500" y="40" width="300" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="650" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">시장 데이터 수집부</text>
+        <text x="650" y="117" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(410)</text>
+        <text x="650" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">실시간 데이터 수집</text>
+
+        <!-- 중간층 4개 박스 -->
+        <!-- 좌측: 가격 분석부 (420) -->
+        <rect x="100" y="200" width="220" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="210" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">가격 분석부</text>
+        <text x="210" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(420)</text>
+        <text x="210" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">가격 패턴 분석</text>
+
+        <!-- 중좌: 거래량 분석부 (430) -->
+        <rect x="360" y="200" width="220" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="470" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">거래량 분석부</text>
+        <text x="470" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(430)</text>
+        <text x="470" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">거래량 패턴 분석</text>
+
+        <!-- 중우: 유동성 분석부 (450) -->
+        <rect x="620" y="200" width="220" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="730" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">유동성 분석부</text>
+        <text x="730" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(450)</text>
+        <text x="730" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">유동성 모니터링</text>
+
+        <!-- 우측: 상관관계 분석부 (460) -->
+        <rect x="880" y="200" width="220" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="990" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">상관관계 분석부</text>
+        <text x="990" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(460)</text>
+        <text x="990" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">상관관계 분석</text>
+
+        <!-- 중앙: 메인 시스템 (400) - 가로 약간 줄임 -->
+        <rect x="420" y="380" width="360" height="120" fill="none" stroke="black" stroke-width="3" rx="5"/>
+        <text x="600" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">가치 및 시장 관련</text>
+        <text x="600" y="457" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">이상징후 탐지 시스템 (400)</text>
+
+        <!-- 하위층 좌우 -->
+        <!-- 좌측: 시장조작 탐지부 (440) - 더 왼쪽으로 이동 -->
+        <rect x="60" y="550" width="280" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="200" y="595" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">시장조작 탐지부</text>
+        <text x="200" y="627" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(440)</text>
+        <text x="200" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">시장조작 탐지</text>
+
+        <!-- 우측: 예측 모델부 (470) - 더 오른쪽으로 이동 -->
+        <rect x="860" y="550" width="280" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1000" y="595" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">예측 모델부</text>
+        <text x="1000" y="627" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(470)</text>
+        <text x="1000" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">가격 변동 예측</text>
+
+        <!-- 최하단: 알림 생성부 (480) -->
+        <rect x="450" y="720" width="300" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="765" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">알림 생성부</text>
+        <text x="600" y="797" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(480)</text>
+        <text x="600" y="825" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">감사인 알림 생성</text>
+
+        <!-- 화살표 연결 (실시예 4 명세서 기준) -->
+
+        <!-- 410 → 420, 430, 450, 460 (데이터 분배) -->
+        <line x1="550" y1="160" x2="250" y2="200" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+        <line x1="600" y1="160" x2="470" y2="200" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+        <line x1="700" y1="160" x2="730" y2="200" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+        <line x1="750" y1="160" x2="950" y2="200" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+
+        <!-- 420, 430 → 440 (가격분석, 거래량분석 → 시장조작탐지) - 화살표 출발점 조정 -->
+        <line x1="180" y1="320" x2="160" y2="550" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+        <line x1="440" y1="320" x2="240" y2="550" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+
+        <!-- 450, 460 → 470 (유동성분석, 상관관계분석 → 예측모델) - 화살표 출발점 조정 -->
+        <line x1="760" y1="320" x2="940" y2="550" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+        <line x1="1020" y1="320" x2="1040" y2="550" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+
+        <!-- 440, 470 → 480 (시장조작탐지, 예측모델 → 알림생성) -->
+        <line x1="280" y1="670" x2="520" y2="720" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+        <line x1="920" y1="670" x2="680" y2="720" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+
+        <!-- 480 → 400 (알림생성부 → 중앙시스템) 피드백 루프 - 정중앙 정렬 -->
+        <line x1="600" y1="720" x2="600" y2="500" stroke="black" stroke-width="2" marker-end="url(#arrowhead4)"/>
+    </svg>
+</div>
+
+<!-- =============== 도8: 실시예 4 플로차트 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도8: 실시예 4 - 가치 및 시장 관련 이상징후 탐지 시스템 플로차트 (6단계)</h2>
+    </div>
+
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead4f" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+      </defs>
+
+      <rect width="1600" height="900" fill="white"/>
+
+      <!-- 1단계 -->
+      <rect x="250" y="60" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">1. 다중 데이터 소스 실시간 수집</text>
+      <line x1="800" y1="150" x2="800" y2="180" stroke="black" stroke-width="2" marker-end="url(#arrowhead4f)"/>
+
+      <!-- 2단계 -->
+      <rect x="250" y="180" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">2. AI 알고리즘 기반 패턴 분석</text>
+      <line x1="800" y1="270" x2="800" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead4f)"/>
+
+      <!-- 3단계 -->
+      <rect x="250" y="300" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">3. 이상징후 탐지 및 분류</text>
+      <line x1="800" y1="390" x2="800" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead4f)"/>
+
+      <!-- 4단계 -->
+      <rect x="250" y="420" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">4. 위험도 수준 평가 및 우선순위 설정</text>
+      <line x1="800" y1="510" x2="800" y2="540" stroke="black" stroke-width="2" marker-end="url(#arrowhead4f)"/>
+
+      <!-- 5단계 -->
+      <rect x="250" y="540" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">5. 감사인에게 이상징후 알림</text>
+      <line x1="800" y1="630" x2="800" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrowhead4f)"/>
+
+      <!-- 6단계 -->
+      <rect x="250" y="660" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">6. 조사 결과 및 위험 평가를 실시예 6 전송</text>
+    </svg>
+</div>
+
+<!-- =============== 도9: 실시예 5 구성도 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도9: 실시예 5 - 자산가치 평가 및 구성비율, 집중도 위험 등 분석 시스템 구성도 (500)</h2>
+    </div>
+
+    <svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+        </defs>
+
+        <!-- 중앙: 자산가치 평가 및 구성비율, 집중도 위험 등 분석 시스템 -->
+        <rect x="300" y="340" width="600" height="140" fill="none" stroke="black" stroke-width="3" rx="5"/>
+        <text x="600" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">자산가치 평가 및 구성비율,</text>
+        <text x="600" y="422" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">집중도 위험 등 분석 시스템</text>
+        <text x="600" y="454" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(500)</text>
+
+        <!-- 좌상: 자산 포트폴리오 수집부 -->
+        <rect x="60" y="60" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="210" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">자산 포트폴리오</text>
+        <text x="210" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">수집부</text>
+        <text x="210" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(510)</text>
+        <text x="210" y="222" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">자산 정보 수집</text>
+
+        <!-- 중상: 가치 평가부 -->
+        <rect x="450" y="60" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">가치 평가부</text>
+        <text x="600" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(520)</text>
+        <text x="600" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">공정가치 측정</text>
+        <text x="600" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">계층구조 분류</text>
+
+        <!-- 우상: 구성비율 분석부 -->
+        <rect x="840" y="60" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="990" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">구성비율 분석부</text>
+        <text x="990" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(530)</text>
+        <text x="990" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">구성비율 계산</text>
+        <text x="990" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">한도 모니터링</text>
+
+        <!-- 좌측: 집중도 위험 계산부 -->
+        <rect x="60" y="340" width="200" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="160" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">집중도 위험</text>
+        <text x="160" y="432" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">계산부</text>
+        <text x="160" y="464" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(540)</text>
+
+        <!-- 우측: 스트레스 테스트부 -->
+        <rect x="940" y="340" width="200" height="160" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1040" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">스트레스</text>
+        <text x="1040" y="432" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">테스트부</text>
+        <text x="1040" y="464" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(550)</text>
+
+        <!-- 하단 4개 구성요소 -->
+        <!-- 위험도 계산부 -->
+        <rect x="80" y="580" width="200" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="180" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">위험도 계산부</text>
+        <text x="180" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(565)</text>
+        <text x="180" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">HHI 지수 계산</text>
+        <text x="180" y="735" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">위험 정량화</text>
+
+        <!-- 규제 준수 확인부 -->
+        <rect x="340" y="580" width="200" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="440" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">규제 준수</text>
+        <text x="440" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">확인부</text>
+        <text x="440" y="714" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(560)</text>
+
+        <!-- 보고서 생성부 -->
+        <rect x="660" y="580" width="200" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="760" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">보고서 생성부</text>
+        <text x="760" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(570)</text>
+        <text x="760" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">분석 결과 종합</text>
+        <text x="760" y="735" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">보고서 생성</text>
+
+        <!-- 알림 시스템부 -->
+        <rect x="920" y="580" width="200" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1020" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">알림 시스템부</text>
+        <text x="1020" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(575)</text>
+        <text x="1020" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">한도 관리</text>
+        <text x="1020" y="735" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">알림 시스템</text>
+
+        <!-- 화살표 연결 -->
+        <line x1="300" y1="240" x2="400" y2="340" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="600" y1="240" x2="600" y2="340" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="900" y1="240" x2="800" y2="340" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="260" y1="420" x2="300" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="940" y1="420" x2="900" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="400" y1="480" x2="220" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="500" y1="480" x2="440" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="700" y1="480" x2="760" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+        <line x1="800" y1="480" x2="1020" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrowhead5)"/>
+    </svg>
+</div>
+
+<!-- =============== 도10: 실시예 5 플로차트 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도10: 실시예 5 - 자산가치 평가 및 구성비율, 집중도 위험 등 분석 시스템 플로차트 (6단계)</h2>
+    </div>
+
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead5f" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+      </defs>
+
+      <rect width="1600" height="900" fill="white"/>
+
+      <!-- 1단계 -->
+      <rect x="250" y="60" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">1. 다중 자산 데이터 수집</text>
+      <line x1="800" y1="150" x2="800" y2="180" stroke="black" stroke-width="2" marker-end="url(#arrowhead5f)"/>
+
+      <!-- 2단계 -->
+      <rect x="250" y="180" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">2. 자산가치 측정 및 평가</text>
+      <line x1="800" y1="270" x2="800" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead5f)"/>
+
+      <!-- 3단계 -->
+      <rect x="250" y="300" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">3. 구성비율 계산 및 분석</text>
+      <line x1="800" y1="390" x2="800" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead5f)"/>
+
+      <!-- 4단계 -->
+      <rect x="250" y="420" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">4. 집중도 위험 지수 계산</text>
+      <line x1="800" y1="510" x2="800" y2="540" stroke="black" stroke-width="2" marker-end="url(#arrowhead5f)"/>
+
+      <!-- 5단계 -->
+      <rect x="250" y="540" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">5. 법규 준수 여부 확인</text>
+      <line x1="800" y1="630" x2="800" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrowhead5f)"/>
+
+      <!-- 6단계 -->
+      <rect x="250" y="660" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">6. 분석 결과 및 위험 평가를 실시예 6 전송</text>
+    </svg>
+</div>
+
+<!-- =============== 도11: 실시예 6 구성도 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도11: 실시예 6 - 다중영역 대상 멀티 AI 에이전트 협업 및 통합용 관리시스템 구성도 (600)</h2>
+    </div>
+
+    <svg width="1200" height="750" viewBox="0 0 1200 750" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead6" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+            </marker>
+        </defs>
+
+        <!-- 상단 중앙: 중앙 조정부 -->
+        <rect x="450" y="40" width="300" height="120" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">중앙 조정부</text>
+        <text x="600" y="117" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(610)</text>
+        <text x="600" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">시스템 총괄관리</text>
+
+        <!-- 좌상: 시스템 통합 관리부 -->
+        <rect x="80" y="60" width="300" height="140" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="230" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">시스템 통합 관리부</text>
+        <text x="230" y="147" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(620)</text>
+        <text x="230" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">작업 스케줄링</text>
+
+        <!-- 우상: 결과 수집부 -->
+        <rect x="820" y="60" width="300" height="140" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="970" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">결과 수집부</text>
+        <text x="970" y="147" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(630)</text>
+        <text x="970" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">분석결과 수집</text>
+
+        <!-- 중앙: 다중영역 대상 멀티 AI 에이전트 협업 및 통합용 관리시스템 -->
+        <rect x="350" y="260" width="500" height="140" fill="none" stroke="black" stroke-width="3" rx="5"/>
+        <text x="600" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">다중영역 대상 멀티 AI 에이전트</text>
+        <text x="600" y="347" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">협업 및 통합용 관리시스템 (600)</text>
+
+        <!-- 좌측: 데이터 통합부 -->
+        <rect x="40" y="250" width="280" height="140" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="180" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">데이터 통합부</text>
+        <text x="180" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(640)</text>
+        <text x="180" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">데이터 통합처리</text>
+
+        <!-- 우측: 협업 조율부 -->
+        <rect x="880" y="250" width="280" height="140" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="1020" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">협업 조율부</text>
+        <text x="1020" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(650)</text>
+        <text x="1020" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">협업 조율</text>
+
+        <!-- 하단 3개 구성요소 -->
+        <!-- 통합 데이터베이스 -->
+        <rect x="160" y="480" width="250" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="285" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">통합</text>
+        <text x="285" y="582" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">데이터베이스</text>
+        <text x="285" y="614" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(670)</text>
+        <text x="285" y="642" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">감사증거 저장</text>
+
+        <!-- 감사 보고서 생성부 -->
+        <rect x="475" y="480" width="250" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="600" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">감사 보고서</text>
+        <text x="600" y="582" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">생성부</text>
+        <text x="600" y="614" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(680)</text>
+        <text x="600" y="642" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">감사보고서 생성</text>
+
+        <!-- 감사인 인터페이스 -->
+        <rect x="760" y="480" width="300" height="180" fill="none" stroke="black" stroke-width="2" rx="5"/>
+        <text x="910" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">감사인</text>
+        <text x="910" y="582" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">인터페이스</text>
+        <text x="910" y="614" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold">(690)</text>
+        <text x="910" y="642" text-anchor="middle" font-family="Arial, sans-serif" font-size="24">감사인용 대시보드 제공</text>
+
+        <!-- 화살표 연결 -->
+        <line x1="600" y1="160" x2="600" y2="260" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="380" y1="180" x2="450" y2="260" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="820" y1="180" x2="750" y2="260" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="320" y1="320" x2="350" y2="320" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="880" y1="320" x2="850" y2="320" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="500" y1="400" x2="350" y2="480" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="600" y1="400" x2="600" y2="480" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+        <line x1="700" y1="400" x2="910" y2="480" stroke="black" stroke-width="2" marker-end="url(#arrowhead6)"/>
+    </svg>
+</div>
+
+<!-- =============== 도12: 실시예 6 플로차트 =============== -->
+<div class="diagram-container section-divider">
+    <div class="diagram-title">
+        <h2>도12: 실시예 6 - 다중영역 대상 멀티 AI 에이전트 협업 및 통합용 관리시스템 플로차트 (12단계)</h2>
+    </div>
+
+    <svg viewBox="0 0 1600 1800" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead6f" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+      </defs>
+
+      <rect width="1600" height="1800" fill="white"/>
+
+      <!-- 1단계 -->
+      <rect x="250" y="60" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">1. 감사 계획 및 시스템별 작업 배정</text>
+      <line x1="800" y1="150" x2="800" y2="180" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 2단계 -->
+      <rect x="250" y="180" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">2. 1~5번 시스템의 감사증거 및 결과 수집</text>
+      <line x1="800" y1="270" x2="800" y2="300" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 3단계 -->
+      <rect x="250" y="300" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">3. 수집된 모든 감사증거의 무결성 검증 및 분류</text>
+      <line x1="800" y1="390" x2="800" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 4단계 -->
+      <rect x="250" y="420" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">4. 시스템별 결과를 통합 데이터베이스에 저장 및 관리</text>
+      <line x1="800" y1="510" x2="800" y2="540" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 5단계 -->
+      <rect x="250" y="540" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">5. 모든 시스템 결과를 통합한 종합 분석 수행</text>
+      <line x1="800" y1="630" x2="800" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 6단계 -->
+      <rect x="250" y="660" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">6. 이상 징후 및 위험 요소 감사인에게 통합 보고</text>
+      <line x1="800" y1="750" x2="800" y2="780" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 7단계 -->
+      <rect x="250" y="780" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">7. 감사인 검토 및 추가 분석 지시</text>
+      <line x1="800" y1="870" x2="800" y2="900" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 8단계 -->
+      <rect x="250" y="900" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="960" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">8. 감사인 지시에 따른 해당 시스템 추가 조사 수행</text>
+      <line x1="800" y1="990" x2="800" y2="1020" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 9단계 -->
+      <rect x="250" y="1020" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="1080" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">9. 추가 조사 결과를 통합 정리</text>
+      <line x1="800" y1="1110" x2="800" y2="1140" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 10단계 -->
+      <rect x="250" y="1140" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="1200" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">10. 감사인의 감사적 판단 및 감사절차 완료 여부 결정</text>
+
+      <line x1="800" y1="1230" x2="800" y2="1290" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+      <text x="820" y="1265" font-family="Arial, sans-serif" font-size="32" fill="#666666">절차완료</text>
+      <path d="M 250 1180 Q 100 1020 250 840" fill="none" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+      <text x="50" y="1010" font-family="Arial, sans-serif" font-size="32" fill="#666666">추가조사</text>
+
+      <!-- 11단계 -->
+      <rect x="250" y="1290" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="1350" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">11. 종합 감사증거 생성</text>
+      <line x1="800" y1="1380" x2="800" y2="1410" stroke="black" stroke-width="2" marker-end="url(#arrowhead6f)"/>
+
+      <!-- 12단계 -->
+      <rect x="250" y="1410" width="1100" height="90" rx="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="800" y="1470" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="black">12. 최종 감사보고서 작성</text>
+    </svg>
+</div>
+
+<div style="margin-top: 50px; padding: 20px; text-align: center; font-size: 18px; border-top: 2px solid #2c3e50;">
+글자수: 38,942자 /작성자: Claude /프롬프터: 써니
+</div>
+
+</body>
+</html>

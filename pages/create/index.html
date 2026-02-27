@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나의 챗봇 생성하기 - My Chatbot World</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=13.1">
-    <link rel="stylesheet" href="../../css/create.css?v=13.1">
+    <link rel="stylesheet" href="../../css/styles.css?v=16.0">
+    <link rel="stylesheet" href="../../css/create.css?v=16.0">
 </head>
 
 <body class="dark-body">
@@ -21,14 +21,17 @@
 
     <main class="create-main">
         <div class="container-sm">
-            <!-- Progress Bar (5 Steps) -->
+            <!-- Progress Bar (8 Steps) -->
             <div class="create-progress" id="progressBar">
                 <div class="progress-steps">
                     <div class="progress-step horizontal active" data-step="1"><span>1</span>기본정보</div>
                     <div class="progress-step horizontal" data-step="2"><span>2</span>페르소나</div>
                     <div class="progress-step horizontal" data-step="3"><span>3</span>인터뷰</div>
                     <div class="progress-step horizontal" data-step="4"><span>4</span>분석</div>
-                    <div class="progress-step horizontal" data-step="5"><span>5</span>완성</div>
+                    <div class="progress-step horizontal" data-step="5"><span>5</span>생성</div>
+                    <div class="progress-step horizontal" data-step="6"><span>6</span>아바타</div>
+                    <div class="progress-step horizontal" data-step="7"><span>7</span>테마</div>
+                    <div class="progress-step horizontal" data-step="8"><span>8</span>배포</div>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
@@ -150,61 +153,207 @@
                     </div>
                 </div>
                 <div class="analysis-result hidden" id="analysisResult">
-                    <h2 class="step-title">챗봇이 탄생했습니다!</h2>
+                    <h2 class="step-title">분석 완료!</h2>
                     <div class="result-preview" id="resultPreview"></div>
-
-                    <!-- 음성 선택 -->
-                    <div class="voice-pick" id="voicePick">
-                        <h3 class="voice-pick-title">챗봇 목소리를 선택하세요</h3>
-                        <div class="voice-pick-grid" id="voicePickGrid">
-                            <label class="voice-pick-card active" data-voice="fable">
-                                <input type="radio" name="botVoice" value="fable" checked>
-                                <span class="voice-pick-name">Fable</span>
-                                <span class="voice-pick-desc">👨 남성 · 부드러운</span>
-                            </label>
-                            <label class="voice-pick-card" data-voice="nova">
-                                <input type="radio" name="botVoice" value="nova">
-                                <span class="voice-pick-name">Nova</span>
-                                <span class="voice-pick-desc">👩 여성 · 밝고 친근한</span>
-                            </label>
-                            <label class="voice-pick-card" data-voice="shimmer">
-                                <input type="radio" name="botVoice" value="shimmer">
-                                <span class="voice-pick-name">Shimmer</span>
-                                <span class="voice-pick-desc">👩 여성 · 따뜻한</span>
-                            </label>
-                            <label class="voice-pick-card" data-voice="alloy">
-                                <input type="radio" name="botVoice" value="alloy">
-                                <span class="voice-pick-name">Alloy</span>
-                                <span class="voice-pick-desc">⚧ 중성 · 균형잡힌</span>
-                            </label>
-                            <label class="voice-pick-card" data-voice="echo">
-                                <input type="radio" name="botVoice" value="echo">
-                                <span class="voice-pick-name">Echo</span>
-                                <span class="voice-pick-desc">👨 남성 · 차분한</span>
-                            </label>
-                            <label class="voice-pick-card" data-voice="onyx">
-                                <input type="radio" name="botVoice" value="onyx">
-                                <span class="voice-pick-name">Onyx</span>
-                                <span class="voice-pick-desc">👨 남성 · 깊고 낮은</span>
-                            </label>
-                        </div>
-                        <button class="btn btn-secondary btn-sm" onclick="previewVoice()" id="voicePreviewBtn">
-                            미리듣기
-                        </button>
-                    </div>
-
                     <button class="btn btn-primary btn-xl" style="width:100%; margin-top:1.5rem"
-                        onclick="completeCreation()">
-                        챗봇 생성하기
+                        onclick="goToStep(5)">
+                        다음: 목소리 선택 →
                     </button>
                 </div>
             </div>
 
-            <!-- Step 5: 완성 -->
+            <!-- Step 5: 생성 (목소리 선택 + 생성하기) -->
             <div class="create-step hidden" id="step5">
+                <h2 class="step-title">챗봇을 완성하세요</h2>
+                <p class="step-desc">목소리를 선택하고 챗봇을 생성하세요</p>
+
+                <div class="voice-pick" id="voicePick">
+                    <h3 class="voice-pick-title">챗봇 목소리를 선택하세요</h3>
+                    <div class="voice-pick-grid" id="voicePickGrid">
+                        <label class="voice-pick-card active" data-voice="fable">
+                            <input type="radio" name="botVoice" value="fable" checked>
+                            <span class="voice-pick-name">Fable</span>
+                            <span class="voice-pick-desc">남성 · 부드러운</span>
+                        </label>
+                        <label class="voice-pick-card" data-voice="nova">
+                            <input type="radio" name="botVoice" value="nova">
+                            <span class="voice-pick-name">Nova</span>
+                            <span class="voice-pick-desc">여성 · 밝고 친근한</span>
+                        </label>
+                        <label class="voice-pick-card" data-voice="shimmer">
+                            <input type="radio" name="botVoice" value="shimmer">
+                            <span class="voice-pick-name">Shimmer</span>
+                            <span class="voice-pick-desc">여성 · 따뜻한</span>
+                        </label>
+                        <label class="voice-pick-card" data-voice="alloy">
+                            <input type="radio" name="botVoice" value="alloy">
+                            <span class="voice-pick-name">Alloy</span>
+                            <span class="voice-pick-desc">중성 · 균형잡힌</span>
+                        </label>
+                        <label class="voice-pick-card" data-voice="echo">
+                            <input type="radio" name="botVoice" value="echo">
+                            <span class="voice-pick-name">Echo</span>
+                            <span class="voice-pick-desc">남성 · 차분한</span>
+                        </label>
+                        <label class="voice-pick-card" data-voice="onyx">
+                            <input type="radio" name="botVoice" value="onyx">
+                            <span class="voice-pick-name">Onyx</span>
+                            <span class="voice-pick-desc">남성 · 깊고 낮은</span>
+                        </label>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="previewVoice()" id="voicePreviewBtn">
+                        미리듣기
+                    </button>
+                </div>
+
+                <div class="step-actions" style="margin-top:2rem;">
+                    <button class="btn btn-secondary" onclick="goToStep(4)">← 이전</button>
+                    <button class="btn btn-primary btn-lg" onclick="completeCreation()">챗봇 생성하기</button>
+                </div>
+            </div>
+
+            <!-- Step 6: 아바타 설정 -->
+            <div class="create-step hidden" id="step6">
+                <h2 class="step-title">아바타를 설정하세요</h2>
+                <p class="step-desc">챗봇의 얼굴이 될 아바타를 선택하거나 직접 업로드하세요 (선택사항)</p>
+
+                <div class="form-card">
+                    <div class="form-group">
+                        <label class="form-label">기본 아바타 이모지</label>
+                        <div class="avatar-emoji-grid" id="avatarEmojiGrid">
+                            <div class="avatar-emoji-item active" data-emoji="robot" onclick="selectAvatarEmoji(this, 'robot')">
+                                <span class="avatar-emoji-icon">🤖</span>
+                                <span class="avatar-emoji-label">로봇</span>
+                            </div>
+                            <div class="avatar-emoji-item" data-emoji="man" onclick="selectAvatarEmoji(this, 'man')">
+                                <span class="avatar-emoji-icon">👨</span>
+                                <span class="avatar-emoji-label">남성</span>
+                            </div>
+                            <div class="avatar-emoji-item" data-emoji="woman" onclick="selectAvatarEmoji(this, 'woman')">
+                                <span class="avatar-emoji-icon">👩</span>
+                                <span class="avatar-emoji-label">여성</span>
+                            </div>
+                            <div class="avatar-emoji-item" data-emoji="person" onclick="selectAvatarEmoji(this, 'person')">
+                                <span class="avatar-emoji-icon">🧑</span>
+                                <span class="avatar-emoji-label">인물</span>
+                            </div>
+                            <div class="avatar-emoji-item" data-emoji="business" onclick="selectAvatarEmoji(this, 'business')">
+                                <span class="avatar-emoji-icon">👔</span>
+                                <span class="avatar-emoji-label">비즈니스</span>
+                            </div>
+                            <div class="avatar-emoji-item" data-emoji="academic" onclick="selectAvatarEmoji(this, 'academic')">
+                                <span class="avatar-emoji-icon">🎓</span>
+                                <span class="avatar-emoji-label">학술</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:1.5rem;">
+                        <label class="form-label">프로필 이미지 업로드 (선택사항)</label>
+                        <div class="avatar-upload-zone" onclick="document.getElementById('avatarUpload').click()">
+                            <div id="avatarUploadPreview">
+                                <span style="font-size:2rem;">📷</span>
+                                <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:0.5rem;">클릭하여 이미지 업로드<br>JPG, PNG, GIF (최대 2MB)</p>
+                            </div>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+                        </div>
+                    </div>
+
+                    <div class="step-actions" style="margin-top:2rem;">
+                        <button class="btn btn-secondary" onclick="goToStep(5)">← 이전</button>
+                        <button class="btn btn-primary" onclick="goToStep(7)">다음: 테마 선택 →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: 테마 선택 -->
+            <div class="create-step hidden" id="step7">
+                <h2 class="step-title">테마를 선택하세요</h2>
+                <p class="step-desc">챗봇 페이지의 디자인 테마를 선택하세요</p>
+
+                <div class="form-card">
+                    <div class="form-group">
+                        <label class="form-label">기본 모드</label>
+                        <div class="theme-mode-toggle">
+                            <button class="theme-mode-btn active" id="themeDark" onclick="selectThemeMode('dark')">
+                                <span class="theme-mode-icon">🌙</span>
+                                <span>다크 모드</span>
+                            </button>
+                            <button class="theme-mode-btn" id="themeLight" onclick="selectThemeMode('light')">
+                                <span class="theme-mode-icon">☀️</span>
+                                <span>라이트 모드</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:1.5rem;">
+                        <label class="form-label">주요 색상</label>
+                        <div class="theme-color-grid">
+                            <div class="theme-color-item active" data-color="purple" onclick="selectThemeColor(this, 'purple')"
+                                style="background: #7c3aed;" title="보라">
+                                <span class="theme-color-check">✓</span>
+                            </div>
+                            <div class="theme-color-item" data-color="blue" onclick="selectThemeColor(this, 'blue')"
+                                style="background: #2563eb;" title="파랑"></div>
+                            <div class="theme-color-item" data-color="green" onclick="selectThemeColor(this, 'green')"
+                                style="background: #16a34a;" title="초록"></div>
+                            <div class="theme-color-item" data-color="red" onclick="selectThemeColor(this, 'red')"
+                                style="background: #dc2626;" title="빨강"></div>
+                            <div class="theme-color-item" data-color="orange" onclick="selectThemeColor(this, 'orange')"
+                                style="background: #ea580c;" title="주황"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:1.5rem;">
+                        <label class="form-label">미리보기</label>
+                        <div class="theme-preview-box" id="themePreviewBox">
+                            <div class="theme-preview-header" id="themePreviewHeader">
+                                <span id="themePreviewName">챗봇 이름</span>
+                            </div>
+                            <div class="theme-preview-body" id="themePreviewBody">
+                                <div class="theme-preview-bubble bot">안녕하세요! 무엇이든 물어보세요.</div>
+                                <div class="theme-preview-bubble user">안녕하세요!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions" style="margin-top:2rem;">
+                        <button class="btn btn-secondary" onclick="goToStep(6)">← 이전</button>
+                        <button class="btn btn-primary" onclick="goToStep(8)">다음: 배포 →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8: 배포 -->
+            <div class="create-step hidden" id="step8">
                 <div class="complete-celebration">
                     <div class="complete-icon">🎉</div>
-                    <h2 class="step-title">축하합니다! 챗봇이 생성되었습니다!</h2>
+                    <h2 class="step-title">축하합니다! 챗봇이 완성되었습니다!</h2>
+
+                    <div class="form-card" style="text-align:left; margin-bottom:1.5rem;">
+                        <label class="form-label">배포 채널 선택</label>
+                        <div class="channel-select-grid">
+                            <label class="channel-select-item checked">
+                                <input type="checkbox" name="deployChannel" value="web" checked>
+                                <span class="channel-icon">🌐</span>
+                                <span class="channel-label">웹</span>
+                                <span class="channel-desc">mychatbot.world</span>
+                            </label>
+                            <label class="channel-select-item">
+                                <input type="checkbox" name="deployChannel" value="kakao">
+                                <span class="channel-icon">💬</span>
+                                <span class="channel-label">카카오톡</span>
+                                <span class="channel-desc">카카오 채널 연동</span>
+                            </label>
+                            <label class="channel-select-item">
+                                <input type="checkbox" name="deployChannel" value="telegram">
+                                <span class="channel-icon">✈️</span>
+                                <span class="channel-label">텔레그램</span>
+                                <span class="channel-desc">텔레그램 봇 연동</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="complete-info">
                         <div class="complete-url">
                             <label>챗봇 URL:</label>
@@ -230,9 +379,9 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../js/app.js?v=15.1"></script>
-    <script src="../../js/kb-manager.js?v=15.1"></script>
-    <script src="../../js/create.js?v=15.1"></script>
+    <script src="../../js/app.js?v=16.0"></script>
+    <script src="../../js/kb-manager.js?v=16.0"></script>
+    <script src="../../js/create.js?v=16.0"></script>
 </body>
 
 </html>

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이 페이지 - My Chatbot World</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=3.2">
-    <link rel="stylesheet" href="../../css/home.css?v=14.0">
+    <link rel="stylesheet" href="../../css/styles.css?v=16.0">
+    <link rel="stylesheet" href="../../css/home.css?v=16.0">
     <style>
         :root {
             --sidebar-width: 260px;
@@ -190,6 +190,126 @@
             font-size: 0.75rem;
             color: rgba(255, 255, 255, 0.4);
         }
+
+        /* ─── Skill Status Badge ─── */
+        .skill-status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .badge-active { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-inactive { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+
+        /* ─── Skill Upload Zone ─── */
+        .skill-upload-zone {
+            border: 2px dashed rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .skill-upload-zone:hover { border-color: rgba(99,102,241,0.5); background: rgba(99,102,241,0.05); }
+
+        /* ─── Revenue Activity Grid ─── */
+        .revenue-activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .revenue-activity-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        .revenue-activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .revenue-activity-info { display: flex; align-items: center; gap: 12px; }
+        .revenue-activity-icon { font-size: 1.5rem; }
+        .revenue-activity-name { font-weight: 600; color: white; font-size: 0.9rem; }
+        .revenue-activity-desc { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+        .revenue-activity-config { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
+
+        /* ─── Toggle Switch ─── */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.1); border-radius: 12px; transition: 0.3s;
+        }
+        .toggle-slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: var(--primary-500, #6366f1); }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        /* ─── Revenue Stats Grid ─── */
+        .revenue-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .revenue-stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 1.25rem; text-align: center;
+        }
+        .revenue-stat-value { font-size: 1.5rem; font-weight: 700; color: white; }
+        .revenue-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+        /* ─── Credit Balance ─── */
+        .credit-balance-display { display: flex; align-items: baseline; gap: 8px; margin-bottom: 1.5rem; }
+        .credit-balance-amount { font-size: 3rem; font-weight: 800; color: var(--primary-400, #818cf8); }
+        .credit-balance-unit { font-size: 1rem; color: rgba(255,255,255,0.5); }
+
+        /* ─── Credit Usage Grid ─── */
+        .credit-usage-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .credit-usage-item {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px; padding: 10px 14px;
+        }
+        .credit-usage-icon { font-size: 1.25rem; }
+        .credit-usage-label { flex: 1; font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+        .credit-usage-cost { font-size: 0.8rem; color: rgba(255,255,255,0.4); white-space: nowrap; }
+
+        /* ─── Credit Package Grid ─── */
+        .credit-package-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.75rem; }
+        .credit-package-card {
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 1.5rem; text-align: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .credit-package-card:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.05); }
+        .credit-package-card.selected { border-color: var(--primary-500, #6366f1); background: rgba(99,102,241,0.1); }
+        .credit-package-card.popular { border-color: rgba(251,191,36,0.4); }
+        .credit-package-badge {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            background: #f59e0b; color: white; font-size: 0.7rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 20px;
+        }
+        .credit-package-amount { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 6px; }
+        .credit-package-price { font-size: 1.5rem; font-weight: 800; color: var(--primary-400, #818cf8); }
+        .credit-package-note { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+        /* ─── Credit History ─── */
+        .credit-history-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .credit-history-item:last-child { border-bottom: none; }
+        .credit-history-info { display: flex; flex-direction: column; gap: 2px; }
+        .credit-history-note { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
+        .credit-history-date { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+        .credit-history-amount { font-weight: 700; font-size: 0.9rem; }
+        .credit-plus { color: #22c55e; }
+        .credit-minus { color: #f87171; }
     </style>
 </head>
 
@@ -202,9 +322,12 @@
             </div>
 
             <ul class="manage-nav">
-                <li class="manage-nav-item active" onclick="switchTab('profile')">👤 회원 정보 관리</li>
-                <li class="manage-nav-item" onclick="switchTab('bots')">🤖 챗봇 및 운영 관리</li>
-                <li class="manage-nav-item" onclick="switchTab('security')">🔒 계정 보안 설정</li>
+                <li class="manage-nav-item active" data-tab="profile" onclick="switchTab('profile')">👤 회원 정보 관리</li>
+                <li class="manage-nav-item" data-tab="bots" onclick="switchTab('bots')">🤖 챗봇 및 운영 관리</li>
+                <li class="manage-nav-item" data-tab="premium-skills" onclick="switchTab('premium-skills')">💎 유료 스킬 설정</li>
+                <li class="manage-nav-item" data-tab="revenue" onclick="switchTab('revenue')">💰 수익활동 관리</li>
+                <li class="manage-nav-item" data-tab="credits" onclick="switchTab('credits')">🪙 크레딧 & 결제</li>
+                <li class="manage-nav-item" data-tab="security" onclick="switchTab('security')">🔒 계정 보안 설정</li>
             </ul>
 
             <div style="margin-top: auto;">
@@ -253,6 +376,311 @@
                 </div>
             </div>
 
+            <!-- Premium Skills Tab -->
+            <div id="premium-skills-tab" class="manage-tab-content">
+                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">💎 유료 스킬 설정</h1>
+
+                <!-- 내 목소리 복제 -->
+                <div class="manage-card" style="margin-bottom:1.5rem;">
+                    <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <h2 style="font-size: 1.25rem; margin:0;">🎤 내 목소리 복제</h2>
+                            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin:4px 0 0;">ElevenLabs API 연동 · ₩50,000/월</p>
+                        </div>
+                        <span id="voiceCloneStatus" class="skill-status-badge badge-inactive">미설정</span>
+                    </div>
+                    <div id="voiceClonePanel">
+                        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;margin-bottom:1rem;">
+                            3분 분량의 음성 샘플을 업로드하면 AI가 당신의 목소리를 학습합니다.
+                        </p>
+                        <div class="form-row">
+                            <label class="form-label">ElevenLabs API 키</label>
+                            <input type="password" class="form-control" id="elevenLabsKey"
+                                placeholder="sk-..." style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.1);color:white;">
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label">음성 샘플 업로드 (MP3/WAV, 최대 30MB)</label>
+                            <div class="skill-upload-zone" onclick="document.getElementById('voiceSampleUpload').click()">
+                                <span style="font-size:1.5rem;">🎙️</span>
+                                <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:0.5rem;">클릭하여 음성 파일 업로드</p>
+                                <input type="file" id="voiceSampleUpload" accept=".mp3,.wav,.m4a" style="display:none" onchange="handleVoiceSampleUpload(this)">
+                            </div>
+                            <div id="voiceSampleName" style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:0.5rem;"></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveVoiceCloneSettings()">목소리 복제 설정 저장</button>
+                    </div>
+                </div>
+
+                <!-- 3D 아바타 -->
+                <div class="manage-card" style="margin-bottom:1.5rem;">
+                    <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <h2 style="font-size: 1.25rem; margin:0;">👤 3D 아바타</h2>
+                            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin:4px 0 0;">Ready Player Me API 연동 · ₩30,000/월</p>
+                        </div>
+                        <span id="avatar3dStatus" class="skill-status-badge badge-inactive">미설정</span>
+                    </div>
+                    <div id="avatar3dPanel">
+                        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;margin-bottom:1rem;">
+                            Ready Player Me를 통해 나만의 3D 아바타를 생성하고 챗봇에 적용합니다.
+                        </p>
+                        <div class="form-row">
+                            <label class="form-label">Ready Player Me 아바타 URL</label>
+                            <input type="text" class="form-control" id="rpmAvatarUrl"
+                                placeholder="https://models.readyplayer.me/..." style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.1);color:white;">
+                        </div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-secondary btn-sm" onclick="window.open('https://readyplayer.me','_blank')">Ready Player Me 열기</button>
+                            <button class="btn btn-primary btn-sm" onclick="save3dAvatarSettings()">아바타 URL 저장</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 커스텀 테마 -->
+                <div class="manage-card">
+                    <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <h2 style="font-size: 1.25rem; margin:0;">🎨 커스텀 테마</h2>
+                            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin:4px 0 0;">CSS 에디터 직접 편집 · ₩20,000/월</p>
+                        </div>
+                        <span id="customThemeStatus" class="skill-status-badge badge-inactive">미설정</span>
+                    </div>
+                    <div id="customThemePanel">
+                        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;margin-bottom:1rem;">
+                            CSS를 직접 편집하여 브랜드 색상과 스타일을 완벽히 맞춤화합니다.
+                        </p>
+                        <div class="form-row">
+                            <label class="form-label">커스텀 CSS</label>
+                            <textarea class="form-control" id="customCssEditor" rows="8"
+                                placeholder=":root { --primary-500: #your-color; }&#10;.chat-bubble { border-radius: 20px; }"
+                                style="background:rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-family:monospace;font-size:0.85rem;"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveCustomTheme()">커스텀 CSS 저장</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Tab -->
+            <div id="revenue-tab" class="manage-tab-content">
+                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">💰 수익활동 관리</h1>
+
+                <div class="manage-card" style="margin-bottom:1.5rem;">
+                    <div class="section-header">
+                        <h2 style="font-size: 1.25rem;">수익활동 중개 서비스</h2>
+                        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:4px;">
+                            My Chatbot World가 중개하며, 발생 수익의 20%가 수수료로 차감됩니다.
+                        </p>
+                    </div>
+
+                    <div class="revenue-activity-grid">
+                        <!-- 상담 중개 -->
+                        <div class="revenue-activity-card">
+                            <div class="revenue-activity-header">
+                                <div class="revenue-activity-info">
+                                    <span class="revenue-activity-icon">💬</span>
+                                    <div>
+                                        <div class="revenue-activity-name">상담 중개</div>
+                                        <div class="revenue-activity-desc">챗봇을 통한 유료 상담 연결</div>
+                                    </div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-consulting" onchange="toggleRevenue('consulting', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="revenue-activity-config" id="config-consulting" style="display:none;">
+                                <div class="form-row">
+                                    <label class="form-label" style="font-size:0.8rem;">상담 단가 (원/30분)</label>
+                                    <input type="number" class="form-control" id="price-consulting" value="30000" min="0"
+                                        style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.1);color:white;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 예약 중개 -->
+                        <div class="revenue-activity-card">
+                            <div class="revenue-activity-header">
+                                <div class="revenue-activity-info">
+                                    <span class="revenue-activity-icon">📅</span>
+                                    <div>
+                                        <div class="revenue-activity-name">예약 중개</div>
+                                        <div class="revenue-activity-desc">서비스 예약 수수료 수익</div>
+                                    </div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-reservation" onchange="toggleRevenue('reservation', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="revenue-activity-config" id="config-reservation" style="display:none;">
+                                <div class="form-row">
+                                    <label class="form-label" style="font-size:0.8rem;">예약 단가 (원/건)</label>
+                                    <input type="number" class="form-control" id="price-reservation" value="5000" min="0"
+                                        style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.1);color:white;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 추천 중개 -->
+                        <div class="revenue-activity-card">
+                            <div class="revenue-activity-header">
+                                <div class="revenue-activity-info">
+                                    <span class="revenue-activity-icon">🎯</span>
+                                    <div>
+                                        <div class="revenue-activity-name">추천 중개</div>
+                                        <div class="revenue-activity-desc">제품/서비스 추천 커미션</div>
+                                    </div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-referral" onchange="toggleRevenue('referral', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="revenue-activity-config" id="config-referral" style="display:none;">
+                                <div class="form-row">
+                                    <label class="form-label" style="font-size:0.8rem;">커미션 비율 (%)</label>
+                                    <input type="number" class="form-control" id="price-referral" value="10" min="0" max="50"
+                                        style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.1);color:white;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 콘텐츠 판매 -->
+                        <div class="revenue-activity-card">
+                            <div class="revenue-activity-header">
+                                <div class="revenue-activity-info">
+                                    <span class="revenue-activity-icon">📦</span>
+                                    <div>
+                                        <div class="revenue-activity-name">콘텐츠 판매</div>
+                                        <div class="revenue-activity-desc">디지털 자료 판매 연결</div>
+                                    </div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-content" onchange="toggleRevenue('content', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="revenue-activity-config" id="config-content" style="display:none;">
+                                <div class="form-row">
+                                    <label class="form-label" style="font-size:0.8rem;">결제 링크 (외부 결제 페이지)</label>
+                                    <input type="text" class="form-control" id="price-content" placeholder="https://..."
+                                        style="background:rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.1);color:white;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="saveRevenueSettings()">수익활동 설정 저장</button>
+                </div>
+
+                <!-- 수익 현황 -->
+                <div class="manage-card">
+                    <div class="section-header">
+                        <h2 style="font-size: 1.25rem;">수익 현황 (이번 달)</h2>
+                    </div>
+                    <div class="revenue-stats-grid">
+                        <div class="revenue-stat-card">
+                            <div class="revenue-stat-value" id="revenueTotal">₩0</div>
+                            <div class="revenue-stat-label">총 수익</div>
+                        </div>
+                        <div class="revenue-stat-card">
+                            <div class="revenue-stat-value" id="revenueFee">₩0</div>
+                            <div class="revenue-stat-label">수수료 (20%)</div>
+                        </div>
+                        <div class="revenue-stat-card">
+                            <div class="revenue-stat-value" id="revenueNet">₩0</div>
+                            <div class="revenue-stat-label">정산 예정액</div>
+                        </div>
+                    </div>
+                    <p style="color:rgba(255,255,255,0.3);font-size:0.8rem;margin-top:1rem;">
+                        * 정산은 매월 말일 기준으로 익월 7일 지급됩니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Credits Tab -->
+            <div id="credits-tab" class="manage-tab-content">
+                <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">🪙 크레딧 & 결제</h1>
+
+                <!-- 크레딧 현황 -->
+                <div class="manage-card" style="margin-bottom:1.5rem;">
+                    <div class="section-header">
+                        <h2 style="font-size: 1.25rem;">현재 크레딧 잔액</h2>
+                    </div>
+                    <div class="credit-balance-display">
+                        <div class="credit-balance-amount" id="creditBalance">0</div>
+                        <div class="credit-balance-unit">크레딧</div>
+                    </div>
+                    <div class="credit-usage-grid">
+                        <div class="credit-usage-item">
+                            <span class="credit-usage-icon">🤖</span>
+                            <span class="credit-usage-label">AI 대화</span>
+                            <span class="credit-usage-cost">1 크레딧/회</span>
+                        </div>
+                        <div class="credit-usage-item">
+                            <span class="credit-usage-icon">💾</span>
+                            <span class="credit-usage-label">DB 저장</span>
+                            <span class="credit-usage-cost">0.1 크레딧/KB</span>
+                        </div>
+                        <div class="credit-usage-item">
+                            <span class="credit-usage-icon">🔊</span>
+                            <span class="credit-usage-label">음성 합성</span>
+                            <span class="credit-usage-cost">5 크레딧/분</span>
+                        </div>
+                        <div class="credit-usage-item">
+                            <span class="credit-usage-icon">🎤</span>
+                            <span class="credit-usage-label">음성 인식</span>
+                            <span class="credit-usage-cost">3 크레딧/분</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 크레딧 충전 -->
+                <div class="manage-card" style="margin-bottom:1.5rem;">
+                    <div class="section-header">
+                        <h2 style="font-size: 1.25rem;">크레딧 충전</h2>
+                    </div>
+                    <div class="credit-package-grid">
+                        <div class="credit-package-card" onclick="selectCreditPackage(this, 100, 1000)">
+                            <div class="credit-package-amount">1,000 크레딧</div>
+                            <div class="credit-package-price">₩1,000</div>
+                            <div class="credit-package-note">기본팩</div>
+                        </div>
+                        <div class="credit-package-card popular" onclick="selectCreditPackage(this, 500, 5500)">
+                            <div class="credit-package-badge">인기</div>
+                            <div class="credit-package-amount">5,500 크레딧</div>
+                            <div class="credit-package-price">₩5,000</div>
+                            <div class="credit-package-note">+500 보너스</div>
+                        </div>
+                        <div class="credit-package-card" onclick="selectCreditPackage(this, 1100, 12000)">
+                            <div class="credit-package-amount">12,000 크레딧</div>
+                            <div class="credit-package-price">₩10,000</div>
+                            <div class="credit-package-note">+2,000 보너스</div>
+                        </div>
+                        <div class="credit-package-card" onclick="selectCreditPackage(this, 3000, 35000)">
+                            <div class="credit-package-amount">35,000 크레딧</div>
+                            <div class="credit-package-price">₩30,000</div>
+                            <div class="credit-package-note">+5,000 보너스</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:1.5rem;width:100%;" id="chargeBtn" onclick="requestCreditCharge()" disabled>
+                        패키지를 선택하세요
+                    </button>
+                </div>
+
+                <!-- 사용 내역 -->
+                <div class="manage-card">
+                    <div class="section-header">
+                        <h2 style="font-size: 1.25rem;">크레딧 사용 내역</h2>
+                    </div>
+                    <div id="creditHistoryList">
+                        <div style="text-align:center;color:rgba(255,255,255,0.3);padding:2rem;font-size:0.9rem;">
+                            아직 사용 내역이 없습니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Security Tab -->
             <div id="security-tab" class="manage-tab-content">
                 <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 2rem; text-align: left;">계정 보안 설정</h1>
@@ -283,9 +711,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../js/app.js?v=14.0"></script>
-    <script src="../../js/kb-manager.js?v=14.0"></script>
-    <script src="../../js/home.js?v=14.0"></script>
+    <script src="../../js/app.js?v=16.0"></script>
+    <script src="../../js/kb-manager.js?v=16.0"></script>
+    <script src="../../js/home.js?v=16.0"></script>
     <script>
         // 인증 확인 전 페이지 숨김
         document.body.style.visibility = 'hidden';
@@ -317,8 +745,171 @@
             document.querySelectorAll('.manage-tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.manage-nav-item').forEach(i => i.classList.remove('active'));
 
-            document.getElementById(tabId + '-tab').classList.add('active');
+            const tabEl = document.getElementById(tabId + '-tab');
+            if (tabEl) tabEl.classList.add('active');
             event.currentTarget.classList.add('active');
+
+            // 탭별 초기화
+            if (tabId === 'credits') initCreditsTab();
+            if (tabId === 'revenue') initRevenueTab();
+            if (tabId === 'premium-skills') initPremiumSkillsTab();
+        }
+
+        // ─── 유료 스킬 탭 ───
+        function initPremiumSkillsTab() {
+            const settings = JSON.parse(localStorage.getItem('mcw_premium_skills') || '{}');
+            if (settings.elevenLabsKey) document.getElementById('elevenLabsKey').value = settings.elevenLabsKey;
+            if (settings.rpmAvatarUrl) document.getElementById('rpmAvatarUrl').value = settings.rpmAvatarUrl;
+            if (settings.customCss) document.getElementById('customCssEditor').value = settings.customCss;
+            document.getElementById('voiceCloneStatus').textContent = settings.elevenLabsKey ? '활성' : '미설정';
+            document.getElementById('voiceCloneStatus').className = 'skill-status-badge ' + (settings.elevenLabsKey ? 'badge-active' : 'badge-inactive');
+            document.getElementById('avatar3dStatus').textContent = settings.rpmAvatarUrl ? '활성' : '미설정';
+            document.getElementById('avatar3dStatus').className = 'skill-status-badge ' + (settings.rpmAvatarUrl ? 'badge-active' : 'badge-inactive');
+            document.getElementById('customThemeStatus').textContent = settings.customCss ? '활성' : '미설정';
+            document.getElementById('customThemeStatus').className = 'skill-status-badge ' + (settings.customCss ? 'badge-active' : 'badge-inactive');
+        }
+
+        function handleVoiceSampleUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const el = document.getElementById('voiceSampleName');
+            if (el) el.textContent = '선택된 파일: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + 'MB)';
+            window._voiceSampleFile = file;
+        }
+
+        function saveVoiceCloneSettings() {
+            const key = document.getElementById('elevenLabsKey')?.value?.trim();
+            if (!key) { MCW.showToast('ElevenLabs API 키를 입력해주세요.'); return; }
+            const settings = JSON.parse(localStorage.getItem('mcw_premium_skills') || '{}');
+            settings.elevenLabsKey = key;
+            localStorage.setItem('mcw_premium_skills', JSON.stringify(settings));
+            MCW.showToast('목소리 복제 설정이 저장되었습니다.');
+            initPremiumSkillsTab();
+        }
+
+        function save3dAvatarSettings() {
+            const url = document.getElementById('rpmAvatarUrl')?.value?.trim();
+            if (!url) { MCW.showToast('Ready Player Me 아바타 URL을 입력해주세요.'); return; }
+            const settings = JSON.parse(localStorage.getItem('mcw_premium_skills') || '{}');
+            settings.rpmAvatarUrl = url;
+            localStorage.setItem('mcw_premium_skills', JSON.stringify(settings));
+            MCW.showToast('3D 아바타 URL이 저장되었습니다.');
+            initPremiumSkillsTab();
+        }
+
+        function saveCustomTheme() {
+            const css = document.getElementById('customCssEditor')?.value?.trim();
+            const settings = JSON.parse(localStorage.getItem('mcw_premium_skills') || '{}');
+            settings.customCss = css;
+            localStorage.setItem('mcw_premium_skills', JSON.stringify(settings));
+            MCW.showToast('커스텀 CSS가 저장되었습니다.');
+            initPremiumSkillsTab();
+        }
+
+        // ─── 수익활동 탭 ───
+        function initRevenueTab() {
+            const settings = JSON.parse(localStorage.getItem('mcw_revenue_settings') || '{}');
+            ['consulting', 'reservation', 'referral', 'content'].forEach(type => {
+                const toggle = document.getElementById('toggle-' + type);
+                const config = document.getElementById('config-' + type);
+                if (toggle && settings[type]?.enabled) {
+                    toggle.checked = true;
+                    if (config) config.style.display = 'block';
+                }
+                const priceEl = document.getElementById('price-' + type);
+                if (priceEl && settings[type]?.price) priceEl.value = settings[type].price;
+            });
+        }
+
+        function toggleRevenue(type, enabled) {
+            const config = document.getElementById('config-' + type);
+            if (config) config.style.display = enabled ? 'block' : 'none';
+        }
+
+        function saveRevenueSettings() {
+            const settings = {};
+            ['consulting', 'reservation', 'referral', 'content'].forEach(type => {
+                const toggle = document.getElementById('toggle-' + type);
+                const priceEl = document.getElementById('price-' + type);
+                settings[type] = {
+                    enabled: toggle?.checked || false,
+                    price: priceEl?.value || ''
+                };
+            });
+            localStorage.setItem('mcw_revenue_settings', JSON.stringify(settings));
+            MCW.showToast('수익활동 설정이 저장되었습니다.');
+        }
+
+        // ─── 크레딧 탭 ───
+        let _selectedPackage = null;
+
+        function initCreditsTab() {
+            const credits = parseInt(localStorage.getItem('mcw_credits') || '0');
+            const balanceEl = document.getElementById('creditBalance');
+            if (balanceEl) balanceEl.textContent = credits.toLocaleString();
+            renderCreditHistory();
+        }
+
+        function selectCreditPackage(el, price, credits) {
+            document.querySelectorAll('.credit-package-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            _selectedPackage = { price, credits };
+            const btn = document.getElementById('chargeBtn');
+            if (btn) {
+                btn.textContent = '₩' + price.toLocaleString() + '으로 ' + credits.toLocaleString() + ' 크레딧 충전';
+                btn.disabled = false;
+            }
+        }
+
+        function requestCreditCharge() {
+            if (!_selectedPackage) return;
+            // MVP: 실제 결제 연동 전 임시 시뮬레이션
+            if (!confirm('₩' + _selectedPackage.price.toLocaleString() + ' 결제 후 ' + _selectedPackage.credits.toLocaleString() + ' 크레딧을 충전하시겠습니까?\n\n(현재 테스트 모드: 실제 결제가 이루어지지 않습니다)')) return;
+
+            const current = parseInt(localStorage.getItem('mcw_credits') || '0');
+            const newTotal = current + _selectedPackage.credits;
+            localStorage.setItem('mcw_credits', String(newTotal));
+
+            // 충전 내역 저장
+            const history = JSON.parse(localStorage.getItem('mcw_credit_history') || '[]');
+            history.unshift({
+                type: 'charge',
+                amount: _selectedPackage.credits,
+                price: _selectedPackage.price,
+                note: '크레딧 충전',
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('mcw_credit_history', JSON.stringify(history.slice(0, 50)));
+
+            MCW.showToast(_selectedPackage.credits.toLocaleString() + ' 크레딧이 충전되었습니다.');
+            initCreditsTab();
+            _selectedPackage = null;
+            document.getElementById('chargeBtn').textContent = '패키지를 선택하세요';
+            document.getElementById('chargeBtn').disabled = true;
+            document.querySelectorAll('.credit-package-card').forEach(c => c.classList.remove('selected'));
+        }
+
+        function renderCreditHistory() {
+            const history = JSON.parse(localStorage.getItem('mcw_credit_history') || '[]');
+            const container = document.getElementById('creditHistoryList');
+            if (!container) return;
+            if (history.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:2rem;font-size:0.9rem;">아직 사용 내역이 없습니다.</div>';
+                return;
+            }
+            container.innerHTML = history.slice(0, 20).map(h => {
+                const isCharge = h.type === 'charge';
+                const date = new Date(h.timestamp).toLocaleDateString('ko-KR');
+                return '<div class="credit-history-item">' +
+                    '<div class="credit-history-info">' +
+                    '<span class="credit-history-note">' + (h.note || '') + '</span>' +
+                    '<span class="credit-history-date">' + date + '</span>' +
+                    '</div>' +
+                    '<span class="credit-history-amount ' + (isCharge ? 'credit-plus' : 'credit-minus') + '">' +
+                    (isCharge ? '+' : '-') + h.amount.toLocaleString() + ' 크레딧' +
+                    '</span>' +
+                    '</div>';
+            }).join('');
         }
 
         async function updateProfile() {

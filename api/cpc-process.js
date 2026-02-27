@@ -26,6 +26,16 @@ export default async function handler(req, res) {
 
     const CPC_API = 'https://claude-platoons-control.vercel.app';
 
+    // 리모트 컨트롤 명령은 Agent Server가 처리 — AI 폴백 금지
+    const REMOTE_RE = /리모트|remote|원격|rc\b|리모컨|remote.?control/i;
+    if (REMOTE_RE.test(text)) {
+      console.log(`[CPC Process] 리모트 명령 → Agent Server 처리 위임: ${commandId}`);
+      return res.status(200).json({
+        ok: true,
+        result: '리모트 컨트롤은 Agent Server가 처리합니다. 잠시 기다려 주세요.'
+      });
+    }
+
     // Step 1: ACK
     const ackRes = await fetch(`${CPC_API}/api/commands/${commandId}/ack`, {
       method: 'PATCH',

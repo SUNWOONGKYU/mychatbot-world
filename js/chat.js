@@ -400,7 +400,12 @@ function addMessage(sender, text, extraClass) {
         avatar.textContent = sender === 'bot' ? '🤖' : '👤';
         let bubble = document.createElement('div');
         bubble.className = 'message-bubble';
-        bubble.textContent = text;
+        // claude.ai/code URL → 클릭 가능 링크 (XSS-safe: escapeHtml 후 URL만 <a>로 변환)
+        if (sender === 'bot' && /https:\/\/claude\.ai\/code\//.test(text) && typeof cpcSafeHtml === 'function') {
+            bubble.innerHTML = cpcSafeHtml(text);
+        } else {
+            bubble.textContent = text;
+        }
         div.appendChild(avatar);
         div.appendChild(bubble);
     }
@@ -534,10 +539,13 @@ async function generateResponse(userText) {
             userTitle: (currentPersona && currentPersona.userTitle)
                 || getDefaultUserTitle(currentPersona),
             skills: skills,
+            cpcPlatoons: (typeof cpcIsHelper === 'function' && cpcIsHelper(currentPersona) && typeof _cpcPlatoons !== 'undefined') ? _cpcPlatoons : undefined,
             dmPolicy: chatBotData && chatBotData.dmPolicy,
             allowedUsers: chatBotData && chatBotData.allowedUsers,
             pairingCode: chatBotData && chatBotData.pairingCode,
-            userPairingCode: _userPairingCode
+            userPairingCode: _userPairingCode,
+            personaId: currentPersona && currentPersona.id,
+            ownerId: chatBotData && chatBotData.ownerId
         },
         history: conversationHistory.slice(-10)
     };
@@ -601,6 +609,10 @@ async function generateResponse(userText) {
             }
 
             if (fullText) {
+                // claude.ai/code URL을 클릭 가능한 링크로 변환
+                if (textEl && /https:\/\/claude\.ai\/code\//.test(fullText)) {
+                    textEl.innerHTML = typeof cpcSafeHtml === 'function' ? cpcSafeHtml(fullText) : escapeHtml(fullText);
+                }
                 // 스트리밍으로 이미 DOM에 표시됨 — 플래그로 표시
                 streamDiv._streamComplete = true;
                 const latency = Date.now() - start;

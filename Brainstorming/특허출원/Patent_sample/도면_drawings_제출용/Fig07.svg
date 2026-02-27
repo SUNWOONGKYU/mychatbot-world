@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Figure 7 - SAL ID Chain Management Module (Vertically Centered Text) -->
+<svg width="1100" height="900" viewBox="0 0 1100 900" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <!-- Standard Arrow (Right-Facing) -->
+        <marker id="arrow" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto">
+            <path d="M0,0 L12,6 L0,12 L3,6 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="550" y="60" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="32" font-weight="bold" fill="black">도 7: SAL ID 체인 데이터 구조 및 관리 모듈</text>
+
+    <!-- ============================================== -->
+    <!-- (71) MAIN CONTAINER BOX (Timeline) -->
+    <!-- ============================================== -->
+    <g transform="translate(30, 90)">
+        <rect x="0" y="0" width="1000" height="300" fill="none" stroke="black" stroke-width="2"/>
+        <text x="500" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold" fill="black">(71) SAL ID 체인 목록</text>
+
+        <!-- Content -->
+        <g transform="translate(0, 40)"> 
+
+            <!-- STAGE 1 (Left) -->
+            <g transform="translate(40, 90)">
+                <text x="67.5" y="-15" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="20" font-weight="bold" fill="black">1단계</text>
+                <rect x="0" y="0" width="135" height="60" fill="white" stroke="black" stroke-width="2"/>
+                <text x="67.5" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold" fill="black">S2BA1</text>
+            </g>
+
+            <!-- Arrow 1 -->
+            <g transform="translate(0, 0)"> 
+                 <line x1="175" y1="120" x2="275" y2="120" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+                 <text x="225" y="80" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold" fill="black">
+                    <tspan x="225" dy="0">S2BA2로</tspan>
+                    <tspan x="225" dy="25">이동</tspan>
+                </text>
+            </g>
+
+            <!-- STAGE 2 (Middle) -->
+            <g transform="translate(275, 90)">
+                <text x="112.5" y="-15" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="20" font-weight="bold" fill="black">2단계</text>
+                <rect x="0" y="0" width="225" height="60" fill="white" stroke="black" stroke-width="2"/>
+                <text x="112.5" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold" fill="black">S2BA1_S2BA2</text>
+            </g>
+
+            <!-- Arrow 2 -->
+            <g transform="translate(0, 0)">
+                 <line x1="500" y1="120" x2="600" y2="120" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+                 <text x="550" y="80" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold" fill="black">
+                    <tspan x="550" dy="0">S2BA3로</tspan>
+                    <tspan x="550" dy="25">이동</tspan>
+                </text>
+            </g>
+
+            <!-- STAGE 3 (Right) -->
+            <g transform="translate(600, 90)">
+                <text x="157.5" y="-15" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="20" font-weight="bold" fill="black">3단계</text>
+                <rect x="0" y="0" width="315" height="60" fill="white" stroke="black" stroke-width="3"/>
+                <text x="157.5" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold" fill="black">S2BA1_S2BA2_S2BA3</text>
+            </g>
+            
+        </g>
+    </g>
+
+
+    <!-- ============================================== -->
+    <!-- (73) APPENDER AGENT (Below) -->
+    <!-- ============================================== -->
+    <g transform="translate(257.5, 500)">
+         <rect x="0" y="0" width="320" height="70" fill="white" stroke="black" stroke-width="2"/>
+         <text x="160" y="45" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold" fill="black">(73) 덧붙이기 (Append-Only)</text>
+    </g>
+    
+    <!-- Injection Arrows -->
+    <!-- Arrow 1 (Left-Up) -->
+    <line x1="297.5" y1="500" x2="255" y2="250" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- Label -->
+    <text x="310" y="440" text-anchor="start" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold" fill="black">추가</text>
+
+    <!-- Arrow 2 (Right-Up) -->
+    <line x1="537.5" y1="500" x2="580" y2="250" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- Label -->
+    <text x="575" y="440" text-anchor="start" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold" fill="black">추가</text>
+
+
+    <!-- ============================================== -->
+    <!-- (74) RESOLVER -->
+    <!-- ============================================== -->
+    <g transform="translate(658, 500)">
+        <rect x="0" y="0" width="260" height="120" fill="white" stroke="black" stroke-width="2"/>
+        <text x="130" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="22" font-weight="bold" fill="black">(74) 리졸버</text>
+        <line x1="20" y1="55" x2="240" y2="55" stroke="black" stroke-width="1"/>
+        <text x="130" y="85" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" fill="black">마지막 세그먼트 식별</text>
+    </g>
+
+    <!-- Resolver Arrow: UP -->
+    <line x1="788" y1="500" x2="788" y2="280" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- Label -->
+    <text x="798" y="460" text-anchor="start" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold" fill="black">참조</text> 
+
+
+    <!-- ============================================== -->
+    <!-- (72) RESULT -->
+    <!-- ============================================== -->
+    <g transform="translate(690.5, 730)">
+        <rect x="0" y="0" width="195" height="60" fill="white" stroke="black" stroke-width="3"/>
+         <text x="97.5" y="40" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold" fill="black">(72) S2BA3</text>
+    </g>
+    
+    <!-- Long Arrow (Length 110px: 620 to 730) -->
+    <!-- Midpoint = 675 -->
+    <line x1="788" y1="620" x2="788" y2="730" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Label CENTERED -->
+    <!-- Was y=700 (too low). Center is 675. -->
+    <!-- Baseline adjust (+5) -> y=680 -->
+    <text x="798" y="680" text-anchor="start" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold" fill="black">최신 ID 반환</text>
+
+</svg>

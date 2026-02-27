@@ -1,3 +1,92 @@
+# Work Log - 2026-02-28 (자율 품질 개선)
+
+> Bravo 2분대장 자율 진행: RAG 채팅 주입 연결, 테스트 추가, CORS 수정
+
+---
+
+## 자율 품질 개선 작업 (2026-02-28)
+
+### 작업 상태: ✅ 완료
+
+### 1. Obsidian RAG ↔ 채팅 연결 (S3BI1 후속)
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `api/_shared.js` | `fetchRagChunks()` + `buildRagSection()` 추가 (+105 lines) |
+| `api/chat.js` | personaId/ownerId 기반 RAG 자동 주입 연결 |
+| `api/chat-stream.js` | SSE 스트리밍에도 RAG 주입 동일 적용 |
+| `js/chat.js` | botConfig에 personaId, ownerId 포함하여 서버 전달 |
+
+### 2. 단위 테스트 확장 (_shared.test.js)
+
+- `buildRagSection()` 테스트 6개 추가 (총 34개 → 전부 PASS)
+- `vitest.config.js` 생성 (api/_shared.test.js 범위 한정)
+- `package.json` test 스크립트 업데이트
+
+### 3. Vercel CORS 헤더 수정 (vercel.json)
+
+- `/api/(.*)` CORS에 `Authorization` 헤더 추가 (JWT 인증 허용)
+- `DELETE` 메서드 추가 (Obsidian 문서 삭제 허용)
+
+### 검증 결과
+- 34개 단위 테스트 전부 PASS
+- 5개 API 파일 구문 검증 OK
+- pgvector 함수 시그니처 일치 확인
+
+---
+
+# Work Log - 2026-02-28
+
+> SAL Grid Task CRUD 프로세스: 프로토타입 완료 기능 7개 Task 등록 (시나리오 B)
+
+---
+
+## SAL Grid Task CRUD - 프로토타입 완료 기능 7개 Task 등록 (2026-02-28)
+
+### 작업 상태: ✅ 완료
+
+### 담당: Bravo (2분대장)
+
+### 추가된 Task (시나리오 B - Completed 상태)
+
+| Task ID | Task Name | Area | Stage |
+|---------|-----------|------|-------|
+| S3F4 | 챗봇 생성 위저드 8단계 확장 | F | S3 |
+| S3BI1 | Obsidian 지식베이스 연동 | BI | S3 |
+| S3E2 | 스킬 외부 API 연동 7개 | E | S3 |
+| S3F5 | 유료 스킬 마이페이지 설정 UI | F | S3 |
+| S3BA3 | 수익활동 중개 시스템 | BA | S3 |
+| S3BA4 | 크레딧 결제 시스템 | BA | S3 |
+| S3D1 | DB 스키마 확장 (15개 신규 테이블) | D | S3 |
+
+### 업데이트된 파일 (총 22개)
+
+**TASK_PLAN.md**: v0.1 → v0.2, 총 Task 수 28→35, S3 Task 목록 추가, Task 분포표 업데이트, 변경 이력 추가
+
+**task-instructions/ (7개 신규)**:
+- S3F4_instruction.md, S3BI1_instruction.md, S3E2_instruction.md
+- S3F5_instruction.md, S3BA3_instruction.md, S3BA4_instruction.md, S3D1_instruction.md
+
+**verification-instructions/ (7개 신규)**:
+- S3F4_verification.md, S3BI1_verification.md, S3E2_verification.md
+- S3F5_verification.md, S3BA3_verification.md, S3BA4_verification.md, S3D1_verification.md
+
+**index.json**: total_tasks 28→35, task_ids에 7개 추가 (S3F4, S3F5, S3BI1, S3BA3, S3BA4, S3D1, S3E2)
+
+**grid_records/ (7개 신규)**:
+- S3F4.json, S3BI1.json, S3E2.json, S3F5.json, S3BA3.json, S3BA4.json, S3D1.json
+
+### SAL ID 의존성 검증 결과
+- S3F4 → S2F1~S2F4 ✅ (S2 < S3)
+- S3BI1 → S1BI1, S1D1 ✅ (S1 < S3)
+- S3E2 → S3E1, S1BI1 ✅ (E1 < E2, S1 < S3)
+- S3F5 → S2F1, S2F2, S3F4 ✅ (S2 < S3, F4 < F5)
+- S3D1 → S1D1 ✅ (S1 < S3)
+- S3BA3 → S2BA1, S2BA2, S3BA1, S3D1 ✅
+- S3BA4 → S2BA1, S2BA2, S3BA1, S3D1 ✅
+
+---
+
 # Work Log - 2026-02-16
 
 > 마이페이지 봇 목록 DB 동적 로딩 + Supabase 통합 + 모바일 UI 수정

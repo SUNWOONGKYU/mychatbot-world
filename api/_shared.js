@@ -191,7 +191,10 @@ export function buildSystemMessage(botConfig) {
     roleRules = `- 사용자를 "${userTitle || '지휘관님'}"이라고 부르세요
 - CPC 소대장은 "소대장"이라고만 부르세요 (님 붙이지 마세요)
 - 명령 접수 시 "CPC 연락병에게 전달했습니다"라고 보고하세요
-- CPC로 전달하는 메시지에는 직접 답변하지 마세요. "${SILENT_REPLY_TOKEN}"만 반환하세요.`;
+- CPC로 전달하는 메시지에는 직접 답변하지 마세요. "${SILENT_REPLY_TOKEN}"만 반환하세요.
+- "리모트", "원격", "연결", "remote" 키워드가 포함된 요청을 받으면:
+  아래 [소대 현황]에서 해당 소대의 session_url이 있으면 "🔗 리모트 접속 URL: {session_url}" 형태로 URL을 그대로 반환하세요.
+  session_url이 없거나 null이면 "해당 소대장이 현재 리모트 연결을 활성화하지 않았습니다."라고 답변하세요.`;
   } else if (personaCategory === 'avatar') {
     roleRules = `- 사용자를 "${userTitle || '고객님'}"이라고 부르세요
 - "지휘관", "소대장", "연락병" 등 군사 용어를 절대 사용하지 마세요`;
@@ -203,13 +206,23 @@ export function buildSystemMessage(botConfig) {
   const skillSection = buildSkillSection(botConfig?.skills || []);
   const faqSection = buildFaqSection(botConfig?.faqs || []);
 
+  // CPC 소대 현황 (연락병에게만)
+  let cpcSection = '';
+  if (isCpcLiaison && botConfig?.cpcPlatoons?.length) {
+    const lines = botConfig.cpcPlatoons.map(p => {
+      const url = p.session_url ? p.session_url : '없음';
+      return `  - ${p.name}: 상태=${p.status}, 리모트URL=${url}`;
+    });
+    cpcSection = `\n[소대 현황]\n${lines.join('\n')}\n`;
+  }
+
   return `당신은 "${botConfig?.botName || 'AI 챗봇'}"의 "${personaName || 'AI 어시스턴트'}" 페르소나입니다.
 성격: ${botConfig?.personality || '친절하고 전문적'}
 어조: ${botConfig?.tone || '편안하고 자연스러운 어조'}
 
 다음 예시 FAQ를 참고하여 답변하세요:
 ${faqSection}
-${skillSection}
+${skillSection}${cpcSection}
 규칙:
 - 항상 캐릭터를 유지하세요
 - 한국어로 답변하세요
@@ -229,3 +242,91 @@ export const MODEL_STACK = [
   'anthropic/claude-sonnet-4.5',
   'deepseek/deepseek-chat',
 ];
+
+// ─── Obsidian RAG Context Injection ───
+
+/**
+ * Fetches relevant Obsidian knowledge chunks via pgvector similarity search.
+ * Returns empty array if Supabase not configured or no results.
+ * @param {string} query - User message to search against
+ * @param {string} userId - Owner of the knowledge base
+ * @param {string} personaId - Persona scope for knowledge base
+ * @param {number} [topK=3] - Number of chunks to retrieve
+ * @returns {Promise<Array<{content: string, doc_id: string}>>}
+ */
+export async function fetchRagChunks(query, userId, personaId, topK = 3) {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').split(',')[0].trim();
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !OPENROUTER_API_KEY || !userId || !personaId) {
+    return [];
+  }
+
+  try {
+    // 1. 쿼리 임베딩 생성
+    const embResp = await fetch('https://openrouter.ai/api/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'openai/text-embedding-3-small',
+        input: query.slice(0, 2000)
+      })
+    });
+
+    if (!embResp.ok) return [];
+    const embData = await embResp.json();
+    const embedding = embData.data?.[0]?.embedding;
+    if (!embedding) return [];
+
+    // 2. pgvector 코사인 유사도 검색
+    const searchResp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/search_obsidian_chunks`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query_embedding: embedding,
+        match_user_id: userId,
+        match_persona_id: personaId,
+        match_count: topK
+      })
+    });
+
+    if (!searchResp.ok) return [];
+    const chunks = await searchResp.json();
+    return Array.isArray(chunks) ? chunks : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Builds a RAG context section from Obsidian knowledge chunks.
+ * Returns empty string if no chunks available.
+ * @param {Array<{content: string}>} chunks - Retrieved knowledge chunks
+ * @param {number} [maxChars=800] - Max character budget for context
+ * @returns {string} Formatted RAG section for system message
+ */
+export function buildRagSection(chunks, maxChars = 800) {
+  if (!chunks || chunks.length === 0) return '';
+
+  let section = '\n[관련 지식베이스]\n';
+  let charCount = section.length;
+
+  for (const chunk of chunks) {
+    const text = (chunk.content || '').trim();
+    if (!text) continue;
+    const entry = text.slice(0, 400) + (text.length > 400 ? '...' : '') + '\n---\n';
+    if (charCount + entry.length > maxChars) break;
+    section += entry;
+    charCount += entry.length;
+  }
+
+  return section === '\n[관련 지식베이스]\n' ? '' : section;
+}

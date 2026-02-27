@@ -1046,6 +1046,16 @@ html.chat-page {
     animation: cpc-pulse 1.5s ease-in-out infinite;
 }
 
+.cpc-remote-link {
+    color: #60a5fa;
+    text-decoration: underline;
+    word-break: break-all;
+    font-weight: 600;
+}
+.cpc-remote-link:hover {
+    color: #93c5fd;
+}
+
 @keyframes cpc-pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }

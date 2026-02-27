@@ -6,8 +6,11 @@
 
 // === State ===
 let currentStep = 1;
-const PART1_STEPS = 5;  // 5단계 생성 프로세스
+const PART1_STEPS = 8;  // 8단계 생성 프로세스
 let savedBotId = null;   // Set after completeCreation, used by Part 2 KB
+let selectedAvatarEmoji = 'robot';
+let selectedThemeMode = 'dark';
+let selectedThemeColor = 'purple';
 let avatarPersonaCount = 0;
 let helperPersonaCount = 0;
 
@@ -315,8 +318,8 @@ function goToStep(step) {
         updateVoiceGuide();
     }
 
-    // Toggle steps (1-5)
-    for (let i = 1; i <= 5; i++) {
+    // Toggle steps (1-8)
+    for (let i = 1; i <= 8; i++) {
         const el = document.getElementById('step' + i);
         if (el) {
             el.classList.toggle('hidden', i !== step);
@@ -332,6 +335,9 @@ function goToStep(step) {
 
     // 단계 이동 시 자동 저장
     saveDraft();
+
+    // Step 8 진입 시 배포 정보 세팅
+    if (step === 8) _setupDeployStep();
 
     const pct = Math.round((step / PART1_STEPS) * 100);
     const fill = document.getElementById('progressFill');
@@ -812,20 +818,26 @@ async function completeCreation() {
     goToStep(5);
     clearDraft(); // goToStep() 내부 saveDraft() 덮어쓰기 방지
 
-    // 모든 단계 완료로 표시 (5단계도 초록색 completed)
-    document.querySelectorAll('.progress-step').forEach(el => {
-        el.classList.remove('active');
-        el.classList.add('completed');
-    });
-    const fillEl = document.getElementById('progressFill');
-    if (fillEl) fillEl.style.width = '100%';
+    // 챗봇 생성 완료 → Step 6 (아바타 설정)으로 이동
+    goToStep(6);
+    clearDraft();
 
-    // URL & QR
+    // Step 8에 URL/QR 미리 세팅 (배포 단계에서 표시)
     const baseUrl = window.location.origin;
-    const url = baseUrl + '/bot/' + username;
-    document.getElementById('botUrl').value = url;
-    document.getElementById('chatLink').href = '/bot/' + username;
-    document.getElementById('qrCode').innerHTML =
+    const finalUrl = baseUrl + '/bot/' + username;
+    window._deployUrl = finalUrl;
+    window._deployUsername = username;
+}
+
+function _setupDeployStep() {
+    const url = window._deployUrl;
+    if (!url) return;
+    const botUrlEl = document.getElementById('botUrl');
+    const chatLinkEl = document.getElementById('chatLink');
+    const qrEl = document.getElementById('qrCode');
+    if (botUrlEl) botUrlEl.value = url;
+    if (chatLinkEl) chatLinkEl.href = '/bot/' + (window._deployUsername || '');
+    if (qrEl) qrEl.innerHTML =
         '<img src="' + MCW.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
 }
 
@@ -902,6 +914,86 @@ function previewVoice() {
         }
         if (btn) btn.textContent = '미리듣기';
     });
+}
+
+// === Step 6: 아바타 설정 ===
+const AVATAR_EMOJIS = {
+    robot: '🤖', man: '👨', woman: '👩', person: '🧑', business: '👔', academic: '🎓'
+};
+
+function selectAvatarEmoji(el, key) {
+    selectedAvatarEmoji = key;
+    document.querySelectorAll('.avatar-emoji-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function handleAvatarUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+        alert('이미지 파일은 2MB 이하만 업로드 가능합니다.');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('avatarUploadPreview');
+        if (preview) {
+            preview.innerHTML = '<img src="' + e.target.result + '" alt="avatar" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">';
+        }
+        window._avatarImageData = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// === Step 7: 테마 선택 ===
+const THEME_COLORS = {
+    purple: '#7c3aed', blue: '#2563eb', green: '#16a34a', red: '#dc2626', orange: '#ea580c'
+};
+
+function selectThemeMode(mode) {
+    selectedThemeMode = mode;
+    document.getElementById('themeDark')?.classList.toggle('active', mode === 'dark');
+    document.getElementById('themeLight')?.classList.toggle('active', mode === 'light');
+    _updateThemePreview();
+}
+
+function selectThemeColor(el, color) {
+    selectedThemeColor = color;
+    document.querySelectorAll('.theme-color-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+    el.innerHTML = '<span class="theme-color-check">✓</span>';
+    _updateThemePreview();
+}
+
+function _updateThemePreview() {
+    const box = document.getElementById('themePreviewBox');
+    const header = document.getElementById('themePreviewHeader');
+    const body = document.getElementById('themePreviewBody');
+    const nameEl = document.getElementById('themePreviewName');
+    if (!box) return;
+
+    const color = THEME_COLORS[selectedThemeColor] || '#7c3aed';
+    const isDark = selectedThemeMode === 'dark';
+    const botName = document.getElementById('botName')?.value || '챗봇';
+
+    box.style.background = isDark ? '#1a1a2e' : '#f8f9fa';
+    box.style.border = '1px solid ' + (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)');
+    if (header) header.style.background = color;
+    if (nameEl) nameEl.textContent = botName;
+
+    // Update bubble colors
+    const userBubbles = body?.querySelectorAll('.theme-preview-bubble.user');
+    userBubbles?.forEach(b => { b.style.background = color; b.style.color = 'white'; });
+    const botBubbles = body?.querySelectorAll('.theme-preview-bubble.bot');
+    botBubbles?.forEach(b => {
+        b.style.background = isDark ? '#2a2a3e' : '#ffffff';
+        b.style.color = isDark ? 'rgba(255,255,255,0.9)' : '#333';
+    });
+}
+
+// === Step 8: 배포 채널 ===
+function getSelectedChannels() {
+    return Array.from(document.querySelectorAll('input[name="deployChannel"]:checked')).map(cb => cb.value);
 }
 
 // (지식베이스, 스킬, 챗봇스쿨은 마이페이지에서 관리)

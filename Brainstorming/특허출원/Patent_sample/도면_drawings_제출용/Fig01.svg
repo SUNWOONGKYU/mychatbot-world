@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- REDESIGNED: Spec-Compliant Figure 1 (Expanded Engine, Equidistant Spacing) -->
+<svg width="1000" height="950" viewBox="0 0 1000 950" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+    
+    <defs>
+        <marker id="arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="50" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="40" font-weight="bold">도 1: 오케스트레이션 시스템 구성도</text>
+
+    <!-- === ZONES/LAYERS === -->
+
+    <!-- 1. Input Layer -->
+    <rect x="50" y="100" width="220" height="220" fill="none" stroke="black" stroke-width="2"/>
+    <text x="160" y="130" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">입력 계층</text>
+    
+    <!-- SAL ID Generation Module (30) -->
+    <rect x="80" y="200" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="160" y="235" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">SAL ID 생성 모듈</text>
+    <text x="160" y="260" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(30)</text>
+
+    <!-- 2. History Layer -->
+    <!-- Moved down slightly to avoid congestion? No, keep Y=450. -->
+    <rect x="50" y="450" width="220" height="240" fill="none" stroke="black" stroke-width="2"/>
+    <text x="160" y="480" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">이력 계층</text>
+
+    <!-- SAL ID Chain (70) -->
+    <rect x="80" y="550" width="160" height="100" fill="white" stroke="black" stroke-width="2"/>
+    <text x="160" y="590" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">SAL ID 체인 모듈</text>
+    <text x="160" y="615" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(70)</text>
+
+    <!-- 3. Engine Layer (Expanded) -->
+    <!-- Height increased to 600 (y=100 to 700) -->
+    <rect x="300" y="100" width="220" height="600" fill="none" stroke="black" stroke-width="2"/>
+    <text x="410" y="130" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">엔진 계층</text>
+
+    <!-- Parser Module (40) Y=200 -->
+    <rect x="330" y="200" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="410" y="235" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">파서 모듈</text>
+    <text x="410" y="260" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(40)</text>
+
+    <!-- Grid Generator (52) Y=330 (+130) -->
+    <rect x="330" y="330" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="410" y="365" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">SAL 그리드 생성기</text>
+    <text x="410" y="390" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(52)</text>
+
+    <!-- Sequencer (53) Y=460 (+130) -->
+    <rect x="330" y="460" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="410" y="495" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">시퀀서</text>
+    <text x="410" y="520" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(53)</text>
+
+    <!-- Distributor (54) Y=590 (+130) -->
+    <rect x="330" y="590" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="410" y="625" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">배분기</text>
+    <text x="410" y="650" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(54)</text>
+
+
+    <!-- 4. SAL Grid Layer (Equidistant) -->
+    <!-- Height increased to 780 (y=100 to 880) -->
+    <rect x="550" y="100" width="220" height="780" fill="white" stroke="black" stroke-width="3"/>
+    <text x="660" y="130" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">SAL 그리드 계층</text>
+
+    <!-- Basic Info (51) Y=200 -->
+    <rect x="580" y="200" width="160" height="60" fill="white" stroke="black" stroke-width="2"/>
+    <text x="660" y="225" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">기본 정보</text>
+    <text x="660" y="250" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(51)</text>
+
+    <!-- Instruction (52) Y=310 (+110) -->
+    <rect x="580" y="310" width="160" height="60" fill="white" stroke="black" stroke-width="2"/>
+    <text x="660" y="335" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">Task/검증 지시서</text>
+    <text x="660" y="355" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(52)</text>
+
+    <!-- Execution (84) Y=420 (+110) -->
+    <rect x="580" y="420" width="160" height="60" fill="white" stroke="black" stroke-width="1"/>
+    <text x="660" y="445" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">Task 실행</text>
+    <text x="660" y="465" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(84)</text>
+
+    <!-- Verification (85) Y=530 (+110) -->
+    <rect x="580" y="530" width="160" height="60" fill="white" stroke="black" stroke-width="1"/>
+    <text x="660" y="555" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">검증 수행</text>
+    <text x="660" y="575" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(85)</text>
+
+    <!-- Recorder (60) Y=640 (+110) Enlarge H=80 -->
+    <rect x="580" y="640" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="660" y="675" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">SAL 그리드 레코더</text>
+    <text x="660" y="700" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(60)</text>
+
+    <!-- Stage Verification (87) Y=750 (+110) H=80 -->
+    <rect x="580" y="750" width="160" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="660" y="785" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">Stage 검증</text>
+    <text x="660" y="810" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(87)</text>
+
+    
+    <!-- 5. Output Layer (Moved Down) -->
+    <!-- 5. Output Layer (Moved Down) -->
+    <!-- Start Y = Recorder Top (640) - margin. Adjusted to 560 for spacing. -->
+    <!-- Height increased to 320 to align bottom with SAL Grid Layer (100+780=880) -->
+    <rect x="800" y="560" width="180" height="320" fill="none" stroke="black" stroke-width="2"/>
+    <text x="890" y="590" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="24" font-weight="bold">출력 계층</text>
+
+    <!-- Viewer (63) - Aligned with Recorder (y=640) -->
+    <rect x="820" y="640" width="140" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="890" y="675" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">SAL 그리드</text>
+    <text x="890" y="700" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">뷰어 (63)</text>
+
+    <!-- Report (88) - Aligned with Stage Verif (y=750) -->
+    <rect x="820" y="750" width="140" height="80" fill="white" stroke="black" stroke-width="2"/>
+    <text x="890" y="775" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">Stage</text>
+    <text x="890" y="795" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18">검증 리포트</text>
+    <text x="890" y="815" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="18" font-weight="bold">(88)</text>
+
+
+    <!-- === ARROWS === -->
+
+    <!-- Layer Link: Input (210) -> History (450) -->
+    <path d="M 160,320 L 160,450" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Link: Engine -> SAL Grid -->
+    <!-- GridGen is at Y=330. Arrow from 520,370 -> 550,370 seems centered relative to GridGen -->
+    <path d="M 520,370 L 550,370" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- ID Gen -> Parser (Dashed) Horizontal -->
+    <!-- ID Gen (80,200) -> ends x=240, center y=240. Parser (330,200) center y=240. -->
+    <path d="M 240,240 L 330,240" stroke="black" stroke-width="2" stroke-dasharray="8,8" marker-end="url(#arrow)"/>
+
+    <!-- Engine Internal: Solid Arrows -->
+    <!-- Parser(280) -> GridGen(330) -->
+    <path d="M 410,280 L 410,330" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- GridGen(410) -> Sequencer(460) -->
+    <path d="M 410,410 L 410,460" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Sequencer(540) -> Distributor(590) -->
+    <path d="M 410,540 L 410,590" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+
+    <!-- SAL Internal: Solid Arrows (Equidistant) -->
+    <!-- Basic(260) -> Instr(310) -->
+    <path d="M 660,260 L 660,310" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Instr(370) -> Exec(420) -->
+    <path d="M 660,370 L 660,420" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Exec(480) -> Verif(530) -->
+    <path d="M 660,480 L 660,530" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Verif(590) -> Recorder(640) -->
+    <path d="M 660,590 L 660,640" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+
+    <!-- Recorder -> Viewer (Dashed, Horizontal) Y=680 center -->
+    <!-- Rec Right(740, 680) -> Viewer Left(820, 680) -->
+    <path d="M 740,680 L 820,680" stroke="black" stroke-width="2" stroke-dasharray="8,8" marker-end="url(#arrow)"/>
+
+    <!-- Stage Verif -> Report (Dashed, Horizontal) Y=790 center -->
+    <!-- Verif Right(740, 790) -> Report Left(820, 790) -->
+    <path d="M 740,790 L 820,790" stroke="black" stroke-width="2" stroke-dasharray="8,8" marker-end="url(#arrow)"/>
+
+</svg>
