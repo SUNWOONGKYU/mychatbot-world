@@ -815,9 +815,6 @@ async function completeCreation() {
     // 생성 완료 → 초안 삭제
     clearDraft();
 
-    goToStep(5);
-    clearDraft(); // goToStep() 내부 saveDraft() 덮어쓰기 방지
-
     // 챗봇 생성 완료 → Step 6 (아바타 설정)으로 이동
     goToStep(6);
     clearDraft();

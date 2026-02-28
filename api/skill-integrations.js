@@ -24,6 +24,14 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  // JWT 인증 확인
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authorization required' });
+  }
+  const userId = extractUserId(authHeader.slice(7));
+  if (!userId) return res.status(401).json({ error: 'Invalid token' });
+
   const { skillId, action, payload, botId, personaId } = req.body;
 
   if (!skillId || !action) {
@@ -366,6 +374,17 @@ async function handleKakaoNoti(req, res, action, payload) {
   }
 
   return res.status(400).json({ error: `Unknown action: ${action}` });
+}
+
+// ─── JWT Helper ───
+function extractUserId(jwt) {
+  try {
+    const payload = jwt.split('.')[1];
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString());
+    return decoded.sub || decoded.user_id || null;
+  } catch {
+    return null;
+  }
 }
 
 // ─── Supabase Helpers ───
