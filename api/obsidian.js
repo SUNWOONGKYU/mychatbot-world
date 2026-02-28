@@ -85,7 +85,7 @@ async function handlePost(req, res, userId) {
 
   // 3. 기존 문서 확인 (중복 체크)
   const existingCheck = await fetch(
-    `${SUPABASE_URL}/rest/v1/obsidian_documents?user_id=eq.${userId}&content_hash=eq.${hash}&select=id`,
+    `${SUPABASE_URL}/rest/v1/obsidian_documents?user_id=eq.${encodeURIComponent(userId)}&content_hash=eq.${encodeURIComponent(hash)}&select=id`,
     { headers: { 'apikey': SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}` } }
   );
   const existing = await existingCheck.json();
@@ -127,37 +127,25 @@ async function handlePost(req, res, userId) {
   // 5. 청킹
   const chunks = chunkText(parsed.plainText, CHUNK_SIZE, CHUNK_OVERLAP);
 
-  // 6. 임베딩 생성 (OpenAI via OpenRouter) + 저장 (배치)
-  let indexedChunks = 0;
+  // 6. 임베딩 생성 (OpenAI via OpenRouter) + 저장 (배치, 동시 5개)
+  const EMBED_CONCURRENCY = 5;
   const chunkBatch = [];
 
-  for (let i = 0; i < chunks.length; i++) {
-    try {
-      const embedding = await createEmbedding(chunks[i]);
-      chunkBatch.push({
-        doc_id: docId,
-        user_id: userId,
-        persona_id: personaId || null,
-        chunk_index: i,
-        content: chunks[i],
-        embedding: embedding,
-        token_count: Math.ceil(chunks[i].length / 4)
-      });
-    } catch (e) {
-      console.warn(`[Obsidian] chunk ${i} embedding failed:`, e.message);
-      // 임베딩 실패 시 텍스트만 저장
-      chunkBatch.push({
-        doc_id: docId,
-        user_id: userId,
-        persona_id: personaId || null,
-        chunk_index: i,
-        content: chunks[i],
-        embedding: null,
-        token_count: Math.ceil(chunks[i].length / 4)
-      });
-    }
-    indexedChunks++;
+  for (let start = 0; start < chunks.length; start += EMBED_CONCURRENCY) {
+    const batch = chunks.slice(start, start + EMBED_CONCURRENCY);
+    const results = await Promise.all(batch.map(async (chunk, j) => {
+      const i = start + j;
+      try {
+        const embedding = await createEmbedding(chunk);
+        return { doc_id: docId, user_id: userId, persona_id: personaId || null, chunk_index: i, content: chunk, embedding, token_count: Math.ceil(chunk.length / 4) };
+      } catch (e) {
+        console.warn(`[Obsidian] chunk ${i} embedding failed:`, e.message);
+        return { doc_id: docId, user_id: userId, persona_id: personaId || null, chunk_index: i, content: chunk, embedding: null, token_count: Math.ceil(chunk.length / 4) };
+      }
+    }));
+    chunkBatch.push(...results);
   }
+  const indexedChunks = chunkBatch.length;
 
   // 청크 배치 저장
   let chunkSaveOk = false;
@@ -178,7 +166,7 @@ async function handlePost(req, res, userId) {
   }
 
   // 7. 문서 인덱싱 완료 표시 (청크 저장 성공 시에만)
-  await fetch(`${SUPABASE_URL}/rest/v1/obsidian_documents?id=eq.${docId}`, {
+  const patchResp = await fetch(`${SUPABASE_URL}/rest/v1/obsidian_documents?id=eq.${encodeURIComponent(docId)}`, {
     method: 'PATCH',
     headers: {
       'apikey': SUPABASE_SERVICE_KEY,
@@ -187,6 +175,9 @@ async function handlePost(req, res, userId) {
     },
     body: JSON.stringify({ is_indexed: chunkSaveOk, chunk_count: chunkSaveOk ? indexedChunks : 0 })
   });
+  if (!patchResp.ok) {
+    console.error('[Obsidian POST] doc index update error:', await patchResp.text());
+  }
 
   return res.status(200).json({
     success: true,

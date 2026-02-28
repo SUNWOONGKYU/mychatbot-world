@@ -9,7 +9,7 @@
     "dependencies": "S1D1",
     "task_instruction": "sal-grid/task-instructions/S3D1_instruction.md",
     "task_agent": "database-specialist",
-    "tools": "",
+    "tools": "Supabase Dashboard, psql",
     "execution_type": "AI-Only",
     "generated_files": "sql/schema_v2_additions.sql",
     "modification_history": "",
@@ -19,6 +19,6 @@
     "build_verification": "{\"compile\":\"PASS SQL 문법 정상\",\"lint\":\"N/A\",\"deploy\":\"N/A Supabase 직접 실행\",\"runtime\":\"PASS 테이블 생성 정상\"}",
     "integration_verification": "{\"dependency_propagation\":\"PASS S1D1 기존 스키마 확장\",\"cross_task_connection\":\"PASS skill-integrations.js, obsidian.js 연동\",\"data_flow\":\"PASS CRUD 정상\"}",
     "blockers": "{\"dependency\":\"None\",\"environment\":\"None\",\"external_api\":\"None\",\"status\":\"No Blockers\"}",
-    "comprehensive_verification": "{\"task_instruction\":\"PASS\",\"test\":\"PASS 4/4 통과\",\"build\":\"PASS 3/4 통과\",\"integration\":\"PASS 3/3 통과\",\"blockers\":\"None\",\"final\":\"Passed\"}",
+    "comprehensive_verification": "{\"task_instruction\":\"PASS\",\"test\":\"PASS 4/4 통과\",\"build\":\"PASS 2/2 통과 (lint·deploy N/A 제외)\",\"integration\":\"PASS 3/3 통과\",\"blockers\":\"None\",\"final\":\"Passed\"}",
     "remarks": "프로토타입에서 완료된 기능. 15개 신규 테이블 (아바타/스킬/테마/채널/KB/외부API/유료스킬/수익활동/크레딧 등)"
 }

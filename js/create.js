@@ -14,6 +14,13 @@ let selectedThemeColor = 'purple';
 let avatarPersonaCount = 0;
 let helperPersonaCount = 0;
 
+// HTML 이스케이프 (XSS 방지)
+function escHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
 // Voice (STT)
 let isRecording = false;
 let recordingTimer = null;
@@ -704,17 +711,17 @@ async function analyzeInput() {
     document.getElementById('resultPreview').innerHTML = `
         <div class="result-item">
             <div class="result-label">대표 페르소나</div>
-            <div class="result-value">${personaName}</div>
+            <div class="result-value">${escHtml(personaName)}</div>
         </div>
         <div class="result-item">
             <div class="result-label">인사말</div>
-            <div class="result-value">"${greeting}"</div>
+            <div class="result-value">"${escHtml(greeting)}"</div>
         </div>
         ${faqs.length > 0 ? `
         <div class="result-item">
             <div class="result-label">예상 Q&A</div>
             <ul class="result-faq-list">${faqs.slice(0, 5).map(f =>
-                '<li><strong>Q:</strong> ' + f.q + (f.a ? '<br><strong>A:</strong> ' + f.a : '') + '</li>'
+                '<li><strong>Q:</strong> ' + escHtml(f.q) + (f.a ? '<br><strong>A:</strong> ' + escHtml(f.a) : '') + '</li>'
             ).join('')}</ul>
         </div>` : ''}
     `;

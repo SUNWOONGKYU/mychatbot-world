@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS skill_api_keys (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     skill_id VARCHAR(50) NOT NULL,
-    api_key_encrypted TEXT,  -- TODO: 애플리케이션 레벨 AES-256 암호화 적용 필요 (현재 평문)
+    api_key_encrypted TEXT,  -- TODO(S4): pgcrypto pgp_sym_encrypt() 또는 앱 레벨 AES-256-GCM 암호화 필수. 현재 평문 — 프로덕션 전 반드시 암호화 적용
     config JSONB DEFAULT '{}',
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -343,6 +343,28 @@ CREATE TABLE IF NOT EXISTS skill_leads (
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_leads_bot ON skill_leads(bot_id, created_at DESC);
+
+-- RLS: 스킬 테이블 (봇 소유자만 접근, bot_id → user_bots.owner_id 경유)
+ALTER TABLE skill_reservations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY reservations_bot_owner ON skill_reservations FOR ALL
+  USING (bot_id IN (SELECT id FROM user_bots WHERE owner_id = auth.uid()));
+
+ALTER TABLE skill_survey_responses ENABLE ROW LEVEL SECURITY;
+CREATE POLICY survey_bot_owner ON skill_survey_responses FOR ALL
+  USING (bot_id IN (SELECT id FROM user_bots WHERE owner_id = auth.uid()));
+
+ALTER TABLE skill_coupons ENABLE ROW LEVEL SECURITY;
+CREATE POLICY coupons_bot_owner ON skill_coupons FOR ALL
+  USING (bot_id IN (SELECT id FROM user_bots WHERE owner_id = auth.uid()));
+
+ALTER TABLE skill_leads ENABLE ROW LEVEL SECURITY;
+CREATE POLICY leads_bot_owner ON skill_leads FOR ALL
+  USING (bot_id IN (SELECT id FROM user_bots WHERE owner_id = auth.uid()));
+
+-- bot_personas: 봇 소유자만 접근
+ALTER TABLE bot_personas ENABLE ROW LEVEL SECURITY;
+CREATE POLICY personas_bot_owner ON bot_personas FOR ALL
+  USING (bot_id IN (SELECT id FROM user_bots WHERE owner_id = auth.uid()));
 
 -- ==========================================
 -- pgvector RAG 검색 함수

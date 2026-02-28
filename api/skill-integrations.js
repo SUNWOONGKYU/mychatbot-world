@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Authorization required' });
   }
-  const userId = extractUserId(authHeader.slice(7));
+  const userId = await extractUserId(authHeader.slice(7));
   if (!userId) return res.status(401).json({ error: 'Invalid token' });
 
   const { skillId, action, payload, botId, personaId } = req.body;
@@ -40,6 +40,9 @@ export default async function handler(req, res) {
 
   // 관리자 전용 액션 (list, stats, validate)은 봇 소유자만 허용
   const adminActions = ['list', 'stats', 'validate'];
+  if (adminActions.includes(action) && !botId) {
+    return res.status(400).json({ error: 'botId is required for admin actions' });
+  }
   if (adminActions.includes(action) && botId) {
     const ownerCheck = await sbSelect('user_bots', `id=eq.${encodeURIComponent(botId)}&owner_id=eq.${encodeURIComponent(userId)}&select=id`);
     if (!ownerCheck.ok) return res.status(403).json({ error: 'Bot ownership verification failed' });
@@ -70,7 +73,7 @@ export default async function handler(req, res) {
     }
   } catch (e) {
     console.error(`[SkillAPI] ${skillId}/${action} error:`, e.message);
-    return res.status(500).json({ error: 'Skill execution failed', message: e.message });
+    return res.status(500).json({ error: 'Skill execution failed' });
   }
 }
 
@@ -182,7 +185,7 @@ async function handleCoupon(req, res, action, payload, botId) {
     const { code } = payload;
     if (!code) return res.status(400).json({ error: 'code is required' });
 
-    const resp = await sbSelect('skill_coupons', `bot_id=eq.${botId}&code=eq.${code}&is_used=eq.false`);
+    const resp = await sbSelect('skill_coupons', `bot_id=eq.${encodeURIComponent(botId)}&code=eq.${encodeURIComponent(code)}&is_used=eq.false`);
     if (!resp.ok) return res.status(200).json({ valid: false, message: '쿠폰 확인 중 오류가 발생했습니다.' });
 
     const data = await resp.json();
@@ -388,12 +391,18 @@ async function handleKakaoNoti(req, res, action, payload) {
   return res.status(400).json({ error: `Unknown action: ${action}` });
 }
 
-// ─── JWT Helper ───
-function extractUserId(jwt) {
+// ─── JWT Helper (Supabase 서명 검증) ───
+async function extractUserId(jwt) {
   try {
-    const payload = jwt.split('.')[1];
-    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString());
-    return decoded.sub || decoded.user_id || null;
+    const resp = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${jwt}`
+      }
+    });
+    if (!resp.ok) return null;
+    const user = await resp.json();
+    return user.id || null;
   } catch {
     return null;
   }
