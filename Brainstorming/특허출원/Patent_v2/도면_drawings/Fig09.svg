@@ -40,7 +40,7 @@
     <text x="720" y="445" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18">(상담연결 / 예약처리 / 추천 / 강의)</text>
 
     <!-- 화살표: 93 → 94 (92→93→94 순차 흐름) -->
-    <line x1="720" y1="480" x2="500" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="720" y1="480" x2="400" y2="580" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
 
     <!-- 박스 4: 수수료 계산부 (94) - 하단 좌측 -->
     <rect x="80" y="580" width="400" height="140" fill="white" stroke="black" stroke-width="2" rx="5"/>

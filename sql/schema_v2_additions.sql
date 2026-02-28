@@ -337,7 +337,7 @@ CREATE TABLE IF NOT EXISTS skill_leads (
     bot_id UUID REFERENCES user_bots(id) ON DELETE CASCADE,
     name VARCHAR(100),
     contact VARCHAR(100),
-    email VARCHAR(255),
+    email VARCHAR(255) CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
     note TEXT,
     is_contacted BOOLEAN DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
@@ -360,6 +360,11 @@ CREATE POLICY coupons_bot_owner ON skill_coupons FOR ALL
 ALTER TABLE skill_leads ENABLE ROW LEVEL SECURITY;
 CREATE POLICY leads_bot_owner ON skill_leads FOR ALL
   USING (bot_id IN (SELECT id FROM user_bots WHERE owner_id = auth.uid()));
+
+-- skill_api_keys: 본인만 접근 (민감 데이터 — API 키)
+ALTER TABLE skill_api_keys ENABLE ROW LEVEL SECURITY;
+CREATE POLICY api_keys_owner ON skill_api_keys FOR ALL
+  USING (user_id = auth.uid());
 
 -- bot_personas: 봇 소유자만 접근
 ALTER TABLE bot_personas ENABLE ROW LEVEL SECURITY;

@@ -256,6 +256,7 @@ export const MODEL_STACK = [
  */
 export async function fetchRagChunks(query, userId, personaId, topK = 3) {
   // obsidian.js의 createEmbedding/searchObsidian과 동일 로직 (서버리스 함수 간 직접 import 불가)
+  // TODO(S4): CORS Access-Control-Allow-Origin을 프로덕션 도메인으로 제한 (현재 '*')
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').split(',')[0].trim();
@@ -275,7 +276,7 @@ export async function fetchRagChunks(query, userId, personaId, topK = 3) {
       },
       body: JSON.stringify({
         model: EMBEDDING_MODEL,
-        input: query.slice(0, 2000)
+        input: query.slice(0, 8000)  // obsidian.js createEmbedding()과 동일 제한
       })
     });
 

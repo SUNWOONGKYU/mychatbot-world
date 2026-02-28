@@ -17,6 +17,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 export default async function handler(req, res) {
+  // TODO(S4): CORS Access-Control-Allow-Origin을 프로덕션 도메인으로 제한 (현재 '*')
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -112,7 +113,7 @@ async function handleReservation(req, res, action, payload, botId, personaId) {
 
   if (action === 'list') {
     // 예약 목록 조회 (봇 관리자용)
-    const resp = await sbSelect('skill_reservations', `bot_id=eq.${botId}&order=datetime.asc`);
+    const resp = await sbSelect('skill_reservations', `bot_id=eq.${encodeURIComponent(botId)}&order=datetime.asc`);
     if (!resp.ok) return res.status(200).json([]);
     return res.status(200).json(await resp.json());
   }
@@ -140,7 +141,7 @@ async function handleSurvey(req, res, action, payload, botId, personaId) {
   }
 
   if (action === 'stats') {
-    const resp = await sbSelect('skill_survey_responses', `bot_id=eq.${botId}&select=score`);
+    const resp = await sbSelect('skill_survey_responses', `bot_id=eq.${encodeURIComponent(botId)}&select=score`);
     if (!resp.ok) return res.status(200).json({ avg: 0, count: 0 });
     const data = await resp.json();
     const avg = data.length > 0 ? data.reduce((s, r) => s + r.score, 0) / data.length : 0;
@@ -225,7 +226,7 @@ async function handleLeadCollect(req, res, action, payload, botId) {
   }
 
   if (action === 'list') {
-    const resp = await sbSelect('skill_leads', `bot_id=eq.${botId}&order=created_at.desc`);
+    const resp = await sbSelect('skill_leads', `bot_id=eq.${encodeURIComponent(botId)}&order=created_at.desc`);
     if (!resp.ok) return res.status(200).json([]);
     return res.status(200).json(await resp.json());
   }
@@ -274,8 +275,9 @@ async function handleGoogleCal(req, res, action, payload) {
     });
 
     if (!calResp.ok) {
-      const err = await calResp.json();
-      return res.status(200).json({ success: false, message: '캘린더 추가에 실패했습니다: ' + (err.error?.message || '') });
+      const err = await calResp.json().catch(() => ({}));
+      console.error('[GoogleCal] error:', err.error?.message);
+      return res.status(200).json({ success: false, message: '캘린더 추가에 실패했습니다.' });
     }
 
     const calEvent = await calResp.json();
@@ -380,11 +382,12 @@ async function handleKakaoNoti(req, res, action, payload) {
     }
 
     const data = await kakaoResp.json();
+    if (data.code !== '0') console.error('[Kakao] send error:', data.message);
     return res.status(200).json({
       success: data.code === '0',
       message: data.code === '0'
         ? `${phone}으로 카카오톡 알림이 발송되었습니다.`
-        : `발송 실패: ${data.message}`
+        : '카카오톡 발송에 실패했습니다.'
     });
   }
 

@@ -93,20 +93,22 @@ PROJECT SAL GRID 4x11 매트릭스 체계에 따라 작성됩니다.
 
 ### S3 Task 목록 (프로토타입 완료 기능 포함)
 
+> **참고**: S3F3, S3BA2는 의도적 결번 (S2에서 분류 예정 또는 향후 Task 재편 시 배정)
+
 | Task ID | Area | Task Name | Status |
 |---------|------|-----------|--------|
-| S3F1 | F | (기존) | Pending |
-| S3F2 | F | (기존) | Pending |
+| S3F1 | F | 채팅 UI 고급화 (타이핑 효과, 리액션) | Pending |
+| S3F2 | F | 멀티 페르소나 전환 UI | Pending |
 | S3F4 | F | 챗봇 생성 위저드 8단계 확장 | Completed |
 | S3F5 | F | 유료 스킬 마이페이지 설정 UI | Completed |
 | S3BI1 | BI | Obsidian 지식베이스 연동 | Completed |
-| S3BA1 | BA | (기존) | Pending |
+| S3BA1 | BA | 감성 수준 기반 AI 라우팅 API | Pending |
 | S3BA3 | BA | 수익활동 중개 시스템 | Completed |
 | S3BA4 | BA | 크레딧 결제 시스템 | Completed |
 | S3D1 | D | DB 스키마 확장 (15개 신규 테이블) | Completed |
-| S3E1 | E | (기존) | Pending |
+| S3E1 | E | 외부 AI 엔진 연동 (OpenRouter 멀티모델) | Pending |
 | S3E2 | E | 스킬 외부 API 연동 7개 | Completed |
-| S3T1 | T | (기존) | Pending |
+| S3T1 | T | 통합 테스트 (API + 프론트엔드 E2E) | Pending |
 
 ---
 

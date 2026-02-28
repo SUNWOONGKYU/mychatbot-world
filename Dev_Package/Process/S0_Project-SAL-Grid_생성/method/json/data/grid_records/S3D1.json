@@ -12,7 +12,7 @@
     "tools": "Supabase Dashboard, psql",
     "execution_type": "AI-Only",
     "generated_files": "sql/schema_v2_additions.sql",
-    "modification_history": "",
+    "modification_history": "2026-02-28: RLS 6개 추가 (skill 테이블 4 + bot_personas + skill_api_keys), email CHECK 제약조건, api_key_encrypted TODO 강화, HNSW 인덱스 활성화",
     "verification_instruction": "sal-grid/verification-instructions/S3D1_verification.md",
     "verification_agent": "qa-specialist",
     "test_result": "{\"unit_test\":\"PASS SQL 구문 검증 통과\",\"integration_test\":\"PASS FK 참조 무결성 확인\",\"edge_cases\":\"PASS RLS 정책 적용 확인\",\"manual_test\":\"PASS 15개 테이블 생성 확인\"}",

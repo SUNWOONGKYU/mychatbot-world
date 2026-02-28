@@ -16,6 +16,7 @@ const CHUNK_SIZE = 500;      // 토큰 기준 청크 크기
 const CHUNK_OVERLAP = 50;    // 청크 오버랩
 
 export default async function handler(req, res) {
+  // TODO(S4): CORS Access-Control-Allow-Origin을 프로덕션 도메인으로 제한 (현재 '*')
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -193,9 +194,12 @@ async function handlePost(req, res, userId) {
 async function handleDelete(req, res, userId) {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'id is required' });
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return res.status(400).json({ error: 'Invalid id format' });
+  }
 
   const resp = await fetch(
-    `${SUPABASE_URL}/rest/v1/obsidian_documents?id=eq.${id}&user_id=eq.${userId}`,
+    `${SUPABASE_URL}/rest/v1/obsidian_documents?id=eq.${encodeURIComponent(id)}&user_id=eq.${encodeURIComponent(userId)}`,
     {
       method: 'DELETE',
       headers: {
@@ -218,10 +222,15 @@ function parseObsidianMarkdown(content) {
   const frontMatterMatch = text.match(/^---\n([\s\S]*?)\n---\n/);
   if (frontMatterMatch) {
     const fm = frontMatterMatch[1];
-    // tags: [a, b, c] 파싱
-    const tagsMatch = fm.match(/tags:\s*\[(.*?)\]/);
-    if (tagsMatch) {
-      tagsMatch[1].split(',').forEach(t => tags.push(t.trim().replace(/['"]/g, '')));
+    // tags: [a, b, c] 또는 tags:\n  - a\n  - b 파싱
+    const tagsInline = fm.match(/tags:\s*\[(.*?)\]/);
+    if (tagsInline) {
+      tagsInline[1].split(',').forEach(t => tags.push(t.trim().replace(/['"]/g, '')));
+    } else {
+      const tagsMulti = fm.match(/tags:\s*\n((?:\s*-\s*.+\n?)+)/);
+      if (tagsMulti) {
+        tagsMulti[1].match(/-\s*(.+)/g)?.forEach(t => tags.push(t.replace(/^-\s*/, '').trim().replace(/['"]/g, '')));
+      }
     }
     text = text.slice(frontMatterMatch[0].length);
   }

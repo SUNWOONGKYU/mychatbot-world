@@ -384,7 +384,9 @@ function addPersonaCard(type) {
     const tagClass = isAvatar ? 'tag-avatar' : 'tag-helper';
     const tagLabel = isAvatar ? 'A형' : 'B형';
     const titleLabel = isAvatar ? '대면용 페르소나 ' + num : '도우미 페르소나 ' + num;
-    const deleteBtn = num > 1 ? `<button class="persona-delete-btn" onclick="removePersonaCard('${id}','${type}')">✕</button>` : '';
+    const safeId = escHtml(id);
+    const safeType = escHtml(type);
+    const deleteBtn = num > 1 ? `<button class="persona-delete-btn" onclick="removePersonaCard('${safeId}','${safeType}')">✕</button>` : '';
 
     let typeSpecificHTML = '';
 
@@ -840,7 +842,7 @@ function _setupDeployStep() {
     const chatLinkEl = document.getElementById('chatLink');
     const qrEl = document.getElementById('qrCode');
     if (botUrlEl) botUrlEl.value = url;
-    if (chatLinkEl) chatLinkEl.href = '/bot/' + (window._deployUsername || '');
+    if (chatLinkEl) chatLinkEl.href = '/bot/' + encodeURIComponent(window._deployUsername || '');
     if (qrEl) qrEl.innerHTML =
         '<img src="' + MCW.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
 }
