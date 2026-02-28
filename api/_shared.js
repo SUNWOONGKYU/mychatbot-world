@@ -255,16 +255,18 @@ export const MODEL_STACK = [
  * @returns {Promise<Array<{content: string, doc_id: string}>>}
  */
 export async function fetchRagChunks(query, userId, personaId, topK = 3) {
+  // obsidian.js의 createEmbedding/searchObsidian과 동일 로직 (서버리스 함수 간 직접 import 불가)
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').split(',')[0].trim();
+  const EMBEDDING_MODEL = 'openai/text-embedding-3-small';
 
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !OPENROUTER_API_KEY || !userId || !personaId) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !OPENROUTER_API_KEY || !userId) {
     return [];
   }
 
   try {
-    // 1. 쿼리 임베딩 생성
+    // 1. 쿼리 임베딩 생성 (모델명: EMBEDDING_MODEL과 obsidian.js 동기화 필수)
     const embResp = await fetch('https://openrouter.ai/api/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -272,7 +274,7 @@ export async function fetchRagChunks(query, userId, personaId, topK = 3) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'openai/text-embedding-3-small',
+        model: EMBEDDING_MODEL,
         input: query.slice(0, 2000)
       })
     });
@@ -283,6 +285,14 @@ export async function fetchRagChunks(query, userId, personaId, topK = 3) {
     if (!embedding) return [];
 
     // 2. pgvector 코사인 유사도 검색
+    const searchBody = {
+      query_embedding: embedding,
+      match_user_id: userId,
+      match_count: topK
+    };
+    // personaId가 있으면 페르소나 범위 검색, 없으면 사용자 전체 KB 검색
+    if (personaId) searchBody.match_persona_id = personaId;
+
     const searchResp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/search_obsidian_chunks`, {
       method: 'POST',
       headers: {
@@ -290,12 +300,7 @@ export async function fetchRagChunks(query, userId, personaId, topK = 3) {
         'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        query_embedding: embedding,
-        match_user_id: userId,
-        match_persona_id: personaId,
-        match_count: topK
-      })
+      body: JSON.stringify(searchBody)
     });
 
     if (!searchResp.ok) return [];

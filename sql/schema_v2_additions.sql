@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS skill_api_keys (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     skill_id VARCHAR(50) NOT NULL,
-    api_key_encrypted TEXT,  -- AES 암호화된 API 키
+    api_key_encrypted TEXT,  -- TODO: 애플리케이션 레벨 AES-256 암호화 적용 필요 (현재 평문)
     config JSONB DEFAULT '{}',
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -198,8 +198,11 @@ CREATE TABLE IF NOT EXISTS obsidian_chunks (
 
 CREATE INDEX IF NOT EXISTS idx_obsidian_chunks_doc ON obsidian_chunks(doc_id);
 CREATE INDEX IF NOT EXISTS idx_obsidian_chunks_persona ON obsidian_chunks(persona_id);
--- pgvector IVFFlat 인덱스 (RAG 검색용)
+-- pgvector IVFFlat 인덱스 (RAG 검색용) — 데이터 1000건 이상 시 활성화 권장
+-- 소량 데이터에서는 sequential scan이 더 빠름. 프로덕션 전환 시 아래 주석 해제:
 -- CREATE INDEX idx_obsidian_chunks_embedding ON obsidian_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+-- 즉시 사용 가능한 HNSW 인덱스 (소량 데이터에도 효과적):
+CREATE INDEX IF NOT EXISTS idx_obsidian_chunks_embedding ON obsidian_chunks USING hnsw (embedding vector_cosine_ops);
 
 COMMENT ON TABLE obsidian_chunks IS 'Obsidian RAG 검색용 청크 + 임베딩';
 
@@ -260,11 +263,11 @@ CREATE TRIGGER update_obsidian_docs_updated_at BEFORE UPDATE ON obsidian_documen
 -- RLS (Row Level Security) Policies
 -- ==========================================
 
--- user_bots: 본인 봇만 접근
+-- user_bots: 본인 봇 전체 접근 + 타인 공개 봇 조회만 허용
 ALTER TABLE user_bots ENABLE ROW LEVEL SECURITY;
 CREATE POLICY user_bots_owner ON user_bots FOR ALL USING (owner_id = auth.uid());
--- 공개 봇 조회 허용
-CREATE POLICY user_bots_public_read ON user_bots FOR SELECT USING (is_active = true);
+-- 공개 봇 조회: 본인 소유가 아닌 봇만 이 정책 적용 (owner 정책과 중복 방지)
+CREATE POLICY user_bots_public_read ON user_bots FOR SELECT USING (is_active = true AND owner_id != auth.uid());
 
 -- user_credits: 본인만 접근
 ALTER TABLE user_credits ENABLE ROW LEVEL SECURITY;

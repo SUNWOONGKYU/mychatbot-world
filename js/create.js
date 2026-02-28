@@ -297,7 +297,7 @@ function goToStep(step) {
         }
         const finalUsername = document.getElementById('botUsername').value.trim();
         // 중복 체크
-        const existing = MCW.storage.getBotByUsername(finalUsername);
+        const existing = MCW.storage?.getBotByUsername?.(finalUsername);
         if (existing) {
             alert(`"${finalUsername}"은(는) 이미 사용 중인 주소입니다.\n다른 사용자명을 입력해주세요.`);
             document.getElementById('botUsername').focus();
@@ -524,7 +524,7 @@ function collectPersonas(type) {
         const userTitle = card.querySelector('.p-usertitle')?.value?.trim() || (type === 'avatar' ? '고객님' : '님');
 
         personas.push({
-            id: type + '_' + name.replace(/\s/g, '_').toLowerCase() + '_' + Date.now().toString(36),
+            id: type + '_' + name.replace(/\s/g, '_').toLowerCase() + '_' + (crypto.randomUUID ? crypto.randomUUID().slice(0, 8) : Date.now().toString(36)),
             name: name,
             role: role,
             category: type,

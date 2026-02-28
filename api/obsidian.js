@@ -29,8 +29,8 @@ export default async function handler(req, res) {
   }
   const userJwt = authHeader.slice(7);
 
-  // JWT에서 user_id 추출 (Supabase auth.uid())
-  const userId = extractUserId(userJwt);
+  // JWT에서 user_id 추출 (Supabase 서명 검증)
+  const userId = await extractUserId(userJwt);
   if (!userId) return res.status(401).json({ error: 'Invalid token' });
 
   if (req.method === 'GET') {
@@ -48,9 +48,9 @@ export default async function handler(req, res) {
 async function handleGet(req, res, userId) {
   const { persona_id, bot_id } = req.query;
 
-  let url = `${SUPABASE_URL}/rest/v1/obsidian_documents?user_id=eq.${userId}&select=id,file_name,file_path,tags,word_count,chunk_count,is_indexed,created_at&order=created_at.desc`;
-  if (persona_id) url += `&persona_id=eq.${persona_id}`;
-  if (bot_id) url += `&bot_id=eq.${bot_id}`;
+  let url = `${SUPABASE_URL}/rest/v1/obsidian_documents?user_id=eq.${encodeURIComponent(userId)}&select=id,file_name,file_path,tags,word_count,chunk_count,is_indexed,created_at&order=created_at.desc`;
+  if (persona_id) url += `&persona_id=eq.${encodeURIComponent(persona_id)}`;
+  if (bot_id) url += `&bot_id=eq.${encodeURIComponent(bot_id)}`;
 
   const resp = await fetch(url, {
     headers: {
@@ -160,8 +160,9 @@ async function handlePost(req, res, userId) {
   }
 
   // 청크 배치 저장
+  let chunkSaveOk = false;
   if (chunkBatch.length > 0) {
-    await fetch(`${SUPABASE_URL}/rest/v1/obsidian_chunks`, {
+    const chunkResp = await fetch(`${SUPABASE_URL}/rest/v1/obsidian_chunks`, {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_SERVICE_KEY,
@@ -170,9 +171,13 @@ async function handlePost(req, res, userId) {
       },
       body: JSON.stringify(chunkBatch)
     });
+    chunkSaveOk = chunkResp.ok;
+    if (!chunkSaveOk) {
+      console.error('[Obsidian POST] chunk save error:', await chunkResp.text());
+    }
   }
 
-  // 7. 문서 인덱싱 완료 표시
+  // 7. 문서 인덱싱 완료 표시 (청크 저장 성공 시에만)
   await fetch(`${SUPABASE_URL}/rest/v1/obsidian_documents?id=eq.${docId}`, {
     method: 'PATCH',
     headers: {
@@ -180,7 +185,7 @@ async function handlePost(req, res, userId) {
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ is_indexed: true, chunk_count: indexedChunks })
+    body: JSON.stringify({ is_indexed: chunkSaveOk, chunk_count: chunkSaveOk ? indexedChunks : 0 })
   });
 
   return res.status(200).json({
@@ -296,7 +301,7 @@ async function createEmbedding(text) {
 
 // ─── RAG 검색 엔드포인트 (별도 쿼리) ───
 export async function searchObsidian(userJwt, query, personaId, topK = 5) {
-  const userId = extractUserId(userJwt);
+  const userId = await extractUserId(userJwt);
   if (!userId) return [];
 
   const embedding = await createEmbedding(query);
@@ -321,12 +326,19 @@ export async function searchObsidian(userJwt, query, personaId, topK = 5) {
   return await resp.json();
 }
 
-// ─── 유틸: JWT에서 user_id 추출 ───
-function extractUserId(jwt) {
+// ─── 유틸: JWT에서 user_id 추출 (Supabase 서명 검증) ───
+async function extractUserId(jwt) {
   try {
-    const payload = jwt.split('.')[1];
-    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString());
-    return decoded.sub || decoded.user_id || null;
+    // Supabase auth.getUser()로 서명 검증
+    const resp = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${jwt}`
+      }
+    });
+    if (!resp.ok) return null;
+    const user = await resp.json();
+    return user.id || null;
   } catch {
     return null;
   }

@@ -38,6 +38,17 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'skillId and action are required' });
   }
 
+  // 관리자 전용 액션 (list, stats, validate)은 봇 소유자만 허용
+  const adminActions = ['list', 'stats', 'validate'];
+  if (adminActions.includes(action) && botId) {
+    const ownerCheck = await sbSelect('user_bots', `id=eq.${encodeURIComponent(botId)}&owner_id=eq.${encodeURIComponent(userId)}&select=id`);
+    if (!ownerCheck.ok) return res.status(403).json({ error: 'Bot ownership verification failed' });
+    const ownerData = await ownerCheck.json();
+    if (!Array.isArray(ownerData) || ownerData.length === 0) {
+      return res.status(403).json({ error: 'Not authorized for this bot' });
+    }
+  }
+
   try {
     switch (skillId) {
       case 'reservation':
@@ -142,10 +153,9 @@ async function handleCoupon(req, res, action, payload, botId) {
     const { recipientName, expiryDays } = payload;
     const expiry = expiryDays || 30;
 
-    // 랜덤 쿠폰 코드 생성 (MCW-XXXXXX 형식)
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = 'MCW-';
-    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    // 암호학적 안전 쿠폰 코드 생성 (MCW-XXXXXX 형식)
+    const { randomBytes } = await import('crypto');
+    const code = 'MCW-' + randomBytes(4).toString('hex').toUpperCase().slice(0, 6);
 
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + expiry);
@@ -228,6 +238,8 @@ async function handleGoogleCal(req, res, action, payload) {
       return res.status(400).json({ error: 'title and datetime are required' });
     }
 
+    // TODO: OAuth 토큰을 클라이언트에서 받는 대신 서버사이드 OAuth flow로 전환 필요
+    // 현재는 프로토타입 단계로 클라이언트에서 전달받는 방식 사용
     if (!googleAccessToken) {
       // 구글 OAuth 토큰 없으면 안내 메시지 반환
       return res.status(200).json({
