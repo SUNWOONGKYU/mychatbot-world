@@ -11,20 +11,30 @@ let _cpcTrackedCmds = [];       // 추적 중인 명령 [{id, status, text}]
 let _cpcPollTimer = null;        // 폴링 타이머
 const CPC_POLL_INTERVAL = 3000;  // 3초 폴링
 
-// --- URL 안전 렌더링: claude.ai/code URL은 클릭 가능한 링크로 변환 ---
-function cpcSafeHtml(text) {
-    const escaped = escapeHtml(text);
-    // claude.ai/code URL 패턴을 클릭 가능한 <a> 태그로 변환
-    return escaped.replace(
-        /https:\/\/claude\.ai\/code\/[A-Za-z0-9_-]+/g,
-        match => `<a href="${match}" target="_blank" rel="noopener" class="cpc-remote-link">🔗 ${match}</a>`
-    );
+// --- 마크다운 제거 유틸 ---
+function cpcStripMarkdown(text) {
+    return (text || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
 }
 
-// --- 소대 리모트 URL 조회 ---
-function cpcGetRemoteUrl(platoonId) {
-    const p = _cpcPlatoons.find(x => x.name === platoonId);
-    return (p && p.session_url) || null;
+// --- URL 안전 렌더링: claude.ai/code URL은 클릭 가능한 링크로 변환 ---
+function cpcSafeHtml(text) {
+    // escapeHtml 전에 URL을 추출하여 &amp; 인코딩 충돌 방지
+    const urlRe = /https:\/\/claude\.ai\/code[?/][A-Za-z0-9_?=&./-]+/g;
+    const urls = [];
+    const placeholder = '\x00CPC_URL_';
+    const withPlaceholders = text.replace(urlRe, match => {
+        urls.push(match);
+        return placeholder + (urls.length - 1) + '\x00';
+    });
+    let escaped = escapeHtml(withPlaceholders);
+    // placeholder를 클릭 가능한 링크로 복원
+    urls.forEach((url, i) => {
+        escaped = escaped.replace(
+            placeholder + i + '\x00',
+            `<a href="${url}" target="_blank" rel="noopener" class="cpc-remote-link">\u{1F517} ${url}</a>`
+        );
+    });
+    return escaped;
 }
 
 // --- CPC API 호출 ---
@@ -71,7 +81,7 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
         shown = true;
         // cpcPollTrackedCommands 중복 표시 방지: 추적 목록에서 제거
         _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
-        const cleaned = rawResult.replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
+        const cleaned = cpcStripMarkdown(rawResult);
         const short = cleaned.length > 80 ? cleaned.substring(0, 80) + '...' : cleaned;
         addMessage('system', '📡 [CPC] 소대 응답: ' + cpcSafeHtml(short), 'cpc-result');
         if (voiceOutputEnabled && cleaned) {
@@ -148,7 +158,7 @@ async function cpcPollTrackedCommands() {
                 addMessage('system', '[CPC] 연락병이 명령을 수신했습니다: "' + escapeHtml(tracked.text) + '"');
             }
             if (fresh.status === 'DONE') {
-                const rawResult = (fresh.result || '').replace(/\*\*/g, '').replace(/#{1,6}\s/g, '').replace(/[-*]\s/g, '').trim();
+                const rawResult = cpcStripMarkdown(fresh.result);
                 const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
                 const resultMsg = shortResult
                     ? '[CPC] 명령 완료: ' + cpcSafeHtml(shortResult)
@@ -219,8 +229,7 @@ async function cpcShowBar() {
         groups[project].forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.name;
-            const label = p.name;
-            opt.textContent = label + ' [' + p.status + ']';
+            opt.textContent = p.name + ' [' + p.status + ']';
             optgroup.appendChild(opt);
         });
         select.appendChild(optgroup);
@@ -334,6 +343,6 @@ function autonomousInit() {
     _autonomousUpdateBtn();
     if (_autonomousMode) {
         autonomousTick();
-        _autonomousTimer = setInterval(autonomousTick, AUTONOMOUS_INTERVAL);
+        autonomousStart();
     }
 }

@@ -401,7 +401,7 @@ function addMessage(sender, text, extraClass) {
         let bubble = document.createElement('div');
         bubble.className = 'message-bubble';
         // claude.ai/code URL → 클릭 가능 링크 (XSS-safe: escapeHtml 후 URL만 <a>로 변환)
-        if (sender === 'bot' && /https:\/\/claude\.ai\/code\//.test(text) && typeof cpcSafeHtml === 'function') {
+        if (sender === 'bot' && /https:\/\/claude\.ai\/code[?/]/.test(text) && typeof cpcSafeHtml === 'function') {
             bubble.innerHTML = cpcSafeHtml(text);
         } else {
             bubble.textContent = text;
@@ -610,7 +610,7 @@ async function generateResponse(userText) {
 
             if (fullText) {
                 // claude.ai/code URL을 클릭 가능한 링크로 변환
-                if (textEl && /https:\/\/claude\.ai\/code\//.test(fullText)) {
+                if (textEl && /https:\/\/claude\.ai\/code[?/]/.test(fullText)) {
                     textEl.innerHTML = typeof cpcSafeHtml === 'function' ? cpcSafeHtml(fullText) : escapeHtml(fullText);
                 }
                 // 스트리밍으로 이미 DOM에 표시됨 — 플래그로 표시
