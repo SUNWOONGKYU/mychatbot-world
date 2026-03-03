@@ -188,7 +188,7 @@ REMOTE_KEYWORDS = re.compile(
     re.IGNORECASE,
 )
 
-RC_URL_PATTERN = re.compile(r'https://claude\.ai/code/[A-Za-z0-9_?=&-]+')
+RC_URL_PATTERN = re.compile(r'https://claude\.ai/code[?/][A-Za-z0-9_?=&./-]+')
 RC_URL_TIMEOUT_SEC = 20
 
 
