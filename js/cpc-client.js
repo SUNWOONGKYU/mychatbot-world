@@ -69,21 +69,33 @@ async function cpcGetCommands(platoonId, status) {
     return (await cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands${qs}`)) || [];
 }
 
-// --- 소대장 응답 대기: 폴링 → 타임아웃 시 Vercel AI 폴백 ---
+// --- 소대장 응답: 즉시 Vercel AI 처리 + Agent Server 백그라운드 폴링 ---
 function cpcWaitForResult(cmdId, platoonId, cmdText) {
-    const POLL_MS = 2000;    // 2초 간격 폴링
-    const TIMEOUT_MS = 60000; // 1분 타임아웃 (Agent SDK 자동 처리)
+    const POLL_MS = 3000;    // 3초 간격 Agent Server 폴링
+    const POLL_MAX_MS = 90000; // 90초까지 Agent Server 응답 대기
     const start = Date.now();
     let shown = false;
+    let agentShown = false;
 
-    function showResult(rawResult) {
-        if (shown) return;
-        shown = true;
-        // cpcPollTrackedCommands 중복 표시 방지: 추적 목록에서 제거
-        _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
+    function showResult(rawResult, source) {
+        // source: 'vercel' = 즉시 AI, 'agent' = Agent Server (로컬 소대장)
+        if (source === 'vercel' && shown) return;
+        if (source === 'agent' && agentShown) return;
+
         const cleaned = cpcStripMarkdown(rawResult);
-        const short = cleaned.length > 80 ? cleaned.substring(0, 80) + '...' : cleaned;
-        addMessage('system', '📡 [CPC] 소대 응답: ' + cpcSafeHtml(short), 'cpc-result');
+        const short = cleaned.length > 200 ? cleaned.substring(0, 200) + '...' : cleaned;
+        const label = source === 'agent' ? '📡 [소대장]' : '📡 [CPC]';
+
+        if (source === 'vercel') {
+            shown = true;
+            addMessage('system', label + ' ' + cpcSafeHtml(short), 'cpc-result');
+        } else {
+            // Agent Server 응답이 나중에 도착하면 업그레이드
+            agentShown = true;
+            _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
+            addMessage('system', label + ' ' + cpcSafeHtml(short), 'cpc-result');
+        }
+
         if (voiceOutputEnabled && cleaned) {
             const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
             if (_audioSource) {
@@ -94,36 +106,38 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
         }
     }
 
+    // 1) 즉시 Vercel AI 처리 (서버 불필요, 항상 동작)
+    fetch('/api/cpc-process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
+    }).then(r => r.json()).then(data => {
+        const result = (data && (data.result || data.detail)) || '명령 처리됨';
+        console.log('[CPC] Vercel AI 즉시 응답:', result.substring(0, 60));
+        showResult(result, 'vercel');
+    }).catch(() => {
+        if (!shown) showResult('명령 전달됨', 'vercel');
+    });
+
+    // 2) Agent Server 백그라운드 폴링 (로컬 서버가 살아있으면 더 정확한 응답)
     function poll() {
-        if (shown) return;
-        if (Date.now() - start > TIMEOUT_MS) {
-            // 60초 타임아웃 → Vercel AI 폴백
-            console.log('[CPC] 타임아웃 → Vercel AI 폴백:', cmdId);
-            fetch('/api/cpc-process', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
-            }).then(r => r.json()).then(data => {
-                showResult((data && (data.result || data.detail)) || '명령 처리됨');
-            }).catch(() => showResult('명령 전달됨'));
-            return;
-        }
-        // CPC API에서 해당 명령 DONE 여부 확인
+        if (agentShown) return;
+        if (Date.now() - start > POLL_MAX_MS) return; // 90초 초과 시 포기
         cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands`)
             .then(cmds => {
                 if (!cmds) { setTimeout(poll, POLL_MS); return; }
                 const c = cmds.find(x => x.id === cmdId);
                 if (c && c.status === 'DONE' && c.result) {
-                    console.log('[CPC] 소대장 응답 수신:', c.result.substring(0, 60));
-                    showResult(c.result);
+                    console.log('[CPC] Agent Server 응답:', c.result.substring(0, 60));
+                    showResult(c.result, 'agent');
                 } else {
                     setTimeout(poll, POLL_MS);
                 }
             }).catch(() => setTimeout(poll, POLL_MS));
     }
 
-    // 3초 후 첫 폴링 시작 (주입 후 소대장 처리 시간 여유)
-    setTimeout(poll, 3000);
+    // Agent Server 폴링은 5초 후 시작 (Vercel 응답이 먼저 도착하도록)
+    setTimeout(poll, 5000);
 }
 
 // --- 양방향: 명령 추적 + 폴링 ---
