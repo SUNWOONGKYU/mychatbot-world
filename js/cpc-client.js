@@ -69,33 +69,23 @@ async function cpcGetCommands(platoonId, status) {
     return (await cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands${qs}`)) || [];
 }
 
-// --- 소대장 응답: 즉시 Vercel AI 처리 + Agent Server 백그라운드 폴링 ---
+// --- 소대장 응답: 일반 명령은 Vercel 즉시, 리모트 명령은 Agent Server 전용 ---
+const _CPC_REMOTE_RE = /리모트|remote|원격|rc\b|리모컨|remote.?control/i;
+
 function cpcWaitForResult(cmdId, platoonId, cmdText) {
-    const POLL_MS = 3000;    // 3초 간격 Agent Server 폴링
-    const POLL_MAX_MS = 90000; // 90초까지 Agent Server 응답 대기
+    const POLL_MS = 3000;
     const start = Date.now();
     let shown = false;
-    let agentShown = false;
+    const isRemote = _CPC_REMOTE_RE.test(cmdText);
+    const TIMEOUT_MS = isRemote ? 120000 : 90000; // 리모트: 2분, 일반: 90초
 
-    function showResult(rawResult, source) {
-        // source: 'vercel' = 즉시 AI, 'agent' = Agent Server (로컬 소대장)
-        if (source === 'vercel' && shown) return;
-        if (source === 'agent' && agentShown) return;
-
+    function showResult(rawResult) {
+        if (shown) return;
+        shown = true;
+        _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
         const cleaned = cpcStripMarkdown(rawResult);
         const short = cleaned.length > 200 ? cleaned.substring(0, 200) + '...' : cleaned;
-        const label = source === 'agent' ? '📡 [소대장]' : '📡 [CPC]';
-
-        if (source === 'vercel') {
-            shown = true;
-            addMessage('system', label + ' ' + cpcSafeHtml(short), 'cpc-result');
-        } else {
-            // Agent Server 응답이 나중에 도착하면 업그레이드
-            agentShown = true;
-            _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
-            addMessage('system', label + ' ' + cpcSafeHtml(short), 'cpc-result');
-        }
-
+        addMessage('system', '📡 [CPC] ' + cpcSafeHtml(short), 'cpc-result');
         if (voiceOutputEnabled && cleaned) {
             const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
             if (_audioSource) {
@@ -106,38 +96,56 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
         }
     }
 
-    // 1) 즉시 Vercel AI 처리 (서버 불필요, 항상 동작)
-    fetch('/api/cpc-process', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
-    }).then(r => r.json()).then(data => {
-        const result = (data && (data.result || data.detail)) || '명령 처리됨';
-        console.log('[CPC] Vercel AI 즉시 응답:', result.substring(0, 60));
-        showResult(result, 'vercel');
-    }).catch(() => {
-        if (!shown) showResult('명령 전달됨', 'vercel');
-    });
-
-    // 2) Agent Server 백그라운드 폴링 (로컬 서버가 살아있으면 더 정확한 응답)
+    // Agent Server 폴링 (DONE 될 때까지 대기)
     function poll() {
-        if (agentShown) return;
-        if (Date.now() - start > POLL_MAX_MS) return; // 90초 초과 시 포기
+        if (shown) return;
+        if (Date.now() - start > TIMEOUT_MS) {
+            // 타임아웃 → 리모트는 실패 안내, 일반은 Vercel AI 폴백
+            if (isRemote) {
+                showResult('리모트 컨트롤은 소대장 세션(Claude Code)이 가동 중이어야 합니다. /cpc-engage 실행 후 다시 시도해주세요.');
+            } else {
+                console.log('[CPC] 타임아웃 → Vercel AI 폴백:', cmdId);
+                fetch('/api/cpc-process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
+                }).then(r => r.json()).then(data => {
+                    showResult((data && (data.result || data.detail)) || '명령 처리됨');
+                }).catch(() => showResult('명령 전달됨'));
+            }
+            return;
+        }
         cpcFetch(`/api/platoons/${encodeURIComponent(platoonId)}/commands`)
             .then(cmds => {
                 if (!cmds) { setTimeout(poll, POLL_MS); return; }
                 const c = cmds.find(x => x.id === cmdId);
                 if (c && c.status === 'DONE' && c.result) {
-                    console.log('[CPC] Agent Server 응답:', c.result.substring(0, 60));
-                    showResult(c.result, 'agent');
+                    console.log('[CPC] 소대장 응답 수신:', c.result.substring(0, 60));
+                    showResult(c.result);
                 } else {
                     setTimeout(poll, POLL_MS);
                 }
             }).catch(() => setTimeout(poll, POLL_MS));
     }
 
-    // Agent Server 폴링은 5초 후 시작 (Vercel 응답이 먼저 도착하도록)
-    setTimeout(poll, 5000);
+    if (isRemote) {
+        // 리모트 명령: Agent Server(Claude Code) 응답만 대기
+        addMessage('system', '⏳ [CPC] 소대장이 리모트 컨트롤 URL을 생성 중입니다... (최대 2분)');
+        setTimeout(poll, 3000);
+    } else {
+        // 일반 명령: 즉시 Vercel AI + 백그라운드 Agent Server 폴링
+        fetch('/api/cpc-process', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
+        }).then(r => r.json()).then(data => {
+            const result = (data && (data.result || data.detail)) || '명령 처리됨';
+            console.log('[CPC] Vercel AI 응답:', result.substring(0, 60));
+            showResult(result);
+        }).catch(() => {});
+        // Agent Server 폴링도 병행 (더 정확한 응답 가능)
+        setTimeout(poll, 5000);
+    }
 }
 
 // --- 양방향: 명령 추적 + 폴링 ---
