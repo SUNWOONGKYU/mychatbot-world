@@ -208,8 +208,7 @@ export function buildSystemMessage(botConfig) {
   let cpcSection = '';
   if (isCpcLiaison && botConfig?.cpcPlatoons?.length) {
     const lines = botConfig.cpcPlatoons.map(p => {
-      const url = p.session_url ? p.session_url : '없음';
-      return `  - ${p.name}: 상태=${p.status}, 리모트URL=${url}`;
+      return `  - ${p.name}: 상태=${p.status}`;
     });
     cpcSection = `\n[소대 현황]\n${lines.join('\n')}\n`;
   }
