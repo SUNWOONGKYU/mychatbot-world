@@ -129,17 +129,19 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
     }
 
     if (isRemote) {
-        // 리모트 명령: 먼저 _cpcPlatoons에서 session_url 직접 확인
-        const platoon = _cpcPlatoons.find(p => p.name === platoonId);
-        const storedUrl = platoon && platoon.session_url;
-        if (storedUrl) {
-            // CPC에 저장된 session_url이 있으면 즉시 반환 (AI 거치지 않음)
-            showResult('리모트 접속 URL: ' + storedUrl);
-        } else {
-            // session_url 없으면 Agent Server가 생성할 때까지 대기
-            addMessage('system', '⏳ [CPC] 소대장이 리모트 컨트롤 URL을 생성 중입니다... (최대 2분)');
-            setTimeout(poll, 3000);
-        }
+        // 리모트 명령: _cpcPlatoons에서 session_url 직접 확인 (AI 우회)
+        // 먼저 최신 소대 데이터 가져온 후 확인
+        cpcRefreshPlatoonStatus().then(() => {
+            const platoon = _cpcPlatoons.find(p => p.name === platoonId);
+            const storedUrl = platoon && platoon.session_url && platoon.session_url !== 'null' && platoon.session_url !== 'None';
+            if (storedUrl) {
+                showResult('리모트 접속 URL: ' + platoon.session_url);
+            } else {
+                // URL 없음 → Agent Server 대기 (Claude Code가 생성)
+                addMessage('system', '⏳ [CPC] 소대장 세션에서 리모트 URL 생성 대기 중...');
+                setTimeout(poll, 3000);
+            }
+        });
     } else {
         // 일반 명령: 즉시 Vercel AI + 백그라운드 Agent Server 폴링
         fetch('/api/cpc-process', {
