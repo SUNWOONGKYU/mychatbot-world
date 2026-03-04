@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 멀티 페르소나 이원 관리 구조도 (도 2) -->
+<svg width="1000" height="550" viewBox="0 0 1000 550" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="50" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="36" font-weight="bold">도 2: 멀티 페르소나 이원 관리 구조도</text>
+
+    <!-- 상단: 멀티 페르소나 관리부 (10) -->
+    <rect x="280" y="80" width="440" height="80" fill="white" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="128" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="26" font-weight="bold">멀티 페르소나 관리부 (10)</text>
+
+    <!-- 분기선 -->
+    <line x1="500" y1="160" x2="500" y2="200" stroke="black" stroke-width="2"/>
+    <line x1="250" y1="200" x2="750" y2="200" stroke="black" stroke-width="2"/>
+    <line x1="250" y1="200" x2="250" y2="240" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="750" y1="200" x2="750" y2="240" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 좌측: 아바타형 페르소나 (11) -->
+    <rect x="60" y="245" width="380" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="250" y="280" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">아바타형 페르소나 (11)</text>
+    <text x="250" y="312" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">(대외용)</text>
+
+    <!-- 아바타형 예시 박스들 -->
+    <line x1="250" y1="325" x2="250" y2="365" stroke="black" stroke-width="2"/>
+    <line x1="115" y1="365" x2="385" y2="365" stroke="black" stroke-width="1"/>
+
+    <line x1="115" y1="365" x2="115" y2="380" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="60" y="385" width="110" height="55" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="115" y="418" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="16" font-weight="bold">아바타 1 (11a)</text>
+
+    <line x1="250" y1="365" x2="250" y2="380" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="195" y="385" width="110" height="55" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="250" y="418" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="16" font-weight="bold">아바타 2 (11b)</text>
+
+    <line x1="385" y1="365" x2="385" y2="380" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="330" y="385" width="110" height="55" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="385" y="418" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="16" font-weight="bold">아바타 3 (11c)</text>
+
+    <!-- 우측: 도우미형 페르소나 (12) -->
+    <rect x="560" y="245" width="380" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="750" y="280" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">도우미형 페르소나 (12)</text>
+    <text x="750" y="312" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">(대내용)</text>
+
+    <!-- 도우미 분기 -->
+    <line x1="750" y1="325" x2="750" y2="365" stroke="black" stroke-width="2"/>
+    <line x1="650" y1="365" x2="850" y2="365" stroke="black" stroke-width="1"/>
+
+    <!-- 업무도우미 (12a) -->
+    <line x1="650" y1="365" x2="650" y2="380" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="570" y="385" width="160" height="55" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="650" y="418" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="17" font-weight="bold">업무도우미 (12a)</text>
+
+    <!-- 생활도우미 (12b) -->
+    <line x1="850" y1="365" x2="850" y2="380" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="770" y="385" width="160" height="55" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="850" y="418" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="17" font-weight="bold">생활도우미 (12b)</text>
+</svg>

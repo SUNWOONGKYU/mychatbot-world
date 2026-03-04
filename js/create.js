@@ -922,6 +922,85 @@ function previewVoice() {
     });
 }
 
+// === @task S2F7: 인사말 TTS 미리듣기 ===
+var _greetingPreviewPlayer = new Audio();
+
+function previewGreeting() {
+    // window._createdBot.greeting 또는 resultPreview 텍스트에서 추출
+    var greetingText = '';
+    if (window._createdBot && window._createdBot.greeting) {
+        greetingText = window._createdBot.greeting;
+    } else {
+        // resultPreview DOM에서 인사말 텍스트 파싱 (fallback)
+        var items = document.querySelectorAll('#resultPreview .result-item');
+        for (var i = 0; i < items.length; i++) {
+            var label = items[i].querySelector('.result-label');
+            var value = items[i].querySelector('.result-value');
+            if (label && label.textContent.trim() === '인사말' && value) {
+                greetingText = value.textContent.replace(/^"|"$/g, '').trim();
+                break;
+            }
+        }
+    }
+
+    if (!greetingText) {
+        alert('미리 들을 인사말이 없습니다. AI 분석을 먼저 완료해주세요.');
+        return;
+    }
+
+    var btn = document.getElementById('previewGreetingBtn');
+    var status = document.getElementById('previewGreetingStatus');
+    var voice = getSelectedVoice();
+
+    if (btn) { btn.disabled = true; btn.textContent = '로딩 중...'; }
+    if (status) status.textContent = '';
+
+    fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: greetingText, voice: voice })
+    }).then(function(res) {
+        if (!res.ok) throw new Error('TTS ' + res.status);
+        var ct = res.headers.get('content-type') || '';
+        if (ct.indexOf('audio') === -1) throw new Error('Not audio');
+        return res.blob();
+    }).then(function(blob) {
+        var url = URL.createObjectURL(blob);
+        _greetingPreviewPlayer.pause();
+        _greetingPreviewPlayer.src = url;
+        if (btn) btn.textContent = '재생 중...';
+        if (status) status.textContent = '목소리: ' + voice;
+        _greetingPreviewPlayer.play();
+        _greetingPreviewPlayer.onended = function() {
+            URL.revokeObjectURL(url);
+            if (btn) { btn.textContent = '\u25B6 인사말 듣기'; btn.disabled = false; }
+            if (status) status.textContent = '';
+        };
+        _greetingPreviewPlayer.onerror = function() {
+            URL.revokeObjectURL(url);
+            if (btn) { btn.textContent = '\u25B6 인사말 듣기'; btn.disabled = false; }
+            if (status) status.textContent = '';
+        };
+    }).catch(function(err) {
+        // /api/tts 실패 시 브라우저 Web Speech API fallback
+        if (window.speechSynthesis) {
+            var u = new SpeechSynthesisUtterance(greetingText);
+            u.lang = 'ko-KR';
+            u.onend = function() {
+                if (btn) { btn.textContent = '\u25B6 인사말 듣기'; btn.disabled = false; }
+                if (status) status.textContent = '';
+            };
+            window.speechSynthesis.speak(u);
+            if (btn) btn.textContent = '재생 중...';
+            if (status) status.textContent = '(브라우저 TTS)';
+        } else {
+            alert('인사말 미리듣기에 실패했습니다: ' + err.message);
+            if (btn) { btn.textContent = '\u25B6 인사말 듣기'; btn.disabled = false; }
+            if (status) status.textContent = '';
+        }
+    });
+}
+
 // === Step 6: 아바타 설정 ===
 const AVATAR_EMOJIS = {
     robot: '🤖', man: '👨', woman: '👩', person: '🧑', business: '👔', academic: '🎓'

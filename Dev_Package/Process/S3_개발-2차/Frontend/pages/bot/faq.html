@@ -1,0 +1,851 @@
+<!--
+@task S3F2
+@description FAQ 관리 페이지 - 챗봇 소유자용 FAQ 항목 추가/수정/삭제 UI
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ 관리 — My Chatbot World</title>
+  <link rel="stylesheet" href="../../../../css/styles.css">
+  <link rel="stylesheet" href="../../../../css/chat.css">
+  <style>
+    /* ============================================================
+       FAQ 관리 페이지 전용 스타일
+       @task S3F2
+       ============================================================ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ===== 헤더 ===== */
+    .faq-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .faq-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      min-width: 0;
+    }
+
+    .faq-back-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: #f1f5f9;
+      border-radius: 0.625rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 150ms ease;
+      flex-shrink: 0;
+      color: #475569;
+    }
+
+    .faq-back-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .faq-header-title-group {
+      min-width: 0;
+    }
+
+    .faq-page-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .faq-bot-name {
+      font-size: 0.8125rem;
+      color: #64748b;
+      margin-top: 0.125rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .faq-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.625rem 1.125rem;
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      border-radius: 0.625rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 150ms ease, transform 100ms ease;
+    }
+
+    .faq-add-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    .faq-add-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ===== 메인 컨텐츠 ===== */
+    .faq-main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 5rem;
+    }
+
+    /* ===== 상태 메시지 ===== */
+    .faq-status-bar {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.625rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+    }
+
+    .faq-status-bar.show {
+      display: flex;
+    }
+
+    .faq-status-bar.success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .faq-status-bar.error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .faq-status-bar.loading {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    /* ===== 로딩 스켈레톤 ===== */
+    .faq-skeleton {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .skeleton-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.875rem;
+      padding: 1.25rem;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      background: #e2e8f0;
+      border-radius: 0.375rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .skeleton-line.short {
+      width: 55%;
+    }
+
+    .skeleton-line.long {
+      width: 85%;
+    }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ===== 빈 상태 ===== */
+    .faq-empty {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .faq-empty.show {
+      display: flex;
+    }
+
+    .faq-empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.25rem;
+      line-height: 1;
+    }
+
+    .faq-empty-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    .faq-empty-desc {
+      font-size: 0.9375rem;
+      color: #6b7280;
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+
+    /* ===== FAQ 카드 리스트 ===== */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .faq-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.875rem;
+      padding: 1.25rem 1.375rem;
+      transition: box-shadow 200ms ease, border-color 200ms ease;
+      position: relative;
+    }
+
+    .faq-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+      border-color: #c7d2fe;
+    }
+
+    .faq-card-order {
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #94a3b8;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      padding: 0.125rem 0.5rem;
+    }
+
+    .faq-card-q {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .faq-label-q {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6366f1;
+      background: #eef2ff;
+      border-radius: 0.375rem;
+      padding: 0.2rem 0.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .faq-question-text {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+
+    .faq-card-a {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .faq-label-a {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #059669;
+      background: #ecfdf5;
+      border-radius: 0.375rem;
+      padding: 0.2rem 0.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .faq-answer-text {
+      font-size: 0.875rem;
+      color: #374151;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .faq-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding-top: 0.875rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-faq-edit,
+    .btn-faq-delete {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4375rem 0.875rem;
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 150ms ease;
+    }
+
+    .btn-faq-edit {
+      background: #eff6ff;
+      color: #2563eb;
+      border-color: #bfdbfe;
+    }
+
+    .btn-faq-edit:hover {
+      background: #dbeafe;
+      border-color: #93c5fd;
+    }
+
+    .btn-faq-delete {
+      background: #fff1f2;
+      color: #dc2626;
+      border-color: #fecdd3;
+    }
+
+    .btn-faq-delete:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    /* ===== 모달 공통 ===== */
+    .faq-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(3px);
+    }
+
+    .faq-modal-overlay.show {
+      display: flex;
+    }
+
+    .faq-modal {
+      background: #ffffff;
+      border-radius: 1rem;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      animation: modal-pop 200ms ease;
+    }
+
+    @keyframes modal-pop {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .faq-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .faq-modal-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .faq-modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f1f5f9;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      transition: background 150ms ease;
+    }
+
+    .faq-modal-close:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .faq-modal-body {
+      padding: 1.375rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.125rem;
+    }
+
+    .faq-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .faq-form-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .faq-form-label span.required {
+      color: #ef4444;
+      margin-left: 2px;
+    }
+
+    .faq-form-input,
+    .faq-form-textarea {
+      width: 100%;
+      padding: 0.6875rem 0.875rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0.625rem;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      color: #0f172a;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .faq-form-input:focus,
+    .faq-form-textarea:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      background: #ffffff;
+    }
+
+    .faq-form-input.invalid,
+    .faq-form-textarea.invalid {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .faq-form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    .faq-form-hint {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .faq-char-count {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-align: right;
+    }
+
+    .faq-char-count.over {
+      color: #ef4444;
+    }
+
+    .faq-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.625rem;
+      padding: 1rem 1.5rem 1.25rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-cancel {
+      padding: 0.625rem 1.125rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0.5rem;
+      background: #ffffff;
+      color: #374151;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .btn-cancel:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .btn-save {
+      padding: 0.625rem 1.375rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: #6366f1;
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms ease, transform 100ms ease;
+      min-width: 80px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+    }
+
+    .btn-save:hover:not(:disabled) {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    .btn-save:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ===== 삭제 확인 모달 ===== */
+    .faq-confirm-modal {
+      background: #ffffff;
+      border-radius: 1rem;
+      width: 100%;
+      max-width: 400px;
+      padding: 1.75rem 1.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      animation: modal-pop 200ms ease;
+      text-align: center;
+    }
+
+    .confirm-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.875rem;
+    }
+
+    .confirm-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .confirm-desc {
+      font-size: 0.9375rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .confirm-question-preview {
+      background: #fef2f2;
+      border: 1px solid #fecdd3;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.875rem;
+      color: #991b1b;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      word-break: break-word;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 0.625rem;
+      justify-content: center;
+    }
+
+    .btn-confirm-delete {
+      padding: 0.625rem 1.25rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: #dc2626;
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms ease;
+      min-width: 80px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-confirm-delete:hover:not(:disabled) {
+      background: #b91c1c;
+    }
+
+    .btn-confirm-delete:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* ===== 인증 에러 화면 ===== */
+    .faq-auth-error {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .faq-auth-error.show {
+      display: flex;
+    }
+
+    .faq-auth-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .faq-auth-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .faq-auth-desc {
+      font-size: 0.9375rem;
+      color: #64748b;
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+
+    .btn-login {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.75rem 1.5rem;
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      border-radius: 0.625rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 150ms ease;
+    }
+
+    .btn-login:hover {
+      background: #4f46e5;
+    }
+
+    /* ===== 모바일 반응형 ===== */
+    @media (max-width: 600px) {
+      .faq-header {
+        padding: 0.875rem 1rem;
+      }
+
+      .faq-page-title {
+        font-size: 1rem;
+      }
+
+      .faq-add-btn {
+        padding: 0.5625rem 0.875rem;
+        font-size: 0.8125rem;
+      }
+
+      .faq-main {
+        padding: 1.25rem 0.875rem 5rem;
+      }
+
+      .faq-card {
+        padding: 1rem 1.125rem;
+      }
+
+      .faq-modal {
+        border-radius: 0.875rem;
+      }
+
+      .faq-modal-header,
+      .faq-modal-body,
+      .faq-modal-footer {
+        padding-left: 1.125rem;
+        padding-right: 1.125rem;
+      }
+
+      .faq-confirm-modal {
+        padding: 1.375rem 1.125rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== 헤더 ===== -->
+  <header class="faq-header">
+    <div class="faq-header-left">
+      <button class="faq-back-btn" onclick="goBack()" title="뒤로 가기" aria-label="뒤로 가기">
+        &#8592;
+      </button>
+      <div class="faq-header-title-group">
+        <h1 class="faq-page-title">FAQ 관리</h1>
+        <p class="faq-bot-name" id="headerBotName">로딩 중...</p>
+      </div>
+    </div>
+    <button class="faq-add-btn" id="openAddModalBtn" onclick="openAddModal()" disabled>
+      + FAQ 추가
+    </button>
+  </header>
+
+  <!-- ===== 메인 ===== -->
+  <main class="faq-main" id="faqMain">
+    <!-- 상태 메시지 -->
+    <div class="faq-status-bar" id="statusBar" role="alert" aria-live="polite"></div>
+
+    <!-- 인증 에러 -->
+    <div class="faq-auth-error" id="authError">
+      <div class="faq-auth-icon">🔒</div>
+      <h2 class="faq-auth-title">접근 권한이 없습니다</h2>
+      <p class="faq-auth-desc">이 페이지는 봇 소유자만 접근할 수 있습니다.<br>로그인 후 다시 시도해 주세요.</p>
+      <a href="/pages/login.html" class="btn-login">로그인하기</a>
+    </div>
+
+    <!-- 로딩 스켈레톤 -->
+    <div class="faq-skeleton" id="loadingSkeleton">
+      <div class="skeleton-card">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line long"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line long"></div>
+      </div>
+    </div>
+
+    <!-- 빈 상태 -->
+    <div class="faq-empty" id="faqEmpty">
+      <div class="faq-empty-icon">💬</div>
+      <h2 class="faq-empty-title">FAQ가 없습니다</h2>
+      <p class="faq-empty-desc">자주 묻는 질문을 추가하면<br>방문자들이 쉽게 답변을 찾을 수 있습니다.</p>
+      <button class="faq-add-btn" onclick="openAddModal()">+ 첫 FAQ 추가하기</button>
+    </div>
+
+    <!-- FAQ 카드 목록 -->
+    <div class="faq-list" id="faqList" role="list" aria-label="FAQ 목록"></div>
+  </main>
+
+  <!-- ===== FAQ 추가/수정 모달 ===== -->
+  <div class="faq-modal-overlay" id="faqFormModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="faq-modal">
+      <div class="faq-modal-header">
+        <h2 class="faq-modal-title" id="modalTitle">FAQ 추가</h2>
+        <button class="faq-modal-close" onclick="closeFormModal()" aria-label="모달 닫기">&#10005;</button>
+      </div>
+      <div class="faq-modal-body">
+        <input type="hidden" id="editingIndex">
+        <div class="faq-form-group">
+          <label class="faq-form-label" for="inputQuestion">
+            질문 <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="inputQuestion"
+            class="faq-form-input"
+            placeholder="예: 영업시간이 어떻게 되나요?"
+            maxlength="200"
+            autocomplete="off"
+          >
+          <div class="faq-char-count" id="questionCharCount">0 / 200</div>
+        </div>
+        <div class="faq-form-group">
+          <label class="faq-form-label" for="inputAnswer">
+            답변 <span class="required">*</span>
+          </label>
+          <textarea
+            id="inputAnswer"
+            class="faq-form-textarea"
+            placeholder="예: 평일 오전 9시 ~ 오후 6시, 주말 및 공휴일 휴무입니다."
+            maxlength="1000"
+          ></textarea>
+          <div class="faq-char-count" id="answerCharCount">0 / 1000</div>
+          <p class="faq-form-hint">답변은 최대 1,000자까지 입력할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="faq-modal-footer">
+        <button class="btn-cancel" onclick="closeFormModal()">취소</button>
+        <button class="btn-save" id="btnSave" onclick="saveFaq()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 삭제 확인 모달 ===== -->
+  <div class="faq-modal-overlay" id="faqConfirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="faq-confirm-modal">
+      <div class="confirm-icon">🗑️</div>
+      <h2 class="confirm-title" id="confirmTitle">FAQ를 삭제할까요?</h2>
+      <p class="confirm-desc">삭제하면 되돌릴 수 없습니다.</p>
+      <div class="confirm-question-preview" id="confirmQuestionPreview"></div>
+      <div class="confirm-actions">
+        <button class="btn-cancel" onclick="closeConfirmModal()">취소</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete" onclick="confirmDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 스크립트 ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../../../js/faq-manage.js"></script>
+</body>
+
+</html>

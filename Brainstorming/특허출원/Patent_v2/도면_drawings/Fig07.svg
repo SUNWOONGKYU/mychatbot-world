@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 피상속 관리 프로세스 흐름도 (도 7) -->
+<svg width="1000" height="1060" viewBox="0 0 1000 1060" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="50" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="36" font-weight="bold">도 7: 피상속 관리 프로세스 흐름도</text>
+
+    <!-- 외곽: 피상속 관리부 (50) -->
+    <rect x="60" y="75" width="880" height="810" fill="none" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="110" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="26" font-weight="bold">피상속 관리부 (50)</text>
+
+    <!-- Step 1: 피상속 사전 설정부 (51) -->
+    <rect x="250" y="130" width="500" height="70" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="173" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">피상속 사전 설정 모듈 (51)</text>
+
+    <!-- 화살표: 51 → 52 -->
+    <line x1="500" y1="200" x2="500" y2="235" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 2: 상속인 지정부 (52) -->
+    <rect x="250" y="240" width="500" height="70" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="283" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">상속인 지정 모듈 (52)</text>
+
+    <!-- 화살표: 52 → 53 -->
+    <line x1="500" y1="310" x2="500" y2="345" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 3: 사망 확인 트리거 (53) -->
+    <rect x="250" y="350" width="500" height="70" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="393" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">사망 확인 트리거 모듈 (53)</text>
+
+    <!-- 53 → 마름모 화살표 -->
+    <line x1="500" y1="420" x2="500" y2="460" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="570" y="445" text-anchor="start" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">사망 확인 완료</text>
+
+    <!-- 마름모 판단 기호 "항목별 동의 여부" — 크기 확대 (160x60) -->
+    <polygon points="500,465 590,500 500,535 410,500" fill="white" stroke="black" stroke-width="2"/>
+    <text x="500" y="505" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="bold">동의 여부</text>
+
+    <!-- 주석: "51 사전 설정에 따라 자동 판단" — 마름모 우측 상단 -->
+    <rect x="700" y="482" width="240" height="30" fill="white" stroke="black" stroke-width="1" stroke-dasharray="4,3" rx="4"/>
+    <text x="820" y="502" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="13" fill="black">사전 설정(51)에 따라 항목별 자동 분류</text>
+
+    <!-- 마름모 좌측 → [동의 항목] → 54 -->
+    <line x1="410" y1="500" x2="250" y2="500" stroke="black" stroke-width="2"/>
+    <line x1="250" y1="500" x2="250" y2="610" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="205" y="550" width="90" height="22" fill="white"/>
+    <text x="250" y="565" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="bold">[동의 항목]</text>
+
+    <!-- 마름모 우측 → [비동의 항목] → 55 -->
+    <line x1="590" y1="500" x2="750" y2="500" stroke="black" stroke-width="2"/>
+    <line x1="750" y1="500" x2="750" y2="610" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="695" y="550" width="110" height="22" fill="white"/>
+    <text x="750" y="565" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="bold">[비동의 항목]</text>
+
+    <!-- 좌측: 소유권 이전 모듈 (54) -->
+    <rect x="100" y="615" width="300" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="250" y="650" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">소유권 이전 모듈 (54)</text>
+    <text x="250" y="675" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" fill="black">상속인에게 챗봇 소유권 이전</text>
+
+    <!-- 우측: 비동의 데이터 삭제 모듈 (55) -->
+    <rect x="590" y="615" width="320" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="750" y="650" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">비동의 데이터 삭제 모듈 (55)</text>
+    <text x="750" y="675" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" fill="black">복구 불가능한 완전 삭제</text>
+
+    <!-- 54 → 56 합류 -->
+    <line x1="250" y1="695" x2="250" y2="740" stroke="black" stroke-width="2"/>
+    <line x1="250" y1="740" x2="500" y2="740" stroke="black" stroke-width="2"/>
+
+    <!-- 55 → 56 합류 -->
+    <line x1="750" y1="695" x2="750" y2="740" stroke="black" stroke-width="2"/>
+    <line x1="750" y1="740" x2="500" y2="740" stroke="black" stroke-width="2"/>
+
+    <!-- 합류점 → 56 박스 -->
+    <line x1="500" y1="740" x2="500" y2="770" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 6: 지속 성장 모듈 (56) -->
+    <rect x="200" y="775" width="600" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="810" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">지속 성장 모듈 (56)</text>
+    <text x="500" y="837" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" fill="black">상속인 하에서 학습·성장·수익활동 계속</text>
+
+    <!-- 56 → 하단 결과 -->
+    <line x1="500" y1="855" x2="500" y2="920" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="300" y="925" width="400" height="45" fill="none" stroke="black" stroke-width="2" rx="25"/>
+    <text x="500" y="954" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">상속인 하에서 라이프사이클 연속</text>
+</svg>

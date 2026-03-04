@@ -1,0 +1,1102 @@
+<!-- @task S4F3 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수익 상세 — My Chatbot World</title>
+  <meta name="description" content="봇별 수익 이벤트 내역, 기간별 필터, 이벤트 타입별 집계를 확인하세요.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      flex: 1;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .sidebar-section-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0 1rem;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    /* ===== 모바일 ===== */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 100;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 0.625rem;
+      cursor: pointer;
+      color: var(--color-text);
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 40;
+    }
+
+    /* ===== 메인 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      max-width: calc(100% - var(--sidebar-width));
+    }
+
+    /* ===== 페이지 헤더 ===== */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 필터 바 ===== */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .filter-select {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.875rem;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+
+    .filter-select:focus { border-color: var(--color-primary-light); }
+
+    .period-tabs {
+      display: flex;
+      gap: 0.375rem;
+    }
+
+    .period-tab {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+      font-family: inherit;
+    }
+
+    .period-tab:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .period-tab.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+
+    /* ===== 스켈레톤 ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-line { border-radius: 0.25rem; }
+
+    .loading-view { display: block; }
+    .loaded-view  { display: none; }
+    .error-view   { display: none; }
+
+    body.state-loaded .loading-view { display: none; }
+    body.state-loaded .loaded-view  { display: block; }
+    body.state-error  .loading-view { display: none; }
+    body.state-error  .error-view   { display: block; }
+
+    /* ===== 월별 수익 차트 ===== */
+    .chart-canvas-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+    }
+
+    .chart-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ===== 집계 카드 그리드 ===== */
+    .agg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .agg-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      transition: border-color 200ms ease;
+    }
+
+    .agg-card:hover { border-color: rgba(255,255,255,0.12); }
+
+    .agg-type {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .agg-amount {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 0.25rem;
+    }
+
+    .agg-count {
+      font-size: 0.75rem;
+      color: var(--color-text-faint);
+    }
+
+    .agg-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.75rem;
+    }
+
+    .badge-install    { background: rgba(79,70,229,0.2);  color: #a5b4fc; }
+    .badge-sub        { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+    .badge-usage      { background: rgba(245,158,11,0.2); color: #fcd34d; }
+    .badge-tip        { background: rgba(6,182,212,0.2);  color: #67e8f9; }
+    .badge-other      { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
+
+    /* ===== 카드 ===== */
+    .card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .record-count {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+    }
+
+    /* ===== 이벤트 테이블 ===== */
+    .revenue-table-wrapper {
+      overflow-x: auto;
+    }
+
+    .revenue-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .revenue-table th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .revenue-table td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--color-border-2);
+      vertical-align: middle;
+    }
+
+    .revenue-table tr:last-child td { border-bottom: none; }
+
+    .revenue-table tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .event-type-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .amount-positive {
+      color: var(--color-success);
+      font-weight: 700;
+    }
+
+    .settlement-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .settled   { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+    .unsettled { background: rgba(245,158,11,0.15); color: #fcd34d; }
+
+    /* 페이지네이션 */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .pagination-info {
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+    }
+
+    .pagination-btns {
+      display: flex;
+      gap: 0.375rem;
+    }
+
+    .pagination-btn {
+      padding: 0.5rem 0.875rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 150ms ease;
+      font-family: inherit;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .pagination-btn.current {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+
+    /* ===== 빈 상태 ===== */
+    .empty-state {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--color-text-muted);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-desc { font-size: 0.875rem; }
+
+    /* ===== 에러 뷰 ===== */
+    .error-box {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .error-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .error-title { font-size: 1rem; font-weight: 700; color: var(--color-danger); margin-bottom: 0.375rem; }
+    .error-message { font-size: 0.875rem; color: var(--color-text-muted); }
+    .error-retry {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--radius-md);
+      color: var(--color-danger);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .error-retry:hover { background: rgba(239,68,68,0.22); }
+
+    /* ===== 모바일 ===== */
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: flex; }
+      .sidebar { transform: translateX(-100%); transition: transform 250ms ease; }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main-content { margin-left: 0; padding: 1.25rem 1rem; padding-top: 4rem; max-width: 100%; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .filter-bar { flex-direction: column; align-items: flex-start; }
+      .agg-grid { grid-template-columns: repeat(2, 1fr); }
+      .revenue-table th:nth-child(3),
+      .revenue-table td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴 열기">&#9776;</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/pages/home/index.html" class="sidebar-brand">
+      <div class="sidebar-brand-icon">M</div>
+      <span>My Chatbot World</span>
+    </a>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/index.html">
+          <span class="sidebar-nav-icon">&#127968;</span><span>홈</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/chatbots.html">
+          <span class="sidebar-nav-icon">&#129302;</span><span>내 챗봇</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/marketplace/index.html">
+          <span class="sidebar-nav-icon">&#128722;</span><span>마켓플레이스</span>
+        </a>
+      </li>
+      <div class="sidebar-section-label">비즈니스</div>
+      <li class="sidebar-nav-item">
+        <a href="/pages/business/index.html">
+          <span class="sidebar-nav-icon">&#128200;</span><span>대시보드</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item active">
+        <a href="/pages/business/revenue.html">
+          <span class="sidebar-nav-icon">&#128176;</span><span>수익 상세</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/business/settlement.html">
+          <span class="sidebar-nav-icon">&#128179;</span><span>정산 내역</span>
+        </a>
+      </li>
+      <div class="sidebar-section-label">계정</div>
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/profile.html">
+          <span class="sidebar-nav-icon">&#128100;</span><span>마이페이지</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- 메인 -->
+  <main class="main-content">
+
+    <!-- 로딩 뷰 -->
+    <div class="loading-view">
+      <div class="page-header">
+        <div>
+          <div class="skeleton skeleton-line" style="width:160px; height:1.75rem; margin-bottom:0.5rem;"></div>
+          <div class="skeleton skeleton-line" style="width:240px; height:0.875rem;"></div>
+        </div>
+      </div>
+      <div style="display:flex; gap:0.875rem; margin-bottom:1.75rem; flex-wrap:wrap;">
+        <div class="skeleton skeleton-line" style="width:150px; height:2.25rem; border-radius:var(--radius-md);"></div>
+        <div class="skeleton skeleton-line" style="width:220px; height:2.25rem; border-radius:var(--radius-md);"></div>
+      </div>
+      <div class="agg-grid">
+        <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1.25rem; height:90px;"></div>
+        <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1.25rem; height:90px;"></div>
+        <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1.25rem; height:90px;"></div>
+        <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1.25rem; height:90px;"></div>
+      </div>
+      <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:1.75rem; height:320px;"></div>
+    </div>
+
+    <!-- 에러 뷰 -->
+    <div class="error-view">
+      <div class="page-header">
+        <div>
+          <div class="page-title">수익 상세</div>
+          <div class="page-subtitle">데이터를 불러오는 중 오류가 발생했습니다</div>
+        </div>
+      </div>
+      <div class="error-box">
+        <div class="error-icon">&#9888;&#65039;</div>
+        <div>
+          <div class="error-title">데이터 로드 실패</div>
+          <div class="error-message" id="errorMessage">수익 데이터를 불러오지 못했습니다.</div>
+          <button class="error-retry" onclick="loadData()">&#8635; 다시 시도</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로드 완료 뷰 -->
+    <div class="loaded-view">
+      <div class="page-header">
+        <div>
+          <div class="page-title">수익 상세</div>
+          <div class="page-subtitle">봇별 수익 이벤트 내역과 타입별 집계를 확인하세요</div>
+        </div>
+      </div>
+
+      <!-- 필터 바 -->
+      <div class="filter-bar">
+        <span class="filter-label">봇</span>
+        <select class="filter-select" id="botFilter" onchange="onFilterChange()">
+          <option value="all">전체 봇</option>
+        </select>
+
+        <span class="filter-label" style="margin-left:0.5rem;">기간</span>
+        <div class="period-tabs">
+          <button class="period-tab active" data-period="thisMonth" onclick="onPeriodChange(this)">이번 달</button>
+          <button class="period-tab" data-period="lastMonth" onclick="onPeriodChange(this)">지난 달</button>
+          <button class="period-tab" data-period="all" onclick="onPeriodChange(this)">전체</button>
+        </div>
+      </div>
+
+      <!-- 월별 수익 추이 차트 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">월별 수익 추이</div>
+        </div>
+        <div class="chart-canvas-wrapper">
+          <canvas id="revenueDetailChart" height="200"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend-item">
+            <div class="chart-legend-dot" style="background:#4f46e5;"></div>
+            <span>월별 수익 (크레딧)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 이벤트 타입별 집계 -->
+      <div class="agg-grid" id="aggGrid">
+        <!-- JS가 채움 -->
+      </div>
+
+      <!-- 이벤트 목록 테이블 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">수익 이벤트 목록</div>
+          <div class="record-count" id="recordCount">—</div>
+        </div>
+        <div class="revenue-table-wrapper">
+          <table class="revenue-table">
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>이벤트 타입</th>
+                <th>봇 이름</th>
+                <th>금액 (크레딧)</th>
+                <th>정산 여부</th>
+              </tr>
+            </thead>
+            <tbody id="revenueTableBody">
+              <!-- JS가 채움 -->
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination" style="display:none;">
+          <div class="pagination-info" id="paginationInfo"></div>
+          <div class="pagination-btns" id="paginationBtns"></div>
+        </div>
+      </div>
+
+    </div><!-- /.loaded-view -->
+
+  </main>
+
+  <script>
+    /* ===== XSS 방지 헬퍼 ===== */
+    function escHtml(str) {
+      if (str == null) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    /* ===== 인증 체크 ===== */
+    const _authToken = localStorage.getItem('sb-hlpovizxnrnspobddxmq-auth-token');
+    if (!_authToken) {
+      window.location.href = '/pages/auth/login.html';
+    }
+
+    /* ===== 모바일 사이드바 ===== */
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+
+    function setState(s) {
+      document.body.className = document.body.className.replace(/state-\w+/g, '').trim();
+      document.body.classList.add('state-' + s);
+    }
+
+    /* ===== 상태 ===== */
+    let currentBotId = 'all';
+    let currentPeriod = 'thisMonth';
+    let allEvents = [];
+    let currentPage = 1;
+    const PAGE_SIZE = 20;
+
+    /* ===== 이벤트 타입 메타 ===== */
+    const EVENT_META = {
+      skill_install:   { label: '스킬 설치',   badgeClass: 'badge-install', color: '#818cf8' },
+      subscription:    { label: '구독',         badgeClass: 'badge-sub',     color: '#34d399' },
+      usage:           { label: '사용량',       badgeClass: 'badge-usage',   color: '#fcd34d' },
+      tip:             { label: '팁',           badgeClass: 'badge-tip',     color: '#67e8f9' },
+      other:           { label: '기타',         badgeClass: 'badge-other',   color: '#94a3b8' },
+    };
+
+    function getEventMeta(type) {
+      return EVENT_META[type] || EVENT_META['other'];
+    }
+
+    /* ===== 봇 목록 로드 ===== */
+    async function loadBots() {
+      try {
+        const token = localStorage.getItem('mcw_token') || '';
+        const res = await fetch('/api/Backend_APIs/bots', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success || !json.data) return;
+
+        const select = document.getElementById('botFilter');
+        json.data.forEach(bot => {
+          const opt = document.createElement('option');
+          opt.value = bot.id;
+          opt.textContent = bot.name || bot.id;
+          select.appendChild(opt);
+        });
+        select.value = currentBotId;
+      } catch (e) {
+        console.warn('봇 목록 로드 실패:', e);
+      }
+    }
+
+    /* ===== 수익 데이터 로드 ===== */
+    async function fetchRevenue(botId, period) {
+      const token = localStorage.getItem('mcw_token') || '';
+      const params = new URLSearchParams();
+      if (botId !== 'all') params.set('botId', botId);
+      if (period !== 'all') params.set('period', period);
+      const url = '/api/Backend_APIs/revenue' + (params.toString() ? '?' + params.toString() : '');
+
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || '서버 오류');
+      return json.data;
+    }
+
+    /* ===== Canvas 월별 바 차트 ===== */
+    function drawMonthlyChart(canvas, monthlyData) {
+      const dpr = window.devicePixelRatio || 1;
+      const containerW = canvas.parentElement.clientWidth;
+      const H = 200;
+
+      canvas.width  = containerW * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width  = containerW + 'px';
+      canvas.style.height = H + 'px';
+
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const W = containerW;
+      const paddingLeft = 60;
+      const paddingRight = 20;
+      const paddingTop = 20;
+      const paddingBottom = 40;
+      const chartW = W - paddingLeft - paddingRight;
+      const chartH = H - paddingTop - paddingBottom;
+
+      ctx.clearRect(0, 0, W, H);
+
+      if (!monthlyData || monthlyData.length === 0) {
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('데이터가 없습니다', W / 2, H / 2);
+        return;
+      }
+
+      const maxVal = Math.max(...monthlyData.map(d => d.amount || 0), 1);
+      const barCount = monthlyData.length;
+      const barWidth = Math.max(8, (chartW / barCount) * 0.55);
+      const gap = chartW / barCount;
+
+      // 그리드 라인 (4개)
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = paddingTop + chartH - (chartH / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, y);
+        ctx.lineTo(paddingLeft + chartW, y);
+        ctx.stroke();
+
+        // Y축 레이블
+        const val = Math.round((maxVal / 4) * i);
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '11px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(val >= 1000 ? (val/1000).toFixed(1)+'K' : val, paddingLeft - 8, y + 4);
+      }
+
+      // 바 그리기
+      monthlyData.forEach((d, i) => {
+        const x = paddingLeft + i * gap + (gap - barWidth) / 2;
+        const barH = ((d.amount || 0) / maxVal) * chartH;
+        const y = paddingTop + chartH - barH;
+
+        // 그라디언트 바
+        const grad = ctx.createLinearGradient(0, y, 0, y + barH);
+        grad.addColorStop(0, '#6366f1');
+        grad.addColorStop(1, '#4f46e5');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.roundRect
+          ? ctx.roundRect(x, y, barWidth, barH, [4, 4, 0, 0])
+          : ctx.rect(x, y, barWidth, barH);
+        ctx.fill();
+
+        // X축 레이블 (월)
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.font = '11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        const label = d.month || (i + 1) + '월';
+        ctx.fillText(label, x + barWidth / 2, paddingTop + chartH + 20);
+      });
+    }
+
+    /* ===== 데모 월별 데이터 ===== */
+    function generateDemoMonthly() {
+      const now = new Date();
+      return Array.from({ length: 6 }, (_, i) => {
+        const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+        return {
+          month: (d.getMonth() + 1) + '월',
+          amount: Math.floor(Math.random() * 50000) + 5000
+        };
+      });
+    }
+
+    /* ===== 차트 재렌더 (창 크기 변경) ===== */
+    let _revenueDetailChartData = null;
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (_revenueDetailChartData) {
+          const canvas = document.getElementById('revenueDetailChart');
+          if (canvas) drawMonthlyChart(canvas, _revenueDetailChartData);
+        }
+      }, 200);
+    });
+
+    /* ===== 집계 렌더링 ===== */
+    function renderAggGrid(byEventType) {
+      const grid = document.getElementById('aggGrid');
+      grid.innerHTML = '';
+
+      if (!byEventType || byEventType.length === 0) {
+        grid.innerHTML = '';
+        return;
+      }
+
+      byEventType.forEach(item => {
+        const meta = getEventMeta(item.eventType);
+        const card = document.createElement('div');
+        card.className = 'agg-card';
+        card.innerHTML = `
+          <div class="agg-badge ${meta.badgeClass}">${meta.label}</div>
+          <div class="agg-amount">${(item.amount || 0).toLocaleString('ko-KR')} C</div>
+          <div class="agg-count">${item.count || 0}건</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    /* ===== 테이블 렌더링 ===== */
+    function renderTable(events, page) {
+      const tbody = document.getElementById('revenueTableBody');
+      const start = (page - 1) * PAGE_SIZE;
+      const pageItems = events.slice(start, start + PAGE_SIZE);
+
+      if (events.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">&#128176;</div>
+                <div class="empty-title">수익 이벤트가 없습니다</div>
+                <div class="empty-desc">선택한 봇과 기간에 해당하는 이벤트가 없습니다.</div>
+              </div>
+            </td>
+          </tr>`;
+        document.getElementById('recordCount').textContent = '0건';
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('recordCount').textContent = `총 ${events.length.toLocaleString('ko-KR')}건`;
+
+      tbody.innerHTML = pageItems.map(ev => {
+        const meta = getEventMeta(ev.eventType);
+        const date = ev.createdAt ? new Date(ev.createdAt).toLocaleDateString('ko-KR') : '—';
+        const settled = ev.settled === true || ev.settled === 'true';
+        return `
+          <tr>
+            <td style="color:var(--color-text-muted); white-space:nowrap;">${date}</td>
+            <td>
+              <span class="event-type-badge ${meta.badgeClass}">${meta.label}</span>
+            </td>
+            <td style="color:var(--color-text);">${escHtml(ev.botName) || '—'}</td>
+            <td>
+              <span class="amount-positive">+${(ev.amount || 0).toLocaleString('ko-KR')}</span>
+            </td>
+            <td>
+              <span class="settlement-badge ${settled ? 'settled' : 'unsettled'}">
+                ${settled ? '&#10003; 정산완료' : '&#9675; 미정산'}
+              </span>
+            </td>
+          </tr>`;
+      }).join('');
+
+      renderPagination(events.length, page);
+    }
+
+    function renderPagination(total, page) {
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      const pagination = document.getElementById('pagination');
+      const info = document.getElementById('paginationInfo');
+      const btns = document.getElementById('paginationBtns');
+
+      if (totalPages <= 1) {
+        pagination.style.display = 'none';
+        return;
+      }
+
+      pagination.style.display = 'flex';
+      const start = (page - 1) * PAGE_SIZE + 1;
+      const end = Math.min(page * PAGE_SIZE, total);
+      info.textContent = `${start}–${end} / ${total.toLocaleString('ko-KR')}건`;
+
+      btns.innerHTML = '';
+
+      const addBtn = (label, p, isCurrent = false, disabled = false) => {
+        const btn = document.createElement('button');
+        btn.className = 'pagination-btn' + (isCurrent ? ' current' : '');
+        btn.textContent = label;
+        btn.disabled = disabled;
+        if (!disabled && !isCurrent) {
+          btn.addEventListener('click', () => {
+            currentPage = p;
+            renderTable(allEvents, currentPage);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+        btns.appendChild(btn);
+      };
+
+      addBtn('&laquo;', 1, false, page === 1);
+      addBtn('&lsaquo;', page - 1, false, page === 1);
+
+      const start2 = Math.max(1, page - 2);
+      const end2 = Math.min(totalPages, page + 2);
+      for (let p = start2; p <= end2; p++) {
+        addBtn(p, p, p === page);
+      }
+
+      addBtn('&rsaquo;', page + 1, false, page === totalPages);
+      addBtn('&raquo;', totalPages, false, page === totalPages);
+    }
+
+    /* ===== 필터 변경 ===== */
+    function onFilterChange() {
+      currentBotId = document.getElementById('botFilter').value;
+      loadData();
+    }
+
+    function onPeriodChange(btn) {
+      document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentPeriod = btn.dataset.period;
+      loadData();
+    }
+
+    /* ===== 메인 로드 ===== */
+    async function loadData() {
+      setState('loading');
+      try {
+        const data = await fetchRevenue(currentBotId, currentPeriod);
+
+        renderAggGrid(data.byEventType || []);
+
+        // 월별 차트 렌더링
+        _revenueDetailChartData = data.monthly || generateDemoMonthly();
+        const canvas = document.getElementById('revenueDetailChart');
+        if (canvas) drawMonthlyChart(canvas, _revenueDetailChartData);
+
+        // events 목록 구성 — API가 events 배열을 반환하거나 byEventType에서 flatten
+        allEvents = data.events || flattenEvents(data.byEventType || []);
+        currentPage = 1;
+        renderTable(allEvents, currentPage);
+
+        setState('loaded');
+      } catch (err) {
+        console.error('수익 데이터 로드 실패:', err);
+        document.getElementById('errorMessage').textContent = err.message || '수익 데이터를 불러오지 못했습니다.';
+        setState('error');
+      }
+    }
+
+    /* 데모 이벤트 생성 (API events 필드 없을 때 폴백) */
+    function flattenEvents(byEventType) {
+      const events = [];
+      const now = Date.now();
+      byEventType.forEach(item => {
+        const count = Math.min(item.count || 3, 20);
+        const perAmount = Math.floor((item.amount || 0) / (count || 1));
+        for (let i = 0; i < count; i++) {
+          events.push({
+            createdAt: new Date(now - i * 86400000 * Math.floor(Math.random() * 30)).toISOString(),
+            eventType: item.eventType,
+            botName: item.botName || '봇',
+            amount: perAmount + Math.floor(Math.random() * 100),
+            settled: i % 3 !== 0
+          });
+        }
+      });
+      return events.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    /* ===== 초기화 ===== */
+    loadBots();
+    loadData();
+  </script>
+
+</body>
+</html>

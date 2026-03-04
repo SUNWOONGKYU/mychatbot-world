@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 수익활동 중개 흐름도 (도 6) -->
+<svg width="1000" height="790" viewBox="0 0 1000 790" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="40" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="36" font-weight="bold">도 6: 수익활동 중개 흐름도</text>
+
+    <!-- 소비자 -->
+    <rect x="380" y="65" width="240" height="50" fill="white" stroke="black" stroke-width="2" rx="25"/>
+    <text x="500" y="96" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">소비자 (고객)</text>
+
+    <!-- 화살표: 소비자 → 챗봇 -->
+    <line x1="500" y1="115" x2="500" y2="140" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="565" y="133" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">중개 요청</text>
+
+    <!-- 아바타형 챗봇 -->
+    <rect x="350" y="145" width="300" height="50" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="176" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">아바타형 챗봇</text>
+
+    <!-- 화살표: 챗봇 → 수신부 -->
+    <line x1="500" y1="195" x2="500" y2="220" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 외곽: 수익활동 중개부 (70) -->
+    <rect x="120" y="215" width="760" height="460" fill="none" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="242" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">수익활동 중개부 (70)</text>
+
+    <!-- 중개 요청 수신부 (71) -->
+    <rect x="300" y="255" width="400" height="50" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="286" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">중개 요청 수신부 (71)</text>
+
+    <!-- 화살표: 수신부 → 분류부 -->
+    <line x1="500" y1="305" x2="500" y2="330" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 중개 유형 분류부 (72) -->
+    <rect x="200" y="335" width="600" height="85" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="365" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">중개 유형 분류부 (72)</text>
+
+    <!-- 3가지 유형 -->
+    <rect x="260" y="378" width="140" height="38" fill="white" stroke="black" stroke-width="1" rx="3"/>
+    <text x="330" y="403" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="bold">상담형</text>
+
+    <rect x="430" y="378" width="140" height="38" fill="white" stroke="black" stroke-width="1" rx="3"/>
+    <text x="500" y="403" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="bold">학습형</text>
+
+    <rect x="600" y="378" width="140" height="38" fill="white" stroke="black" stroke-width="1" rx="3"/>
+    <text x="670" y="403" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="bold">업무대행형</text>
+
+    <!-- 화살표: 분류부 → 처리부 -->
+    <line x1="500" y1="420" x2="500" y2="445" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 중개 처리부 (73) -->
+    <rect x="250" y="450" width="500" height="50" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="481" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">중개 처리부 (73)</text>
+
+    <!-- 화살표: 처리부 → 수수료 계산 -->
+    <line x1="500" y1="500" x2="500" y2="525" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 수수료 계산부 (74) -->
+    <rect x="250" y="530" width="500" height="50" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="561" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">수수료 계산부 (74)</text>
+
+    <!-- 수수료 계산부 → 정산 처리부 -->
+    <line x1="500" y1="580" x2="500" y2="610" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 정산 처리부 (75) -->
+    <rect x="250" y="615" width="500" height="50" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="646" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">정산 처리부 (75)</text>
+
+    <!-- 정산 분기선 -->
+    <line x1="500" y1="665" x2="500" y2="690" stroke="black" stroke-width="2"/>
+    <line x1="280" y1="690" x2="720" y2="690" stroke="black" stroke-width="2"/>
+
+    <!-- 좌측: 플랫폼 수수료 -->
+    <line x1="280" y1="690" x2="280" y2="710" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="180" y="715" width="200" height="40" fill="white" stroke="black" stroke-width="2" rx="25"/>
+    <text x="280" y="741" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="16" font-weight="bold">플랫폼 수수료</text>
+
+    <!-- 우측: 챗봇 운영자 잔여 수익 -->
+    <line x1="720" y1="690" x2="720" y2="710" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="600" y="715" width="240" height="40" fill="white" stroke="black" stroke-width="2" rx="25"/>
+    <text x="720" y="741" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="16" font-weight="bold">챗봇 운영자 잔여 수익</text>
+</svg>

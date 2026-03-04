@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 감성·비용 기반 멀티 AI 라우팅 흐름도 (도 4) — 축소판 -->
+<svg width="1100" height="580" viewBox="0 0 1100 580" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <g transform="translate(50,0)">
+    <!-- TITLE -->
+    <text x="500" y="45" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="34" font-weight="bold">도 4: 감성·비용 기반 멀티 AI 라우팅 흐름도</text>
+
+    <!-- 사용자 입력 -->
+    <rect x="375" y="75" width="250" height="50" fill="white" stroke="black" stroke-width="2" rx="25"/>
+    <text x="500" y="107" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">사용자 입력</text>
+
+    <!-- 분기선 -->
+    <line x1="500" y1="125" x2="500" y2="150" stroke="black" stroke-width="2"/>
+    <line x1="260" y1="150" x2="740" y2="150" stroke="black" stroke-width="2"/>
+    <line x1="260" y1="150" x2="260" y2="165" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="740" y1="150" x2="740" y2="165" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 좌측: 감성 수준 슬라이더 (31) -->
+    <rect x="60" y="170" width="400" height="105" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="260" y="197" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="19" font-weight="bold">감성 수준 슬라이더 (31)</text>
+    <!-- 슬라이더 바 -->
+    <rect x="110" y="212" width="300" height="14" fill="none" stroke="black" stroke-width="1" rx="7"/>
+    <circle cx="260" cy="219" r="9" fill="white" stroke="black" stroke-width="2"/>
+    <!-- 라벨 -->
+    <text x="110" y="248" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" font-weight="bold">1</text>
+    <text x="410" y="248" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" font-weight="bold">100</text>
+    <text x="110" y="265" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14">논리적</text>
+    <text x="410" y="265" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14">감성적</text>
+
+    <!-- 우측: 비용 조건 슬라이더 (32) -->
+    <rect x="540" y="170" width="460" height="105" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="770" y="197" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="19" font-weight="bold">비용 조건 슬라이더 (32)</text>
+    <!-- 슬라이더 바 -->
+    <rect x="590" y="212" width="360" height="14" fill="none" stroke="black" stroke-width="1" rx="7"/>
+    <circle cx="710" cy="219" r="9" fill="white" stroke="black" stroke-width="2"/>
+    <!-- 라벨 -->
+    <text x="590" y="248" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" font-weight="bold">0원</text>
+    <text x="890" y="248" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" font-weight="bold">사용자 설정 상한</text>
+    <text x="590" y="265" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14">무료만</text>
+    <text x="890" y="265" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14">고비용 허용</text>
+
+    <!-- 슬라이더 합류 → 라우팅부 -->
+    <line x1="260" y1="275" x2="260" y2="300" stroke="black" stroke-width="2"/>
+    <line x1="740" y1="275" x2="740" y2="300" stroke="black" stroke-width="2"/>
+    <line x1="260" y1="300" x2="740" y2="300" stroke="black" stroke-width="2"/>
+    <line x1="500" y1="300" x2="500" y2="318" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 감성·비용 기반 멀티 AI 라우팅부 (30) -->
+    <rect x="315" y="325" width="370" height="55" fill="white" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="350" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">감성·비용 기반 멀티 AI</text>
+    <text x="500" y="370" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">라우팅부 (30)</text>
+
+    <!-- 라우팅 규칙 요약 (우측) -->
+    <rect x="730" y="318" width="220" height="70" fill="white" stroke="black" stroke-width="1" stroke-dasharray="6,3" rx="5"/>
+    <text x="840" y="340" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14">예산 이내 필터링 →</text>
+    <text x="840" y="358" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14">감성 적합도 최고 AI</text>
+    <text x="840" y="376" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="14" font-weight="bold">자동 선택</text>
+    <line x1="730" y1="355" x2="685" y2="355" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+
+    <!-- 라우팅부 → AI 엔진 분기 -->
+    <line x1="500" y1="380" x2="500" y2="410" stroke="black" stroke-width="2"/>
+    <line x1="155" y1="410" x2="845" y2="410" stroke="black" stroke-width="2"/>
+
+    <!-- AI 엔진 A -->
+    <line x1="155" y1="410" x2="155" y2="425" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="70" y="430" width="170" height="50" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="155" y="461" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="17" font-weight="bold">AI 엔진 A</text>
+
+    <!-- AI 엔진 B -->
+    <line x1="385" y1="410" x2="385" y2="425" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="300" y="430" width="170" height="50" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="385" y="461" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="17" font-weight="bold">AI 엔진 B</text>
+
+    <!-- AI 엔진 C -->
+    <line x1="615" y1="410" x2="615" y2="425" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="530" y="430" width="170" height="50" fill="white" stroke="black" stroke-width="1" rx="5"/>
+    <text x="615" y="461" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="17" font-weight="bold">AI 엔진 C</text>
+
+    <!-- AI 엔진 N (점선) -->
+    <line x1="845" y1="410" x2="845" y2="425" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="760" y="430" width="170" height="50" fill="white" stroke="black" stroke-width="1" rx="5" stroke-dasharray="6,3"/>
+    <text x="845" y="461" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="17" font-weight="bold">AI 엔진 N</text>
+
+    <!-- 최적 AI 선택 결과 -->
+    <line x1="155" y1="480" x2="155" y2="510" stroke="black" stroke-width="1"/>
+    <line x1="385" y1="480" x2="385" y2="510" stroke="black" stroke-width="1"/>
+    <line x1="615" y1="480" x2="615" y2="510" stroke="black" stroke-width="1"/>
+    <line x1="845" y1="480" x2="845" y2="510" stroke="black" stroke-width="1"/>
+    <line x1="155" y1="510" x2="845" y2="510" stroke="black" stroke-width="2"/>
+    <line x1="500" y1="510" x2="500" y2="530" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 최적 AI 선택 결과 박스 -->
+    <rect x="310" y="535" width="380" height="40" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="561" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">최적 AI 엔진 자동 선택 완료</text>
+    </g>
+</svg>

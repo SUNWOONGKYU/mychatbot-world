@@ -1,0 +1,1144 @@
+<!-- @task S4F4 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상속 설정 — My Chatbot World</title>
+  <meta name="description" content="챗봇 상속 설정 — 상속인 지정 및 상속 대상 봇을 관리하세요.">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      flex: 1;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .sidebar-bottom a {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.625rem 0.75rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-faint);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 150ms ease;
+    }
+
+    .sidebar-bottom a:hover {
+      color: var(--color-text-muted);
+    }
+
+    /* ===== 메인 콘텐츠 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      max-width: 960px;
+    }
+
+    /* ===== 헤더 ===== */
+    .page-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 카드 ===== */
+    .card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ===== 폼 요소 ===== */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      font-size: 0.9375rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-primary-light);
+    }
+
+    .form-input.error {
+      border-color: var(--color-danger);
+    }
+
+    .form-error {
+      font-size: 0.8125rem;
+      color: var(--color-danger);
+      margin-top: 0.375rem;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .form-hint {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 봇 체크박스 리스트 ===== */
+    .bot-checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 0.75rem;
+      background: rgba(0,0,0,0.15);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+
+    .bot-checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.625rem 0.75rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .bot-checkbox-item:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .bot-checkbox-item input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--color-primary-light);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .bot-checkbox-name {
+      font-size: 0.9375rem;
+      color: var(--color-text);
+    }
+
+    .bot-checkbox-empty {
+      font-size: 0.875rem;
+      color: var(--color-text-faint);
+      text-align: center;
+      padding: 1.25rem;
+    }
+
+    /* ===== 버튼 ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 150ms ease;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--color-primary-light);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.15);
+      color: var(--color-danger);
+      border: 1px solid rgba(239,68,68,0.25);
+      padding: 0.375rem 0.875rem;
+      font-size: 0.8125rem;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239,68,68,0.25);
+    }
+
+    .btn-sm {
+      padding: 0.375rem 0.875rem;
+      font-size: 0.8125rem;
+    }
+
+    /* ===== 토스트 알림 ===== */
+    .toast-container {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      min-width: 280px;
+      max-width: 380px;
+      padding: 0.875rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 200ms ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .toast.success { background: rgba(16,185,129,0.9); border: 1px solid rgba(16,185,129,0.4); }
+    .toast.error   { background: rgba(239,68,68,0.9);  border: 1px solid rgba(239,68,68,0.4);  }
+    .toast.info    { background: rgba(79,70,229,0.9);   border: 1px solid rgba(79,70,229,0.4);  }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ===== 스켈레톤 ===== */
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.06) 25%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-row {
+      height: 3.5rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ===== 테이블 ===== */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--color-border-2);
+      color: var(--color-text);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .td-muted {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* ===== 상태 배지 ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .badge-pending {
+      background: rgba(245,158,11,0.12);
+      color: var(--color-warning);
+      border: 1px solid rgba(245,158,11,0.25);
+    }
+
+    .badge-pending .badge-dot { background: var(--color-warning); }
+
+    .badge-accepted {
+      background: rgba(16,185,129,0.12);
+      color: var(--color-success);
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+
+    .badge-accepted .badge-dot { background: var(--color-success); }
+
+    .badge-cancelled {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text-faint);
+      border: 1px solid var(--color-border);
+    }
+
+    .badge-cancelled .badge-dot { background: var(--color-text-faint); }
+
+    /* ===== 빈 상태 ===== */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--color-text-muted);
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.375rem;
+      color: var(--color-text);
+    }
+
+    .empty-desc {
+      font-size: 0.875rem;
+    }
+
+    /* ===== 모달 (확인 다이얼로그) ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      width: 90%;
+      max-width: 420px;
+      transform: translateY(-8px);
+      transition: transform 200ms ease;
+    }
+
+    .modal-overlay.visible .modal {
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-body {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ===== 에러 배너 ===== */
+    .error-banner {
+      display: none;
+      padding: 1rem 1.25rem;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-md);
+      color: var(--color-danger);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .error-banner.visible { display: block; }
+
+    /* ===== 로딩 스피너 ===== */
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== 반응형 (768px 브레이크포인트) ===== */
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        overflow-x: auto;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .sidebar-brand {
+        margin-bottom: 0;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        font-size: 1rem;
+      }
+
+      .sidebar-nav {
+        flex-direction: row;
+        gap: 0.25rem;
+        flex: 1;
+      }
+
+      .sidebar-nav-item a {
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .sidebar-nav-icon {
+        display: none;
+      }
+
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem 1.25rem;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      table { font-size: 0.8125rem; }
+      thead th, tbody td { padding: 0.625rem 0.75rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 토스트 컨테이너 -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- 확인 모달 -->
+  <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-title" id="confirmTitle">상속 설정 취소</div>
+      <div class="modal-body" id="confirmBody">이 상속 설정을 취소하시겠습니까?</div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="confirmCancelBtn" type="button">아니오</button>
+        <button class="btn btn-primary" id="confirmOkBtn" type="button" style="background:var(--color-danger);">취소하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <a href="/index.html" class="sidebar-brand">
+      <span>MCW</span>
+    </a>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/index.html">
+          <span class="sidebar-nav-icon">&#127968;</span> 홈
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/bot/index.html">
+          <span class="sidebar-nav-icon">&#129302;</span> 챗봇
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/marketplace/index.html">
+          <span class="sidebar-nav-icon">&#127978;</span> 마켓플레이스
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/business/index.html">
+          <span class="sidebar-nav-icon">&#128188;</span> 비즈니스
+        </a>
+      </li>
+      <li class="sidebar-nav-item active">
+        <a href="/pages/home/index.html">
+          <span class="sidebar-nav-icon">&#128100;</span> 마이페이지
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar-bottom">
+      <a href="/index.html">&#8592; 메인으로</a>
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">상속 설정</h1>
+      <p class="page-subtitle">챗봇 소유권 상속인을 지정하고, 상속 조건을 설정하세요.</p>
+    </div>
+
+    <!-- 에러 배너 -->
+    <div class="error-banner" id="errorBanner" role="alert"></div>
+
+    <!-- 새 상속 설정 폼 -->
+    <div class="card">
+      <h2 class="card-title">&#43; 새 상속 설정</h2>
+
+      <form id="inheritanceForm" novalidate>
+        <!-- 상속인 이메일 -->
+        <div class="form-group">
+          <label class="form-label" for="heirEmailInput">상속인 이메일 <span style="color:var(--color-danger)">*</span></label>
+          <input
+            type="email"
+            id="heirEmailInput"
+            class="form-input"
+            placeholder="heir@example.com"
+            autocomplete="email"
+            required
+          >
+          <div class="form-error" id="heirEmailError">올바른 이메일 형식을 입력해주세요.</div>
+        </div>
+
+        <!-- 상속 대상 봇 선택 -->
+        <div class="form-group">
+          <label class="form-label">상속 대상 봇 <span style="color:var(--color-danger)">*</span></label>
+          <div class="bot-checkbox-list" id="botCheckboxList">
+            <div class="bot-checkbox-empty" id="botListLoading">
+              <span class="loading-spinner" style="display:inline-block;margin-bottom:0.5rem;"></span><br>
+              봇 목록을 불러오는 중...
+            </div>
+          </div>
+          <div class="form-error" id="botSelectError">상속 대상 봇을 하나 이상 선택해주세요.</div>
+          <div class="form-hint">상속인에게 소유권을 이전할 봇을 선택하세요.</div>
+        </div>
+
+        <!-- 비활성 조건 (개월) -->
+        <div class="form-group">
+          <label class="form-label" for="conditionMonthsInput">비활성 조건 (개월) <span style="color:var(--color-danger)">*</span></label>
+          <input
+            type="number"
+            id="conditionMonthsInput"
+            class="form-input"
+            placeholder="12"
+            min="1"
+            max="120"
+            value="12"
+            required
+          >
+          <div class="form-error" id="conditionMonthsError">1 이상의 숫자를 입력해주세요.</div>
+          <div class="form-hint">계정이 이 기간 동안 비활성 상태일 때 상속이 활성화됩니다.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="saveBtn">
+          <span id="saveBtnText">상속 설정 저장</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- 현재 상속 설정 목록 -->
+    <div class="card">
+      <h2 class="card-title">현재 상속 설정 목록</h2>
+
+      <!-- 스켈레톤 로딩 -->
+      <div id="tableLoading">
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+      </div>
+
+      <!-- 테이블 -->
+      <div id="tableWrapper" style="display:none;">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>봇 이름</th>
+                <th>상속인 이메일</th>
+                <th>비활성 조건</th>
+                <th>상태</th>
+                <th>설정일</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="inheritanceTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 빈 상태 -->
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <span class="empty-icon">&#128100;</span>
+        <div class="empty-title">설정된 상속이 없습니다</div>
+        <div class="empty-desc">위 폼에서 상속인을 지정하여 첫 번째 상속 설정을 추가하세요.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ─── 설정 ───
+    const API_BASE = '/api/Backend_APIs/inheritance';
+
+    // ─── 상태 ───
+    let botList = [];          // 내 봇 목록 [{id, name}]
+    let inheritances = [];     // 상속 설정 목록
+    let pendingDeleteId = null; // 삭제 대기 중인 ID
+
+    // ─── 인증 토큰 가져오기 ───
+    function getToken() {
+      return (
+        localStorage.getItem('mcw_access_token') ||
+        sessionStorage.getItem('mcw_access_token') ||
+        ''
+      );
+    }
+
+    function getAuthHeaders() {
+      const token = getToken();
+      return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+    }
+
+    // ─── 토스트 ───
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      const icons = { success: '✓', error: '✕', info: 'i' };
+      el.innerHTML = `<span style="font-weight:700;">${icons[type] || 'i'}</span><span>${message}</span>`;
+      container.appendChild(el);
+      setTimeout(() => { el.remove(); }, 3500);
+    }
+
+    // ─── 에러 배너 ───
+    function showError(msg) {
+      const el = document.getElementById('errorBanner');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function hideError() {
+      document.getElementById('errorBanner').classList.remove('visible');
+    }
+
+    // ─── 날짜 포맷 ───
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    // ─── 상태 배지 ───
+    function statusBadge(status) {
+      const map = {
+        pending:   { cls: 'badge-pending',   label: '대기 중' },
+        accepted:  { cls: 'badge-accepted',  label: '수락됨'  },
+        cancelled: { cls: 'badge-cancelled', label: '취소됨'  },
+      };
+      const info = map[status] || { cls: 'badge-cancelled', label: status };
+      return `<span class="badge ${info.cls}"><span class="badge-dot"></span>${info.label}</span>`;
+    }
+
+    // ─── 내 봇 목록 불러오기 ───
+    async function loadMyBots() {
+      const listEl = document.getElementById('botCheckboxList');
+
+      try {
+        const res = await fetch('/api/Backend_APIs/bots', {
+          headers: getAuthHeaders(),
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        botList = (data.bots || data.data || data || []).map(b => ({
+          id: b.id || b.bot_id,
+          name: b.name || b.bot_name || '(이름 없음)',
+        }));
+      } catch (err) {
+        // 봇 목록 로드 실패 시 빈 목록으로 처리
+        botList = [];
+      }
+
+      renderBotCheckboxes();
+    }
+
+    function renderBotCheckboxes() {
+      const listEl = document.getElementById('botCheckboxList');
+
+      if (botList.length === 0) {
+        listEl.innerHTML = `<div class="bot-checkbox-empty">등록된 챗봇이 없습니다.<br><small style="margin-top:4px;display:block;">먼저 챗봇을 생성해주세요.</small></div>`;
+        return;
+      }
+
+      listEl.innerHTML = botList.map(bot => `
+        <label class="bot-checkbox-item">
+          <input type="checkbox" value="${bot.id}" name="botIds">
+          <span class="bot-checkbox-name">${escapeHtml(bot.name)}</span>
+        </label>
+      `).join('');
+    }
+
+    // ─── 상속 설정 목록 불러오기 ───
+    async function loadInheritances() {
+      document.getElementById('tableLoading').style.display = 'block';
+      document.getElementById('tableWrapper').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'none';
+
+      try {
+        const res = await fetch(API_BASE + '?action=list', {
+          headers: getAuthHeaders(),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        inheritances = data.owned || data.data || data || [];
+        renderTable();
+      } catch (err) {
+        showError(`상속 목록을 불러오는 데 실패했습니다: ${err.message}`);
+        document.getElementById('tableLoading').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+      }
+    }
+
+    function renderTable() {
+      document.getElementById('tableLoading').style.display = 'none';
+
+      if (!inheritances || inheritances.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('tableWrapper').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('tableWrapper').style.display = 'block';
+      document.getElementById('emptyState').style.display = 'none';
+
+      const tbody = document.getElementById('inheritanceTableBody');
+      tbody.innerHTML = inheritances.map(item => {
+        const botNames = getBotNames(item.bot_ids || []);
+        return `
+          <tr>
+            <td>${escapeHtml(botNames)}</td>
+            <td class="td-muted">${escapeHtml(item.heir_email || '-')}</td>
+            <td class="td-muted">${item.condition_months || '-'}개월</td>
+            <td>${statusBadge(item.status)}</td>
+            <td class="td-muted">${formatDate(item.created_at)}</td>
+            <td>
+              ${item.status === 'pending' ? `<button class="btn btn-danger" onclick="confirmDelete('${item.id}')">취소</button>` : ''}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getBotNames(botIds) {
+      if (!botIds || botIds.length === 0) return '-';
+      const names = botIds.map(id => {
+        const bot = botList.find(b => b.id === id);
+        return bot ? bot.name : id.substring(0,8)+'...';
+      });
+      return names.join(', ');
+    }
+
+    // ─── 삭제 확인 ───
+    function confirmDelete(id) {
+      pendingDeleteId = id;
+      document.getElementById('confirmModal').classList.add('visible');
+    }
+
+    document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+      pendingDeleteId = null;
+      document.getElementById('confirmModal').classList.remove('visible');
+    });
+
+    document.getElementById('confirmOkBtn').addEventListener('click', async () => {
+      document.getElementById('confirmModal').classList.remove('visible');
+      if (!pendingDeleteId) return;
+      await deleteInheritance(pendingDeleteId);
+      pendingDeleteId = null;
+    });
+
+    // 모달 바깥 클릭 시 닫기
+    document.getElementById('confirmModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        pendingDeleteId = null;
+        e.currentTarget.classList.remove('visible');
+      }
+    });
+
+    // ─── 삭제 API 호출 ───
+    async function deleteInheritance(id) {
+      try {
+        const res = await fetch(`${API_BASE}?id=${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders(),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+
+        showToast('상속 설정이 취소되었습니다.', 'success');
+        await loadInheritances();
+      } catch (err) {
+        showToast(`취소 실패: ${err.message}`, 'error');
+      }
+    }
+
+    // ─── 이메일 유효성 검사 ───
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // ─── 폼 유효성 검사 ───
+    function validateForm() {
+      let valid = true;
+
+      // 이메일 검사
+      const email = document.getElementById('heirEmailInput').value.trim();
+      const emailErr = document.getElementById('heirEmailError');
+      const emailInput = document.getElementById('heirEmailInput');
+      if (!email || !validateEmail(email)) {
+        emailInput.classList.add('error');
+        emailErr.classList.add('visible');
+        valid = false;
+      } else {
+        emailInput.classList.remove('error');
+        emailErr.classList.remove('visible');
+      }
+
+      // 봇 선택 검사
+      const checkedBots = document.querySelectorAll('#botCheckboxList input[type="checkbox"]:checked');
+      const botErr = document.getElementById('botSelectError');
+      if (checkedBots.length === 0) {
+        botErr.classList.add('visible');
+        valid = false;
+      } else {
+        botErr.classList.remove('visible');
+      }
+
+      // 비활성 조건 검사
+      const months = parseInt(document.getElementById('conditionMonthsInput').value, 10);
+      const monthsErr = document.getElementById('conditionMonthsError');
+      const monthsInput = document.getElementById('conditionMonthsInput');
+      if (isNaN(months) || months < 1) {
+        monthsInput.classList.add('error');
+        monthsErr.classList.add('visible');
+        valid = false;
+      } else {
+        monthsInput.classList.remove('error');
+        monthsErr.classList.remove('visible');
+      }
+
+      return valid;
+    }
+
+    // ─── 폼 제출 ───
+    document.getElementById('inheritanceForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      if (!validateForm()) return;
+
+      const email = document.getElementById('heirEmailInput').value.trim().toLowerCase();
+      const botIds = Array.from(
+        document.querySelectorAll('#botCheckboxList input[type="checkbox"]:checked')
+      ).map(cb => cb.value);
+      const conditionMonths = parseInt(document.getElementById('conditionMonthsInput').value, 10);
+
+      const saveBtn = document.getElementById('saveBtn');
+      const saveBtnText = document.getElementById('saveBtnText');
+      saveBtn.disabled = true;
+      saveBtnText.innerHTML = '<span class="loading-spinner"></span>&nbsp;저장 중...';
+
+      try {
+        const res = await fetch(`${API_BASE}?action=create`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ heirEmail: email, botIds, conditionMonths }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+
+        showToast('상속 설정이 저장되었습니다.', 'success');
+
+        // 폼 초기화
+        document.getElementById('heirEmailInput').value = '';
+        document.getElementById('conditionMonthsInput').value = '12';
+        document.querySelectorAll('#botCheckboxList input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+
+        // 목록 새로고침
+        await loadInheritances();
+      } catch (err) {
+        showError(`저장에 실패했습니다: ${err.message}`);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtnText.textContent = '상속 설정 저장';
+      }
+    });
+
+    // ─── 실시간 이메일 유효성 피드백 ───
+    document.getElementById('heirEmailInput').addEventListener('input', () => {
+      const email = document.getElementById('heirEmailInput').value.trim();
+      const emailErr = document.getElementById('heirEmailError');
+      const emailInput = document.getElementById('heirEmailInput');
+      if (email && !validateEmail(email)) {
+        emailInput.classList.add('error');
+        emailErr.classList.add('visible');
+      } else {
+        emailInput.classList.remove('error');
+        emailErr.classList.remove('visible');
+      }
+    });
+
+    // ─── HTML 이스케이프 ───
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ─── 초기화 ───
+    (async function init() {
+      // 인증 체크 — 토큰 없으면 로그인 페이지로 리다이렉트
+      const _authToken = localStorage.getItem('sb-hlpovizxnrnspobddxmq-auth-token');
+      if (!_authToken) {
+        window.location.href = '/pages/auth/login.html';
+        return;
+      }
+
+      await Promise.all([loadMyBots(), loadInheritances()]);
+    })();
+  </script>
+</body>
+</html>

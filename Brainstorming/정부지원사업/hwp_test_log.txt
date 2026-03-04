@@ -1,0 +1,10 @@
+=== HWP COM 테스트 시작 ===
+CoInitialize 완료
+HWP 객체 생성 완료, Version: 9, 6, 1, 8117
+창 표시 완료
+RegisterModule 호출...
+RegisterModule 완료
+텍스트 삽입 중...
+텍스트 삽입 완료
+줄바꿈 완료
+저장 시도: G:\내 드라이브\mychatbot-world\Brainstorming\정부지원사업\test_hwp_output.hwp

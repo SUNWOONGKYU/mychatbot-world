@@ -1,0 +1,779 @@
+<!-- @task S3F7 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사용량 현황 — My Chatbot World</title>
+  <meta name="description" content="월별 AI 사용량, 무료 티어 잔여량, 대화 횟수 등 사용 현황을 확인하세요.">
+  <style>
+    /* ===== 리셋 & 기본 ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    /* ===== 메인 콘텐츠 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      max-width: 900px;
+    }
+
+    /* ===== 헤더 영역 ===== */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 0.375rem;
+    }
+
+    .current-month-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: #a5b4fc;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.375rem 0.875rem;
+      border-radius: 9999px;
+    }
+
+    /* ===== 스켈레톤 ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-line {
+      height: 1rem;
+      border-radius: 0.25rem;
+    }
+
+    .skeleton-block {
+      border-radius: var(--radius-lg);
+    }
+
+    /* ===== 로딩 뷰 ===== */
+    .loading-view {
+      display: block;
+    }
+
+    .loaded-view {
+      display: none;
+    }
+
+    .error-view {
+      display: none;
+    }
+
+    /* 상태 제어 */
+    body.state-loaded .loading-view  { display: none; }
+    body.state-loaded .loaded-view   { display: block; }
+    body.state-error  .loading-view  { display: none; }
+    body.state-error  .error-view    { display: block; }
+
+    /* ===== 스켈레톤 레이아웃 ===== */
+    .skeleton-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .skeleton-card-title {
+      width: 40%;
+      height: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .skeleton-progress-bar {
+      width: 100%;
+      height: 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+    }
+
+    .skeleton-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .skeleton-stat-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      height: 100px;
+    }
+
+    .skeleton-chart-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ===== 카드 ===== */
+    .card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ===== 월별 사용량 진행 바 ===== */
+    .usage-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.875rem;
+    }
+
+    .usage-used {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1;
+    }
+
+    .usage-total {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+    }
+
+    .usage-pct {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .progress-bar-track {
+      width: 100%;
+      height: 0.75rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 0.625rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: var(--color-primary-light);
+      transition: width 0.6s ease;
+      /* width는 인라인 스타일로 JS가 주입 */
+    }
+
+    .progress-bar-fill.warning {
+      background: var(--color-warning);
+    }
+
+    .progress-bar-fill.danger {
+      background: var(--color-danger);
+    }
+
+    .usage-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--color-text-faint);
+    }
+
+    .usage-remaining {
+      margin-top: 0.875rem;
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    .usage-remaining strong {
+      color: var(--color-text);
+    }
+
+    /* ===== 통계 카드 그리드 ===== */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+
+    .stat-unit {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+      margin-top: 0.25rem;
+    }
+
+    /* ===== 봇별 사용량 CSS 차트 ===== */
+    .bot-chart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .bot-chart-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .bot-chart-name {
+      flex-shrink: 0;
+      width: 130px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bot-chart-bar-track {
+      flex: 1;
+      height: 0.625rem;
+      background: rgba(255,255,255,0.07);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .bot-chart-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.5s ease;
+      /* width는 JS가 주입 */
+    }
+
+    .bot-chart-count {
+      flex-shrink: 0;
+      width: 56px;
+      text-align: right;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    /* 차트 막대 색상 팔레트 */
+    .bot-color-0 { background: #6366f1; }
+    .bot-color-1 { background: #06b6d4; }
+    .bot-color-2 { background: #10b981; }
+    .bot-color-3 { background: #f59e0b; }
+    .bot-color-4 { background: #ec4899; }
+    .bot-color-5 { background: #8b5cf6; }
+
+    .chart-empty {
+      font-size: 0.875rem;
+      color: var(--color-text-faint);
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+
+    /* ===== 업그레이드 배너 ===== */
+    .upgrade-banner {
+      display: none; /* JS가 조건부로 표시 */
+      background: linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(245,158,11,0.12) 100%);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .upgrade-banner.visible {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .upgrade-banner-icon {
+      font-size: 1.75rem;
+      flex-shrink: 0;
+    }
+
+    .upgrade-banner-body {
+      flex: 1;
+    }
+
+    .upgrade-banner-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fca5a5;
+      margin-bottom: 0.25rem;
+    }
+
+    .upgrade-banner-desc {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    .upgrade-banner-btn {
+      flex-shrink: 0;
+      padding: 0.625rem 1.25rem;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 150ms ease;
+    }
+
+    .upgrade-banner-btn:hover {
+      background: #dc2626;
+    }
+
+    /* ===== 에러 뷰 ===== */
+    .error-box {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .error-box-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #fca5a5;
+      margin-bottom: 0.5rem;
+    }
+
+    .error-box-desc {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .btn-retry {
+      display: inline-block;
+      padding: 0.625rem 1.5rem;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .btn-retry:hover {
+      background: var(--color-primary-light);
+    }
+
+    /* ===== 홈으로 돌아가기 ===== */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      margin-top: 1.5rem;
+      padding: 0.5rem 0;
+      transition: color 150ms ease;
+    }
+
+    .back-link:hover {
+      color: var(--color-text);
+    }
+
+    /* ===== 반응형 — 태블릿 ===== */
+    @media (max-width: 900px) {
+      .main-content {
+        padding: 2rem 1.75rem;
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ===== 반응형 — 모바일 ===== */
+    @media (max-width: 768px) {
+      :root {
+        --sidebar-width: 0px;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem 1rem 3rem;
+        max-width: 100%;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .page-title {
+        font-size: 1.375rem;
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+
+      .upgrade-banner.visible {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .upgrade-banner-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .bot-chart-name {
+        width: 90px;
+        font-size: 0.8125rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .usage-used {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== 사이드바 ===== -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <span>My Chatbot World</span>
+    </a>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="index.html">
+          <span class="sidebar-nav-icon">&#128421;</span>
+          <span>대시보드</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="../bots/list.html">
+          <span class="sidebar-nav-icon">&#129302;</span>
+          <span>내 챗봇</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item active">
+        <a href="usage.html" aria-current="page">
+          <span class="sidebar-nav-icon">&#128202;</span>
+          <span>사용량 현황</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="../settings/profile.html">
+          <span class="sidebar-nav-icon">&#9881;</span>
+          <span>설정</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- ===== 메인 콘텐츠 ===== -->
+  <main class="main-content">
+
+    <!-- 페이지 헤더 -->
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">사용량 현황</h1>
+        <p class="page-subtitle">AI 챗봇 서비스 사용 통계를 확인하세요.</p>
+      </div>
+      <span class="current-month-badge" id="currentMonthBadge">
+        &#128197; 불러오는 중...
+      </span>
+    </header>
+
+    <!-- ===== 업그레이드 배너 (JS가 조건부 표시) ===== -->
+    <div class="upgrade-banner" id="upgradeBanner" role="alert">
+      <span class="upgrade-banner-icon">&#9888;</span>
+      <div class="upgrade-banner-body">
+        <p class="upgrade-banner-title">무료 티어 한도에 도달했습니다</p>
+        <p class="upgrade-banner-desc">이번 달 무료 사용량을 모두 소진했습니다. 더 많은 대화를 원하시면 Pro 플랜으로 업그레이드하세요.</p>
+      </div>
+      <a href="/pages/pricing.html" class="upgrade-banner-btn">업그레이드</a>
+    </div>
+
+    <!-- ===== 로딩 스켈레톤 뷰 ===== -->
+    <div class="loading-view" id="loadingView" aria-label="불러오는 중" aria-live="polite">
+
+      <!-- 진행 바 스켈레톤 -->
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line skeleton-card-title"></div>
+        <div class="skeleton skeleton-line" style="width:60%;height:2.5rem;margin-bottom:1rem;"></div>
+        <div class="skeleton skeleton-progress-bar"></div>
+        <div class="skeleton skeleton-line" style="width:45%;margin-top:0.75rem;height:0.75rem;"></div>
+      </div>
+
+      <!-- 통계 카드 스켈레톤 -->
+      <div class="skeleton-stat-grid" style="margin-bottom:1.5rem;">
+        <div class="skeleton-stat-card skeleton"></div>
+        <div class="skeleton-stat-card skeleton"></div>
+        <div class="skeleton-stat-card skeleton"></div>
+      </div>
+
+      <!-- 차트 스켈레톤 -->
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line skeleton-card-title"></div>
+        <div class="skeleton-chart-row">
+          <div class="skeleton skeleton-line" style="width:100px;flex-shrink:0;"></div>
+          <div class="skeleton skeleton-line" style="flex:1;height:0.625rem;"></div>
+          <div class="skeleton skeleton-line" style="width:40px;flex-shrink:0;"></div>
+        </div>
+        <div class="skeleton-chart-row">
+          <div class="skeleton skeleton-line" style="width:80px;flex-shrink:0;"></div>
+          <div class="skeleton skeleton-line" style="flex:1;height:0.625rem;"></div>
+          <div class="skeleton skeleton-line" style="width:40px;flex-shrink:0;"></div>
+        </div>
+        <div class="skeleton-chart-row">
+          <div class="skeleton skeleton-line" style="width:110px;flex-shrink:0;"></div>
+          <div class="skeleton skeleton-line" style="flex:1;height:0.625rem;"></div>
+          <div class="skeleton skeleton-line" style="width:40px;flex-shrink:0;"></div>
+        </div>
+      </div>
+
+    </div><!-- /loading-view -->
+
+    <!-- ===== 데이터 로드 완료 뷰 ===== -->
+    <div class="loaded-view" id="loadedView">
+
+      <!-- 월별 사용량 진행 바 -->
+      <div class="card">
+        <p class="card-title">이번 달 AI 사용량</p>
+        <div class="usage-summary">
+          <div>
+            <span class="usage-used" id="usedCount">0</span>
+            <span class="usage-total"> / <span id="limitCount">1,000</span> 회</span>
+          </div>
+          <span class="usage-pct" id="usagePct">0%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressFill" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="usage-labels">
+          <span>0</span>
+          <span id="limitLabel">1,000</span>
+        </div>
+        <p class="usage-remaining" id="usageRemainingText"></p>
+      </div>
+
+      <!-- 통계 카드 그리드 -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <p class="stat-label">이번 달 대화 횟수</p>
+          <p class="stat-value" id="statConversations">—</p>
+          <p class="stat-unit">건</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">총 메시지 수</p>
+          <p class="stat-value" id="statMessages">—</p>
+          <p class="stat-unit">개</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">무료 잔여량</p>
+          <p class="stat-value" id="statRemaining">—</p>
+          <p class="stat-unit">회 남음</p>
+        </div>
+      </div>
+
+      <!-- 봇별 사용량 CSS 막대 차트 -->
+      <div class="card">
+        <p class="card-title">봇별 사용량 분포</p>
+        <div class="bot-chart-list" id="botChartList">
+          <!-- JS가 동적으로 생성 -->
+        </div>
+      </div>
+
+    </div><!-- /loaded-view -->
+
+    <!-- ===== 에러 뷰 ===== -->
+    <div class="error-view" id="errorView">
+      <div class="error-box">
+        <p class="error-box-title">사용량 데이터를 불러올 수 없습니다</p>
+        <p class="error-box-desc" id="errorMessage">서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.</p>
+        <button class="btn-retry" id="retryBtn" type="button">다시 시도</button>
+      </div>
+    </div>
+
+    <!-- 홈으로 돌아가기 -->
+    <a href="index.html" class="back-link">
+      &#8592; 홈 대시보드로 돌아가기
+    </a>
+
+  </main>
+
+  <!-- Supabase CDN (Auth 세션 확인용) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- 사용량 대시보드 스크립트 -->
+  <script src="../../js/usage-dashboard.js"></script>
+
+</body>
+</html>

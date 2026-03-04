@@ -6,6 +6,9 @@
  * @module _shared
  */
 
+// TODO: xsai SDK 통합 — chat.js/chat-stream.js에서 getOptimalModel() 연동 시 사용 예정
+import { generateText } from '@xsai/generate-text';
+
 // ─── API Key Rotation + Cooldown ───
 // Note: On Vercel serverless, KEY_COOLDOWNS resets on cold start.
 // Warm instances (majority of requests) benefit from cooldown.
@@ -234,11 +237,37 @@ ${roleRules}`;
  * @type {string[]}
  */
 export const MODEL_STACK = [
+  'google/gemini-2.0-flash-exp:free',  // 무료 모델 우선
   'google/gemini-2.5-flash',
   'openai/gpt-4o',
   'anthropic/claude-sonnet-4.5',
   'deepseek/deepseek-chat',
 ];
+
+/**
+ * Selects the optimal model based on emotion intensity and free-model preference.
+ * Free models are prioritized when preferFree is true.
+ * Stronger emotions (angry, sad) escalate to higher-quality paid models.
+ * @param {string} [emotion='neutral'] - Detected user emotion
+ * @param {boolean} [preferFree=true] - Whether to prefer free models first
+ * @returns {string} Model identifier from MODEL_STACK
+ */
+export function getOptimalModel(emotion = 'neutral', preferFree = true) {
+  // emotion에 따른 모델 선택 로직
+  // 'angry', 'sad' 등 감정이 강할수록 품질 높은 모델
+  // preferFree가 true이면 무료 모델 우선
+  const freeModels = MODEL_STACK.filter(m => m.includes(':free'));
+  const paidModels = MODEL_STACK.filter(m => !m.includes(':free'));
+
+  if (preferFree && freeModels.length > 0) {
+    return freeModels[0]; // 무료 먼저
+  }
+
+  // 감정 강도에 따른 모델 선택
+  const emotionWeights = { angry: 3, sad: 2, happy: 1, neutral: 0 };
+  const weight = emotionWeights[emotion] || 0;
+  return weight >= 2 ? paidModels[1] || paidModels[0] : paidModels[0] || freeModels[0];
+}
 
 // ─── Obsidian RAG Context Injection ───
 

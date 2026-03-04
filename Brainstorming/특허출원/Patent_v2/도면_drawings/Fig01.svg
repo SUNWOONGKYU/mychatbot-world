@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AI 챗봇 라이프사이클 지원 시스템 전체 구성도 (도 1) -->
+<svg width="1100" height="800" viewBox="0 0 1100 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="550" y="50" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="36" font-weight="bold">도 1: AI 챗봇 라이프사이클 지원 시스템 전체 구성도</text>
+
+    <!-- 사용자 -->
+    <rect x="430" y="80" width="240" height="70" fill="white" stroke="black" stroke-width="3" rx="35"/>
+    <text x="550" y="123" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="24" font-weight="bold">사용자</text>
+
+    <!-- 화살표: 사용자 → 챗봇 자동 생성부 -->
+    <line x1="550" y1="150" x2="550" y2="190" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 1단계: 챗봇 자동 생성부 (20) -->
+    <text x="570" y="180" text-anchor="start" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="normal" fill="black">1단계: 생성</text>
+    <rect x="370" y="195" width="360" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="550" y="243" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">챗봇 자동 생성부 (20)</text>
+
+    <!-- 좌측: 멀티 페르소나 관리부 (10) -->
+    <rect x="40" y="195" width="290" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="185" y="243" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">멀티 페르소나 관리부 (10)</text>
+
+    <!-- 우측: 감성·비용 기반 멀티 AI 라우팅부 (30) -->
+    <rect x="770" y="195" width="290" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="915" y="228" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">감성·비용 기반 멀티 AI</text>
+    <text x="915" y="253" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">라우팅부 (30)</text>
+
+    <!-- 화살표: 10 → 20 -->
+    <line x1="330" y1="235" x2="370" y2="235" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- 화살표: 30 → 20 -->
+    <line x1="770" y1="235" x2="730" y2="235" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 화살표: 20 → 40 -->
+    <line x1="550" y1="275" x2="550" y2="320" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 2단계: 챗봇 학습부 (40) -->
+    <text x="420" y="310" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="normal" fill="black">2단계: 학습</text>
+    <rect x="300" y="325" width="240" height="110" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="420" y="388" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">챗봇 학습부 (40)</text>
+
+    <!-- 화살표: 40 → 45 -->
+    <line x1="540" y1="380" x2="560" y2="380" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 3단계: 챗봇 성장부 (45) -->
+    <text x="680" y="310" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="normal" fill="black">3단계: 성장</text>
+    <rect x="560" y="325" width="240" height="110" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="680" y="388" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">챗봇 성장부 (45)</text>
+
+    <!-- 화살표: 45 → 70 -->
+    <line x1="680" y1="435" x2="680" y2="460" stroke="black" stroke-width="2"/>
+    <line x1="550" y1="460" x2="680" y2="460" stroke="black" stroke-width="2"/>
+    <line x1="550" y1="460" x2="550" y2="490" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 4단계: 수익활동 중개부 (70) -->
+    <text x="570" y="480" text-anchor="start" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="normal" fill="black">4단계: 수익활동</text>
+    <rect x="300" y="495" width="500" height="110" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="550" y="558" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">수익활동 중개부 (70)</text>
+
+    <!-- 화살표: 70 → 50 -->
+    <line x1="550" y1="605" x2="550" y2="660" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 5단계: 피상속 관리부 (50) -->
+    <text x="570" y="650" text-anchor="start" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" font-weight="normal" fill="black">5단계: 피상속</text>
+    <rect x="300" y="665" width="500" height="110" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="550" y="728" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">피상속 관리부 (50)</text>
+
+    <!-- 배포부 (60) — 우측 -->
+    <rect x="860" y="495" width="200" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="960" y="533" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="22" font-weight="bold">배포부 (60)</text>
+    <text x="960" y="556" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">URL/QR 배포</text>
+
+    <!-- 화살표: 20 → 60 (생성된 챗봇이 배포됨) — 20 박스 하단 우측(730,275)에서 꺾어서 60 박스 상단(960,495)으로 연결 -->
+    <polyline points="730,275 730,310 960,310 960,495" fill="none" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- (A) 배포 텍스트 라벨 — 수평 구간(y=310) 중간 지점 -->
+    <text x="845" y="305" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">배포</text>
+
+    <!-- (삭제됨: 50→40 순환 화살표) -->
+
+
+</svg>

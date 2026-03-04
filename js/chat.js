@@ -1,7 +1,9 @@
 ﻿/**
- * @task S2F3
- * Chat Interface JavaScript - v10.5 MOBILE VOICE FIXED
+ * @task S2F5 (S2F3 기반)
+ * Chat Interface JavaScript - v10.6 VAD VOICE INPUT
  * Includes "Audio Context Unlock" for mobile browsers.
+ * VAD (Voice Activity Detection) via @ricky0123/vad-web replaces 4s silence timer.
+ * Falls back to 4s silence timer if VAD fails to initialize.
  */
 let chatBotData = null;
 let conversationHistory = [];
@@ -734,16 +736,200 @@ function speakFallback(clean) {
 }
 // STT — Whisper API (OpenAI) via MediaRecorder
 // 마이크 녹음 → /api/stt (Whisper) → 정확한 한국어 텍스트
+// VAD: @ricky0123/vad-web — 발화 경계 정확 감지 (폴백: 4초 무음 타이머)
 let _sttRecorder = null;
 let _sttStream = null;
 let _sttChunks = [];
 let _sttSilenceCtx = null;
 let _sttSilenceTimer = null;
 
-function toggleChatVoice() {
+// VAD 상태
+let _vadInstance = null;
+let _vadReady = false;       // VAD 초기화 완료 여부
+let _vadFailed = false;      // VAD 초기화 실패 → 폴백 사용
+let _vadActive = false;      // VAD 세션 활성 여부 (버튼 토글 중)
+let _vadScriptLoaded = false;
+
+// VAD CDN 스크립트 동적 로드
+function _loadVadScript() {
+    return new Promise(function(resolve, reject) {
+        if (_vadScriptLoaded && typeof vad !== 'undefined') { resolve(); return; }
+        let s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist/bundle.min.js';
+        s.crossOrigin = 'anonymous';
+        s.onload = function() { _vadScriptLoaded = true; resolve(); };
+        s.onerror = function() { reject(new Error('VAD CDN load failed')); };
+        document.head.appendChild(s);
+    });
+}
+
+// VAD 초기화 (최초 1회)
+async function _initVad() {
+    if (_vadReady || _vadFailed) return;
+    try {
+        await _loadVadScript();
+        // @ricky0123/vad-web exposes global `vad` namespace
+        const vadLib = (typeof vad !== 'undefined') ? vad : window.vad;
+        if (!vadLib || !vadLib.MicVAD) throw new Error('vad.MicVAD not found');
+
+        const VAD_CDN_BASE = 'https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.19/dist';
+        _vadInstance = await vadLib.MicVAD.new({
+            // ONNX 모델 + Worklet + WASM 경로 명시 (CDN 기반)
+            modelURL: VAD_CDN_BASE + '/silero_vad.onnx',
+            workletURL: VAD_CDN_BASE + '/vad.worklet.bundle.min.js',
+            ortConfig: function(ort) {
+                ort.env.wasm.wasmPaths = VAD_CDN_BASE + '/';
+            },
+            // 발화 시작 감지
+            onSpeechStart: function() {
+                console.log('[VAD] Speech start detected');
+                const btn = document.getElementById('chatVoiceBtn');
+                const input = document.getElementById('chatInput');
+                if (btn) btn.classList.add('recording');
+                if (input) input.placeholder = '말씀하세요...';
+            },
+            // 발화 종료 감지 → 음성 데이터 전송
+            onSpeechEnd: function(audioData) {
+                console.log('[VAD] Speech end detected, samples:', audioData.length);
+                if (!_vadActive) return;
+                _onVadSpeechEnd(audioData);
+            },
+            // VAD 오류 핸들링
+            onVADMisfire: function() {
+                console.log('[VAD] Misfire (too short), ignored');
+                const btn = document.getElementById('chatVoiceBtn');
+                const input = document.getElementById('chatInput');
+                if (btn) btn.classList.remove('recording');
+                if (input) input.placeholder = '음성 입력 중... (다시 말씀해주세요)';
+            }
+        });
+
+        _vadReady = true;
+        console.log('[VAD] Initialized successfully');
+    } catch (e) {
+        console.warn('[VAD] Init failed, falling back to 4s silence timer:', e.message);
+        _vadFailed = true;
+    }
+}
+
+// VAD onSpeechEnd 처리: Float32Array → WAV Blob → /api/stt
+function _onVadSpeechEnd(audioData) {
+    const btn = document.getElementById('chatVoiceBtn');
+    const input = document.getElementById('chatInput');
+    if (btn) btn.classList.remove('recording');
+    if (input) input.placeholder = '음성 변환 중...';
+
+    // Float32Array → WAV Blob (PCM 16kHz mono)
+    const wavBlob = _float32ToWavBlob(audioData, 16000);
+    if (!wavBlob || wavBlob.size < 3000) {
+        console.log('[VAD] Audio too short, skipped');
+        if (input) input.placeholder = '음성 입력 중... (다시 말씀해주세요)';
+        return;
+    }
+
+    let reader = new FileReader();
+    reader.onloadend = function() {
+        let base64 = reader.result.split(',')[1];
+        fetch('/api/stt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ audio: base64, language: 'ko' })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (input) input.placeholder = '음성 입력 중...';
+            if (data.text && data.text.trim()) {
+                input.value = data.text.trim();
+                input.focus();
+                // 자동 전송 안 함 — 유저가 직접 확인 후 전송
+            }
+        })
+        .catch(function(err) {
+            console.error('[VAD→STT] Whisper error:', err);
+            if (input) input.placeholder = '음성 입력 중...';
+        });
+    };
+    reader.readAsDataURL(wavBlob);
+}
+
+// Float32Array → WAV Blob 변환 헬퍼 (PCM mono)
+function _float32ToWavBlob(samples, sampleRate) {
+    const numSamples = samples.length;
+    const buffer = new ArrayBuffer(44 + numSamples * 2);
+    const view = new DataView(buffer);
+    function writeStr(off, str) {
+        for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i));
+    }
+    writeStr(0, 'RIFF');
+    view.setUint32(4, 36 + numSamples * 2, true);
+    writeStr(8, 'WAVE');
+    writeStr(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);        // PCM
+    view.setUint16(22, 1, true);        // mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeStr(36, 'data');
+    view.setUint32(40, numSamples * 2, true);
+    let offset = 44;
+    for (let i = 0; i < numSamples; i++) {
+        let s = Math.max(-1, Math.min(1, samples[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        offset += 2;
+    }
+    return new Blob([buffer], { type: 'audio/wav' });
+}
+
+// 메인 음성 입력 토글 함수 (VAD 우선, 폴백: 4초 타이머)
+async function toggleChatVoice() {
     unlockTTS();
     const btn = document.getElementById('chatVoiceBtn');
     const input = document.getElementById('chatInput');
+
+    // ── VAD 모드 ──────────────────────────────────────────────
+    // VAD가 아직 초기화 시도 전이면 비동기 초기화 (1회만)
+    if (!_vadReady && !_vadFailed) {
+        if (input) input.placeholder = 'VAD 초기화 중...';
+        await _initVad();
+    }
+
+    if (_vadReady && _vadInstance) {
+        // VAD 세션 토글
+        if (_vadActive) {
+            // 비활성화
+            _vadActive = false;
+            try { _vadInstance.pause(); } catch(e) {}
+            if (btn) btn.classList.remove('recording');
+            if (input) input.placeholder = '메시지를 입력하세요...';
+            console.log('[VAD] Session paused by user');
+        } else {
+            // 활성화
+            _vadActive = true;
+            try {
+                await _vadInstance.start();
+                if (btn) btn.classList.add('recording');
+                if (input) input.placeholder = '음성 입력 중... (말씀하세요)';
+                console.log('[VAD] Session started');
+            } catch (e) {
+                console.error('[VAD] Start failed:', e.message);
+                // 마이크 권한 없는 경우
+                if (e.name === 'NotAllowedError' || e.message.includes('Permission')) {
+                    addMessage('system', '마이크 접근 권한이 없습니다. 브라우저 설정에서 마이크를 허용해주세요.');
+                } else {
+                    addMessage('system', '음성 입력 시작에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                }
+                _vadActive = false;
+                if (btn) btn.classList.remove('recording');
+                if (input) input.placeholder = '메시지를 입력하세요...';
+            }
+        }
+        return;
+    }
+
+    // ── 폴백: 4초 무음 타이머 (VAD 실패 시) ─────────────────
+    console.log('[STT] Using fallback 4s silence timer');
 
     // 녹음 중이면 → 중지 & 전송
     if (_sttRecorder && _sttRecorder.state === 'recording') {
@@ -751,7 +937,7 @@ function toggleChatVoice() {
         return;
     }
 
-    // 녹음 시작
+    // 마이크 스트림 요청
     navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
         _sttStream = stream;
         _sttChunks = [];
@@ -819,11 +1005,15 @@ function toggleChatVoice() {
 
     }).catch(function(err) {
         console.error('[STT] mic error:', err);
-        alert('마이크 접근에 실패했습니다.');
+        if (err.name === 'NotAllowedError') {
+            addMessage('system', '마이크 접근 권한이 없습니다. 브라우저 설정에서 마이크를 허용해주세요.');
+        } else {
+            alert('마이크 접근에 실패했습니다.');
+        }
     });
 }
 
-// 무음 감지: 4초 무음 시 자동 녹음 중지
+// 폴백: 4초 무음 감지 (VAD 실패 시 사용)
 function _sttStartSilenceDetection(stream) {
     try {
         _sttSilenceCtx = new (window.AudioContext || window.webkitAudioContext)();

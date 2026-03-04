@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 챗봇 자동 생성 프로세스 흐름도 (도 3) - 6단계 -->
+<svg width="1000" height="790" viewBox="0 0 1000 790" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="45" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="34" font-weight="bold">도 3: 챗봇 자동 생성 프로세스 흐름도 (6단계)</text>
+
+    <!-- 외곽: 챗봇 자동 생성부 (20) -->
+    <rect x="100" y="70" width="800" height="685" fill="none" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="108" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="26" font-weight="bold">챗봇 자동 생성부 (20)</text>
+    <text x="500" y="136" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="16" fill="black">미리 정해진 시간 (예: 5분) 이내 완료</text>
+
+    <!-- Step 1: 기본정보 입력 -->
+    <text x="160" y="185" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">1단계</text>
+    <rect x="230" y="155" width="540" height="65" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="183" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">기본정보 입력</text>
+    <text x="500" y="207" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">챗봇 이름 등 기본 항목</text>
+
+    <!-- 화살표 1→2 -->
+    <line x1="500" y1="220" x2="500" y2="240" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 2: 페르소나 설정 -->
+    <text x="160" y="275" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">2단계</text>
+    <rect x="230" y="245" width="540" height="65" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="273" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">페르소나 설정</text>
+    <text x="500" y="297" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">대표 페르소나 1개 설정 (추가 페르소나는 이후 설정 가능)</text>
+
+    <!-- 화살표 2→3 -->
+    <line x1="500" y1="310" x2="500" y2="330" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 3: 감성 수준 · 비용 조건 설정 -->
+    <text x="160" y="365" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">3단계</text>
+    <rect x="230" y="335" width="540" height="65" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="363" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">감성 수준(31) · 비용 조건(32) 설정</text>
+    <text x="500" y="387" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">슬라이더 기반 설정 (도 4에서 상세 설명)</text>
+
+    <!-- 화살표 3→4 -->
+    <line x1="500" y1="400" x2="500" y2="420" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 4: 인터뷰 (31) -->
+    <text x="160" y="455" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">4단계</text>
+    <rect x="230" y="425" width="540" height="65" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="453" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">인터뷰 모듈 (21)</text>
+    <text x="500" y="477" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">음성 또는 텍스트 입력</text>
+
+    <!-- 화살표 4→5 -->
+    <line x1="500" y1="490" x2="500" y2="510" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 5: AI 분석 → 프로필 자동 생성 (32) -->
+    <text x="160" y="545" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">5단계</text>
+    <rect x="230" y="515" width="540" height="65" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="543" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">AI 분석 · 프로필 자동 생성 (22)</text>
+    <text x="500" y="567" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">인터뷰 내용 기반 프로필 생성</text>
+
+    <!-- 화살표 5→6 -->
+    <line x1="500" y1="580" x2="500" y2="600" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 6: 외형 설정 -->
+    <text x="160" y="635" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15" fill="black">6단계</text>
+    <rect x="230" y="605" width="540" height="65" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="633" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">외형 설정 (23)</text>
+    <text x="500" y="657" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">목소리 · 아바타 · 테마</text>
+
+    <!-- 6단계 → 최종 출력 -->
+    <line x1="500" y1="670" x2="500" y2="695" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 최종 출력: 챗봇 활성화 완료 -->
+    <rect x="330" y="700" width="340" height="45" fill="white" stroke="black" stroke-width="2" rx="22"/>
+    <text x="500" y="728" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">챗봇 활성화 완료</text>
+</svg>

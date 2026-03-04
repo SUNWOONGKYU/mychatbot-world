@@ -155,7 +155,14 @@
                 <div class="analysis-result hidden" id="analysisResult">
                     <h2 class="step-title">분석 완료!</h2>
                     <div class="result-preview" id="resultPreview"></div>
-                    <button class="btn btn-primary btn-xl" style="width:100%; margin-top:1.5rem"
+                    <!-- @task S2F7 -->
+                    <div class="greeting-preview-wrap" style="margin-top:1rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                        <button type="button" id="previewGreetingBtn" class="btn btn-secondary btn-sm" onclick="previewGreeting()">
+                            &#9654; 인사말 듣기
+                        </button>
+                        <span id="previewGreetingStatus" style="font-size:0.8rem; color:rgba(255,255,255,0.5);"></span>
+                    </div>
+                    <button class="btn btn-primary btn-xl" style="width:100%; margin-top:1rem"
                         onclick="goToStep(5)">
                         다음: 목소리 선택 →
                     </button>

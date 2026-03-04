@@ -14,17 +14,25 @@ import logging
 import os
 import re
 import signal
+import subprocess as _subprocess
 import sys
+import traceback
 
 import httpx
 
 from config import CPC_API_BASE, SUPABASE_URL, SUPABASE_KEY, PROJECT_CWD
 
-# 로깅
+# 로깅 (콘솔 + 파일 — pythonw.exe 실행 시 콘솔 없으므로 파일 필수)
+import tempfile
+_LOG_FILE = os.path.join(tempfile.gettempdir(), 'cpc-agent-server.log')
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(name)s] %(levelname)s - %(message)s',
     datefmt='%H:%M:%S',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(_LOG_FILE, encoding='utf-8'),
+    ],
 )
 log = logging.getLogger('cpc-agent')
 
@@ -35,11 +43,12 @@ for _k in [k for k in os.environ if k.startswith('CLAUDE_CODE') or k == 'CLAUDEC
 # 처리 대상 소대 ID (mychatbot-1/2/3, mychatbot-trader 제외)
 TARGET_PREFIXES = ('mychatbot-1', 'mychatbot-2', 'mychatbot-3')
 
-# 처리 중인 명령 추적 (중복 처리 방지)
+# 처리 완료/진행 중인 명령 추적 (중복 처리 방지)
 _processing: set[str] = set()
+_processing_lock = asyncio.Lock()
 
 # 리모트 컨트롤 프로세스 추적 (소대별 PID 관리 — zombie 방지)
-_rc_procs: dict[str, asyncio.subprocess.Process] = {}
+_rc_procs: dict[str, _subprocess.Popen] = {}
 
 # 공유 HTTP 클라이언트 (모듈 레벨 — start_polling 외부의 API 호출에서도 재사용)
 _http: httpx.AsyncClient | None = None
@@ -123,7 +132,10 @@ _HEADLESS_TIMEOUT_SEC = 300  # 5분
 
 
 async def run_agent(prompt: str, platoon_id: str = 'mychatbot-1') -> str:
-    """Claude Code headless 모드로 실행, 결과 텍스트 반환"""
+    """Claude Code headless 모드로 실행, 결과 텍스트 반환
+
+    subprocess.Popen 사용 (SelectorEventLoop은 asyncio subprocess 미지원)
+    """
     log.info(f'[CLI] headless 실행: {platoon_id}')
 
     squad_num = platoon_id.split('-')[-1] if '-' in platoon_id else '1'
@@ -145,21 +157,31 @@ async def run_agent(prompt: str, platoon_id: str = 'mychatbot-1') -> str:
         and k != 'NODE_OPTIONS'
     }
 
+    proc = None
     try:
-        proc = await asyncio.create_subprocess_exec(
-            *cmd,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+        proc = _subprocess.Popen(
+            cmd,
+            stdout=_subprocess.PIPE,
+            stderr=_subprocess.PIPE,
             env=env,
             cwd=PROJECT_CWD,
         )
 
-        stdout, stderr = await asyncio.wait_for(
-            proc.communicate(), timeout=_HEADLESS_TIMEOUT_SEC,
-        )
+        # 비동기 대기: sleep 루프로 타임아웃 + 이벤트 루프 양보
+        elapsed = 0
+        while elapsed < _HEADLESS_TIMEOUT_SEC:
+            if proc.poll() is not None:
+                break
+            await asyncio.sleep(1)
+            elapsed += 1
 
-        result = stdout.decode('utf-8', errors='replace').strip()
-        stderr_text = stderr.decode('utf-8', errors='replace').strip()
+        if proc.poll() is None:
+            log.error(f'[CLI] 타임아웃 ({_HEADLESS_TIMEOUT_SEC}초)')
+            proc.kill()
+            return f'실행 타임아웃 ({_HEADLESS_TIMEOUT_SEC}초 초과)'
+
+        result = proc.stdout.read().decode('utf-8', errors='replace').strip()
+        stderr_text = proc.stderr.read().decode('utf-8', errors='replace').strip()
 
         if stderr_text:
             log.debug(f'[CLI] stderr: {stderr_text[:300]}')
@@ -171,13 +193,10 @@ async def run_agent(prompt: str, platoon_id: str = 'mychatbot-1') -> str:
         log.info(f'[CLI] 완료 — {len(result)}자')
         return result or '처리 완료 (결과 없음)'
 
-    except asyncio.TimeoutError:
-        log.error(f'[CLI] 타임아웃 ({_HEADLESS_TIMEOUT_SEC}초)')
-        if proc and proc.returncode is None:
-            proc.kill()
-        return f'실행 타임아웃 ({_HEADLESS_TIMEOUT_SEC}초 초과)'
     except Exception as e:
         log.error(f'[CLI] 에러: {e}')
+        if proc and proc.poll() is None:
+            proc.kill()
         return f'실행 오류: {e}'
 
 
@@ -189,35 +208,44 @@ REMOTE_KEYWORDS = re.compile(
 )
 
 RC_URL_PATTERN = re.compile(r'https://claude\.ai/code[?/][A-Za-z0-9_?=&./-]+')
-RC_URL_TIMEOUT_SEC = 20
+RC_URL_TIMEOUT_SEC = 30  # TUI 렌더링 지연 고려 → 30초
+RC_OUT_DIR = tempfile.gettempdir()
+
+# Windows: 부모 프로세스 종료 시에도 자식 생존
+_CREATE_FLAGS = 0
+if sys.platform == 'win32' or 'MSYS' in os.environ.get('MSYSTEM', ''):
+    _CREATE_FLAGS = _subprocess.CREATE_NEW_PROCESS_GROUP
 
 
 def _kill_rc_proc(platoon_id: str):
     """기존 리모트 컨트롤 프로세스를 정리 (zombie 방지)"""
     old = _rc_procs.pop(platoon_id, None)
-    if old and old.returncode is None:
+    if old and old.poll() is None:
         try:
             old.kill()
             log.info(f'[RC] 기존 프로세스 종료 (PID: {old.pid})')
-        except ProcessLookupError:
+        except (ProcessLookupError, OSError):
             pass
 
 
 async def start_remote_control(platoon_id: str) -> str:
     """claude remote-control 실행 → URL 캡처 → CPC 저장 → URL 반환
 
-    NODE_OPTIONS=--require=fix-sdk-url.js 로 child_process.spawn 패치하여
-    Windows에서 --sdk-url 버그(node.exe가 --print를 자체 플래그로 해석) 우회.
-    CLAUDECODE 환경변수 제거하여 중첩 세션 차단 해제.
+    핵심:
+    - subprocess.Popen 사용 (SelectorEventLoop은 asyncio subprocess 미지원)
+    - stdout을 파일로 리다이렉트 → 버퍼 막힘 방지 + URL 캡처
+    - CREATE_NEW_PROCESS_GROUP → 부모 죽어도 remote-control 생존
+    - 프로세스 죽으면 URL 무효화됨 → 프로세스 유지 필수
     """
     log.info(f'[RC] {platoon_id} 리모트 컨트롤 시작...')
 
     # 기존 프로세스 정리 (중복 호출 시 zombie 방지)
     _kill_rc_proc(platoon_id)
 
+    # APPDATA 경로를 명시적으로 설정 (DETACHED_PROCESS에서 환경변수 누락 방지)
+    appdata = os.environ.get('APPDATA') or os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming')
     cli_js = os.path.join(
-        os.environ.get('APPDATA', ''),
-        'npm', 'node_modules', '@anthropic-ai', 'claude-code', 'cli.js',
+        appdata, 'npm', 'node_modules', '@anthropic-ai', 'claude-code', 'cli.js',
     )
     fix_js = os.path.join(os.path.expanduser('~'), 'fix-sdk-url.js')
 
@@ -230,44 +258,41 @@ async def start_remote_control(platoon_id: str) -> str:
     if os.path.exists(fix_js):
         env['NODE_OPTIONS'] = f'--require={fix_js}'
 
+    # stdout을 파일로 리다이렉트 (PIPE 버퍼 막힘 방지)
+    out_path = os.path.join(RC_OUT_DIR, f'rc-out-{platoon_id}.txt')
+
     try:
-        proc = await asyncio.create_subprocess_exec(
-            'node', cli_js, 'remote-control',
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+        out_fd = os.open(out_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+        proc = _subprocess.Popen(
+            ['node', cli_js, 'remote-control'],
+            stdout=out_fd,
+            stderr=out_fd,
             env=env,
+            creationflags=_CREATE_FLAGS,
         )
+        os.close(out_fd)  # 부모는 닫아도 자식은 fd 유지
         _rc_procs[platoon_id] = proc
         log.info(f'[RC] 프로세스 시작됨 (PID: {proc.pid})')
 
-        # stdout에서 URL 캡처 (최대 RC_URL_TIMEOUT_SEC초)
-        collected = ''
+        # 파일 모니터링으로 URL 캡처 (최대 RC_URL_TIMEOUT_SEC초)
         for _ in range(RC_URL_TIMEOUT_SEC):
             await asyncio.sleep(1)
-            # stdout에서 읽기 (non-blocking)
             try:
-                chunk = await asyncio.wait_for(
-                    proc.stdout.read(4096), timeout=0.5,
-                )
-                if chunk:
-                    collected += chunk.decode('utf-8', errors='replace')
-            except asyncio.TimeoutError:
+                with open(out_path, 'r', encoding='utf-8', errors='replace') as f:
+                    content = f.read()
+                m = RC_URL_PATTERN.search(content)
+                if m:
+                    url = m.group(0)
+                    log.info(f'[RC] URL 캡처: {url}')
+                    await cpc_update_status(platoon_id, session_url=url)
+                    log.info(f'[RC] CPC 저장 완료 — 프로세스 유지 (PID: {proc.pid})')
+                    return f'리모트 컨트롤 URL: {url}'
+            except Exception:
                 pass
 
-            m = RC_URL_PATTERN.search(collected)
-            if m:
-                url = m.group(0)
-                log.info(f'[RC] URL 캡처: {url}')
-                await cpc_update_status(platoon_id, session_url=url)
-                log.info(f'[RC] CPC 저장 완료 — 프로세스 유지 (PID: {proc.pid})')
-                # 프로세스를 백그라운드로 유지 (kill하지 않음)
-                return f'리모트 접속 URL: {url}'
-
             # 프로세스가 죽었으면 중단
-            if proc.returncode is not None:
-                stderr = await proc.stderr.read()
+            if proc.poll() is not None:
                 log.error(f'[RC] 프로세스 종료 (code={proc.returncode})')
-                log.error(f'[RC] stderr: {stderr.decode("utf-8", errors="replace")[:500]}')
                 _rc_procs.pop(platoon_id, None)
                 return f'리모트 컨트롤 실패 — 프로세스 종료 (code={proc.returncode})'
 
@@ -276,7 +301,7 @@ async def start_remote_control(platoon_id: str) -> str:
         return f'리모트 컨트롤 URL 캡처 실패 — {RC_URL_TIMEOUT_SEC}초 타임아웃'
 
     except Exception as e:
-        log.error(f'[RC] 에러: {e}')
+        log.error(f'[RC] 에러: {e}\n{traceback.format_exc()}')
         _kill_rc_proc(platoon_id)
         return f'리모트 컨트롤 실패: {e}'
 
@@ -297,10 +322,11 @@ async def handle_command(cmd: dict):
     if status not in ('PENDING', 'ACKED'):
         return
 
-    # 중복 처리 방지 (Realtime + 폴링 동시 잡기 방어)
-    if cmd_id in _processing:
-        return
-    _processing.add(cmd_id)
+    # 중복 처리 방지 — Lock으로 원자적 체크+추가
+    async with _processing_lock:
+        if cmd_id in _processing:
+            return
+        _processing.add(cmd_id)
 
     if not cmd_text:
         await cpc_done(cmd_id, '빈 명령입니다')
@@ -336,7 +362,10 @@ async def handle_command(cmd: dict):
         await cpc_done(cmd_id, f'명령 처리 오류: {e}')
         log.info(f'[DONE] {cmd_id}: 오류로 완료')
     finally:
-        _processing.discard(cmd_id)
+        # _processing에서 제거하지 않음 — DONE 이후에도 유지하여
+        # 다음 폴링에서 ACKED 상태로 재처리되는 것을 방지.
+        # set은 메모리 누수 우려 없음 (cmd_id는 짧은 문자열, 하루 수십 개 수준)
+        pass
 
 
 # === Supabase Realtime 리스너 ===
@@ -395,22 +424,45 @@ async def _fetch_commands(client: httpx.AsyncClient, platoon_id: str, status: st
 
 
 async def start_polling():
-    """HTTP 폴링 메인 루프 (1초 간격) — PENDING + ACKED 병렬 조회"""
+    """HTTP 폴링 메인 루프 (1초 간격) — PENDING + ACKED 병렬 조회, 자동 복구"""
     log.info('[Polling] HTTP 폴링 시작 (1초 간격, PENDING+ACKED 병렬)')
-    client = await get_http()
+    consecutive_errors = 0
     while True:
-        # 3소대 × 2상태 = 6개 요청을 병렬 실행
-        tasks = [
-            _fetch_commands(client, pid, st)
-            for pid in TARGET_PREFIXES
-            for st in ('PENDING', 'ACKED')
-        ]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        try:
+            client = await get_http()
+            # 3소대 × 2상태 = 6개 요청을 병렬 실행
+            tasks = [
+                _fetch_commands(client, pid, st)
+                for pid in TARGET_PREFIXES
+                for st in ('PENDING', 'ACKED')
+            ]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        for result in results:
-            if isinstance(result, list):
-                for cmd in result:
-                    await handle_command(cmd)
+            # 결과에서 중복 cmd_id 제거 (PENDING+ACKED 동시 조회 시)
+            seen_ids: set[str] = set()
+            for result in results:
+                if isinstance(result, list):
+                    for cmd in result:
+                        cid = cmd.get('id')
+                        if cid and cid not in seen_ids:
+                            seen_ids.add(cid)
+                            await handle_command(cmd)
+
+            consecutive_errors = 0
+        except Exception as e:
+            consecutive_errors += 1
+            log.error(f'[Polling] 에러 (연속 {consecutive_errors}회): {e}')
+            # HTTP 클라이언트 재생성
+            global _http
+            if _http and not _http.is_closed:
+                try:
+                    await _http.aclose()
+                except Exception:
+                    pass
+            _http = None
+            # 연속 에러 시 대기 시간 증가 (최대 30초)
+            await asyncio.sleep(min(consecutive_errors * 2, 30))
+            continue
 
         await asyncio.sleep(1)
 
@@ -425,19 +477,29 @@ async def main():
     # 소대 상태는 /cpc-engage 스킬이 관리한다.
     # server.py는 명령 수신/처리만 담당하고, 소대 상태를 일괄 변경하지 않는다.
 
-    # Supabase Realtime 시도 (비동기 — 성공해도 실패해도 무관)
-    await start_realtime()
+    # Supabase Realtime 비활성화 — HTTP 1초 폴링과 race condition 발생.
+    # Realtime이 같은 명령을 create_task로 별도 처리하여 중복 실행됨.
+    # 1초 폴링이면 충분히 빠르므로 Realtime 불필요.
+    # try:
+    #     await start_realtime()
+    # except Exception as e:
+    #     log.warning(f'[Realtime] 시작 실패 (무시): {e}')
 
     # 항상 HTTP 폴링을 메인 루프로 사용 (Realtime은 보조)
-    await start_polling()
+    # 폴링 루프가 죽으면 자동 재시작
+    while True:
+        try:
+            await start_polling()
+        except Exception as e:
+            log.error(f'[Main] 폴링 루프 크래시 — 3초 후 재시작: {e}')
+            await asyncio.sleep(3)
 
 
 if __name__ == '__main__':
     def shutdown(sig, frame):
         log.info('Agent Server 종료 중...')
-        # 리모트 컨트롤 프로세스 정리
-        for pid in list(_rc_procs):
-            _kill_rc_proc(pid)
+        # 리모트 컨트롤 프로세스 정리 (remote-control은 유지해야 URL 유효)
+        # 서버 종료 시에는 kill하지 않음 — CREATE_NEW_PROCESS_GROUP으로 독립 실행 중
         # 공유 HTTP 클라이언트 정리
         if _http and not _http.is_closed:
             try:
@@ -447,5 +509,13 @@ if __name__ == '__main__':
         sys.exit(0)
 
     signal.signal(signal.SIGINT, shutdown)
-    signal.signal(signal.SIGTERM, shutdown)
+    try:
+        signal.signal(signal.SIGTERM, shutdown)
+    except (OSError, ValueError):
+        pass  # Windows/MSYS2에서 SIGTERM 지원 안 될 수 있음
+
+    # Windows 이벤트 루프 정책 설정 (ProactorEventLoop 대신 SelectorEventLoop)
+    if sys.platform == 'win32' or 'MSYS' in os.environ.get('MSYSTEM', ''):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     asyncio.run(main())

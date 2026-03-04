@@ -19,7 +19,17 @@
       "Bash(git log:*)",
       "Bash(powershell -File \"C:\\Users\\wksun\\cpc-done.ps1\":*)",
       "Bash(powershell -File C:\\Users\\wksun\\cpc-done.ps1:*)",
-      "Bash(powershell*cpc-done.ps1*)"
+      "Bash(powershell*cpc-done.ps1*)",
+      "Bash(sleep 15:*)",
+      "Bash(tail:*)",
+      "Bash(wmic process:*)",
+      "Bash(\"$APPDATA/npm/claude.cmd\":*)",
+      "Bash(\"$APPDATA_PATH/npm/claude.cmd\":*)",
+      "WebFetch(domain:github.com)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\":*)",
+      "Bash(python:*)",
+      "Bash(ps:*)",
+      "Bash(taskkill.exe:*)"
     ]
   },
   "hooks": {

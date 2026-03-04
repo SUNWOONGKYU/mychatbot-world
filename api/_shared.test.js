@@ -258,8 +258,9 @@ describe('buildSystemMessage', () => {
 
 describe('MODEL_STACK', () => {
   it('contains expected models in priority order', () => {
-    expect(MODEL_STACK).toHaveLength(4);
-    expect(MODEL_STACK[0]).toBe('google/gemini-2.5-flash');
+    expect(MODEL_STACK).toHaveLength(5);
+    expect(MODEL_STACK[0]).toBe('google/gemini-2.0-flash-exp:free');
+    expect(MODEL_STACK[1]).toBe('google/gemini-2.5-flash');
     expect(MODEL_STACK).toContain('openai/gpt-4o');
   });
 });

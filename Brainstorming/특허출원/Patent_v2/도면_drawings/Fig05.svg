@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 챗봇 학습부 및 성장부 구성도 (도 5) -->
+<svg width="1000" height="850" viewBox="0 0 1000 850" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- TITLE -->
+    <text x="500" y="50" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="36" font-weight="bold">도 5: 챗봇 학습부 및 성장부 구성도</text>
+
+    <!-- 외곽 박스: 학습부 (40) -->
+    <rect x="40" y="80" width="920" height="290" fill="none" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="115" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="26" font-weight="bold">챗봇 학습부 (40)</text>
+
+    <!-- 외곽 박스: 성장부 (45) -->
+    <rect x="40" y="380" width="920" height="420" fill="none" stroke="black" stroke-width="3" rx="5"/>
+    <text x="500" y="415" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="26" font-weight="bold">챗봇 성장부 (45)</text>
+
+    <!-- 챗봇 (입력) -->
+    <rect x="380" y="135" width="240" height="60" fill="white" stroke="black" stroke-width="2" rx="30"/>
+    <text x="500" y="172" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">생성된 챗봇</text>
+
+    <!-- 학습부 내부 분기선 -->
+    <line x1="500" y1="195" x2="500" y2="230" stroke="black" stroke-width="2"/>
+    <line x1="210" y1="230" x2="790" y2="230" stroke="black" stroke-width="2"/>
+
+    <!-- 채널 1: DB 축적부 (41) -->
+    <line x1="210" y1="230" x2="210" y2="260" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="80" y="265" width="260" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="210" y="300" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">DB 기반 축적 (41)</text>
+    <text x="210" y="323" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">대화·피드백 데이터 축적</text>
+
+    <!-- 채널 2: 멘토링부 (42) -->
+    <line x1="500" y1="230" x2="500" y2="260" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="370" y="265" width="260" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="300" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">멘토링 (42)</text>
+    <text x="500" y="323" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">인간 멘토 / AI 멘토</text>
+
+    <!-- 채널 3: 스쿨 시스템 (43) -->
+    <line x1="790" y1="230" x2="790" y2="260" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="660" y="265" width="260" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="790" y="300" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="18" font-weight="bold">스쿨 시스템 (43)</text>
+    <text x="790" y="323" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">커리큘럼 기반 학습</text>
+
+    <!-- 채널 4: 커뮤니티 활동 (46) — 성장부 내부 -->
+    <line x1="270" y1="420" x2="270" y2="450" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="80" y="455" width="380" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="270" y="502" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">커뮤니티 활동 (46)</text>
+
+    <!-- 채널 5: 스킬 마켓 (47) — 성장부 내부 -->
+    <line x1="730" y1="420" x2="730" y2="450" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="540" y="455" width="380" height="80" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="730" y="488" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">스킬 마켓 (47)</text>
+    <text x="730" y="511" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="15">무료/유료 스킬 거래</text>
+
+    <!-- 합류: 성장 결과 -->
+    <line x1="270" y1="535" x2="270" y2="620" stroke="black" stroke-width="2"/>
+    <line x1="730" y1="535" x2="730" y2="620" stroke="black" stroke-width="2"/>
+    <line x1="270" y1="620" x2="730" y2="620" stroke="black" stroke-width="2"/>
+    <line x1="500" y1="620" x2="500" y2="650" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 성장 결과 -->
+    <rect x="250" y="655" width="500" height="70" fill="white" stroke="black" stroke-width="2" rx="5"/>
+    <text x="500" y="697" text-anchor="middle" font-family="Malgun Gothic, AppleGothic, Dotum, sans-serif" font-size="20" font-weight="bold">챗봇 전문성 · 응답 품질 향상</text>
+</svg>

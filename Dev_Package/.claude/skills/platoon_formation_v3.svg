@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1420" width="1100" height="1420" font-family="'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#19232F" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shadowLight" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#19232F" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#1E64DC"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#8237BE"/>
+    </marker>
+    <!-- Bidirectional arrow markers for inter-squad communication -->
+    <marker id="arrowCommL" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+      <polygon points="8,0 0,3 8,6" fill="#F06420"/>
+    </marker>
+    <marker id="arrowCommR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#F06420"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="1420" fill="#F0F4FA"/>
+
+  <!-- ============================================ -->
+  <!-- 1. TITLE BAR                                 -->
+  <!-- ============================================ -->
+  <rect x="50" y="30" width="1000" height="80" rx="14" fill="#1E64DC" filter="url(#shadow)"/>
+  <text x="550" y="62" text-anchor="middle" fill="#FFFFFF" font-size="26" font-weight="bold">/platoon-formation</text>
+  <text x="550" y="90" text-anchor="middle" fill="#FFFFFF" font-size="15" opacity="0.85">소대장(1) · 연락병(1) · 3분대×12(36) · 용병 풀(4)  =  총 42명</text>
+
+  <!-- ============================================ -->
+  <!-- 2. COMMANDER CARD (소대장 + 연락병 보조)       -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="140" width="700" height="112" rx="12" fill="#FFFFFF"/>
+    <rect x="200" y="140" width="700" height="44" rx="12" fill="#1E64DC"/>
+    <rect x="200" y="168" width="700" height="16" fill="#1E64DC"/>
+    <text x="550" y="170" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold">소대 HQ</text>
+
+    <!-- 소대장 (정중앙, x=270~830, center=550) -->
+    <rect x="270" y="192" width="560" height="50" rx="8" fill="#EBF1FC" stroke="#1E64DC" stroke-width="1.5"/>
+    <text x="550" y="222" text-anchor="middle" fill="#19232F" font-size="15" font-weight="bold">소대장 (Opus 4.6)  |  Orchestrator</text>
+
+    <!-- 연락병 (우측 끝 소형 태그) -->
+    <rect x="842" y="192" width="48" height="50" rx="6" fill="#1E64DC" stroke="#4A90E2" stroke-width="1.5"/>
+    <text x="866" y="209" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold">연락병</text>
+    <text x="866" y="222" text-anchor="middle" fill="#C8DEFF" font-size="8">Web UI</text>
+    <text x="866" y="234" text-anchor="middle" fill="#C8DEFF" font-size="8">↔ 소대장</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 3. ARROWS: 소대장 → 3 Squads (직접 지휘)      -->
+  <!-- ============================================ -->
+  <line x1="550" y1="252" x2="550" y2="270" stroke="#1E64DC" stroke-width="2"/>
+  <line x1="175" y1="270" x2="925" y2="270" stroke="#1E64DC" stroke-width="2"/>
+  <line x1="175" y1="270" x2="175" y2="280" stroke="#1E64DC" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="550" y1="270" x2="550" y2="280" stroke="#1E64DC" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="925" y1="270" x2="925" y2="280" stroke="#1E64DC" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- ============================================ -->
+  <!-- 3-1. Inter-Squad Communication Arrows        -->
+  <!-- Alpha ↔ Bravo ↔ Charlie (교신)               -->
+  <!-- ============================================ -->
+  <!-- Alpha ↔ Bravo -->
+  <line x1="350" y1="305" x2="400" y2="305" stroke="#F06420" stroke-width="1.5" stroke-dasharray="6,3" marker-start="url(#arrowCommL)" marker-end="url(#arrowCommR)"/>
+  <text x="375" y="298" text-anchor="middle" fill="#F06420" font-size="9">교신</text>
+
+  <!-- Bravo ↔ Charlie -->
+  <line x1="700" y1="305" x2="750" y2="305" stroke="#F06420" stroke-width="1.5" stroke-dasharray="6,3" marker-start="url(#arrowCommL)" marker-end="url(#arrowCommR)"/>
+  <text x="725" y="298" text-anchor="middle" fill="#F06420" font-size="9">교신</text>
+
+  <!-- ============================================ -->
+  <!-- 4-A. 1분대 Alpha (BLUE) - 12명               -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="280" width="300" height="392" rx="12" fill="#FFFFFF"/>
+    <rect x="50" y="280" width="300" height="50" rx="12" fill="#1E64DC"/>
+    <rect x="50" y="310" width="300" height="20" fill="#1E64DC"/>
+    <text x="200" y="306" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold">1분대  Alpha</text>
+    <text x="200" y="325" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.85">역할 미정 (임무 시 배정)  |  12명</text>
+
+    <text x="200" y="353" text-anchor="middle" fill="#F06420" font-size="12" font-weight="bold">분대장 (Teammate)  |  Sonnet</text>
+
+    <line x1="70" y1="380" x2="330" y2="380" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="200" y="397" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Sunny Core Sub-Agent Package (11)</text>
+
+    <!-- 11 agents: 2 cols x 6 rows (last row single) -->
+    <!-- Row1 -->
+    <rect x="65" y="407" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="132" y="425" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">frontend-dev</text>
+    <rect x="210" y="407" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="277" y="425" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">backend-dev</text>
+
+    <!-- Row2 -->
+    <rect x="65" y="441" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="132" y="459" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">database-dev</text>
+    <rect x="210" y="441" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="277" y="459" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">ux-ui-designer</text>
+
+    <!-- Row3 -->
+    <rect x="65" y="475" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="132" y="493" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">api-dev</text>
+    <rect x="210" y="475" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="277" y="493" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">code-reviewer</text>
+
+    <!-- Row4 -->
+    <rect x="65" y="509" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="132" y="527" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">test-runner</text>
+    <rect x="210" y="509" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="277" y="527" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">debugger</text>
+
+    <!-- Row5 -->
+    <rect x="65" y="543" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="132" y="561" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">security-spec</text>
+    <rect x="210" y="543" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="277" y="561" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">doc-writer</text>
+
+    <!-- Row6 (단독) -->
+    <rect x="65" y="577" width="135" height="28" rx="5" fill="#EBF1FC"/>
+    <text x="132" y="595" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">devops-ts</text>
+
+    <line x1="70" y1="615" x2="330" y2="615" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="200" y="637" text-anchor="middle" fill="#1E64DC" font-size="11">TaskUpdate + SendMessage</text>
+    <text x="200" y="653" text-anchor="middle" fill="#1E64DC" font-size="11" font-weight="bold">→ 소대장 보고</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 4-B. 2분대 Bravo (GREEN) - 12명               -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="280" width="300" height="392" rx="12" fill="#FFFFFF"/>
+    <rect x="400" y="280" width="300" height="50" rx="12" fill="#199B50"/>
+    <rect x="400" y="310" width="300" height="20" fill="#199B50"/>
+    <text x="550" y="306" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold">2분대  Bravo</text>
+    <text x="550" y="325" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.85">역할 미정 (임무 시 배정)  |  12명</text>
+
+    <text x="550" y="353" text-anchor="middle" fill="#F06420" font-size="12" font-weight="bold">분대장 (Teammate)  |  Sonnet</text>
+
+    <line x1="420" y1="380" x2="680" y2="380" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="550" y="397" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Sunny Core Sub-Agent Package (11)</text>
+
+    <!-- Row1 -->
+    <rect x="415" y="407" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="482" y="425" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">frontend-dev</text>
+    <rect x="560" y="407" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="627" y="425" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">backend-dev</text>
+
+    <!-- Row2 -->
+    <rect x="415" y="441" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="482" y="459" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">database-dev</text>
+    <rect x="560" y="441" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="627" y="459" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">ux-ui-designer</text>
+
+    <!-- Row3 -->
+    <rect x="415" y="475" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="482" y="493" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">api-dev</text>
+    <rect x="560" y="475" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="627" y="493" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">code-reviewer</text>
+
+    <!-- Row4 -->
+    <rect x="415" y="509" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="482" y="527" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">test-runner</text>
+    <rect x="560" y="509" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="627" y="527" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">debugger</text>
+
+    <!-- Row5 -->
+    <rect x="415" y="543" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="482" y="561" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">security-spec</text>
+    <rect x="560" y="543" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="627" y="561" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">doc-writer</text>
+
+    <!-- Row6 (단독) -->
+    <rect x="415" y="577" width="135" height="28" rx="5" fill="#E8F5EC"/>
+    <text x="482" y="595" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">devops-ts</text>
+
+    <line x1="420" y1="615" x2="680" y2="615" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="550" y="637" text-anchor="middle" fill="#199B50" font-size="11">TaskUpdate + SendMessage</text>
+    <text x="550" y="653" text-anchor="middle" fill="#199B50" font-size="11" font-weight="bold">→ 소대장 보고</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 4-C. 3분대 Charlie (ORANGE) - 12명            -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="750" y="280" width="300" height="392" rx="12" fill="#FFFFFF"/>
+    <rect x="750" y="280" width="300" height="50" rx="12" fill="#E69B00"/>
+    <rect x="750" y="310" width="300" height="20" fill="#E69B00"/>
+    <text x="900" y="306" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold">3분대  Charlie</text>
+    <text x="900" y="325" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.85">역할 미정 (임무 시 배정)  |  12명</text>
+
+    <text x="900" y="353" text-anchor="middle" fill="#F06420" font-size="12" font-weight="bold">분대장 (Teammate)  |  Sonnet</text>
+
+    <line x1="770" y1="380" x2="1030" y2="380" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="900" y="397" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Sunny Core Sub-Agent Package (11)</text>
+
+    <!-- Row1 -->
+    <rect x="765" y="407" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="832" y="425" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">frontend-dev</text>
+    <rect x="910" y="407" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="977" y="425" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">backend-dev</text>
+
+    <!-- Row2 -->
+    <rect x="765" y="441" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="832" y="459" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">database-dev</text>
+    <rect x="910" y="441" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="977" y="459" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">ux-ui-designer</text>
+
+    <!-- Row3 -->
+    <rect x="765" y="475" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="832" y="493" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">api-dev</text>
+    <rect x="910" y="475" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="977" y="493" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">code-reviewer</text>
+
+    <!-- Row4 -->
+    <rect x="765" y="509" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="832" y="527" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">test-runner</text>
+    <rect x="910" y="509" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="977" y="527" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">debugger</text>
+
+    <!-- Row5 -->
+    <rect x="765" y="543" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="832" y="561" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">security-spec</text>
+    <rect x="910" y="543" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="977" y="561" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">doc-writer</text>
+
+    <!-- Row6 (단독) -->
+    <rect x="765" y="577" width="135" height="28" rx="5" fill="#FFF5E0"/>
+    <text x="832" y="595" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">devops-ts</text>
+
+    <line x1="770" y1="615" x2="1030" y2="615" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="900" y="637" text-anchor="middle" fill="#E69B00" font-size="11">TaskUpdate + SendMessage</text>
+    <text x="900" y="653" text-anchor="middle" fill="#E69B00" font-size="11" font-weight="bold">→ 소대장 보고</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 5. ARROWS: 3 Squads → Mercenary Pool         -->
+  <!-- ============================================ -->
+  <line x1="175" y1="672" x2="175" y2="687" stroke="#8237BE" stroke-width="2"/>
+  <line x1="550" y1="672" x2="550" y2="687" stroke="#8237BE" stroke-width="2"/>
+  <line x1="925" y1="672" x2="925" y2="687" stroke="#8237BE" stroke-width="2"/>
+  <line x1="175" y1="687" x2="925" y2="687" stroke="#8237BE" stroke-width="2"/>
+  <line x1="550" y1="687" x2="550" y2="697" stroke="#8237BE" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- ============================================ -->
+  <!-- 6. MERCENARY POOL (공유 4명)                  -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="100" y="702" width="900" height="140" rx="12" fill="#FFFFFF"/>
+    <rect x="100" y="702" width="900" height="40" rx="12" fill="#8237BE"/>
+    <rect x="100" y="726" width="900" height="16" fill="#8237BE"/>
+    <text x="550" y="730" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold">용병 풀  |  4명 공유</text>
+    <text x="550" y="763" text-anchor="middle" fill="#3C4650" font-size="12">소대장·분대장 누구나 호출  |  임무별 자동 매칭</text>
+
+    <rect x="120" y="779" width="195" height="48" rx="8" fill="#F3EDFC" stroke="#8237BE" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="217" y="798" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Codex</text>
+    <text x="217" y="816" text-anchor="middle" fill="#3C4650" font-size="10">코드 생성 / 리팩토링</text>
+
+    <rect x="335" y="779" width="195" height="48" rx="8" fill="#F3EDFC" stroke="#8237BE" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="432" y="798" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Gemini</text>
+    <text x="432" y="816" text-anchor="middle" fill="#3C4650" font-size="10">대용량 분석 / 2M Context</text>
+
+    <rect x="550" y="779" width="195" height="48" rx="8" fill="#F3EDFC" stroke="#8237BE" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="647" y="798" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Grok</text>
+    <text x="647" y="816" text-anchor="middle" fill="#3C4650" font-size="10">실시간 검색 / 트렌드</text>
+
+    <rect x="765" y="779" width="215" height="48" rx="8" fill="#F3EDFC" stroke="#8237BE" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="872" y="798" text-anchor="middle" fill="#19232F" font-size="13" font-weight="bold">Perplexity</text>
+    <text x="872" y="816" text-anchor="middle" fill="#3C4650" font-size="10">리서치 / 최신 정보 수집</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 7. SUNNY SKILL PACKAGE (18 Skills)           -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="100" y="867" width="900" height="330" rx="12" fill="#FFFFFF"/>
+    <rect x="100" y="867" width="900" height="44" rx="12" fill="#1E64DC"/>
+    <rect x="100" y="895" width="900" height="16" fill="#1E64DC"/>
+    <text x="550" y="897" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold">Sunny Core Skill Package  |  18 Skills</text>
+
+    <!-- Tier 행 1: METHODOLOGY / C2 / DEPLOYMENT -->
+    <text x="120" y="935" fill="#D4A017" font-size="11" font-weight="bold">METHODOLOGY</text>
+    <text x="350" y="935" fill="#C0392B" font-size="11" font-weight="bold">C2</text>
+    <text x="570" y="935" fill="#E69B00" font-size="11" font-weight="bold">DEPLOYMENT</text>
+
+    <!-- METHODOLOGY box -->
+    <rect x="120" y="943" width="190" height="24" rx="5" fill="#FFF8E1" stroke="#D4A017" stroke-width="1"/>
+    <text x="215" y="959" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/sal-grid-dev-슈퍼스킬-core</text>
+
+    <!-- C2 box -->
+    <rect x="350" y="943" width="180" height="24" rx="5" fill="#FDEDEC" stroke="#C0392B" stroke-width="1" stroke-opacity="0.5"/>
+    <text x="440" y="959" text-anchor="middle" fill="#19232F" font-size="10" font-weight="bold">/review-evaluate-core</text>
+
+    <!-- DEPLOYMENT boxes -->
+    <rect x="570" y="943" width="155" height="24" rx="5" fill="#FFF5E0" stroke="#E69B00" stroke-width="1"/>
+    <text x="647" y="959" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/deploy-subagent-core</text>
+    <rect x="735" y="943" width="140" height="24" rx="5" fill="#FFF5E0" stroke="#E69B00" stroke-width="1"/>
+    <text x="805" y="959" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/deploy-skill-core</text>
+
+    <!-- Tier 행 2: CAPABILITY -->
+    <text x="120" y="988" fill="#199B50" font-size="11" font-weight="bold">CAPABILITY</text>
+
+    <rect x="120" y="996" width="135" height="24" rx="5" fill="#E8F5EC" stroke="#199B50" stroke-width="1"/>
+    <text x="187" y="1012" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/api-builder-core</text>
+    <rect x="263" y="996" width="135" height="24" rx="5" fill="#E8F5EC" stroke="#199B50" stroke-width="1"/>
+    <text x="330" y="1012" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/ui-ux-builder-core</text>
+    <rect x="406" y="996" width="135" height="24" rx="5" fill="#E8F5EC" stroke="#199B50" stroke-width="1"/>
+    <text x="473" y="1012" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/create-image-core</text>
+    <rect x="549" y="996" width="135" height="24" rx="5" fill="#E8F5EC" stroke="#199B50" stroke-width="1"/>
+    <text x="616" y="1012" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/doc-generator-core</text>
+    <rect x="692" y="996" width="143" height="24" rx="5" fill="#E8F5EC" stroke="#199B50" stroke-width="1"/>
+    <text x="763" y="1012" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/youtube-generate-core</text>
+    <rect x="843" y="996" width="135" height="24" rx="5" fill="#E8F5EC" stroke="#199B50" stroke-width="1"/>
+    <text x="910" y="1012" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/find-skills-core</text>
+
+    <!-- Tier 행 3: DATABASE / SECURITY / TESTING -->
+    <text x="120" y="1041" fill="#8B5E3C" font-size="11" font-weight="bold">DATABASE</text>
+    <text x="310" y="1041" fill="#C0392B" font-size="11" font-weight="bold">SECURITY</text>
+    <text x="510" y="1041" fill="#1E64DC" font-size="11" font-weight="bold">TESTING</text>
+
+    <rect x="120" y="1049" width="150" height="24" rx="5" fill="#FDF5EC" stroke="#8B5E3C" stroke-width="1"/>
+    <text x="195" y="1065" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/db-schema-core</text>
+
+    <rect x="310" y="1049" width="155" height="24" rx="5" fill="#FDEDEC" stroke="#C0392B" stroke-width="1"/>
+    <text x="387" y="1065" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/security-audit-core</text>
+
+    <rect x="510" y="1049" width="135" height="24" rx="5" fill="#EBF1FC" stroke="#1E64DC" stroke-width="1"/>
+    <text x="577" y="1065" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/e2e-test-core</text>
+    <rect x="655" y="1049" width="130" height="24" rx="5" fill="#EBF1FC" stroke="#1E64DC" stroke-width="1"/>
+    <text x="720" y="1065" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/api-test-core</text>
+
+    <!-- Tier 행 4: DEBUGGING / PERFORMANCE / DEVOPS / CPC -->
+    <text x="120" y="1094" fill="#6B7785" font-size="11" font-weight="bold">DEBUGGING</text>
+    <text x="310" y="1094" fill="#D4A017" font-size="11" font-weight="bold">PERFORMANCE</text>
+    <text x="510" y="1094" fill="#546E7A" font-size="11" font-weight="bold">DEVOPS</text>
+    <text x="685" y="1094" fill="#0097A7" font-size="11" font-weight="bold">CPC 인프라</text>
+
+    <rect x="120" y="1102" width="155" height="24" rx="5" fill="#F5F5F5" stroke="#6B7785" stroke-width="1"/>
+    <text x="197" y="1118" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/troubleshoot-core</text>
+
+    <rect x="310" y="1102" width="165" height="24" rx="5" fill="#FFF8E1" stroke="#D4A017" stroke-width="1"/>
+    <text x="392" y="1118" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/performance-check-core</text>
+
+    <rect x="510" y="1102" width="140" height="24" rx="5" fill="#ECEFF1" stroke="#546E7A" stroke-width="1"/>
+    <text x="580" y="1118" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/cicd-setup-core</text>
+
+    <rect x="685" y="1102" width="120" height="24" rx="5" fill="#E0F7FA" stroke="#0097A7" stroke-width="1"/>
+    <text x="745" y="1118" text-anchor="middle" fill="#19232F" font-size="9" font-weight="bold">/cpc-setup</text>
+
+    <!-- 구분선 -->
+    <line x1="120" y1="1142" x2="980" y2="1142" stroke="#E0E6EE" stroke-width="1"/>
+
+    <!-- Permission note -->
+    <text x="550" y="1162" text-anchor="middle" fill="#1E64DC" font-size="11">소대장 / 분대장 / 서브에이전트 공용  |  서브에이전트는 /deploy-subagent-core만 사용 불가</text>
+
+    <!-- Legend -->
+    <rect x="120" y="1172" width="8" height="8" rx="2" fill="#D4A017"/>
+    <text x="132" y="1180" fill="#6B7785" font-size="9">Methodology</text>
+    <rect x="220" y="1172" width="8" height="8" rx="2" fill="#C0392B"/>
+    <text x="232" y="1180" fill="#6B7785" font-size="9">C2</text>
+    <rect x="265" y="1172" width="8" height="8" rx="2" fill="#E69B00"/>
+    <text x="277" y="1180" fill="#6B7785" font-size="9">Deployment</text>
+    <rect x="370" y="1172" width="8" height="8" rx="2" fill="#199B50"/>
+    <text x="382" y="1180" fill="#6B7785" font-size="9">Capability</text>
+    <rect x="445" y="1172" width="8" height="8" rx="2" fill="#8B5E3C"/>
+    <text x="457" y="1180" fill="#6B7785" font-size="9">Database</text>
+    <rect x="515" y="1172" width="8" height="8" rx="2" fill="#C0392B"/>
+    <text x="527" y="1180" fill="#6B7785" font-size="9">Security</text>
+    <rect x="580" y="1172" width="8" height="8" rx="2" fill="#1E64DC"/>
+    <text x="592" y="1180" fill="#6B7785" font-size="9">Testing</text>
+    <rect x="640" y="1172" width="8" height="8" rx="2" fill="#6B7785"/>
+    <text x="652" y="1180" fill="#6B7785" font-size="9">Debugging</text>
+    <rect x="720" y="1172" width="8" height="8" rx="2" fill="#D4A017"/>
+    <text x="732" y="1180" fill="#6B7785" font-size="9">Performance</text>
+    <rect x="810" y="1172" width="8" height="8" rx="2" fill="#546E7A"/>
+    <text x="822" y="1180" fill="#6B7785" font-size="9">DevOps</text>
+    <rect x="875" y="1172" width="8" height="8" rx="2" fill="#0097A7"/>
+    <text x="887" y="1180" fill="#6B7785" font-size="9">CPC</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- 8. CPC (Platoon System - 별도 관리)           -->
+  <!-- ============================================ -->
+  <g filter="url(#shadow)">
+    <rect x="100" y="1210" width="900" height="170" rx="12" fill="#FFFFFF"/>
+    <rect x="100" y="1210" width="900" height="44" rx="12" fill="#0097A7"/>
+    <rect x="100" y="1238" width="900" height="16" fill="#0097A7"/>
+    <text x="550" y="1240" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold">CPC (Claude Platoons Control)  |  Platoon System</text>
+
+    <!-- 3-layer separation -->
+    <rect x="120" y="1270" width="250" height="50" rx="8" fill="#E0F7FA" stroke="#0097A7" stroke-width="1"/>
+    <text x="245" y="1290" text-anchor="middle" fill="#19232F" font-size="11" font-weight="bold">/cpc-setup</text>
+    <text x="245" y="1308" text-anchor="middle" fill="#0097A7" font-size="10">Skill  |  1회 인프라 구축</text>
+
+    <rect x="400" y="1270" width="280" height="50" rx="8" fill="#E0F7FA" stroke="#0097A7" stroke-width="1"/>
+    <text x="540" y="1290" text-anchor="middle" fill="#19232F" font-size="11" font-weight="bold">/cpc-engage-1/2/3</text>
+    <text x="540" y="1308" text-anchor="middle" fill="#0097A7" font-size="10">Command  |  매 세션 소대장 접속</text>
+
+    <rect x="710" y="1270" width="270" height="50" rx="8" fill="#E0F7FA" stroke="#0097A7" stroke-width="1"/>
+    <text x="845" y="1290" text-anchor="middle" fill="#19232F" font-size="11" font-weight="bold">/platoon-formation</text>
+    <text x="845" y="1308" text-anchor="middle" fill="#0097A7" font-size="10">Skill  |  소대 편제 팀구성</text>
+
+    <!-- Communication flow -->
+    <line x1="120" y1="1335" x2="980" y2="1335" stroke="#E0E6EE" stroke-width="1"/>
+    <text x="550" y="1355" text-anchor="middle" fill="#19232F" font-size="12" font-weight="bold">소대장 (Claude Code)  ---engage---  CPC API  ---  연락병 (Web UI)</text>
+    <text x="550" y="1372" text-anchor="middle" fill="#6B7785" font-size="10">claude-platoons-control.vercel.app  |  Supabase 15 Platoons (5 Projects x 3)</text>
+  </g>
+
+</svg>

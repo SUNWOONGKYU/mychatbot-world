@@ -1,34 +1,36 @@
+# ============================================
+# SAL Grid Dev Suite - .gitignore
+# ============================================
+
 # Dependencies
 node_modules/
 .pnp
 .pnp.js
 
-# Testing
-coverage/
-__tests__/
-e2e/
-
-# Next.js / Build
+# Build outputs
 .next/
 out/
 build/
 dist/
 
-# Environment Variables
+# Environment Variables — NEVER commit!
 .env
 .env.local
+.env.*
 .env*.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Debug
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
+logs/
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 *.swp
@@ -38,10 +40,8 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# Temporary files
+# Temp files
 *.tmp
 .temp/
 tmp/
@@ -51,7 +51,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
 env/
 venv/
 ENV/
@@ -63,25 +62,12 @@ ENV/
 
 # Vercel
 .vercel/
+.vercel
 
 # Docker
 .dockerignore
 
-# PROJECT GRID 매뉴얼 (비밀 노하우)
-**/PROJECT_GRID_매뉴얼*.md
-**/PROJECT_GRID_MANUAL*.md
-
-# PROJECT GRID 아카이브 (구버전 보관)
-**/2_개발준비/2-4_Project_Grid/archive/
-
-# Claude Code
-claude_code/
-
-# Logs
-*.log
-logs/
-
-# Database
+# Database files
 *.db
 *.sqlite
 *.sqlite3
@@ -90,17 +76,15 @@ logs/
 *.bak
 *.backup
 
-# Windows special files
-nul
-NUL
-AI_Link/README.md
-.vercel
-Web_ClaudeCode_Bridge/
-P1_사업계획/Patent/
-
 # Archives
 *.zip
 
+# Coverage
+coverage/
+
+# SAL Grid: 매뉴얼 파일 (비공개 노하우)
+**/PROJECT_SAL_GRID_MANUAL*.md
+**/PROJECT_SAL_GRID_매뉴얼*.md
+
 # SAL Grid: data 폴더는 method 안에만 허용
-# method/csv/data/ 또는 method/database/data/ 안에서만 사용
 S0_Project-SAL-Grid_생성/data/

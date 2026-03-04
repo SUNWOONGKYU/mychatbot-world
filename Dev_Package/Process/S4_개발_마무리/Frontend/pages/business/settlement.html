@@ -1,0 +1,1134 @@
+<!-- @task S4F3 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정산 내역 — My Chatbot World</title>
+  <meta name="description" content="미정산 금액 확인 및 정산 요청, 정산 이력을 관리하세요.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+      --settle-min: 10000;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      flex: 1;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .sidebar-section-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0 1rem;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    /* ===== 모바일 ===== */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 100;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 0.625rem;
+      cursor: pointer;
+      color: var(--color-text);
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 40;
+    }
+
+    /* ===== 메인 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      max-width: calc(100% - var(--sidebar-width));
+    }
+
+    /* ===== 페이지 헤더 ===== */
+    .page-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 스켈레톤 ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .loading-view { display: block; }
+    .loaded-view  { display: none; }
+    .error-view   { display: none; }
+
+    body.state-loaded .loading-view { display: none; }
+    body.state-loaded .loaded-view  { display: block; }
+    body.state-error  .loading-view { display: none; }
+    body.state-error  .error-view   { display: block; }
+
+    /* ===== 정산 요청 카드 ===== */
+    .settle-hero {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .settle-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .settle-hero-left { flex: 1; }
+
+    .settle-hero-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.625rem;
+    }
+
+    .settle-hero-amount {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1;
+      margin-bottom: 0.375rem;
+    }
+
+    .settle-hero-unit {
+      font-size: 0.875rem;
+      color: var(--color-text-faint);
+    }
+
+    .settle-hero-notice {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .settle-hero-notice.ready {
+      color: var(--color-success);
+    }
+
+    .settle-hero-notice.not-ready {
+      color: var(--color-warning);
+    }
+
+    /* ===== 봇 선택 ===== */
+    .settle-bot-select-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .settle-bot-label {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    .settle-bot-select {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.875rem;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 150ms ease;
+      min-width: 200px;
+    }
+
+    .settle-bot-select:focus { border-color: var(--color-primary-light); }
+
+    /* ===== 정산 요청 버튼 ===== */
+    .settle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-lg);
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 200ms ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .settle-btn.enabled {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: #1a1a1a;
+      box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+    }
+
+    .settle-btn.enabled:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+    }
+
+    .settle-btn.enabled:active { transform: translateY(0); }
+
+    .settle-btn.disabled {
+      background: rgba(255,255,255,0.08);
+      color: var(--color-text-faint);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .settle-btn.loading-btn {
+      background: rgba(245,158,11,0.4);
+      color: rgba(255,255,255,0.6);
+      cursor: not-allowed;
+    }
+
+    /* ===== 진행 바 (미정산 → 최소금액) ===== */
+    .settle-progress-wrapper {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .settle-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.875rem;
+    }
+
+    .settle-progress-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .settle-progress-stat {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+    }
+
+    .settle-progress-track {
+      width: 100%;
+      height: 0.75rem;
+      background: rgba(255,255,255,0.07);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 0.625rem;
+    }
+
+    .settle-progress-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.7s ease;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .settle-progress-fill.full {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .settle-progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--color-text-faint);
+    }
+
+    .settle-min-notice {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius-md);
+      font-size: 0.8125rem;
+      color: #fcd34d;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .settle-ready-notice {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: var(--radius-md);
+      font-size: 0.8125rem;
+      color: #6ee7b7;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ===== 토스트 ===== */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid transparent;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      max-width: 360px;
+      pointer-events: all;
+      animation: toastIn 300ms ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .toast.success {
+      background: rgba(16,185,129,0.15);
+      border-color: rgba(16,185,129,0.3);
+      color: #6ee7b7;
+    }
+
+    .toast.error {
+      background: rgba(239,68,68,0.15);
+      border-color: rgba(239,68,68,0.3);
+      color: #fca5a5;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== 카드 ===== */
+    .card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== 정산 이력 테이블 ===== */
+    .settle-table-wrapper { overflow-x: auto; }
+
+    .settle-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .settle-table th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .settle-table td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--color-border-2);
+      vertical-align: middle;
+    }
+
+    .settle-table tr:last-child td { border-bottom: none; }
+    .settle-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-completed { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+    .status-pending   { background: rgba(245,158,11,0.15); color: #fcd34d; }
+    .status-rejected  { background: rgba(239,68,68,0.15);  color: #fca5a5; }
+
+    .settle-amount-col {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--color-success);
+    }
+
+    /* ===== 빈 상태 ===== */
+    .empty-state {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--color-text-muted);
+    }
+
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .empty-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .empty-desc { font-size: 0.875rem; }
+
+    /* ===== 에러 뷰 ===== */
+    .error-box {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .error-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .error-title { font-size: 1rem; font-weight: 700; color: var(--color-danger); margin-bottom: 0.375rem; }
+    .error-message { font-size: 0.875rem; color: var(--color-text-muted); }
+    .error-retry {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--radius-md);
+      color: var(--color-danger);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .error-retry:hover { background: rgba(239,68,68,0.22); }
+
+    /* 확인 모달 */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      max-width: 440px;
+      width: calc(100% - 2rem);
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-body {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-amount {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-warning);
+      display: block;
+      margin: 0.5rem 0;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+
+    .modal-cancel {
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 150ms ease;
+    }
+
+    .modal-cancel:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .modal-confirm {
+      padding: 0.625rem 1.5rem;
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: #1a1a1a;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 150ms ease;
+    }
+
+    .modal-confirm:hover { opacity: 0.9; }
+
+    /* ===== 모바일 ===== */
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: flex; }
+      .sidebar { transform: translateX(-100%); transition: transform 250ms ease; }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main-content { margin-left: 0; padding: 1.25rem 1rem; padding-top: 4rem; max-width: 100%; }
+      .settle-hero { flex-direction: column; align-items: flex-start; }
+      .settle-hero-amount { font-size: 2.25rem; }
+      .settle-btn { width: 100%; justify-content: center; }
+      .settle-bot-select { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴 열기">&#9776;</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/pages/home/index.html" class="sidebar-brand">
+      <div class="sidebar-brand-icon">M</div>
+      <span>My Chatbot World</span>
+    </a>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/index.html">
+          <span class="sidebar-nav-icon">&#127968;</span><span>홈</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/chatbots.html">
+          <span class="sidebar-nav-icon">&#129302;</span><span>내 챗봇</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/marketplace/index.html">
+          <span class="sidebar-nav-icon">&#128722;</span><span>마켓플레이스</span>
+        </a>
+      </li>
+      <div class="sidebar-section-label">비즈니스</div>
+      <li class="sidebar-nav-item">
+        <a href="/pages/business/index.html">
+          <span class="sidebar-nav-icon">&#128200;</span><span>대시보드</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/business/revenue.html">
+          <span class="sidebar-nav-icon">&#128176;</span><span>수익 상세</span>
+        </a>
+      </li>
+      <li class="sidebar-nav-item active">
+        <a href="/pages/business/settlement.html">
+          <span class="sidebar-nav-icon">&#128179;</span><span>정산 내역</span>
+        </a>
+      </li>
+      <div class="sidebar-section-label">계정</div>
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/profile.html">
+          <span class="sidebar-nav-icon">&#128100;</span><span>마이페이지</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- 메인 -->
+  <main class="main-content">
+
+    <!-- 로딩 뷰 -->
+    <div class="loading-view">
+      <div class="page-header">
+        <div class="skeleton" style="width:160px; height:1.75rem; margin-bottom:0.5rem; border-radius:0.25rem;"></div>
+        <div class="skeleton" style="width:280px; height:0.875rem; border-radius:0.25rem;"></div>
+      </div>
+      <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:1.5rem; height:160px;"></div>
+      <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:1.5rem; margin-bottom:1.5rem; height:100px;"></div>
+      <div style="background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:1.75rem; height:280px;"></div>
+    </div>
+
+    <!-- 에러 뷰 -->
+    <div class="error-view">
+      <div class="page-header">
+        <div class="page-title">정산 내역</div>
+        <div class="page-subtitle">데이터를 불러오는 중 오류가 발생했습니다</div>
+      </div>
+      <div class="error-box">
+        <div class="error-icon">&#9888;&#65039;</div>
+        <div>
+          <div class="error-title">데이터 로드 실패</div>
+          <div class="error-message" id="errorMessage">정산 데이터를 불러오지 못했습니다.</div>
+          <button class="error-retry" onclick="loadData()">&#8635; 다시 시도</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로드 완료 뷰 -->
+    <div class="loaded-view">
+      <div class="page-header">
+        <div class="page-title">정산 내역</div>
+        <div class="page-subtitle">미정산 수익을 정산 요청하고 이력을 관리하세요</div>
+      </div>
+
+      <!-- 봇 선택 -->
+      <div class="settle-bot-select-row">
+        <span class="settle-bot-label">봇 선택</span>
+        <select class="settle-bot-select" id="botSelect" onchange="onBotChange(this.value)">
+          <option value="all">전체 봇</option>
+        </select>
+      </div>
+
+      <!-- 미정산 금액 + 정산 요청 버튼 -->
+      <div class="settle-hero">
+        <div class="settle-hero-left">
+          <div class="settle-hero-label">현재 미정산 금액</div>
+          <div class="settle-hero-amount" id="unsettledAmount">—</div>
+          <div class="settle-hero-unit">크레딧</div>
+          <div class="settle-hero-notice" id="settleNotice">
+            <span>&#128336;</span>
+            <span id="settleNoticeText">데이터 로드 중...</span>
+          </div>
+        </div>
+        <button class="settle-btn disabled" id="settleBtn" onclick="openSettleModal()">
+          <span>&#128179;</span>
+          <span>정산 요청</span>
+        </button>
+      </div>
+
+      <!-- 최소 금액 진행 바 -->
+      <div class="settle-progress-wrapper">
+        <div class="settle-progress-header">
+          <div class="settle-progress-title">최소 정산 기준 달성률</div>
+          <div class="settle-progress-stat" id="progressStat">0 / 10,000 C</div>
+        </div>
+        <div class="settle-progress-track">
+          <div class="settle-progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+        <div class="settle-progress-labels">
+          <span>0</span>
+          <span>최소 10,000 크레딧</span>
+        </div>
+        <div id="progressNotice" class="settle-min-notice">
+          <span>&#9888;&#65039;</span>
+          <span id="progressNoticeText">최소 10,000 크레딧 이상 필요합니다</span>
+        </div>
+      </div>
+
+      <!-- 정산 이력 테이블 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">정산 이력</div>
+          <div style="font-size:0.8125rem; color:var(--color-text-faint);" id="historyCount">—</div>
+        </div>
+        <div class="settle-table-wrapper">
+          <table class="settle-table">
+            <thead>
+              <tr>
+                <th>요청일</th>
+                <th>금액 (크레딧)</th>
+                <th>봇</th>
+                <th>상태</th>
+                <th>완료일</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- JS가 채움 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /.loaded-view -->
+
+  </main>
+
+  <!-- 정산 확인 모달 -->
+  <div class="modal-backdrop" id="settleModal">
+    <div class="modal">
+      <div class="modal-title">&#128179; 정산 요청 확인</div>
+      <div class="modal-body">
+        아래 금액을 정산 요청합니다. 정산 처리에는 영업일 기준 1–3일이 소요됩니다.
+        <span class="modal-amount" id="modalAmount">—</span>
+        크레딧을 정산 요청하시겠습니까?
+      </div>
+      <div class="modal-btns">
+        <button class="modal-cancel" onclick="closeModal()">취소</button>
+        <button class="modal-confirm" id="modalConfirmBtn" onclick="submitSettle()">정산 요청</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 컨테이너 -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    /* ===== XSS 방지 헬퍼 ===== */
+    function escHtml(str) {
+      if (str == null) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    /* ===== 인증 체크 ===== */
+    const _authToken = localStorage.getItem('sb-hlpovizxnrnspobddxmq-auth-token');
+    if (!_authToken) {
+      window.location.href = '/pages/auth/login.html';
+    }
+
+    /* ===== 모바일 사이드바 ===== */
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+
+    function setState(s) {
+      document.body.className = document.body.className.replace(/state-\w+/g, '').trim();
+      document.body.classList.add('state-' + s);
+    }
+
+    /* ===== 상수 ===== */
+    const SETTLE_MIN = 10000;
+
+    /* ===== 상태 ===== */
+    let currentBotId = 'all';
+    let currentUnsettled = 0;
+
+    /* ===== 봇 목록 로드 ===== */
+    async function loadBots() {
+      try {
+        const token = localStorage.getItem('mcw_token') || '';
+        const res = await fetch('/api/Backend_APIs/bots', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success || !json.data) return;
+        const select = document.getElementById('botSelect');
+        json.data.forEach(bot => {
+          const opt = document.createElement('option');
+          opt.value = bot.id;
+          opt.textContent = bot.name || bot.id;
+          select.appendChild(opt);
+        });
+      } catch (e) {
+        console.warn('봇 목록 로드 실패:', e);
+      }
+    }
+
+    function onBotChange(botId) {
+      currentBotId = botId;
+      loadData();
+    }
+
+    /* ===== 수익 데이터 로드 ===== */
+    async function fetchRevenue(botId) {
+      const token = localStorage.getItem('mcw_token') || '';
+      const url = botId === 'all'
+        ? '/api/Backend_APIs/revenue'
+        : `/api/Backend_APIs/revenue?botId=${encodeURIComponent(botId)}`;
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || '서버 오류');
+      return json.data;
+    }
+
+    /* ===== 정산 이력 로드 ===== */
+    async function fetchSettlements(botId) {
+      try {
+        const token = localStorage.getItem('mcw_token') || '';
+        const url = botId === 'all'
+          ? '/api/Backend_APIs/revenue?action=settlements'
+          : `/api/Backend_APIs/revenue?action=settlements&botId=${encodeURIComponent(botId)}`;
+        const res = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return null;
+        const json = await res.json();
+        return json.success ? json.data : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /* ===== 미정산 뷰 렌더링 ===== */
+    function renderUnsettledHero(unsettled) {
+      currentUnsettled = unsettled || 0;
+      const fmt = n => Number(n).toLocaleString('ko-KR');
+      document.getElementById('unsettledAmount').textContent = fmt(currentUnsettled);
+
+      const btn = document.getElementById('settleBtn');
+      const notice = document.getElementById('settleNotice');
+      const noticeText = document.getElementById('settleNoticeText');
+
+      const pct = Math.min(100, Math.round((currentUnsettled / SETTLE_MIN) * 100));
+      const fill = document.getElementById('progressFill');
+      const stat = document.getElementById('progressStat');
+      const noticeBox = document.getElementById('progressNotice');
+      const noticeBoxText = document.getElementById('progressNoticeText');
+
+      // 진행 바
+      requestAnimationFrame(() => {
+        fill.style.width = pct + '%';
+        if (pct >= 100) fill.classList.add('full');
+        else fill.classList.remove('full');
+      });
+
+      stat.textContent = `${fmt(currentUnsettled)} / ${fmt(SETTLE_MIN)} C`;
+
+      if (currentUnsettled >= SETTLE_MIN) {
+        // 가능
+        btn.className = 'settle-btn enabled';
+        notice.className = 'settle-hero-notice ready';
+        noticeText.textContent = '정산 가능! 지금 요청하세요.';
+        noticeBox.className = 'settle-ready-notice';
+        noticeBoxText.textContent = '최소 정산 기준을 달성했습니다. 정산 요청이 가능합니다.';
+      } else {
+        // 불가
+        btn.className = 'settle-btn disabled';
+        notice.className = 'settle-hero-notice not-ready';
+        const need = SETTLE_MIN - currentUnsettled;
+        noticeText.textContent = `최소 10,000 크레딧 이상 필요합니다 (${fmt(need)} C 부족)`;
+        noticeBox.className = 'settle-min-notice';
+        noticeBoxText.textContent = `정산 최소 금액인 10,000 크레딧까지 ${fmt(need)} C 더 필요합니다.`;
+      }
+    }
+
+    /* ===== 정산 이력 테이블 ===== */
+    const STATUS_META = {
+      completed: { label: '정산완료', cls: 'status-completed' },
+      pending:   { label: '처리중',   cls: 'status-pending' },
+      rejected:  { label: '거절됨',   cls: 'status-rejected' },
+    };
+
+    function renderHistory(settlements) {
+      const tbody = document.getElementById('historyTableBody');
+      const count = document.getElementById('historyCount');
+
+      if (!settlements || settlements.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">&#128179;</div>
+                <div class="empty-title">정산 이력이 없습니다</div>
+                <div class="empty-desc">첫 정산 요청을 해보세요.</div>
+              </div>
+            </td>
+          </tr>`;
+        count.textContent = '0건';
+        return;
+      }
+
+      count.textContent = `총 ${settlements.length}건`;
+      tbody.innerHTML = settlements.map(s => {
+        const meta = STATUS_META[s.status] || { label: s.status || '—', cls: 'status-pending' };
+        const reqDate = s.requestedAt ? new Date(s.requestedAt).toLocaleDateString('ko-KR') : '—';
+        const doneDate = s.completedAt ? new Date(s.completedAt).toLocaleDateString('ko-KR') : '—';
+        return `
+          <tr>
+            <td style="color:var(--color-text-muted); white-space:nowrap;">${reqDate}</td>
+            <td class="settle-amount-col">+${(s.amount || 0).toLocaleString('ko-KR')}</td>
+            <td style="color:var(--color-text-muted);">${escHtml(s.botName || '전체 봇')}</td>
+            <td><span class="status-badge ${meta.cls}">${meta.label}</span></td>
+            <td style="color:var(--color-text-muted); white-space:nowrap;">${doneDate}</td>
+          </tr>`;
+      }).join('');
+    }
+
+    /* ===== 메인 로드 ===== */
+    async function loadData() {
+      setState('loading');
+      try {
+        const [revenueData, settlements] = await Promise.all([
+          fetchRevenue(currentBotId),
+          fetchSettlements(currentBotId)
+        ]);
+
+        renderUnsettledHero(revenueData.unsettled);
+
+        // 정산 이력 — API 응답에 없으면 빈 배열
+        renderHistory(settlements || revenueData.settlements || []);
+
+        setState('loaded');
+      } catch (err) {
+        console.error('정산 데이터 로드 실패:', err);
+        document.getElementById('errorMessage').textContent = err.message || '정산 데이터를 불러오지 못했습니다.';
+        setState('error');
+      }
+    }
+
+    /* ===== 모달 ===== */
+    function openSettleModal() {
+      if (currentUnsettled < SETTLE_MIN) return;
+      document.getElementById('modalAmount').textContent =
+        currentUnsettled.toLocaleString('ko-KR') + ' 크레딧';
+      document.getElementById('settleModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('settleModal').classList.remove('open');
+    }
+
+    document.getElementById('settleModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('settleModal')) closeModal();
+    });
+
+    /* ===== 정산 요청 API ===== */
+    async function submitSettle() {
+      const confirmBtn = document.getElementById('modalConfirmBtn');
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = '처리 중...';
+
+      try {
+        const token = localStorage.getItem('mcw_token') || '';
+        const body = { botId: currentBotId === 'all' ? undefined : currentBotId };
+        const res = await fetch('/api/Backend_APIs/revenue?action=settle', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        const json = await res.json();
+        closeModal();
+
+        if (res.ok && json.success) {
+          showToast('success', '\u2713 정산 요청이 완료되었습니다. 영업일 기준 1\u20133일 내 처리됩니다.');
+          loadData();
+        } else {
+          showToast('error', '\u26a0 ' + (json.error || '정산 요청에 실패했습니다.'));
+        }
+      } catch (err) {
+        closeModal();
+        showToast('error', '\u26a0 네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        console.error('정산 요청 실패:', err);
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '정산 요청';
+      }
+    }
+
+    /* ===== 토스트 ===== */
+    function showToast(type, message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transition = 'opacity 300ms ease';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 4500);
+    }
+
+    /* ===== 초기화 ===== */
+    loadBots();
+    loadData();
+  </script>
+
+</body>
+</html>
