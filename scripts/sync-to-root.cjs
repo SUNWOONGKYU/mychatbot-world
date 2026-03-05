@@ -10,9 +10,24 @@ const ROOT = process.cwd();
 // ── Vanilla: Stage Area → Root 경로 매핑 ──────────────────────────
 const VANILLA_MAPPING = [
   {
-    from: 'Frontend',
+    from: 'Frontend/pages',
     to: 'pages/',
-    desc: 'Frontend → pages/'
+    desc: 'Frontend/pages → pages/'
+  },
+  {
+    from: 'Frontend/js',
+    to: 'js/',
+    desc: 'Frontend/js → js/'
+  },
+  {
+    from: 'Frontend/css',
+    to: 'css/',
+    desc: 'Frontend/css → css/'
+  },
+  {
+    from: 'Frontend/components',
+    to: 'pages/components/',
+    desc: 'Frontend/components → pages/components/'
   },
   {
     from: 'Backend_APIs',

@@ -1,0 +1,210 @@
+<!-- @task S3F11 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 상세 — 봇마당 | My Chatbot World</title>
+  <meta name="description" content="봇마당 게시글 상세 보기">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/community.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- 사이드바 오버레이 (모바일) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===== 사이드바 ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/" class="sidebar-logo">
+      <div class="logo-icon">M</div>
+      <span>My Chatbot World</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">메인</div>
+      <a href="/pages/home/" class="nav-item"><span class="nav-icon">🏠</span> 홈</a>
+      <a href="/pages/bot/" class="nav-item"><span class="nav-icon">🤖</span> 내 챗봇</a>
+      <div class="nav-section-label">커뮤니티</div>
+      <a href="/pages/community/index.html" class="nav-item active"><span class="nav-icon">💬</span> 봇마당</a>
+      <a href="/pages/community/gallery.html" class="nav-item"><span class="nav-icon">🎨</span> 쇼케이스</a>
+      <a href="/pages/jobs/" class="nav-item"><span class="nav-icon">💼</span> 채용</a>
+    </nav>
+  </aside>
+
+  <!-- ===== 메인 콘텐츠 ===== -->
+  <div class="main-content">
+
+    <!-- 상단 헤더 -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
+        <span class="page-title">봇마당</span>
+      </div>
+      <div class="header-right">
+        <div class="user-avatar" id="userAvatar" title="프로필">U</div>
+      </div>
+    </header>
+
+    <!-- 본문 -->
+    <main class="page-content">
+      <div class="post-detail-container">
+
+        <!-- 목록으로 돌아가기 -->
+        <button class="post-detail-back" id="backBtn">
+          ← 목록으로
+        </button>
+
+        <!-- 게시글 카드 -->
+        <article class="post-detail-card">
+
+          <!-- 게시글 헤더 -->
+          <header class="post-detail-header">
+            <div class="post-detail-category" id="postCategory">
+              <!-- JS로 채워짐 -->
+            </div>
+            <h1 class="post-detail-title" id="postTitle">
+              <!-- JS로 채워짐 -->
+              <span class="loading-spinner" style="display:inline-flex;padding:0;gap:0.5rem"><span class="spinner"></span>불러오는 중...</span>
+            </h1>
+            <div class="post-detail-meta">
+              <div class="post-author-info">
+                <div class="post-author-avatar" id="postAuthorAvatar">?</div>
+                <div class="post-author-details">
+                  <span class="post-author-nickname" id="postAuthorNickname">—</span>
+                  <span class="post-detail-date" id="postDate">—</span>
+                </div>
+              </div>
+              <div class="post-detail-stats">
+                <span class="post-detail-stat">👁 <span id="postViewCount">0</span></span>
+                <span class="post-detail-stat">♥ <span id="postLikeCount">0</span></span>
+                <span class="post-detail-stat">💬 <span id="postCommentCount">0</span></span>
+              </div>
+            </div>
+          </header>
+
+          <!-- 게시글 본문 -->
+          <div class="post-detail-body" id="postBody">
+            <!-- JS로 채워짐 -->
+          </div>
+
+          <!-- 게시글 액션 바 -->
+          <div class="post-actions-bar">
+            <div class="post-left-actions">
+              <!-- 좋아요 버튼 -->
+              <button class="btn-like" id="likeBtn" aria-label="좋아요">
+                <span class="like-icon">♥</span>
+                좋아요 <span class="like-count">0</span>
+              </button>
+            </div>
+            <div class="post-right-actions">
+              <!-- 수정 버튼 (본인만, JS로 표시/숨김) -->
+              <button class="btn-post-action" id="editBtn" style="display:none">
+                ✏️ 수정
+              </button>
+              <!-- 삭제 버튼 (본인만, JS로 표시/숨김) -->
+              <button class="btn-post-action danger" id="deleteBtn" style="display:none">
+                🗑️ 삭제
+              </button>
+              <!-- 신고 버튼 -->
+              <button class="btn-post-action danger" id="reportBtn">
+                🚨 신고
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===== 댓글 영역 ===== -->
+        <section class="comments-section" aria-label="댓글">
+          <div class="comments-header">
+            <h3>댓글</h3>
+            <span class="comment-count-badge" id="commentCountBadge">0</span>
+          </div>
+
+          <!-- 댓글 목록 (트리 구조) -->
+          <div class="comments-list" id="commentsList">
+            <div class="loading-spinner"><div class="spinner"></div>댓글 불러오는 중...</div>
+          </div>
+
+          <!-- 댓글 작성 폼 (로그인 시만) -->
+          <div class="comment-write-form" id="commentForm">
+            <div class="comment-write-body">
+              <div class="comment-avatar" id="commentUserAvatar">U</div>
+              <div class="comment-textarea-wrap">
+                <textarea
+                  class="comment-textarea"
+                  id="commentTextarea"
+                  placeholder="댓글을 입력하세요... (최대 500자)"
+                  rows="3"
+                  maxlength="500"
+                  aria-label="댓글 입력"
+                ></textarea>
+                <div class="comment-submit-row">
+                  <span class="comment-char-count" id="commentCharCount">0/500</span>
+                  <button class="btn-primary" id="commentSubmitBtn">댓글 등록</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 로그인 유도 (비로그인 시) -->
+          <div class="comment-write-form" id="commentLoginPrompt" style="display:none">
+            <p style="text-align:center; color:var(--text-muted); font-size:0.9rem">
+              댓글을 작성하려면
+              <a href="../auth/login.html" style="color:var(--primary-light)">로그인</a>
+              이 필요합니다.
+            </p>
+          </div>
+        </section>
+
+      </div><!-- .post-detail-container -->
+    </main>
+  </div><!-- .main-content -->
+</div><!-- .app-layout -->
+
+<!-- ===== 신고 모달 ===== -->
+<div class="modal-overlay report-modal" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="reportModalTitle">게시글 신고</h3>
+      <button class="modal-close" aria-label="닫기">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="report-form">
+        <div class="report-options" role="radiogroup" aria-label="신고 사유">
+          <label class="report-option">
+            <input type="radio" name="reportReason" value="spam"> 스팸 / 광고
+          </label>
+          <label class="report-option">
+            <input type="radio" name="reportReason" value="inappropriate"> 음란물 / 부적절한 내용
+          </label>
+          <label class="report-option">
+            <input type="radio" name="reportReason" value="hate"> 혐오 / 차별 발언
+          </label>
+          <label class="report-option">
+            <input type="radio" name="reportReason" value="privacy"> 개인정보 침해
+          </label>
+          <label class="report-option">
+            <input type="radio" name="reportReason" value="other"> 기타
+          </label>
+        </div>
+        <textarea
+          class="report-detail-textarea"
+          placeholder="추가 설명 (선택사항)"
+          maxlength="300"
+          aria-label="신고 상세 내용"
+        ></textarea>
+        <div style="display:flex; gap:0.5rem; justify-content:flex-end">
+          <button class="btn-secondary modal-close">취소</button>
+          <button class="btn-primary report-submit-btn">신고 접수</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/community.js"></script>
+</body>
+</html>

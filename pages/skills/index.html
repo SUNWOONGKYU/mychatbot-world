@@ -1,0 +1,258 @@
+<!--
+@task S2F8
+@description Skills (스킬장터) 메뉴 랜딩 페이지
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills (스킬장터) — My Chatbot World</title>
+  <meta name="description" content="예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. 스킬 구매·판매·마이 스킬 — My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: #0d0d12; color: #e2e8f0; min-height: 100vh;
+    }
+
+    .page-layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px; background: #16161c;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem 1.25rem; position: fixed; height: 100vh;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem;
+    }
+
+    .sidebar-brand {
+      font-size: 1rem; font-weight: 800; color: var(--primary-400, #818cf8);
+      margin-bottom: 1.5rem; text-decoration: none; display: block;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.3);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.75rem 0.5rem 0.25rem; margin-top: 0.5rem;
+    }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 0.625rem;
+      padding: 0.625rem 0.75rem; border-radius: 8px;
+      color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .sidebar-link.active { background: var(--primary-500, #6366f1); color: white; }
+    .sidebar-link .icon { font-size: 1rem; width: 1.25rem; text-align: center; }
+    .sidebar-link.top-level { font-size: 0.925rem; font-weight: 700; color: rgba(255,255,255,0.8); padding: 0.75rem 0.75rem; }
+    .sidebar-link.top-level.current { color: var(--primary-400, #818cf8); }
+
+    .main-content { flex: 1; margin-left: 240px; padding: 3rem 3.5rem; max-width: 900px; }
+    .page-header { margin-bottom: 3rem; }
+
+    .page-badge {
+      display: inline-block;
+      background: rgba(245,158,11,0.12); color: #fbbf24;
+      border: 1px solid rgba(245,158,11,0.25);
+      padding: 0.25rem 0.75rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+
+    .page-title { font-size: 2.25rem; font-weight: 900; color: #ffffff; line-height: 1.2; margin-bottom: 0.75rem; }
+    .page-title .title-ko { color: #fbbf24; }
+    .page-subtitle { font-size: 1.05rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2.5rem; }
+
+    .feature-card {
+      background: #1c1c24; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem; text-decoration: none; color: inherit;
+      transition: all 0.2s; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .feature-card:hover { border-color: rgba(245,158,11,0.35); background: #22222e; transform: translateY(-2px); }
+
+    .feature-icon { font-size: 2rem; line-height: 1; }
+    .feature-title { font-size: 1.05rem; font-weight: 700; color: #ffffff; }
+    .feature-title-en { font-size: 0.8rem; color: rgba(255,255,255,0.35); font-weight: 400; margin-left: 0.4rem; }
+    .feature-desc { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .feature-tag {
+      display: inline-block; background: rgba(245,158,11,0.1); color: #fbbf24;
+      font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem;
+      border-radius: 999px; align-self: flex-start;
+    }
+
+    /* 인기 스킬 목록 */
+    .skill-showcase {
+      background: #1c1c24; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;
+    }
+    .skill-showcase h3 { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 1.25rem; }
+
+    .skill-chips { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+
+    .skill-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1rem; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 999px;
+      font-size: 0.825rem; color: rgba(255,255,255,0.7); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .skill-chip:hover { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: #fbbf24; }
+
+    .cta-row { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.75rem; border-radius: 10px;
+      font-size: 0.925rem; font-weight: 600; text-decoration: none;
+      cursor: pointer; transition: all 0.15s; border: none;
+    }
+    .btn-primary { background: #d97706; color: white; }
+    .btn-primary:hover { background: #b45309; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 2rem 1.25rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
+
+      <span class="sidebar-section-label">5대 메뉴</span>
+      <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
+      <a href="../learning/index.html"  class="sidebar-link top-level"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
+      <a href="../skills/index.html"    class="sidebar-link top-level current"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
+      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
+      <a href="../community/index.html" class="sidebar-link top-level"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
+
+      <span class="sidebar-section-label">Skills 하위 메뉴</span>
+      <a href="#list" class="sidebar-link active"><span class="icon">📋</span> 스킬 목록</a>
+      <a href="#buy"  class="sidebar-link"><span class="icon">🛒</span> 스킬 구매</a>
+      <a href="#sell" class="sidebar-link"><span class="icon">💰</span> 스킬 판매</a>
+      <a href="#my"   class="sidebar-link"><span class="icon">⭐</span> 마이 스킬</a>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <div class="page-header">
+        <span class="page-badge">STEP 3 — Skills</span>
+        <h1 class="page-title">
+          <span class="title-ko">스킬장터</span> — 능력을 장착합니다
+        </h1>
+        <p class="page-subtitle">
+          예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요.<br>
+          사용자가 만든 스킬도 공유하고 거래합니다.
+        </p>
+      </div>
+
+      <!-- 기능 카드 -->
+      <div class="feature-grid">
+
+        <a href="#list" class="feature-card" id="list">
+          <div class="feature-icon">📋</div>
+          <div>
+            <span class="feature-title">스킬 목록</span>
+            <span class="feature-title-en">Skill List</span>
+          </div>
+          <p class="feature-desc">
+            예약, 결제, 번역, 감정 분석 등 챗봇의 능력을 강화하는
+            모든 스킬을 카테고리별로 탐색합니다.
+          </p>
+          <span class="feature-tag">전체 탐색</span>
+        </a>
+
+        <a href="#buy" class="feature-card" id="buy">
+          <div class="feature-icon">🛒</div>
+          <div>
+            <span class="feature-title">스킬 구매</span>
+            <span class="feature-title-en">Buy Skills</span>
+          </div>
+          <p class="feature-desc">
+            필요한 스킬을 구매해 챗봇에 즉시 장착합니다.
+            한 번 구매하면 영구적으로 사용할 수 있습니다.
+          </p>
+          <span class="feature-tag">즉시 장착</span>
+        </a>
+
+        <a href="#sell" class="feature-card" id="sell">
+          <div class="feature-icon">💰</div>
+          <div>
+            <span class="feature-title">스킬 판매</span>
+            <span class="feature-title-en">Sell Skills</span>
+          </div>
+          <p class="feature-desc">
+            내가 만든 스킬을 다른 챗봇에게 판매합니다.
+            크리에이터로서 수익을 창출하세요.
+          </p>
+          <span class="feature-tag">크리에이터</span>
+        </a>
+
+        <a href="#my" class="feature-card" id="my">
+          <div class="feature-icon">⭐</div>
+          <div>
+            <span class="feature-title">마이 스킬</span>
+            <span class="feature-title-en">My Skills</span>
+          </div>
+          <p class="feature-desc">
+            내 챗봇에 장착된 스킬 목록과 사용 현황을 관리합니다.
+            스킬의 활성화·비활성화도 설정할 수 있습니다.
+          </p>
+          <span class="feature-tag">관리</span>
+        </a>
+
+      </div>
+
+      <!-- 인기 스킬 -->
+      <div class="skill-showcase">
+        <h3>🔧 인기 스킬 목록</h3>
+        <div class="skill-chips">
+          <span class="skill-chip">📅 예약 스킬</span>
+          <span class="skill-chip">💳 결제 스킬</span>
+          <span class="skill-chip">🌐 번역 스킬</span>
+          <span class="skill-chip">💬 감정 분석</span>
+          <span class="skill-chip">📧 이메일 발송</span>
+          <span class="skill-chip">📊 통계 리포트</span>
+          <span class="skill-chip">🔔 알림 발송</span>
+          <span class="skill-chip">🗺️ 지도/위치</span>
+          <span class="skill-chip">📷 이미지 분석</span>
+          <span class="skill-chip">🎙️ 음성 인식</span>
+          <span class="skill-chip">🤖 AI 추천</span>
+          <span class="skill-chip">🛍️ 쇼핑 연동</span>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-row">
+        <a href="#list" class="btn btn-primary">
+          🔧 스킬 탐색하기
+        </a>
+        <a href="../../index.html#skills" class="btn btn-secondary">
+          소개 보기
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+
+</html>

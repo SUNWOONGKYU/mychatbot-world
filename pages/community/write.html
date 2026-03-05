@@ -1,0 +1,150 @@
+<!-- @task S3F11 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글쓰기 — 봇마당 | My Chatbot World</title>
+  <meta name="description" content="봇마당에 새 글을 작성하세요.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/community.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- 사이드바 오버레이 (모바일) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===== 사이드바 ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/" class="sidebar-logo">
+      <div class="logo-icon">M</div>
+      <span>My Chatbot World</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">메인</div>
+      <a href="/pages/home/" class="nav-item"><span class="nav-icon">🏠</span> 홈</a>
+      <a href="/pages/bot/" class="nav-item"><span class="nav-icon">🤖</span> 내 챗봇</a>
+      <div class="nav-section-label">커뮤니티</div>
+      <a href="/pages/community/index.html" class="nav-item active"><span class="nav-icon">💬</span> 봇마당</a>
+      <a href="/pages/community/gallery.html" class="nav-item"><span class="nav-icon">🎨</span> 쇼케이스</a>
+      <a href="/pages/jobs/" class="nav-item"><span class="nav-icon">💼</span> 채용</a>
+    </nav>
+  </aside>
+
+  <!-- ===== 메인 콘텐츠 ===== -->
+  <div class="main-content">
+
+    <!-- 상단 헤더 -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
+        <span class="page-title" id="writeFormTitle">글쓰기</span>
+      </div>
+      <div class="header-right">
+        <div class="user-avatar" id="userAvatar" title="프로필">U</div>
+      </div>
+    </header>
+
+    <!-- 본문 -->
+    <main class="page-content">
+      <div class="write-form-container">
+
+        <div class="write-form-card">
+          <div class="write-form-header">
+            <h2 id="writeFormHeading">새 글 작성</h2>
+          </div>
+
+          <!-- 카테고리 선택 -->
+          <div class="write-form-group">
+            <label for="categorySelect">
+              카테고리 <span class="required">*</span>
+            </label>
+            <select class="write-select" id="categorySelect" aria-required="true">
+              <option value="">카테고리 선택</option>
+              <option value="free">자유게시판</option>
+              <option value="showcase">챗봇 쇼케이스</option>
+              <option value="tip">팁 공유</option>
+              <option value="qna">Q&amp;A</option>
+            </select>
+          </div>
+
+          <!-- 제목 입력 -->
+          <div class="write-form-group">
+            <label for="postTitleInput">
+              제목 <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              class="write-input"
+              id="postTitleInput"
+              placeholder="제목을 입력하세요 (최대 100자)"
+              maxlength="100"
+              aria-required="true"
+            >
+            <div class="input-count" id="titleCharCount">0/100</div>
+          </div>
+
+          <!-- 본문 에디터 -->
+          <div class="write-form-group">
+            <label for="postContentTextarea">
+              내용 <span class="required">*</span>
+            </label>
+            <textarea
+              class="write-textarea"
+              id="postContentTextarea"
+              placeholder="내용을 입력하세요.&#10;&#10;마크다운 문법을 지원합니다.&#10;**굵게** *기울임* `코드` [링크](URL)"
+              rows="14"
+              aria-required="true"
+            ></textarea>
+          </div>
+
+          <!-- 이미지 첨부 -->
+          <div class="write-form-group">
+            <label>이미지 첨부 <span style="font-weight:400; color:var(--text-faint)">(선택, 최대 5장)</span></label>
+            <div class="image-upload-area" id="imageUploadArea" role="button" tabindex="0" aria-label="이미지 업로드 영역">
+              <div class="upload-icon">📎</div>
+              <p>클릭하거나 이미지를 여기로 드래그하세요</p>
+              <span>JPG, PNG, GIF, WebP — 최대 10MB</span>
+            </div>
+            <input
+              type="file"
+              id="imageFileInput"
+              accept="image/*"
+              multiple
+              style="display:none"
+              aria-hidden="true"
+            >
+            <div class="image-preview-list" id="imagePreviewList"></div>
+          </div>
+
+          <!-- 작성 가이드 -->
+          <details style="margin-bottom:1.25rem">
+            <summary style="cursor:pointer; font-size:0.825rem; color:var(--text-muted); user-select:none">
+              작성 가이드 보기
+            </summary>
+            <ul style="margin-top:0.75rem; padding-left:1.25rem; font-size:0.825rem; color:var(--text-muted); display:flex; flex-direction:column; gap:0.35rem">
+              <li>욕설, 비방, 스팸 게시물은 삭제될 수 있습니다.</li>
+              <li>타인의 개인정보를 공유하지 마세요.</li>
+              <li>챗봇 쇼케이스에는 본인이 만든 챗봇만 등록해주세요.</li>
+              <li>Q&amp;A 게시판에서는 구체적인 질문을 작성하면 더 빠른 답변을 받을 수 있습니다.</li>
+            </ul>
+          </details>
+
+          <!-- 폼 액션 -->
+          <div class="write-form-actions">
+            <button class="btn-secondary" id="cancelBtn">취소</button>
+            <button class="btn-primary" id="submitBtn">등록</button>
+          </div>
+        </div>
+
+      </div><!-- .write-form-container -->
+    </main>
+  </div><!-- .main-content -->
+</div><!-- .app-layout -->
+
+<script src="../../js/community.js"></script>
+</body>
+</html>

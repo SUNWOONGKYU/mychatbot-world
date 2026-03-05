@@ -1,0 +1,330 @@
+<!--
+@task S3F9
+@description 구봇구직 검색 결과 페이지 — 검색어 하이라이트, 필터 사이드바, 결과 카드, 빈 상태
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>검색 결과 — 구봇구직</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/jobs.css">
+</head>
+<body class="search-page">
+
+  <!-- ===== 헤더 ===== -->
+  <header class="jobs-header">
+    <div class="jobs-header-inner">
+      <a href="index.html" class="jobs-logo">
+        <span class="jobs-logo-icon">🤖</span>
+        <span class="jobs-logo-text">구봇구직</span>
+      </a>
+
+      <!-- 검색바 (검색어 미리 채워짐) -->
+      <form class="jobs-search-form" id="searchPageForm" role="search">
+        <div class="jobs-search-wrap">
+          <svg class="jobs-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="search"
+            id="searchPageInput"
+            class="jobs-search-input"
+            placeholder="챗봇 이름, 기능, 카테고리 검색..."
+            autocomplete="off"
+            aria-label="챗봇 검색"
+          >
+          <button type="submit" class="jobs-search-btn">검색</button>
+        </div>
+      </form>
+
+      <nav class="jobs-header-nav">
+        <a href="../../index.html" class="jobs-nav-link">홈</a>
+        <a href="index.html" class="jobs-nav-link jobs-nav-link--active">구봇구직</a>
+        <a href="#" class="jobs-nav-link">내 챗봇</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== 검색 결과 헤더 ===== -->
+  <div class="search-result-header">
+    <div class="jobs-container">
+      <div class="search-breadcrumb">
+        <a href="index.html" class="search-breadcrumb-link">구봇구직</a>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-breadcrumb-sep">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+        <span>검색 결과</span>
+      </div>
+      <h1 class="search-result-title">
+        "<span id="searchKeyword" class="search-keyword-highlight"></span>"
+        <span class="search-result-subtitle">검색 결과</span>
+      </h1>
+      <p class="search-result-meta">
+        <span id="searchResultTotal">0</span>개의 결과
+        <span class="search-result-meta-sep">·</span>
+        <span id="searchResultTime">0ms</span> 소요
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== 메인 레이아웃 ===== -->
+  <main class="jobs-main">
+    <div class="jobs-container">
+      <div class="search-layout">
+
+        <!-- ===== 필터 사이드바 ===== -->
+        <aside class="search-sidebar" id="searchSidebar" aria-label="검색 필터">
+
+          <!-- 모바일 필터 토글 -->
+          <button class="search-filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+            </svg>
+            필터
+            <span class="filter-active-badge" id="filterActiveBadge" hidden>0</span>
+          </button>
+
+          <div class="search-filter-panel" id="filterPanel">
+            <div class="filter-header">
+              <h2 class="filter-title">필터</h2>
+              <button class="filter-reset-btn" id="filterResetBtn" type="button">초기화</button>
+            </div>
+
+            <!-- 카테고리 필터 -->
+            <fieldset class="filter-group">
+              <legend class="filter-group-title">카테고리</legend>
+              <div class="filter-options">
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="category" value="all" checked>
+                  <span class="filter-checkbox-box"></span>
+                  전체
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="category" value="customer-service">
+                  <span class="filter-checkbox-box"></span>
+                  고객서비스
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="category" value="education">
+                  <span class="filter-checkbox-box"></span>
+                  교육
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="category" value="marketing">
+                  <span class="filter-checkbox-box"></span>
+                  마케팅
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="category" value="development">
+                  <span class="filter-checkbox-box"></span>
+                  개발
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="category" value="etc">
+                  <span class="filter-checkbox-box"></span>
+                  기타
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- 가격 범위 필터 -->
+            <fieldset class="filter-group">
+              <legend class="filter-group-title">
+                가격 범위
+                <span class="filter-price-display" id="priceDisplay">₩0 — ₩500,000</span>
+              </legend>
+              <div class="filter-range-wrap">
+                <input
+                  type="range"
+                  id="priceMin"
+                  class="filter-range"
+                  min="0"
+                  max="500000"
+                  step="10000"
+                  value="0"
+                  aria-label="최소 가격"
+                >
+                <input
+                  type="range"
+                  id="priceMax"
+                  class="filter-range"
+                  min="0"
+                  max="500000"
+                  step="10000"
+                  value="500000"
+                  aria-label="최대 가격"
+                >
+              </div>
+              <div class="filter-price-inputs">
+                <div class="filter-price-input-wrap">
+                  <label for="priceMinInput" class="filter-price-label">최소</label>
+                  <input type="number" id="priceMinInput" class="filter-price-input" min="0" max="500000" step="10000" value="0">
+                </div>
+                <span class="filter-price-sep">—</span>
+                <div class="filter-price-input-wrap">
+                  <label for="priceMaxInput" class="filter-price-label">최대</label>
+                  <input type="number" id="priceMaxInput" class="filter-price-input" min="0" max="500000" step="10000" value="500000">
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- 평점 필터 -->
+            <fieldset class="filter-group">
+              <legend class="filter-group-title">최소 평점</legend>
+              <div class="filter-options">
+                <label class="filter-radio">
+                  <input type="radio" name="rating" value="0" checked>
+                  <span class="filter-radio-box"></span>
+                  전체
+                </label>
+                <label class="filter-radio">
+                  <input type="radio" name="rating" value="4.5">
+                  <span class="filter-radio-box"></span>
+                  <span class="filter-stars">★★★★★</span> 4.5 이상
+                </label>
+                <label class="filter-radio">
+                  <input type="radio" name="rating" value="4">
+                  <span class="filter-radio-box"></span>
+                  <span class="filter-stars">★★★★☆</span> 4.0 이상
+                </label>
+                <label class="filter-radio">
+                  <input type="radio" name="rating" value="3">
+                  <span class="filter-radio-box"></span>
+                  <span class="filter-stars">★★★☆☆</span> 3.0 이상
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- 스킬 필터 -->
+            <fieldset class="filter-group">
+              <legend class="filter-group-title">스킬</legend>
+              <div class="filter-options filter-options--skills">
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="skill" value="nlp">
+                  <span class="filter-checkbox-box"></span>
+                  자연어처리(NLP)
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="skill" value="image">
+                  <span class="filter-checkbox-box"></span>
+                  이미지 인식
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="skill" value="voice">
+                  <span class="filter-checkbox-box"></span>
+                  음성 인식
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="skill" value="multilang">
+                  <span class="filter-checkbox-box"></span>
+                  다국어 지원
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="skill" value="api">
+                  <span class="filter-checkbox-box"></span>
+                  API 연동
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" name="skill" value="analytics">
+                  <span class="filter-checkbox-box"></span>
+                  데이터 분석
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- 필터 적용 버튼 (모바일) -->
+            <button class="filter-apply-btn" id="filterApplyBtn" type="button">
+              필터 적용
+            </button>
+          </div>
+        </aside>
+
+        <!-- ===== 검색 결과 영역 ===== -->
+        <section class="search-results" aria-label="검색 결과">
+
+          <!-- 툴바 -->
+          <div class="jobs-toolbar search-toolbar">
+            <div class="search-active-filters" id="activeFilters"></div>
+            <div class="jobs-sort-wrap">
+              <label for="searchSort" class="jobs-sort-label">정렬:</label>
+              <select id="searchSort" class="jobs-sort-select" aria-label="정렬 기준">
+                <option value="relevance">관련도순</option>
+                <option value="popular">인기순</option>
+                <option value="latest">최신순</option>
+                <option value="rating">평점순</option>
+                <option value="price-low">가격 낮은순</option>
+                <option value="price-high">가격 높은순</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 결과 카드 목록 -->
+          <div class="jobs-card-grid search-card-grid" id="searchResultGrid" aria-live="polite">
+            <!-- JS로 동적 렌더링 -->
+            <div class="jobs-skeleton-grid" id="searchSkeleton" aria-hidden="true">
+              <div class="jobs-card-skeleton"></div>
+              <div class="jobs-card-skeleton"></div>
+              <div class="jobs-card-skeleton"></div>
+              <div class="jobs-card-skeleton"></div>
+              <div class="jobs-card-skeleton"></div>
+              <div class="jobs-card-skeleton"></div>
+            </div>
+          </div>
+
+          <!-- 검색 결과 없음 상태 -->
+          <div class="jobs-empty search-empty" id="searchEmpty" hidden>
+            <div class="jobs-empty-icon search-empty-icon">🔍</div>
+            <h3 class="jobs-empty-title">검색 결과가 없습니다</h3>
+            <p class="jobs-empty-desc">
+              "<strong id="emptyKeyword"></strong>"에 대한 결과를 찾을 수 없습니다.
+            </p>
+            <ul class="search-empty-tips">
+              <li>다른 검색어를 사용해보세요</li>
+              <li>단어의 철자를 확인해보세요</li>
+              <li>보다 일반적인 검색어를 사용해보세요</li>
+              <li>필터를 초기화하고 다시 시도해보세요</li>
+            </ul>
+            <div class="search-empty-actions">
+              <button class="jobs-empty-btn" id="searchResetFiltersBtn">필터 초기화</button>
+              <a href="index.html" class="jobs-empty-btn jobs-empty-btn--outline">전체 목록 보기</a>
+            </div>
+          </div>
+
+          <!-- 페이지네이션 -->
+          <nav class="jobs-pagination" id="searchPagination" aria-label="페이지 탐색" hidden>
+            <button class="jobs-page-btn" id="searchPrevBtn" aria-label="이전 페이지" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div class="jobs-page-numbers" id="searchPageNumbers" role="list"></div>
+            <button class="jobs-page-btn" id="searchNextBtn" aria-label="다음 페이지">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </nav>
+
+        </section>
+
+      </div><!-- /search-layout -->
+    </div><!-- /jobs-container -->
+  </main>
+
+  <!-- ===== 에러 토스트 ===== -->
+  <div class="jobs-toast" id="jobsToast" role="alert" aria-live="assertive" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span id="toastMessage"></span>
+  </div>
+
+  <script src="../../js/jobs.js"></script>
+  <script>
+    // @task S3F9 — 검색 결과 페이지 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+      JobsApp.init({ page: 'search' });
+    });
+  </script>
+</body>
+</html>
