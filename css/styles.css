@@ -445,6 +445,24 @@ input, textarea, select {
   transition: color var(--transition-fast);
 }
 
+.navbar-links a.nav-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.navbar-links .nav-en {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.navbar-links .nav-ko {
+  font-size: 0.7rem;
+  opacity: 0.55;
+  margin-top: 2px;
+}
+
 .navbar-links a:hover {
   color: white;
 }
