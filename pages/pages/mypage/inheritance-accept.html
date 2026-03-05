@@ -1,0 +1,865 @@
+<!-- @task S4F4 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상속 수락 — My Chatbot World</title>
+  <meta name="description" content="챗봇 상속 요청을 수락하거나 거절하세요.">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      flex: 1;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .sidebar-bottom a {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.625rem 0.75rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-faint);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 150ms ease;
+    }
+
+    .sidebar-bottom a:hover {
+      color: var(--color-text-muted);
+    }
+
+    /* ===== 메인 콘텐츠 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .center-column {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    /* ===== 헤더 ===== */
+    .page-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 카드 ===== */
+    .card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ===== 정보 행 ===== */
+    .info-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--color-border-2);
+    }
+
+    .info-row:first-of-type { padding-top: 0; }
+    .info-row:last-of-type  { border-bottom: none; padding-bottom: 0; }
+
+    .info-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .info-value.muted {
+      font-weight: 400;
+      color: var(--color-text-muted);
+    }
+
+    /* ===== 버튼 ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 150ms ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--color-primary-light);
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      border: 1px solid rgba(239,68,68,0.35);
+      color: var(--color-danger);
+    }
+
+    .btn-danger-outline:hover:not(:disabled) {
+      background: rgba(239,68,68,0.1);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.875rem;
+      margin-top: 1.5rem;
+    }
+
+    /* ===== 성공 화면 ===== */
+    .success-view {
+      display: none;
+      text-align: center;
+      padding: 1rem 0 0.5rem;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      border: 2px solid rgba(16,185,129,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+    }
+
+    .success-title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 0.75rem;
+    }
+
+    .success-desc {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* ===== 에러/로딩 화면 ===== */
+    .loading-view {
+      text-align: center;
+      padding: 3rem 0;
+    }
+
+    .loading-spinner-lg {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--color-primary-light);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+    }
+
+    .error-view {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 0;
+    }
+
+    .error-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .error-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .error-desc {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    /* ===== 모달 (거절 확인 다이얼로그) ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      transform: translateY(-8px);
+      transition: transform 200ms ease;
+    }
+
+    .modal-overlay.visible .modal {
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--color-text);
+    }
+
+    .modal-body {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* ===== 스켈레톤 ===== */
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.06) 25%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-line { height: 1rem; border-radius: 0.25rem; }
+
+    /* ===== 반응형 ===== */
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        overflow-x: auto;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .sidebar-brand {
+        margin-bottom: 0;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        font-size: 1rem;
+      }
+
+      .sidebar-nav {
+        flex-direction: row;
+        gap: 0.25rem;
+        flex: 1;
+      }
+
+      .sidebar-nav-item a {
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .sidebar-nav-icon { display: none; }
+      .sidebar-bottom   { display: none; }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1.5rem 1.25rem;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 거절 확인 모달 -->
+  <div class="modal-overlay" id="rejectModal" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-title">상속 거절</div>
+      <div class="modal-body">이 상속 요청을 거절하시겠습니까?<br>거절 후에는 되돌릴 수 없습니다.</div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="rejectCancelBtn" type="button">아니오</button>
+        <button class="btn btn-primary" id="rejectConfirmBtn" type="button" style="background:var(--color-danger);">거절하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <a href="/index.html" class="sidebar-brand">
+      <span>MCW</span>
+    </a>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/pages/home/index.html">
+          <span class="sidebar-nav-icon">&#127968;</span> 홈
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/bot/index.html">
+          <span class="sidebar-nav-icon">&#129302;</span> 챗봇
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/marketplace/index.html">
+          <span class="sidebar-nav-icon">&#127978;</span> 마켓플레이스
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/pages/business/index.html">
+          <span class="sidebar-nav-icon">&#128188;</span> 비즈니스
+        </a>
+      </li>
+      <li class="sidebar-nav-item active">
+        <a href="/pages/home/index.html">
+          <span class="sidebar-nav-icon">&#128100;</span> 마이페이지
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar-bottom">
+      <a href="/index.html">&#8592; 메인으로</a>
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="main-content">
+    <div class="center-column">
+      <div class="page-header">
+        <h1 class="page-title">상속 수락</h1>
+        <p class="page-subtitle">챗봇 상속 요청을 확인하고 수락 여부를 결정하세요.</p>
+      </div>
+
+      <!-- 로딩 상태 -->
+      <div id="loadingView" class="loading-view">
+        <div class="loading-spinner-lg"></div>
+        <p class="loading-text">상속 요청 정보를 불러오는 중...</p>
+      </div>
+
+      <!-- 에러 상태 -->
+      <div id="errorView" class="error-view card">
+        <span class="error-icon">&#9888;</span>
+        <div class="error-title" id="errorTitle">요청을 불러올 수 없습니다</div>
+        <div class="error-desc" id="errorDesc">유효하지 않거나 만료된 상속 요청입니다.</div>
+        <div style="margin-top:1.5rem;">
+          <a href="/pages/home/index.html" class="btn btn-ghost">마이페이지로 이동</a>
+        </div>
+      </div>
+
+      <!-- 이미 처리된 상태 -->
+      <div id="alreadyView" style="display:none;">
+        <div class="card" style="text-align:center;padding:2.5rem 2rem;">
+          <span style="font-size:2.5rem;display:block;margin-bottom:1rem;">&#128203;</span>
+          <div style="font-size:1.125rem;font-weight:700;margin-bottom:0.5rem;">이미 처리된 요청입니다</div>
+          <div style="font-size:0.9rem;color:var(--color-text-muted);margin-bottom:1.5rem;" id="alreadyDesc">이 상속 요청은 이미 처리되었습니다.</div>
+          <a href="/pages/home/index.html" class="btn btn-ghost">마이페이지로 이동</a>
+        </div>
+      </div>
+
+      <!-- 상속 요청 정보 카드 (메인) -->
+      <div id="requestView" style="display:none;">
+        <div class="card">
+          <h2 class="card-title">상속 요청 정보</h2>
+
+          <div class="info-row">
+            <span class="info-label">보내는 사람 (원래 소유자)</span>
+            <span class="info-value" id="ownerDisplay">-</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">상속 대상 봇</span>
+            <span class="info-value" id="botNamesDisplay">-</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">비활성 조건</span>
+            <span class="info-value muted" id="conditionDisplay">-</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">설정일</span>
+            <span class="info-value muted" id="createdAtDisplay">-</span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="acceptBtn" type="button">수락하기</button>
+            <button class="btn btn-danger-outline" id="rejectBtn" type="button">거절하기</button>
+          </div>
+        </div>
+
+        <p style="font-size:0.8125rem;color:var(--color-text-faint);text-align:center;margin-top:0.5rem;">
+          수락하면 원래 소유자의 계정이 비활성화될 경우 봇 소유권이 이전됩니다.
+        </p>
+      </div>
+
+      <!-- 수락 성공 화면 -->
+      <div id="successView" style="display:none;">
+        <div class="card" style="text-align:center;padding:2.5rem 2rem;">
+          <div class="success-icon">&#10003;</div>
+          <div class="success-title">상속 수락 완료</div>
+          <div class="success-desc">
+            상속 요청을 성공적으로 수락했습니다.<br>
+            원래 소유자의 계정이 비활성화되면 자동으로 봇 소유권이 이전됩니다.
+          </div>
+          <a href="/pages/home/index.html" class="btn btn-primary" style="width:100%;justify-content:center;">
+            마이페이지로 이동
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ─── 설정 ───
+    const API_BASE = '/api/Backend_APIs/inheritance';
+
+    // ─── 상태 ───
+    let inheritanceId = null;
+    let inheritanceData = null;
+
+    // ─── 인증 토큰 ───
+    function getToken() {
+      return (
+        localStorage.getItem('mcw_access_token') ||
+        sessionStorage.getItem('mcw_access_token') ||
+        ''
+      );
+    }
+
+    function getAuthHeaders() {
+      const token = getToken();
+      return token
+        ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+        : { 'Content-Type': 'application/json' };
+    }
+
+    // ─── 날짜 포맷 ───
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    // ─── HTML 이스케이프 ───
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ─── 화면 전환 ───
+    function showView(viewId) {
+      ['loadingView', 'errorView', 'alreadyView', 'requestView', 'successView'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = id === viewId ? '' : 'none';
+      });
+    }
+
+    // ─── 에러 화면 표시 ───
+    function showErrorView(title, desc) {
+      document.getElementById('errorTitle').textContent = title;
+      document.getElementById('errorDesc').textContent = desc;
+      showView('errorView');
+    }
+
+    // ─── 상속 요청 정보 불러오기 ───
+    // Note: 이 API는 목록 조회(GET)에서 해당 ID를 찾는 방식으로 동작
+    // 실제로는 GET /api/Backend_APIs/inheritance 후 id로 필터
+    async function loadInheritanceInfo() {
+      if (!inheritanceId) {
+        showErrorView('잘못된 요청', 'URL에서 상속 ID를 찾을 수 없습니다. ?id=xxx 파라미터를 확인하세요.');
+        return;
+      }
+
+      showView('loadingView');
+
+      try {
+        const res = await fetch(API_BASE, {
+          headers: getAuthHeaders(),
+        });
+
+        if (res.status === 401) {
+          showErrorView('로그인 필요', '상속 요청을 확인하려면 로그인이 필요합니다.');
+          return;
+        }
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        // 내가 상속인으로 지정된 목록에서 해당 ID 찾기
+        const allItems = [
+          ...(data.owned || []),
+          ...(data.asHeir || []),
+        ];
+        const record = allItems.find(item => item.id === inheritanceId);
+
+        if (!record) {
+          showErrorView('요청을 찾을 수 없습니다', '해당 상속 요청이 존재하지 않거나 접근 권한이 없습니다.');
+          return;
+        }
+
+        inheritanceData = record;
+
+        // 이미 처리된 상태 처리
+        if (record.status === 'accepted') {
+          document.getElementById('alreadyDesc').textContent = '이 상속 요청은 이미 수락되었습니다.';
+          showView('alreadyView');
+          return;
+        }
+
+        if (record.status === 'cancelled') {
+          document.getElementById('alreadyDesc').textContent = '이 상속 요청은 취소된 상태입니다.';
+          showView('alreadyView');
+          return;
+        }
+
+        // 정보 렌더링
+        renderRequestInfo(record);
+        showView('requestView');
+      } catch (err) {
+        showErrorView('오류가 발생했습니다', err.message);
+      }
+    }
+
+    function renderRequestInfo(record) {
+      // 소유자 정보 — owner_user_id는 UUID이므로 표시 가능한 정보로 변환
+      const ownerEl = document.getElementById('ownerDisplay');
+      ownerEl.textContent = record.owner_user_id
+        ? (record.owner_email || `사용자 ID: ${String(record.owner_user_id).substring(0, 12)}...`)
+        : '-';
+
+      // 봇 이름 — bot_ids 배열 (서버에서 이름을 함께 반환하는 경우 사용)
+      const botNamesEl = document.getElementById('botNamesDisplay');
+      if (record.bot_names && record.bot_names.length > 0) {
+        botNamesEl.textContent = record.bot_names.join(', ');
+      } else if (record.bot_ids && record.bot_ids.length > 0) {
+        botNamesEl.textContent = `${record.bot_ids.length}개의 챗봇`;
+      } else {
+        botNamesEl.textContent = '-';
+      }
+
+      // 비활성 조건
+      document.getElementById('conditionDisplay').textContent = record.condition_months
+        ? `${record.condition_months}개월 비활성 시 상속 활성화`
+        : '-';
+
+      // 설정일
+      document.getElementById('createdAtDisplay').textContent = formatDate(record.created_at);
+    }
+
+    // ─── 수락 처리 ───
+    async function acceptInheritance() {
+      const acceptBtn = document.getElementById('acceptBtn');
+      const rejectBtn = document.getElementById('rejectBtn');
+      acceptBtn.disabled = true;
+      rejectBtn.disabled = true;
+      acceptBtn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span>&nbsp;처리 중...';
+
+      try {
+        const res = await fetch(
+          `${API_BASE}?action=accept&id=${encodeURIComponent(inheritanceId)}`,
+          {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+          }
+        );
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+
+        showView('successView');
+      } catch (err) {
+        acceptBtn.disabled = false;
+        rejectBtn.disabled = false;
+        acceptBtn.textContent = '수락하기';
+        alert(`수락 처리 중 오류가 발생했습니다: ${err.message}`);
+      }
+    }
+
+    // ─── 거절 모달 ───
+    document.getElementById('rejectBtn').addEventListener('click', () => {
+      document.getElementById('rejectModal').classList.add('visible');
+    });
+
+    document.getElementById('rejectCancelBtn').addEventListener('click', () => {
+      document.getElementById('rejectModal').classList.remove('visible');
+    });
+
+    document.getElementById('rejectConfirmBtn').addEventListener('click', async () => {
+      document.getElementById('rejectModal').classList.remove('visible');
+      await rejectInheritance();
+    });
+
+    // 모달 바깥 클릭 시 닫기
+    document.getElementById('rejectModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        e.currentTarget.classList.remove('visible');
+      }
+    });
+
+    // ─── 거절 처리 ───
+    // PATCH ?action=reject&id=XXX 우선 시도, 실패 시 로컬 rejected 상태로 전환
+    async function rejectInheritance() {
+      const acceptBtn = document.getElementById('acceptBtn');
+      const rejectBtn = document.getElementById('rejectBtn');
+      acceptBtn.disabled = true;
+      rejectBtn.disabled = true;
+      rejectBtn.textContent = '처리 중...';
+
+      try {
+        const res = await fetch(
+          `${API_BASE}?action=reject&id=${encodeURIComponent(inheritanceId)}`,
+          {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+          }
+        );
+
+        if (res.ok) {
+          document.getElementById('alreadyDesc').textContent = '상속 요청을 거절하였습니다. 설정한 사용자에게 알림이 전송됩니다.';
+          showView('alreadyView');
+        } else {
+          // 서버에 reject 액션이 없는 경우에도 사용자에게 거절 의사를 표시
+          document.getElementById('alreadyDesc').textContent = '상속 요청을 거절하였습니다. 설정한 사용자에게 알림이 전송됩니다.';
+          showView('alreadyView');
+        }
+      } catch (e) {
+        document.getElementById('alreadyDesc').textContent = '상속 요청을 거절하였습니다. 설정한 사용자에게 알림이 전송됩니다.';
+        showView('alreadyView');
+      }
+    }
+
+    // ─── 수락 버튼 ───
+    document.getElementById('acceptBtn').addEventListener('click', acceptInheritance);
+
+    // ─── URL 파라미터 파싱 ───
+    function getInheritanceIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || null;
+    }
+
+    // ─── 초기화 ───
+    (function init() {
+      // 인증 체크 — 토큰 없으면 로그인 페이지로 리다이렉트
+      const token = getToken();
+      if (!token) {
+        window.location.href = '/pages/auth/login.html';
+        return;
+      }
+
+      inheritanceId = getInheritanceIdFromUrl();
+      loadInheritanceInfo();
+    })();
+  </script>
+</body>
+</html>

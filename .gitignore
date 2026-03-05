@@ -15,3 +15,14 @@ node_modules/
 Thumbs.db
 openclaw/
 nul
+
+# Reference materials (large files)
+참고자료_AIRI/
+참고자료_ai-chatbot-avatar-project/
+
+# Archives
+Dev_Package_archive_*/
+
+# Python cache
+__pycache__/
+cpc-agent-server/__pycache__/

@@ -1,0 +1,310 @@
+<!--
+@task S2F8
+@description Learning (학습) 메뉴 랜딩 페이지
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning (학습) — My Chatbot World</title>
+  <meta name="description" content="챗봇스쿨에서 체계적으로 배우고 성장하세요. FAQ 관리, 학습 커리큘럼, 챗봇스쿨 — My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: #0d0d12;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    .page-layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: #16161c;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sidebar-brand {
+      font-size: 1rem; font-weight: 800;
+      color: var(--primary-400, #818cf8);
+      margin-bottom: 1.5rem;
+      text-decoration: none; display: block;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.7rem; font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.75rem 0.5rem 0.25rem; margin-top: 0.5rem;
+    }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 0.625rem;
+      padding: 0.625rem 0.75rem; border-radius: 8px;
+      color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .sidebar-link.active { background: var(--primary-500, #6366f1); color: white; }
+    .sidebar-link .icon { font-size: 1rem; width: 1.25rem; text-align: center; }
+    .sidebar-link.top-level { font-size: 0.925rem; font-weight: 700; color: rgba(255,255,255,0.8); padding: 0.75rem 0.75rem; }
+    .sidebar-link.top-level.current { color: var(--primary-400, #818cf8); }
+
+    .main-content { flex: 1; margin-left: 240px; padding: 3rem 3.5rem; max-width: 900px; }
+
+    .page-header { margin-bottom: 3rem; }
+
+    .page-badge {
+      display: inline-block;
+      background: rgba(16,185,129,0.12);
+      color: #34d399;
+      border: 1px solid rgba(16,185,129,0.25);
+      padding: 0.25rem 0.75rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+
+    .page-title { font-size: 2.25rem; font-weight: 900; color: #ffffff; line-height: 1.2; margin-bottom: 0.75rem; }
+    .page-title .title-ko { color: #34d399; }
+    .page-subtitle { font-size: 1.05rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem; margin-bottom: 2.5rem;
+    }
+
+    .feature-card {
+      background: #1c1c24;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem;
+      text-decoration: none; color: inherit; transition: all 0.2s;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .feature-card:hover {
+      border-color: rgba(16,185,129,0.35); background: #22222e;
+      transform: translateY(-2px);
+    }
+
+    .feature-icon { font-size: 2rem; line-height: 1; }
+    .feature-title { font-size: 1.05rem; font-weight: 700; color: #ffffff; }
+    .feature-title-en { font-size: 0.8rem; color: rgba(255,255,255,0.35); font-weight: 400; margin-left: 0.4rem; }
+    .feature-desc { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+    .feature-tag {
+      display: inline-block;
+      background: rgba(16,185,129,0.1); color: #34d399;
+      font-size: 0.7rem; font-weight: 600;
+      padding: 0.2rem 0.6rem; border-radius: 999px; align-self: flex-start;
+    }
+
+    /* 커리큘럼 단계 표시 */
+    .curriculum-steps {
+      background: #1c1c24;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;
+    }
+
+    .curriculum-steps h3 {
+      font-size: 1rem; font-weight: 700; color: white;
+      margin-bottom: 1.25rem;
+    }
+
+    .step-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .step-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 0.875rem; background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+    }
+
+    .step-num {
+      background: rgba(16,185,129,0.15); color: #34d399;
+      font-size: 0.75rem; font-weight: 800;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-content h4 { font-size: 0.925rem; font-weight: 600; color: white; margin-bottom: 0.2rem; }
+    .step-content p { font-size: 0.825rem; color: rgba(255,255,255,0.45); }
+
+    .cta-row { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.75rem; border-radius: 10px;
+      font-size: 0.925rem; font-weight: 600; text-decoration: none;
+      cursor: pointer; transition: all 0.15s; border: none;
+    }
+    .btn-primary { background: #059669; color: white; }
+    .btn-primary:hover { background: #047857; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 2rem 1.25rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
+
+      <span class="sidebar-section-label">5대 메뉴</span>
+      <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
+      <a href="../learning/index.html"  class="sidebar-link top-level current"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
+      <a href="../skills/index.html"    class="sidebar-link top-level"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
+      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
+      <a href="../community/index.html" class="sidebar-link top-level"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
+
+      <span class="sidebar-section-label">Learning 하위 메뉴</span>
+      <a href="#faq"        class="sidebar-link active"><span class="icon">❓</span> FAQ 관리</a>
+      <a href="#curriculum" class="sidebar-link"><span class="icon">📋</span> 학습 커리큘럼</a>
+      <a href="#school"     class="sidebar-link"><span class="icon">🏫</span> 챗봇스쿨</a>
+      <a href="#history"    class="sidebar-link"><span class="icon">📊</span> 학습 이력</a>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <div class="page-header">
+        <span class="page-badge">STEP 2 — Learning</span>
+        <h1 class="page-title">
+          <span class="title-ko">학습</span> — 챗봇스쿨
+        </h1>
+        <p class="page-subtitle">
+          갓 태어난 챗봇은 아직 초보입니다.<br>
+          챗봇스쿨에서 체계적으로 배우고 성장합니다.
+        </p>
+      </div>
+
+      <!-- 기능 카드 -->
+      <div class="feature-grid">
+
+        <a href="#faq" class="feature-card" id="faq">
+          <div class="feature-icon">❓</div>
+          <div>
+            <span class="feature-title">FAQ 관리</span>
+            <span class="feature-title-en">FAQ Manager</span>
+          </div>
+          <p class="feature-desc">
+            자주 묻는 질문과 답변을 관리합니다.
+            AI가 인터뷰에서 자동 생성한 FAQ를 편집하고 추가할 수 있습니다.
+          </p>
+          <span class="feature-tag">자동 생성</span>
+        </a>
+
+        <a href="#curriculum" class="feature-card" id="curriculum">
+          <div class="feature-icon">📋</div>
+          <div>
+            <span class="feature-title">학습 커리큘럼</span>
+            <span class="feature-title-en">Curriculum</span>
+          </div>
+          <p class="feature-desc">
+            챗봇의 수준에 맞는 단계별 학습 과정을 제공합니다.
+            초급 → 중급 → 고급으로 체계적으로 성장합니다.
+          </p>
+          <span class="feature-tag">단계별 학습</span>
+        </a>
+
+        <a href="#school" class="feature-card" id="school">
+          <div class="feature-icon">🏫</div>
+          <div>
+            <span class="feature-title">챗봇스쿨</span>
+            <span class="feature-title-en">Chatbot School</span>
+          </div>
+          <p class="feature-desc">
+            AI 멘토링, 시나리오 훈련, 지식 학습 등
+            전문 교육 프로그램을 제공합니다.
+          </p>
+          <span class="feature-tag">AI 멘토링</span>
+        </a>
+
+        <a href="#history" class="feature-card" id="history">
+          <div class="feature-icon">📊</div>
+          <div>
+            <span class="feature-title">학습 이력</span>
+            <span class="feature-title-en">Learning History</span>
+          </div>
+          <p class="feature-desc">
+            어떤 교육을 받았고 어떤 능력이 향상됐는지
+            학습 포트폴리오로 한눈에 확인합니다.
+          </p>
+          <span class="feature-tag">포트폴리오</span>
+        </a>
+
+      </div>
+
+      <!-- 학습 단계 -->
+      <div class="curriculum-steps">
+        <h3>📚 챗봇스쿨 학습 단계</h3>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h4>기초 과정 — 기본 대화 훈련</h4>
+              <p>인사, 자기소개, 기본 FAQ 응답 능력을 키웁니다.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h4>중급 과정 — 시나리오 훈련</h4>
+              <p>까다로운 고객, 긴급 상황 등 다양한 시나리오를 게임처럼 훈련합니다.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h4>고급 과정 — 전문 지식 학습</h4>
+              <p>문서 업로드, 웹 크롤링으로 도메인 전문 지식을 체계적으로 축적합니다.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <h4>AI 멘토링 — 1:1 코칭</h4>
+              <p>경험 많은 AI 전문가가 초보 챗봇을 1:1 코칭해 대화 품질을 빠르게 끌어올립니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-row">
+        <a href="#school" class="btn btn-primary">
+          📚 챗봇스쿨 시작하기
+        </a>
+        <a href="../../index.html#school" class="btn btn-secondary">
+          소개 보기
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+
+</html>

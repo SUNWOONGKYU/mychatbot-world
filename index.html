@@ -15,11 +15,13 @@
   <nav class="navbar" id="navbar">
     <div class="container navbar-inner">
       <a href="/" class="navbar-logo"><span>My Chatbot World</span></a>
-      <ul class="navbar-links">
-        <li><a href="#birth">Birth</a></li>
-        <li><a href="#school">School</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#community">Community</a></li>
+      <!-- @task S2F8 — 5대 메뉴 네비게이션 -->
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="pages/birth/index.html">Birth <span style="opacity:.6;font-size:.8em;">(탄생)</span></a></li>
+        <li><a href="pages/learning/index.html">Learning <span style="opacity:.6;font-size:.8em;">(학습)</span></a></li>
+        <li><a href="pages/skills/index.html">Skills <span style="opacity:.6;font-size:.8em;">(스킬장터)</span></a></li>
+        <li><a href="pages/jobs/index.html">Jobs <span style="opacity:.6;font-size:.8em;">(구봇구직)</span></a></li>
+        <li><a href="pages/community/index.html">Community <span style="opacity:.6;font-size:.8em;">(봇마당)</span></a></li>
       </ul>
       <div class="navbar-cta" id="navbarCta">
         <a href="pages/login.html" class="btn btn-secondary btn-sm" id="navLogin">로그인</a>
@@ -51,6 +53,11 @@
       <div class="hero-actions animate-fadeInUp delay-300">
         <a href="pages/create/index.html" class="btn btn-primary btn-xl">
           🎤 5분 인터뷰로 챗봇 생성하기
+        </a>
+        <!-- @task S2F6 — 게스트 체험 CTA -->
+        <a href="pages/guest/index.html" class="btn btn-primary btn-xl"
+          style="background:#10b981; border-color:#10b981;">
+          ⚡ 지금 무료로 체험하기
         </a>
         <a href="#journey" class="btn btn-secondary btn-xl">챗봇의 여정 보기 ↓</a>
         <a href="pages/bot/index.html?id=sunny-demo" class="btn btn-primary btn-xl"
@@ -322,9 +329,16 @@
         5분 만에 생성되고, 챗봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장합니다.<br>
         그래서 <strong>당신을 대신해 24시간 활동합니다.</strong>
       </p>
-      <a href="pages/create/index.html" class="btn btn-primary btn-xl" style="margin-top: 2rem;">
-        🎤 5분 인터뷰로 시작하기
-      </a>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top: 2rem;">
+        <a href="pages/create/index.html" class="btn btn-primary btn-xl">
+          🎤 5분 인터뷰로 시작하기
+        </a>
+        <!-- @task S2F6 — 게스트 체험 CTA -->
+        <a href="pages/guest/index.html" class="btn btn-primary btn-xl"
+          style="background:#10b981; border-color:#10b981;">
+          ⚡ 지금 무료로 체험하기
+        </a>
+      </div>
     </div>
   </section>
 
@@ -339,12 +353,14 @@
             배우고, 성장하여 당신을 대신해 24시간 활동합니다
           </p>
         </div>
+        <!-- @task S2F8 — 5대 메뉴 푸터 링크 -->
         <div class="footer-links">
           <h4>서비스</h4>
-          <a href="pages/create/index.html">Birth</a>
-          <a href="#school">School</a>
-          <a href="#skills">Skills</a>
-          <a href="#community">Community</a>
+          <a href="pages/birth/index.html">Birth (탄생)</a>
+          <a href="pages/learning/index.html">Learning (학습)</a>
+          <a href="pages/skills/index.html">Skills (스킬장터)</a>
+          <a href="pages/jobs/index.html">Jobs (구봇구직)</a>
+          <a href="pages/community/index.html">Community (봇마당)</a>
           <a href="#pricing">가격 정책</a>
         </div>
         <div class="footer-links">

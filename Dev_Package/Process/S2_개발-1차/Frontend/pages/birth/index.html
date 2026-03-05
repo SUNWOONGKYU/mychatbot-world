@@ -1,0 +1,355 @@
+<!--
+@task S2F8
+@description Birth (탄생) 메뉴 랜딩 페이지
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birth (탄생) — My Chatbot World</title>
+  <meta name="description" content="5분 인터뷰로 나만의 AI 챗봇을 탄생시키세요. 챗봇 생성, 성격 설정, 아바타 꾸미기까지 — My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    /* ===== Birth 페이지 전용 스타일 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: #0d0d12;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ----- 레이아웃 ----- */
+    .page-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ----- 사이드바 ----- */
+    .sidebar {
+      width: 240px;
+      background: #16161c;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sidebar-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--primary-400, #818cf8);
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+      display: block;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 0.5rem 0.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.625rem 0.75rem;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .sidebar-link.active { background: var(--primary-500, #6366f1); color: white; }
+
+    .sidebar-link .icon { font-size: 1rem; width: 1.25rem; text-align: center; }
+
+    /* Top-level menu links (larger) */
+    .sidebar-link.top-level {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.8);
+      padding: 0.75rem 0.75rem;
+    }
+
+    .sidebar-link.top-level.current {
+      color: var(--primary-400, #818cf8);
+    }
+
+    /* ----- 메인 콘텐츠 ----- */
+    .main-content {
+      flex: 1;
+      margin-left: 240px;
+      padding: 3rem 3.5rem;
+      max-width: 900px;
+    }
+
+    /* ----- 페이지 헤더 ----- */
+    .page-header {
+      margin-bottom: 3rem;
+    }
+
+    .page-badge {
+      display: inline-block;
+      background: rgba(99,102,241,0.15);
+      color: var(--primary-400, #818cf8);
+      border: 1px solid rgba(99,102,241,0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title .title-ko {
+      color: var(--primary-400, #818cf8);
+    }
+
+    .page-subtitle {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+    }
+
+    /* ----- 기능 카드 그리드 ----- */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .feature-card {
+      background: #1c1c24;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(99,102,241,0.4);
+      background: #22222e;
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .feature-title-en {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      font-weight: 400;
+      margin-left: 0.4rem;
+    }
+
+    .feature-desc {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      background: rgba(99,102,241,0.1);
+      color: var(--primary-300, #a5b4fc);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      align-self: flex-start;
+    }
+
+    /* ----- CTA 버튼 ----- */
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      font-size: 0.925rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary-500, #6366f1);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--primary-600, #4f46e5); }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* ----- 반응형 ----- */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 2rem 1.25rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
+
+      <span class="sidebar-section-label">5대 메뉴</span>
+      <a href="../birth/index.html"     class="sidebar-link top-level current"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
+      <a href="../learning/index.html"  class="sidebar-link top-level"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
+      <a href="../skills/index.html"    class="sidebar-link top-level"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
+      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
+      <a href="../community/index.html" class="sidebar-link top-level"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
+
+      <span class="sidebar-section-label">Birth 하위 메뉴</span>
+      <a href="#create"     class="sidebar-link active"><span class="icon">✨</span> 챗봇 생성</a>
+      <a href="#persona"    class="sidebar-link"><span class="icon">🎭</span> 성격 설정</a>
+      <a href="#appearance" class="sidebar-link"><span class="icon">🎨</span> 외형 설정</a>
+      <a href="#avatar"     class="sidebar-link"><span class="icon">🤖</span> 아바타</a>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <div class="page-header">
+        <span class="page-badge">STEP 1 — Birth</span>
+        <h1 class="page-title">
+          <span class="title-ko">탄생</span> — 챗봇 생성
+        </h1>
+        <p class="page-subtitle">
+          5분 인터뷰로 나만의 AI 챗봇을 탄생시키세요.<br>
+          기본정보 · 성격 · 외형 · 아바타까지 — 모든 것을 설정합니다.
+        </p>
+      </div>
+
+      <!-- 기능 카드 -->
+      <div class="feature-grid">
+
+        <a href="../../pages/create/index.html" class="feature-card" id="create">
+          <div class="feature-icon">✨</div>
+          <div>
+            <span class="feature-title">챗봇 생성</span>
+            <span class="feature-title-en">Create Bot</span>
+          </div>
+          <p class="feature-desc">
+            5분 음성 인터뷰로 나만의 AI 챗봇을 생성합니다.
+            AI가 인터뷰 내용을 분석해 인사말과 FAQ를 자동 생성합니다.
+          </p>
+          <span class="feature-tag">5분 인터뷰</span>
+        </a>
+
+        <a href="#persona" class="feature-card" id="persona">
+          <div class="feature-icon">🎭</div>
+          <div>
+            <span class="feature-title">성격 설정</span>
+            <span class="feature-title-en">Persona Setup</span>
+          </div>
+          <p class="feature-desc">
+            대면용(공개) 페르소나와 도우미(비공개) 페르소나를 구성합니다.
+            말투, 어조, 성격을 세밀하게 조정합니다.
+          </p>
+          <span class="feature-tag">페르소나</span>
+        </a>
+
+        <a href="#appearance" class="feature-card" id="appearance">
+          <div class="feature-icon">🎨</div>
+          <div>
+            <span class="feature-title">외형 설정</span>
+            <span class="feature-title-en">Appearance</span>
+          </div>
+          <p class="feature-desc">
+            챗봇 위젯의 색상, 폰트, 버튼 스타일 등 시각적 요소를
+            브랜드에 맞게 커스터마이즈합니다.
+          </p>
+          <span class="feature-tag">커스터마이즈</span>
+        </a>
+
+        <a href="#avatar" class="feature-card" id="avatar">
+          <div class="feature-icon">🤖</div>
+          <div>
+            <span class="feature-title">아바타</span>
+            <span class="feature-title-en">Avatar</span>
+          </div>
+          <p class="feature-desc">
+            챗봇의 프로필 이미지(아바타)를 설정합니다.
+            AI 생성 이미지 또는 직접 업로드를 지원합니다.
+          </p>
+          <span class="feature-tag">AI 이미지</span>
+        </a>
+
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-row">
+        <a href="../../pages/create/index.html" class="btn btn-primary">
+          🐣 챗봇 생성 시작하기
+        </a>
+        <a href="../../index.html#birth" class="btn btn-secondary">
+          소개 보기
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,1148 @@
+<!-- @task S4F2 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스킬 상세 — My Chatbot World</title>
+  <meta name="description" content="스킬 상세 정보를 확인하고 설치하세요.">
+  <style>
+    /* ===== 리셋 & 기본 ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+      transition: transform 300ms ease;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      width: 1.25rem;
+      text-align: center;
+    }
+
+    /* ===== 모바일 헤더 ===== */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      z-index: 60;
+    }
+
+    .mobile-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+    }
+
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 45;
+    }
+
+    /* ===== 메인 콘텐츠 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      max-width: calc(var(--sidebar-width) + 760px);
+    }
+
+    /* ===== 페이지 헤더 ===== */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 150ms ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      border-color: var(--color-primary-light);
+      color: var(--color-text);
+    }
+
+    .breadcrumb {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+    }
+
+    .breadcrumb a {
+      color: var(--color-primary-light);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== 스켈레톤 ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ===== 상태 뷰 제어 ===== */
+    .loading-view { display: block; }
+    .loaded-view  { display: none; }
+    .error-view   { display: none; }
+
+    body.state-loaded .loading-view { display: none; }
+    body.state-loaded .loaded-view  { display: block; }
+    body.state-error  .loading-view { display: none; }
+    body.state-error  .error-view   { display: block; }
+
+    /* ===== 스켈레톤 레이아웃 ===== */
+    .skeleton-detail {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2rem;
+    }
+
+    .skeleton-main-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .skeleton-side-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: fit-content;
+    }
+
+    /* ===== 상세 레이아웃 ===== */
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ===== 메인 카드 ===== */
+    .detail-main-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+    }
+
+    .skill-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .skill-icon-lg {
+      width: 4rem;
+      height: 4rem;
+      background: rgba(99,102,241,0.15);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.875rem;
+      flex-shrink: 0;
+    }
+
+    .skill-header-info {
+      flex: 1;
+    }
+
+    .skill-name-lg {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.25;
+      margin-bottom: 0.625rem;
+    }
+
+    .skill-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-category {
+      background: rgba(99,102,241,0.12);
+      color: #a5b4fc;
+    }
+
+    .badge-free {
+      background: rgba(16,185,129,0.15);
+      color: #34d399;
+    }
+
+    .badge-paid {
+      background: rgba(245,158,11,0.15);
+      color: #fbbf24;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: 1.5rem 0;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.875rem;
+    }
+
+    .skill-description-text {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ===== 메타 그리드 ===== */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .meta-item {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-2);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.125rem;
+    }
+
+    .meta-item-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--color-text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.375rem;
+    }
+
+    .meta-item-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .meta-item-value.success {
+      color: #34d399;
+    }
+
+    .meta-item-value.warning {
+      color: #fbbf24;
+    }
+
+    /* ===== 사이드 카드 ===== */
+    .detail-side-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .price-display {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .price-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1;
+    }
+
+    .price-value.free-price {
+      color: #34d399;
+    }
+
+    .price-unit-text {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 설치 버튼 ===== */
+    .install-action-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: var(--color-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms ease, transform 150ms ease, opacity 150ms ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.875rem;
+    }
+
+    .install-action-btn:hover:not(:disabled) {
+      background: var(--color-primary-light);
+      transform: translateY(-1px);
+    }
+
+    .install-action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .install-action-btn.installed {
+      background: rgba(16,185,129,0.15);
+      color: #34d399;
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+
+    .install-note {
+      font-size: 0.75rem;
+      color: var(--color-text-faint);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ===== 사이드 메타 ===== */
+    .side-meta-list {
+      margin-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+      padding-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .side-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .side-meta-label {
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+    }
+
+    .side-meta-value {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    /* ===== 설치 결과 알림 ===== */
+    .install-alert {
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .install-alert.visible {
+      display: flex;
+    }
+
+    .install-alert-success {
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #34d399;
+    }
+
+    .install-alert-error {
+      background: rgba(239,68,68,0.10);
+      border: 1px solid rgba(239,68,68,0.25);
+      color: #fca5a5;
+    }
+
+    /* ===== 봇 ID 입력 ===== */
+    .bot-select-wrap {
+      margin-bottom: 0.875rem;
+    }
+
+    .bot-select-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 0.375rem;
+      display: block;
+    }
+
+    .bot-id-input {
+      width: 100%;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      color: var(--color-text);
+      font-size: 0.875rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+
+    .bot-id-input:focus {
+      border-color: var(--color-primary-light);
+    }
+
+    .bot-id-input::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    /* ===== 에러 뷰 ===== */
+    .error-box {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .error-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .error-title { font-size: 1.125rem; font-weight: 700; color: #fca5a5; margin-bottom: 0.5rem; }
+    .error-message { font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 1.5rem; }
+
+    .retry-btn {
+      padding: 0.625rem 1.5rem;
+      background: var(--color-danger);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 0.75rem;
+      transition: opacity 150ms ease;
+    }
+
+    .retry-btn:hover { opacity: 0.85; }
+
+    .back-link {
+      display: inline-block;
+      padding: 0.625rem 1.5rem;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 150ms ease;
+    }
+
+    .back-link:hover { border-color: var(--color-text-muted); color: var(--color-text); }
+
+    /* ===== 스피너 ===== */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .spinner.visible {
+      display: inline-block;
+    }
+
+    /* ===== 모바일 반응형 ===== */
+    @media (max-width: 768px) {
+      .mobile-header {
+        display: flex;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1.25rem 1rem;
+        margin-top: 56px;
+        max-width: 100%;
+      }
+
+      .detail-layout,
+      .skeleton-detail {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-side-card {
+        position: static;
+      }
+
+      .skill-name-lg {
+        font-size: 1.25rem;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 모바일 헤더 -->
+  <header class="mobile-header">
+    <a href="../../index.html" class="mobile-brand">MCW</a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴 열기">&#9776;</button>
+  </header>
+
+  <!-- 사이드바 오버레이 -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar" id="sidebar">
+    <a href="../../index.html" class="sidebar-brand">
+      <span class="sidebar-nav-icon">&#9733;</span>
+      My Chatbot World
+    </a>
+    <nav>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="../home/index.html">
+            <span class="sidebar-nav-icon">&#8962;</span>
+            홈
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../bot/index.html">
+            <span class="sidebar-nav-icon">&#129302;</span>
+            내 챗봇
+          </a>
+        </li>
+        <li class="sidebar-nav-item active">
+          <a href="index.html">
+            <span class="sidebar-nav-icon">&#128722;</span>
+            마켓플레이스
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../business/index.html">
+            <span class="sidebar-nav-icon">&#128188;</span>
+            비즈니스
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../mypage/index.html">
+            <span class="sidebar-nav-icon">&#128100;</span>
+            마이페이지
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="main-content">
+
+    <!-- 페이지 헤더 -->
+    <div class="page-header">
+      <a href="index.html" class="back-btn" title="마켓플레이스로 돌아가기">&#8592;</a>
+      <div class="breadcrumb">
+        <a href="index.html">마켓플레이스</a>
+        &nbsp;/&nbsp;
+        <span id="breadcrumbName">스킬 상세</span>
+      </div>
+    </div>
+
+    <!-- 로딩 뷰 (스켈레톤) -->
+    <div class="loading-view">
+      <div class="skeleton-detail">
+        <div class="skeleton-main-card">
+          <div style="display:flex;gap:1.25rem;">
+            <div class="skeleton" style="width:4rem;height:4rem;border-radius:1rem;flex-shrink:0;"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:0.75rem;">
+              <div class="skeleton" style="height:1.25rem;width:55%;"></div>
+              <div class="skeleton" style="height:1rem;width:35%;border-radius:9999px;"></div>
+            </div>
+          </div>
+          <div class="skeleton" style="height:1px;"></div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;">
+            <div class="skeleton" style="height:0.875rem;width:100%;"></div>
+            <div class="skeleton" style="height:0.875rem;width:90%;"></div>
+            <div class="skeleton" style="height:0.875rem;width:75%;"></div>
+          </div>
+        </div>
+        <div class="skeleton-side-card">
+          <div class="skeleton" style="height:2.5rem;width:50%;margin:0 auto;"></div>
+          <div class="skeleton" style="height:2.75rem;border-radius:0.75rem;"></div>
+          <div class="skeleton" style="height:0.75rem;width:70%;margin:0 auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로드된 뷰 -->
+    <div class="loaded-view">
+      <div class="detail-layout">
+
+        <!-- 메인 카드 -->
+        <div class="detail-main-card">
+          <div class="skill-header">
+            <div class="skill-icon-lg">&#129302;</div>
+            <div class="skill-header-info">
+              <div class="skill-name-lg" id="skillName">-</div>
+              <div class="skill-badges">
+                <span class="badge badge-category" id="skillCategory">-</span>
+                <span class="badge" id="skillPriceBadge">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div>
+            <div class="section-title">스킬 설명</div>
+            <div class="skill-description-text" id="skillDescription">-</div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div>
+            <div class="section-title">상세 정보</div>
+            <div class="meta-grid">
+              <div class="meta-item">
+                <div class="meta-item-label">총 설치 수</div>
+                <div class="meta-item-value" id="metaInstalls">-</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-item-label">등록일</div>
+                <div class="meta-item-value" id="metaCreatedAt">-</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-item-label">가격</div>
+                <div class="meta-item-value" id="metaPrice">-</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-item-label">카테고리</div>
+                <div class="meta-item-value" id="metaCategory">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 사이드 카드 -->
+        <div class="detail-side-card">
+
+          <!-- 가격 표시 -->
+          <div class="price-display">
+            <div class="price-value" id="sidePriceValue">-</div>
+            <div class="price-unit-text" id="sidePriceUnit">크레딧</div>
+          </div>
+
+          <!-- 설치 알림 -->
+          <div class="install-alert install-alert-success" id="successAlert">
+            <span>&#10003;</span>
+            <span id="successMessage">설치되었습니다!</span>
+          </div>
+          <div class="install-alert install-alert-error" id="errorAlert">
+            <span>&#9888;</span>
+            <span id="errorMessage">설치에 실패했습니다.</span>
+          </div>
+
+          <!-- 봇 ID 입력 -->
+          <div class="bot-select-wrap" id="botSelectWrap">
+            <label class="bot-select-label" for="botIdInput">챗봇 ID</label>
+            <input
+              type="text"
+              class="bot-id-input"
+              id="botIdInput"
+              placeholder="bot_abc123"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- 설치 버튼 -->
+          <button class="install-action-btn" id="installBtn" onclick="handleInstall()">
+            <span class="spinner" id="installSpinner"></span>
+            <span id="installBtnLabel">설치하기</span>
+          </button>
+
+          <p class="install-note" id="installNote">
+            설치 후 챗봇에 바로 적용됩니다.
+          </p>
+
+          <!-- 사이드 메타 정보 -->
+          <div class="side-meta-list">
+            <div class="side-meta-row">
+              <span class="side-meta-label">카테고리</span>
+              <span class="side-meta-value" id="sideCategory">-</span>
+            </div>
+            <div class="side-meta-row">
+              <span class="side-meta-label">설치 수</span>
+              <span class="side-meta-value" id="sideInstalls">-</span>
+            </div>
+            <div class="side-meta-row">
+              <span class="side-meta-label">등록일</span>
+              <span class="side-meta-value" id="sideCreatedAt">-</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 에러 뷰 -->
+    <div class="error-view">
+      <div class="error-box">
+        <div class="error-icon">&#9888;</div>
+        <div class="error-title">스킬 정보를 불러올 수 없습니다</div>
+        <div class="error-message" id="fetchErrorMessage">잠시 후 다시 시도해주세요.</div>
+        <button class="retry-btn" onclick="loadSkillDetail()">다시 시도</button>
+        <a href="index.html" class="back-link">목록으로</a>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ===== 인증 체크 — 페이지 로드 시 ===== */
+    const _authToken = localStorage.getItem('sb-hlpovizxnrnspobddxmq-auth-token');
+    if (!_authToken) {
+      window.location.href = '/pages/auth/login.html';
+    }
+
+    /* ===== 상수 ===== */
+    const SUPABASE_KEY = 'sb-hlpovizxnrnspobddxmq-auth-token';
+    const API_BASE = '/api/Backend_APIs/marketplace';
+
+    /* ===== URL 파라미터 ===== */
+    const urlParams = new URLSearchParams(window.location.search);
+    const skillId = urlParams.get('id');
+
+    /* ===== Supabase 토큰 ===== */
+    function getAuthToken() {
+      try {
+        const raw = localStorage.getItem(SUPABASE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed?.access_token || parsed?.session?.access_token || null;
+      } catch {
+        return null;
+      }
+    }
+
+    /* ===== 상태 전환 ===== */
+    function setState(state) {
+      document.body.className = document.body.className
+        .replace(/state-\S+/g, '')
+        .trim();
+      document.body.classList.add('state-' + state);
+    }
+
+    /* ===== XSS 방지 ===== */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    /* ===== 날짜 포맷 ===== */
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+      } catch {
+        return dateStr;
+      }
+    }
+
+    /* ===== 카테고리 레이블 ===== */
+    const CATEGORY_LABELS = {
+      productivity: '생산성',
+      communication: '커뮤니케이션',
+      analysis: '분석',
+      education: '교육',
+      entertainment: '엔터테인먼트',
+      utility: '유틸리티',
+      business: '비즈니스',
+      other: '기타',
+    };
+
+    /* ===== 스킬 상세 로드 ===== */
+    async function loadSkillDetail() {
+      if (!skillId) {
+        document.getElementById('fetchErrorMessage').textContent = '스킬 ID가 없습니다.';
+        setState('error');
+        return;
+      }
+
+      setState('loading');
+
+      const token = getAuthToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      try {
+        const params = new URLSearchParams({ action: 'skill', id: skillId });
+        const res = await fetch(`${API_BASE}?${params.toString()}`, { headers });
+        const json = await res.json();
+
+        if (!res.ok || json.error) {
+          throw new Error(json.error || `HTTP ${res.status}`);
+        }
+
+        const skill = json.data?.skill || json.data;
+        if (!skill) throw new Error('스킬 데이터가 없습니다.');
+
+        renderSkillDetail(skill);
+        setState('loaded');
+
+      } catch (err) {
+        console.error('[Detail] 스킬 로드 실패:', err);
+        document.getElementById('fetchErrorMessage').textContent = err.message;
+        setState('error');
+      }
+    }
+
+    /* ===== 스킬 상세 렌더링 ===== */
+    function renderSkillDetail(skill) {
+      const isFree = !skill.price || skill.price === 0;
+      const priceLabel = isFree ? '무료' : `${Number(skill.price).toLocaleString()} 크레딧`;
+      const categoryKey = skill.category || 'other';
+      const categoryLabel = CATEGORY_LABELS[categoryKey] || categoryKey;
+      const installCount = (skill.install_count || 0).toLocaleString();
+      const name = skill.skill_name || skill.name || '이름 없음';
+
+      /* 브레드크럼 & 페이지 타이틀 */
+      document.getElementById('breadcrumbName').textContent = name;
+      document.title = `${name} — My Chatbot World`;
+
+      /* 메인 카드 */
+      document.getElementById('skillName').textContent = name;
+      document.getElementById('skillDescription').textContent = skill.description || '설명 없음';
+
+      const categoryBadge = document.getElementById('skillCategory');
+      categoryBadge.textContent = categoryLabel;
+
+      const priceBadge = document.getElementById('skillPriceBadge');
+      priceBadge.textContent = priceLabel;
+      priceBadge.className = `badge ${isFree ? 'badge-free' : 'badge-paid'}`;
+
+      /* 메타 그리드 */
+      const metaPriceEl = document.getElementById('metaPrice');
+      metaPriceEl.textContent = priceLabel;
+      metaPriceEl.className = `meta-item-value ${isFree ? 'success' : 'warning'}`;
+
+      document.getElementById('metaInstalls').textContent = installCount + '회';
+      document.getElementById('metaCreatedAt').textContent = formatDate(skill.created_at);
+      document.getElementById('metaCategory').textContent = categoryLabel;
+
+      /* 사이드 카드 */
+      const sidePriceValue = document.getElementById('sidePriceValue');
+      const sidePriceUnit  = document.getElementById('sidePriceUnit');
+      if (isFree) {
+        sidePriceValue.textContent = '무료';
+        sidePriceValue.className = 'price-value free-price';
+        sidePriceUnit.textContent = '무료로 설치 가능';
+      } else {
+        sidePriceValue.textContent = Number(skill.price).toLocaleString();
+        sidePriceValue.className = 'price-value';
+        sidePriceUnit.textContent = '크레딧 (설치 시 차감)';
+      }
+
+      document.getElementById('sideCategory').textContent = categoryLabel;
+      document.getElementById('sideInstalls').textContent = installCount + '회';
+      document.getElementById('sideCreatedAt').textContent = formatDate(skill.created_at);
+
+      /* 이미 설치된 경우 */
+      if (skill.is_installed) {
+        setInstalledState();
+      }
+
+      /* 가격 안내 */
+      if (!isFree) {
+        document.getElementById('installNote').textContent =
+          `${Number(skill.price).toLocaleString()} 크레딧이 차감됩니다. 설치 후 취소는 불가합니다.`;
+      }
+    }
+
+    /* ===== 설치 완료 상태 UI ===== */
+    function setInstalledState() {
+      const btn = document.getElementById('installBtn');
+      btn.disabled = true;
+      btn.classList.add('installed');
+      document.getElementById('installBtnLabel').textContent = '이미 설치됨';
+      document.getElementById('botSelectWrap').style.display = 'none';
+      document.getElementById('installNote').textContent = '이 스킬은 이미 설치되어 있습니다.';
+    }
+
+    /* ===== 설치 알림 ===== */
+    function showInstallAlert(type, message) {
+      document.getElementById('successAlert').classList.remove('visible');
+      document.getElementById('errorAlert').classList.remove('visible');
+      if (type === 'success') {
+        document.getElementById('successMessage').textContent = message;
+        document.getElementById('successAlert').classList.add('visible');
+      } else {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorAlert').classList.add('visible');
+      }
+    }
+
+    /* ===== 설치 처리 ===== */
+    async function handleInstall() {
+      const botId = document.getElementById('botIdInput').value.trim();
+      if (!botId) {
+        document.getElementById('botIdInput').focus();
+        showInstallAlert('error', '챗봇 ID를 입력해주세요.');
+        return;
+      }
+
+      const token = getAuthToken();
+      if (!token) {
+        showInstallAlert('error', '로그인이 필요합니다. 로그인 후 다시 시도해주세요.');
+        return;
+      }
+
+      /* 로딩 상태 */
+      const btn     = document.getElementById('installBtn');
+      const spinner = document.getElementById('installSpinner');
+      const label   = document.getElementById('installBtnLabel');
+      btn.disabled = true;
+      spinner.classList.add('visible');
+      label.textContent = '설치 중...';
+
+      try {
+        const res = await fetch(`${API_BASE}?action=install`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ skillId, botId }),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || json.error) {
+          throw new Error(json.error || `HTTP ${res.status}`);
+        }
+
+        /* 성공 */
+        showInstallAlert('success', '스킬이 성공적으로 설치되었습니다!');
+        setInstalledState();
+
+        /* 설치 수 업데이트 */
+        const currentInstalls = parseInt(
+          (document.getElementById('metaInstalls').textContent || '0').replace(/[^0-9]/g, ''),
+          10
+        );
+        const newInstalls = (currentInstalls + 1).toLocaleString();
+        document.getElementById('metaInstalls').textContent = newInstalls + '회';
+        document.getElementById('sideInstalls').textContent = newInstalls + '회';
+
+      } catch (err) {
+        console.error('[Install] 설치 실패:', err);
+        showInstallAlert('error', err.message || '설치에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        btn.disabled = false;
+        spinner.classList.remove('visible');
+        label.textContent = '설치하기';
+      }
+    }
+
+    /* ===== 모바일 사이드바 토글 ===== */
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+
+    /* ===== 초기 로드 ===== */
+    loadSkillDetail();
+  </script>
+
+</body>
+</html>

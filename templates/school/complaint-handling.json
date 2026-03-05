@@ -1,0 +1,28 @@
+{
+  "scenarioId": "complaint-handling",
+  "scenarioName": "불만 처리 응대",
+  "description": "고객 불만 상황에서 공감하고 문제를 해결하는 방법을 학습합니다.",
+  "xpReward": 10,
+  "steps": [
+    {
+      "stepId": 1,
+      "userPrompt": "제품을 받았는데 설명과 다르게 작동해요. 정말 실망스럽네요.",
+      "expectedTopics": ["공감", "사과", "불편 접수"]
+    },
+    {
+      "stepId": 2,
+      "userPrompt": "이미 며칠 전에 신고했는데 아직도 해결이 안 됐어요.",
+      "expectedTopics": ["상황 파악", "진행 상황 안내", "신속 처리 약속"]
+    },
+    {
+      "stepId": 3,
+      "userPrompt": "보상은 어떻게 받을 수 있나요? 교환이나 환불을 원합니다.",
+      "expectedTopics": ["보상 안내", "교환 또는 환불 절차", "해결책 제시"]
+    },
+    {
+      "stepId": 4,
+      "userPrompt": "앞으로는 이런 일이 없었으면 좋겠어요.",
+      "expectedTopics": ["재발 방지", "신뢰 회복", "감사 및 마무리"]
+    }
+  ]
+}

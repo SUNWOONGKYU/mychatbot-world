@@ -119,3 +119,54 @@
 ### 다음 단계
 - GitHub Pages Viewer 배포
 - 최종 Git 커밋 + 푸시
+
+---
+
+## 6. 17개 신규 Task 추가 — v3.0 (2026-03-05)
+
+### 작업 상태: 완료
+
+### 배경
+5대 메뉴 확정 (Birth/Learning/Skills/Jobs/Community) + 어드민 기능 추가에 따른 신규 Task 등록.
+총 Task 수: 56 → 73 (17개 추가)
+
+### 추가된 Task 목록
+
+| Task ID | Task 이름 | Stage | Area |
+|---------|-----------|-------|------|
+| S2F8 | 대메뉴 5개 업데이트 (탄생/학습/스킬장터/구봇구직/봇마당) | S2 | F |
+| S2BI2 | API 미배포 파일 Root 동기화 | S2 | BI |
+| S3F8 | Learning(학습) 전용 페이지 | S3 | F |
+| S3F9 | Jobs(구봇구직) 챗봇 목록/탐색 페이지 | S3 | F |
+| S3F10 | Jobs(구봇구직) 중개 상세/매칭 페이지 | S3 | F |
+| S3F11 | Community(봇마당) 게시판 페이지 | S3 | F |
+| S3BA6 | Jobs(구봇구직) 중개 API | S3 | BA |
+| S3BA7 | Community(봇마당) API | S3 | BA |
+| S3DB3 | Jobs/Community/Admin DB 스키마 확장 | S3 | DB |
+| S4F5 | 어드민 대시보드 UI | S4 | F |
+| S4F6 | 어드민 사용자/챗봇 관리 UI | S4 | F |
+| S4F7 | 어드민 스킬장터/구봇구직 관리 UI | S4 | F |
+| S4F8 | 어드민 결제/콘텐츠/시스템 관리 UI | S4 | F |
+| S4BA4 | 어드민 API (인증 + CRUD) | S4 | BA |
+| S4BA5 | 어드민 통계/대시보드 API | S4 | BA |
+| S4S1 | 어드민 권한 체계 + 감사 로그 | S4 | S |
+| S4T5 | 신규 기능 통합 테스트 | S4 | T |
+
+### 업데이트된 5개 동기화 위치
+1. TASK_PLAN.md — v3.0 업데이트 (73 Tasks, Stage/Area 수치 갱신)
+2. index.json — task_ids 배열에 17개 ID 추가, total_tasks: 73
+3. grid_records/ — 17개 JSON 파일 생성
+4. task-instructions/ — 17개 instruction 파일 생성
+5. verification-instructions/ — 17개 verification 파일 생성
+
+### Stage별 변경
+| Stage | 기존 | 추가 | 변경 후 |
+|-------|------|------|---------|
+| S2 | 18 | +2 | 20 |
+| S3 | 18 | +7 | 25 |
+| S4 | 16 | +8 | 24 |
+| **합계** | **56** | **+17** | **73** |
+
+### 다음 단계
+- S2 Pending Tasks (10개) 실행 시작
+- S2F8 (대메뉴 5개 업데이트)부터 착수 권장

@@ -1,0 +1,329 @@
+<!--
+@task S3F10
+@description 구봇구직 고용 요청 폼 페이지
+  - URL 파라미터: ?bot_id=봇ID
+  - 선택된 챗봇 정보 표시 (사이드 카드)
+  - 고용 요청 폼: 제목, 설명, 기간, 예산, 카테고리
+  - 제출 → job-hire.js API POST → 성공 시 확인 모달
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고용 요청 — 구봇구직 | My Chatbot World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/job-detail.css">
+</head>
+<body>
+
+  <!-- ===== 헤더 ===== -->
+  <header class="jd-header">
+    <div class="jd-header-inner">
+      <a href="../../index.html" class="jd-logo">
+        <span class="jd-logo-icon">🤖</span>
+        <span class="jd-logo-text">구봇구직</span>
+      </a>
+      <nav class="jd-header-nav">
+        <a href="../../index.html" class="jd-nav-link">홈</a>
+        <a href="index.html" class="jd-nav-link">구봇구직</a>
+        <a href="#" class="jd-nav-link">내 챗봇</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== 브레드크럼 ===== -->
+  <nav class="jd-breadcrumb-bar" aria-label="페이지 경로">
+    <div class="jd-breadcrumb-inner">
+      <a href="../../index.html" class="jd-breadcrumb-link">홈</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <a href="index.html" class="jd-breadcrumb-link">구봇구직</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <a href="#" class="jd-breadcrumb-link" id="breadcrumbBotLink">챗봇 상세</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <span>고용 요청</span>
+    </div>
+  </nav>
+
+  <!-- ===== 메인 ===== -->
+  <main class="jd-main">
+    <div class="jd-container">
+
+      <!-- 페이지 타이틀 -->
+      <div style="margin-bottom:1.5rem">
+        <h1 style="font-size:1.5rem;font-weight:800;color:var(--text-base);margin-bottom:.375rem">고용 요청서 작성</h1>
+        <p style="font-size:.9375rem;color:var(--text-muted)">일감 정보를 상세하게 작성할수록 더 정확한 매칭이 이루어집니다.</p>
+      </div>
+
+      <!-- 2열 레이아웃 -->
+      <div class="jd-hire-layout">
+
+        <!-- ===== 좌측: 고용 폼 ===== -->
+        <div>
+          <form class="jd-form-card" id="hireForm" novalidate aria-label="고용 요청 폼">
+            <h2 class="jd-form-title">일감 정보 입력</h2>
+
+            <!-- 일감 제목 -->
+            <div class="jd-form-group">
+              <label for="jobTitle" class="jd-form-label">
+                일감 제목 <span class="required" aria-label="필수">*</span>
+              </label>
+              <input
+                type="text"
+                id="jobTitle"
+                name="title"
+                class="jd-form-input"
+                placeholder="예: 쇼핑몰 고객 문의 응대 챗봇 구축"
+                maxlength="100"
+                required
+                aria-required="true"
+                autocomplete="off"
+              >
+              <span class="jd-form-hint">최대 100자까지 입력 가능합니다.</span>
+            </div>
+
+            <!-- 일감 설명 -->
+            <div class="jd-form-group">
+              <label for="jobDesc" class="jd-form-label">
+                상세 설명 <span class="required" aria-label="필수">*</span>
+              </label>
+              <textarea
+                id="jobDesc"
+                name="description"
+                class="jd-form-textarea"
+                placeholder="원하는 기능, 기대 결과, 참고 사항 등을 자세히 적어주세요."
+                rows="6"
+                required
+                aria-required="true"
+              ></textarea>
+            </div>
+
+            <!-- 예상 기간 + 카테고리 -->
+            <div class="jd-form-row">
+              <div class="jd-form-group">
+                <label for="jobDuration" class="jd-form-label">
+                  예상 기간 <span class="required" aria-label="필수">*</span>
+                </label>
+                <select
+                  id="jobDuration"
+                  name="duration"
+                  class="jd-form-select"
+                  required
+                  aria-required="true"
+                >
+                  <option value="">기간 선택</option>
+                  <option value="1day">1일 이내</option>
+                  <option value="3days">2~3일</option>
+                  <option value="1week">1주일</option>
+                  <option value="2weeks">2주일</option>
+                  <option value="1month">1개월</option>
+                  <option value="3months">1~3개월</option>
+                  <option value="ongoing">장기 (지속적)</option>
+                </select>
+              </div>
+
+              <div class="jd-form-group">
+                <label for="jobCategory" class="jd-form-label">
+                  카테고리 <span class="required" aria-label="필수">*</span>
+                </label>
+                <select
+                  id="jobCategory"
+                  name="category"
+                  class="jd-form-select"
+                  required
+                  aria-required="true"
+                >
+                  <option value="">카테고리 선택</option>
+                  <option value="customer-service">고객서비스</option>
+                  <option value="education">교육</option>
+                  <option value="marketing">마케팅</option>
+                  <option value="development">개발</option>
+                  <option value="etc">기타</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 예산 범위 -->
+            <div class="jd-form-group">
+              <label class="jd-form-label">예산 범위 (원)</label>
+              <div class="jd-form-row">
+                <div class="jd-form-group" style="margin-bottom:0">
+                  <label for="budgetMin" class="jd-form-label" style="font-weight:400;font-size:.8125rem;color:var(--text-muted)">최소</label>
+                  <input
+                    type="number"
+                    id="budgetMin"
+                    name="budget_min"
+                    class="jd-form-input"
+                    placeholder="예: 50000"
+                    min="0"
+                    step="1000"
+                  >
+                </div>
+                <div class="jd-form-group" style="margin-bottom:0">
+                  <label for="budgetMax" class="jd-form-label" style="font-weight:400;font-size:.8125rem;color:var(--text-muted)">최대</label>
+                  <input
+                    type="number"
+                    id="budgetMax"
+                    name="budget_max"
+                    class="jd-form-input"
+                    placeholder="예: 200000"
+                    min="0"
+                    step="1000"
+                  >
+                </div>
+              </div>
+              <span class="jd-form-hint">비워두면 "협의" 로 처리됩니다.</span>
+            </div>
+
+            <!-- 추가 요구사항 -->
+            <div class="jd-form-group">
+              <label for="jobRequirements" class="jd-form-label">추가 요구사항</label>
+              <textarea
+                id="jobRequirements"
+                name="requirements"
+                class="jd-form-textarea"
+                placeholder="특별히 요구하는 기술 스택, 경험, 언어 등이 있다면 입력해주세요."
+                rows="3"
+                style="min-height:80px"
+              ></textarea>
+            </div>
+
+            <!-- 이용 약관 동의 -->
+            <div class="jd-form-group" style="margin-top:.5rem">
+              <label style="display:flex;align-items:flex-start;gap:.625rem;cursor:pointer;font-size:.875rem;color:var(--text-muted)">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  name="agree_terms"
+                  required
+                  aria-required="true"
+                  style="margin-top:2px;accent-color:var(--primary);width:16px;height:16px;flex-shrink:0"
+                >
+                <span>
+                  <a href="#" style="color:var(--primary);text-decoration:none;font-weight:600">이용약관</a> 및
+                  <a href="#" style="color:var(--primary);text-decoration:none;font-weight:600">개인정보처리방침</a>에 동의합니다.
+                  <span class="required" aria-label="필수">*</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <button type="submit" class="jd-submit-btn" id="hireSubmitBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              고용 요청 보내기
+            </button>
+          </form>
+        </div>
+
+        <!-- ===== 우측: 챗봇 정보 사이드카드 ===== -->
+        <aside aria-label="선택한 챗봇 정보">
+          <div class="jd-bot-side-card">
+            <div class="jd-bot-side-header">
+              <div class="jd-bot-side-avatar" id="sideAvatar" aria-label="챗봇 아바타">?</div>
+              <div>
+                <a href="#" id="sideBotLink" style="text-decoration:none">
+                  <div class="jd-bot-side-name" id="sideBotName">로딩 중...</div>
+                </a>
+                <div class="jd-bot-side-cat" id="sideBotCat">카테고리</div>
+              </div>
+            </div>
+
+            <!-- 가격 -->
+            <div class="jd-bot-side-price-row">
+              <span class="jd-bot-side-price-label">요금</span>
+              <span class="jd-bot-side-price-val" id="sideBotPrice">—</span>
+            </div>
+
+            <!-- 평점 -->
+            <div class="jd-bot-side-rating">
+              <span class="jd-bot-side-stars" id="sideBotStars" aria-label="별점">☆☆☆☆☆</span>
+              <span id="sideBotRating" style="color:var(--text-muted)">—</span>
+            </div>
+
+            <!-- 수수료 안내 -->
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+              <p style="font-size:.8125rem;color:var(--text-muted);line-height:1.6">
+                고용 요청 후 챗봇이 수락하면 매칭이 완료됩니다. 플랫폼 수수료 <strong style="color:var(--primary)">10%</strong>가 부과됩니다.
+              </p>
+            </div>
+
+            <!-- 프로세스 안내 -->
+            <div style="margin-top:1rem">
+              <h3 style="font-size:.8125rem;font-weight:700;color:var(--text-base);margin-bottom:.625rem">진행 프로세스</h3>
+              <ol style="list-style:none;display:flex;flex-direction:column;gap:.5rem">
+                <li style="display:flex;align-items:center;gap:.5rem;font-size:.8125rem;color:var(--text-muted)">
+                  <span style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</span>
+                  요청서 작성 &amp; 전송
+                </li>
+                <li style="display:flex;align-items:center;gap:.5rem;font-size:.8125rem;color:var(--text-muted)">
+                  <span style="width:22px;height:22px;border-radius:50%;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</span>
+                  챗봇 수락 대기
+                </li>
+                <li style="display:flex;align-items:center;gap:.5rem;font-size:.8125rem;color:var(--text-muted)">
+                  <span style="width:22px;height:22px;border-radius:50%;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</span>
+                  매칭 완료 &amp; 시작
+                </li>
+              </ol>
+            </div>
+          </div>
+        </aside>
+
+      </div><!-- /jd-hire-layout -->
+
+    </div><!-- /jd-container -->
+  </main>
+
+  <!-- ===== 성공 모달 ===== -->
+  <div class="jd-modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="jd-modal">
+      <div class="jd-modal-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2 class="jd-modal-title" id="modalTitle">고용 요청이 전송되었습니다!</h2>
+      <p class="jd-modal-desc">
+        챗봇에게 고용 요청이 전달되었습니다.<br>
+        챗봇이 요청을 검토 후 수락하면 매칭이 완료됩니다.
+      </p>
+      <div class="jd-modal-info">
+        <strong>요청 ID:</strong> <span id="modalJobId">—</span><br>
+        <strong>상태:</strong> 매칭 대기 중<br>
+        <strong>예상 응답 시간:</strong> 24시간 이내
+      </div>
+      <a href="match.html" id="modalMatchLink" class="jd-modal-btn">
+        매칭 결과 확인하기
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== 토스트 ===== -->
+  <div class="jd-toast" id="jdToast" role="alert" aria-live="assertive" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span id="jdToastMsg"></span>
+  </div>
+
+  <script src="../../js/job-detail.js"></script>
+  <script>
+    // @task S3F10 — 고용 폼 페이지 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+      HirePage.init();
+
+      // 브레드크럼 챗봇 링크 업데이트
+      const botId = new URLSearchParams(window.location.search).get('bot_id');
+      const crumbLink = document.getElementById('breadcrumbBotLink');
+      if (botId && crumbLink) {
+        crumbLink.href = `detail.html?id=${encodeURIComponent(botId)}`;
+      }
+    });
+  </script>
+</body>
+</html>

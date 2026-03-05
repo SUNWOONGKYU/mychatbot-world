@@ -1,0 +1,23 @@
+{
+  "scenarioId": "basic-greeting",
+  "scenarioName": "기본 인사 학습",
+  "description": "방문 고객에게 자연스러운 인사와 안내를 하는 법을 학습합니다.",
+  "xpReward": 10,
+  "steps": [
+    {
+      "stepId": 1,
+      "userPrompt": "안녕하세요, 처음 왔는데요.",
+      "expectedTopics": ["환영", "안내", "도움"]
+    },
+    {
+      "stepId": 2,
+      "userPrompt": "어떤 서비스가 있나요?",
+      "expectedTopics": ["서비스 소개", "추천", "메뉴"]
+    },
+    {
+      "stepId": 3,
+      "userPrompt": "감사합니다, 다음에 또 올게요.",
+      "expectedTopics": ["감사", "재방문", "안녕"]
+    }
+  ]
+}

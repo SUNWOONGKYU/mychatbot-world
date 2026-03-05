@@ -1,0 +1,220 @@
+<!--
+@task S3F10
+@description 구봇구직 매칭 결과 페이지
+  - URL 파라미터: ?job_id=일감ID
+  - 일감 정보 요약, 매칭된 챗봇 카드 목록 (매칭 점수 시각화)
+  - 알고리즘 설명 (접이식): skills 40%, rating 35%, salary 15%, category 10%
+  - 결과 없으면 안내 메시지
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>매칭 결과 — 구봇구직 | My Chatbot World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/job-detail.css">
+</head>
+<body>
+
+  <!-- ===== 헤더 ===== -->
+  <header class="jd-header">
+    <div class="jd-header-inner">
+      <a href="../../index.html" class="jd-logo">
+        <span class="jd-logo-icon">🤖</span>
+        <span class="jd-logo-text">구봇구직</span>
+      </a>
+      <nav class="jd-header-nav">
+        <a href="../../index.html" class="jd-nav-link">홈</a>
+        <a href="index.html" class="jd-nav-link">구봇구직</a>
+        <a href="#" class="jd-nav-link">내 챗봇</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== 브레드크럼 ===== -->
+  <nav class="jd-breadcrumb-bar" aria-label="페이지 경로">
+    <div class="jd-breadcrumb-inner">
+      <a href="../../index.html" class="jd-breadcrumb-link">홈</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <a href="index.html" class="jd-breadcrumb-link">구봇구직</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <span>매칭 결과</span>
+    </div>
+  </nav>
+
+  <!-- ===== 메인 ===== -->
+  <main class="jd-main">
+    <div class="jd-container">
+
+      <!-- 페이지 타이틀 -->
+      <div style="margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+        <div>
+          <h1 style="font-size:1.5rem;font-weight:800;color:var(--text-base);margin-bottom:.375rem">챗봇 매칭 결과</h1>
+          <p style="font-size:.9375rem;color:var(--text-muted)">일감에 가장 적합한 챗봇을 AI가 추천해드립니다.</p>
+        </div>
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.125rem;border:1.5px solid var(--border);border-radius:var(--radius-full);font-size:.875rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          목록으로
+        </a>
+      </div>
+
+      <!-- ===== 로딩 상태 ===== -->
+      <div id="matchLoading" aria-busy="true" aria-label="매칭 결과 로딩 중">
+        <div class="jd-skeleton" style="height:100px;margin-bottom:1.25rem">
+          <div class="jd-skel-line w-60" style="margin-top:.875rem"></div>
+          <div class="jd-skel-line w-40"></div>
+        </div>
+        <div class="jd-skeleton" style="height:160px;margin-bottom:1rem">
+          <div class="jd-skel-line w-80" style="margin-top:.875rem"></div>
+          <div class="jd-skel-line w-60"></div>
+          <div class="jd-skel-line w-40"></div>
+        </div>
+        <div class="jd-skeleton" style="height:160px;margin-bottom:1rem">
+          <div class="jd-skel-line w-80" style="margin-top:.875rem"></div>
+          <div class="jd-skel-line w-60"></div>
+        </div>
+      </div>
+
+      <!-- ===== 결과 콘텐츠 ===== -->
+      <div id="matchContent" hidden>
+
+        <!-- 일감 요약 -->
+        <div class="jd-match-header" aria-label="일감 정보 요약">
+          <div class="jd-match-header-inner">
+            <div>
+              <h2 class="jd-match-job-title" id="matchJobTitle">일감 정보 로딩 중...</h2>
+              <div class="jd-match-job-meta">
+                <span class="jd-match-job-tag">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                  <span id="matchJobCat">카테고리</span>
+                </span>
+                <span class="jd-match-job-tag">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+                  예산: <span id="matchJobBudget" style="color:var(--primary);font-weight:600">협의</span>
+                </span>
+                <span class="jd-match-job-tag">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  기간: <span id="matchJobDuration">미정</span>
+                </span>
+              </div>
+            </div>
+            <div class="jd-match-count-badge" aria-live="polite">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              매칭 <span id="matchCount">0</span>건
+            </div>
+          </div>
+        </div>
+
+        <!-- 알고리즘 설명 (접이식) -->
+        <div class="jd-algo-collapse" aria-label="매칭 알고리즘 설명">
+          <button
+            class="jd-algo-toggle"
+            id="algoToggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="algoBody"
+          >
+            <span style="display:flex;align-items:center;gap:.5rem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              매칭 알고리즘이 궁금하신가요?
+            </span>
+            <svg class="jd-algo-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          <div id="algoBody" hidden>
+            <p class="jd-algo-desc">
+              AI 매칭 알고리즘은 4가지 요소를 종합 분석하여 최적의 챗봇을 추천합니다.
+              각 요소의 가중치는 아래와 같습니다.
+            </p>
+            <div class="jd-algo-factors" role="list" aria-label="매칭 요소별 가중치">
+              <div class="jd-algo-factor" role="listitem">
+                <div class="jd-algo-factor-header">
+                  <span class="jd-algo-factor-name">스킬 적합도</span>
+                  <span class="jd-algo-factor-weight">40%</span>
+                </div>
+                <div class="jd-algo-factor-bar">
+                  <div class="jd-algo-factor-fill" style="width:40%"></div>
+                </div>
+              </div>
+              <div class="jd-algo-factor" role="listitem">
+                <div class="jd-algo-factor-header">
+                  <span class="jd-algo-factor-name">평점 &amp; 리뷰</span>
+                  <span class="jd-algo-factor-weight">35%</span>
+                </div>
+                <div class="jd-algo-factor-bar">
+                  <div class="jd-algo-factor-fill" style="width:35%"></div>
+                </div>
+              </div>
+              <div class="jd-algo-factor" role="listitem">
+                <div class="jd-algo-factor-header">
+                  <span class="jd-algo-factor-name">가격 적합도</span>
+                  <span class="jd-algo-factor-weight">15%</span>
+                </div>
+                <div class="jd-algo-factor-bar">
+                  <div class="jd-algo-factor-fill" style="width:15%"></div>
+                </div>
+              </div>
+              <div class="jd-algo-factor" role="listitem">
+                <div class="jd-algo-factor-header">
+                  <span class="jd-algo-factor-name">카테고리 일치</span>
+                  <span class="jd-algo-factor-weight">10%</span>
+                </div>
+                <div class="jd-algo-factor-bar">
+                  <div class="jd-algo-factor-fill" style="width:10%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 매칭 카드 목록 -->
+        <div class="jd-match-list" id="matchList" aria-live="polite" aria-label="매칭된 챗봇 목록">
+          <!-- JS 동적 렌더링 -->
+        </div>
+
+        <!-- 매칭 결과 없음 -->
+        <div class="jd-empty-state" id="matchEmpty" hidden aria-live="assertive">
+          <div class="jd-empty-icon" aria-hidden="true">🔍</div>
+          <h2 class="jd-empty-title">매칭 결과가 없습니다</h2>
+          <p class="jd-empty-desc">
+            현재 조건에 맞는 챗봇을 찾을 수 없습니다.<br>
+            일감 조건을 변경하거나 직접 챗봇을 검색해보세요.
+          </p>
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem">
+            <a href="index.html" style="display:inline-flex;align-items:center;gap:.375rem;padding:.625rem 1.375rem;background:var(--primary);color:#fff;border-radius:var(--radius-full);font-size:.875rem;font-weight:700;text-decoration:none">
+              챗봇 직접 찾기
+            </a>
+            <a href="index.html" style="display:inline-flex;align-items:center;gap:.375rem;padding:.625rem 1.375rem;background:transparent;color:var(--primary);border:1.5px solid var(--primary);border-radius:var(--radius-full);font-size:.875rem;font-weight:700;text-decoration:none">
+              새 일감 등록
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /matchContent -->
+
+    </div><!-- /jd-container -->
+  </main>
+
+  <!-- ===== 토스트 ===== -->
+  <div class="jd-toast" id="jdToast" role="alert" aria-live="assertive" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span id="jdToastMsg"></span>
+  </div>
+
+  <script src="../../js/job-detail.js"></script>
+  <script>
+    // @task S3F10 — 매칭 결과 페이지 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+      MatchPage.init();
+    });
+  </script>
+</body>
+</html>

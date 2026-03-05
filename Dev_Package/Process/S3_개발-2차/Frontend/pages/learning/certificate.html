@@ -1,0 +1,102 @@
+<!--
+@task S3F8
+@description Learning — 수료증 페이지 (수료증 카드, 발급 조건 안내, 미완료 메시지)
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수료증 — My Chatbot World</title>
+  <meta name="description" content="챗봇스쿨 수료증 발급 확인. 전 과정 완료 시 수료증이 발급됩니다. My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/learning.css">
+  <!-- 인쇄 시 수료증만 표시 -->
+  <style>
+    @media print {
+      .sidebar, .page-header, .cert-requirements, .cert-actions,
+      .cta-row, .sidebar-section-label, .toast { display: none !important; }
+      .main-content { margin-left: 0 !important; padding: 0 !important; }
+      .cert-card { box-shadow: none !important; border: 1px solid #ccc !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
+
+      <span class="sidebar-section-label">5대 메뉴</span>
+      <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
+      <a href="../learning/index.html"  class="sidebar-link top-level current"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
+      <a href="../skills/index.html"    class="sidebar-link top-level"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
+      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
+      <a href="../community/index.html" class="sidebar-link top-level"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
+
+      <span class="sidebar-section-label">Learning 하위</span>
+      <a href="index.html"       class="sidebar-link"><span class="icon">📚</span> 학습 홈</a>
+      <a href="curriculum.html"  class="sidebar-link"><span class="icon">📋</span> 커리큘럼 상세</a>
+      <a href="certificate.html" class="sidebar-link active"><span class="icon">🎓</span> 수료증</a>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <!-- 페이지 헤더 -->
+      <div class="page-header">
+        <span class="page-badge">수료증</span>
+        <h1 class="page-title">
+          <span class="title-ko">수료증</span> — Certificate
+        </h1>
+        <p class="page-subtitle">
+          챗봇스쿨 전 과정을 완료하면 수료증이 발급됩니다.<br>
+          기초 · 심화 · 실전 · 마스터 과정을 모두 이수하세요.
+        </p>
+      </div>
+
+      <!-- 수료증 컨테이너 (JS가 채움) -->
+      <div class="cert-container" id="certContent">
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <span>수료 상태 확인 중...</span>
+        </div>
+      </div>
+
+      <!-- 수료 요건 안내 -->
+      <div class="cert-requirements">
+        <div class="cert-req-title">수료 요건</div>
+        <div class="req-list" id="reqList">
+          <!-- JS 동적 렌더링 -->
+        </div>
+      </div>
+
+      <!-- 하단 CTA -->
+      <div class="cta-row">
+        <a href="index.html" class="btn btn-secondary">학습 홈으로</a>
+        <a href="curriculum.html?id=basic" class="btn btn-primary">첫 번째 과정 시작</a>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div class="toast hidden" id="toast"></div>
+
+  <!-- 스크립트 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/app.js"></script>
+  <script src="../../js/learning.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof MCW !== 'undefined') await MCW.ready;
+      await initCertPage();
+    });
+  </script>
+
+</body>
+</html>

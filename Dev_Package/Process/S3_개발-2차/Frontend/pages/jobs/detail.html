@@ -1,0 +1,297 @@
+<!--
+@task S3F10
+@description 구봇구직 챗봇 상세 프로필 페이지
+  - URL 파라미터: ?id=봇ID
+  - 아바타(크게), 이름, 한줄 소개, 카테고리 태그, 스킬 태그
+  - 소개/가격/리뷰 섹션, 고용 요청 CTA
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챗봇 상세 — 구봇구직 | My Chatbot World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/job-detail.css">
+</head>
+<body>
+
+  <!-- ===== 헤더 ===== -->
+  <header class="jd-header">
+    <div class="jd-header-inner">
+      <a href="../../index.html" class="jd-logo">
+        <span class="jd-logo-icon">🤖</span>
+        <span class="jd-logo-text">구봇구직</span>
+      </a>
+      <nav class="jd-header-nav">
+        <a href="../../index.html" class="jd-nav-link">홈</a>
+        <a href="index.html" class="jd-nav-link">구봇구직</a>
+        <a href="#" class="jd-nav-link">내 챗봇</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== 브레드크럼 ===== -->
+  <nav class="jd-breadcrumb-bar" aria-label="페이지 경로">
+    <div class="jd-breadcrumb-inner">
+      <a href="../../index.html" class="jd-breadcrumb-link">홈</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <a href="index.html" class="jd-breadcrumb-link">구봇구직</a>
+      <span class="jd-breadcrumb-sep">›</span>
+      <span id="breadcrumbName">챗봇 상세</span>
+    </div>
+  </nav>
+
+  <!-- ===== 메인 ===== -->
+  <main class="jd-main">
+    <div class="jd-container">
+
+      <!-- 스켈레톤 로더 -->
+      <div id="detailSkeleton" aria-hidden="true">
+        <div class="jd-skeleton" style="height:220px;margin-bottom:1.25rem">
+          <div class="jd-skel-line w-40" style="margin-top:1rem"></div>
+          <div class="jd-skel-line w-80"></div>
+          <div class="jd-skel-line w-60"></div>
+        </div>
+        <div class="jd-skeleton" style="height:180px;margin-bottom:1.25rem">
+          <div class="jd-skel-line w-40"></div>
+          <div class="jd-skel-line w-60"></div>
+        </div>
+      </div>
+
+      <!-- 상세 콘텐츠 -->
+      <div id="detailContent" hidden>
+
+        <!-- ===== 프로필 카드 ===== -->
+        <section class="jd-profile-card" aria-label="챗봇 프로필">
+          <!-- 히어로 영역 (그라데이션 배경) -->
+          <div class="jd-profile-hero">
+            <div class="jd-avatar-wrap">
+              <div class="jd-avatar-lg" id="detailAvatar" aria-label="챗봇 아바타">?</div>
+              <div class="jd-avatar-status" title="온라인" aria-label="온라인 상태"></div>
+            </div>
+            <div class="jd-profile-hero-info">
+              <h1 class="jd-profile-name" id="detailName">로딩 중...</h1>
+              <p class="jd-profile-tagline" id="detailTagline"></p>
+              <div class="jd-profile-badges" id="detailBadges" aria-label="배지 목록"></div>
+            </div>
+          </div>
+
+          <!-- 프로필 바디 -->
+          <div class="jd-profile-body">
+            <div style="flex:1;min-width:0">
+              <!-- 통계 -->
+              <div class="jd-profile-stats" role="list" aria-label="챗봇 통계">
+                <div class="jd-stat-item" role="listitem">
+                  <span class="jd-stat-value" id="detailRatingVal">—</span>
+                  <span class="jd-stat-label">평균 평점</span>
+                </div>
+                <div class="jd-stat-divider" aria-hidden="true"></div>
+                <div class="jd-stat-item" role="listitem">
+                  <span class="jd-stat-value" id="detailReviewCount">—</span>
+                  <span class="jd-stat-label">리뷰 수</span>
+                </div>
+                <div class="jd-stat-divider" aria-hidden="true"></div>
+                <div class="jd-stat-item" role="listitem">
+                  <span class="jd-stat-value" id="detailHireCount">—</span>
+                  <span class="jd-stat-label">고용 수</span>
+                </div>
+                <div class="jd-stat-divider" aria-hidden="true"></div>
+                <div class="jd-stat-item" role="listitem">
+                  <span class="jd-stars" id="detailStars" aria-label="별점"></span>
+                </div>
+              </div>
+
+              <!-- 카테고리 + 스킬 태그 -->
+              <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.875rem">
+                <span class="jd-category-tag cat-etc" id="detailCategory">카테고리</span>
+              </div>
+
+              <div class="jd-skill-tags" id="detailSkills" aria-label="스킬 목록">
+                <!-- JS 동적 렌더링 -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 소개 섹션 ===== -->
+        <section class="jd-section" aria-labelledby="secDescTitle">
+          <h2 class="jd-section-title" id="secDescTitle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+            </svg>
+            챗봇 소개
+          </h2>
+          <p class="jd-section-desc" id="detailDesc">로딩 중...</p>
+        </section>
+
+        <!-- ===== 가격 섹션 ===== -->
+        <section class="jd-section" aria-labelledby="secPriceTitle">
+          <h2 class="jd-section-title" id="secPriceTitle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v8M8 12h8"/>
+            </svg>
+            요금 안내
+          </h2>
+          <div class="jd-price-grid">
+            <div class="jd-price-item">
+              <span class="jd-price-item-label">시급</span>
+              <span class="jd-price-item-value" id="detailHourlyRate">—</span>
+              <span class="jd-price-item-unit">시간 기준</span>
+            </div>
+            <div class="jd-price-item">
+              <span class="jd-price-item-label">건당 가격</span>
+              <span class="jd-price-item-value" id="detailPerJob">—</span>
+              <span class="jd-price-item-unit">프로젝트 기준</span>
+            </div>
+          </div>
+          <div class="jd-price-fee-note" role="note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>플랫폼 중개 수수료 <strong>10%</strong>가 별도로 부과됩니다. 최종 결제 전 수수료 포함 금액을 확인하세요.</span>
+          </div>
+        </section>
+
+        <!-- ===== 리뷰/평점 섹션 ===== -->
+        <section class="jd-section" aria-labelledby="secReviewTitle">
+          <h2 class="jd-section-title" id="secReviewTitle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            리뷰 &amp; 평점
+          </h2>
+
+          <!-- 평점 요약 -->
+          <div class="jd-rating-summary">
+            <!-- 숫자 평점 -->
+            <div class="jd-rating-big">
+              <span class="jd-rating-number" id="ratingAvgNum">—</span>
+              <span class="jd-rating-stars-lg" id="ratingStarsLg" aria-label="평균 별점">☆☆☆☆☆</span>
+              <span class="jd-rating-total" id="ratingTotalCount">리뷰 0개</span>
+            </div>
+
+            <!-- 별점 막대 -->
+            <div class="jd-rating-bars" role="list" aria-label="별점 분포">
+              <div class="jd-rating-bar-row" role="listitem">
+                <span class="jd-rating-bar-label">5점</span>
+                <div class="jd-rating-bar-track"><div class="jd-rating-bar-fill" id="ratingBar5" style="width:0%"></div></div>
+                <span class="jd-rating-bar-count" id="ratingCount5">0</span>
+              </div>
+              <div class="jd-rating-bar-row" role="listitem">
+                <span class="jd-rating-bar-label">4점</span>
+                <div class="jd-rating-bar-track"><div class="jd-rating-bar-fill" id="ratingBar4" style="width:0%"></div></div>
+                <span class="jd-rating-bar-count" id="ratingCount4">0</span>
+              </div>
+              <div class="jd-rating-bar-row" role="listitem">
+                <span class="jd-rating-bar-label">3점</span>
+                <div class="jd-rating-bar-track"><div class="jd-rating-bar-fill" id="ratingBar3" style="width:0%"></div></div>
+                <span class="jd-rating-bar-count" id="ratingCount3">0</span>
+              </div>
+              <div class="jd-rating-bar-row" role="listitem">
+                <span class="jd-rating-bar-label">2점</span>
+                <div class="jd-rating-bar-track"><div class="jd-rating-bar-fill" id="ratingBar2" style="width:0%"></div></div>
+                <span class="jd-rating-bar-count" id="ratingCount2">0</span>
+              </div>
+              <div class="jd-rating-bar-row" role="listitem">
+                <span class="jd-rating-bar-label">1점</span>
+                <div class="jd-rating-bar-track"><div class="jd-rating-bar-fill" id="ratingBar1" style="width:0%"></div></div>
+                <span class="jd-rating-bar-count" id="ratingCount1">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 리뷰 목록 -->
+          <div class="jd-review-list" id="reviewList" aria-live="polite" aria-label="리뷰 목록">
+            <!-- JS 동적 렌더링 -->
+          </div>
+
+          <!-- 리뷰 없음 -->
+          <p class="jd-review-empty" id="reviewEmpty" hidden>
+            아직 작성된 리뷰가 없습니다.
+          </p>
+
+          <!-- 더보기 -->
+          <button class="jd-load-more-btn" id="reviewLoadMore" hidden type="button">
+            리뷰 더보기
+          </button>
+        </section>
+
+        <!-- ===== CTA 섹션 ===== -->
+        <div class="jd-cta-card" role="complementary" aria-label="고용 요청 안내">
+          <div class="jd-cta-info">
+            <div class="jd-cta-title" id="ctaBotName">이 챗봇을 고용해보세요</div>
+            <div class="jd-cta-desc">지금 바로 고용 요청을 보내고 매칭을 시작하세요.</div>
+          </div>
+          <div class="jd-cta-actions">
+            <a href="hire.html" id="detailHireLink" class="jd-btn-hire">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              고용 요청하기
+            </a>
+            <a href="index.html" class="jd-btn-back">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+              뒤로가기
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /detailContent -->
+
+    </div><!-- /jd-container -->
+  </main>
+
+  <!-- ===== 토스트 ===== -->
+  <div class="jd-toast" id="jdToast" role="alert" aria-live="assertive" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span id="jdToastMsg"></span>
+  </div>
+
+  <script src="../../js/job-detail.js"></script>
+  <script>
+    // @task S3F10 — 상세 페이지 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+      // Supabase 클라이언트 연동 (이미 전역 로드된 경우 사용)
+      // window.supabase는 별도 supabase 초기화 스크립트에서 설정됨
+
+      DetailPage.init();
+
+      // 평점 요약 동기화 (detailStars 이후 보강)
+      const observer = new MutationObserver(() => {
+        const val = document.getElementById('detailRatingVal');
+        const avgNum = document.getElementById('ratingAvgNum');
+        const starsLg = document.getElementById('ratingStarsLg');
+        const totalEl = document.getElementById('ratingTotalCount');
+        const revCount = document.getElementById('detailReviewCount');
+
+        if (val && avgNum) avgNum.textContent = val.textContent;
+        if (val && starsLg) {
+          const r = parseFloat(val.textContent) || 0;
+          const filled = Math.round(r);
+          starsLg.textContent = '★'.repeat(filled) + '☆'.repeat(5 - filled);
+          starsLg.setAttribute('aria-label', `평균 별점 ${r.toFixed(1)}점`);
+        }
+        if (revCount && totalEl) {
+          totalEl.textContent = `리뷰 ${revCount.textContent}개`;
+        }
+      });
+
+      const nameEl = document.getElementById('detailName');
+      if (nameEl) observer.observe(nameEl, { childList: true, subtree: true, characterData: true });
+    });
+  </script>
+</body>
+</html>

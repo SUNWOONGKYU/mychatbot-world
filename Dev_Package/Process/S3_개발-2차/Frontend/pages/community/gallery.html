@@ -1,0 +1,159 @@
+<!-- @task S3F11 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챗봇 쇼케이스 — 봇마당 | My Chatbot World</title>
+  <meta name="description" content="사용자들이 만든 개성 있는 챗봇들을 구경하고 좋아요를 눌러보세요.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/community.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- 사이드바 오버레이 (모바일) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===== 사이드바 ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/" class="sidebar-logo">
+      <div class="logo-icon">M</div>
+      <span>My Chatbot World</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">메인</div>
+      <a href="/pages/home/" class="nav-item"><span class="nav-icon">🏠</span> 홈</a>
+      <a href="/pages/bot/" class="nav-item"><span class="nav-icon">🤖</span> 내 챗봇</a>
+      <div class="nav-section-label">커뮤니티</div>
+      <a href="/pages/community/index.html" class="nav-item"><span class="nav-icon">💬</span> 봇마당</a>
+      <a href="/pages/community/gallery.html" class="nav-item active"><span class="nav-icon">🎨</span> 쇼케이스</a>
+      <a href="/pages/jobs/" class="nav-item"><span class="nav-icon">💼</span> 채용</a>
+    </nav>
+  </aside>
+
+  <!-- ===== 메인 콘텐츠 ===== -->
+  <div class="main-content">
+
+    <!-- 상단 헤더 -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
+        <span class="page-title">챗봇 쇼케이스</span>
+      </div>
+      <div class="header-right">
+        <button class="btn-write-header" onclick="location.href='write.html?category=showcase'">
+          + 내 챗봇 등록
+        </button>
+        <div class="user-avatar" id="userAvatar" title="프로필">U</div>
+      </div>
+    </header>
+
+    <!-- 본문 -->
+    <main class="page-content">
+
+      <div class="community-header">
+        <h1>챗봇 쇼케이스</h1>
+        <p>사용자들이 만든 개성 넘치는 챗봇들을 만나보세요.</p>
+      </div>
+
+      <!-- 갤러리 툴바 -->
+      <div class="gallery-toolbar">
+        <div class="sort-group">
+          <button class="sort-btn" data-sort="latest">최신순</button>
+          <button class="sort-btn" data-sort="popular">인기순</button>
+        </div>
+        <div class="search-box">
+          <button id="searchBtn" aria-label="검색">🔍</button>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="챗봇 이름 검색..."
+            aria-label="챗봇 검색"
+            maxlength="40"
+          >
+        </div>
+      </div>
+
+      <!-- 갤러리 그리드 -->
+      <section class="gallery-grid" id="galleryGrid" aria-label="챗봇 갤러리">
+        <!-- JS로 채워짐 -->
+        <div class="loading-spinner" style="grid-column:1/-1">
+          <div class="spinner"></div>불러오는 중...
+        </div>
+      </section>
+
+      <!-- 더 보기 버튼 -->
+      <div style="text-align:center; margin-top:2rem">
+        <button class="btn-secondary" id="loadMoreBtn" style="display:none">더 보기</button>
+      </div>
+
+    </main>
+  </div><!-- .main-content -->
+</div><!-- .app-layout -->
+
+<!-- ===== 갤러리 상세 모달 ===== -->
+<div class="modal-overlay" id="galleryModal" role="dialog" aria-modal="true" aria-labelledby="modalBotName">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalBotName">챗봇 이름</h3>
+      <button class="modal-close" aria-label="닫기">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-bot-header">
+        <div class="modal-bot-avatar" id="modalBotAvatar">🤖</div>
+        <div class="modal-bot-info">
+          <h2 id="modalBotNameDetail"></h2>
+          <p>만든 이: <span id="modalBotAuthor"></span></p>
+        </div>
+      </div>
+      <p class="modal-bot-desc" id="modalBotDesc"></p>
+      <div class="modal-footer">
+        <button class="btn-like" id="modalLikeBtn">
+          <span class="like-icon">♥</span>
+          좋아요 <span id="modalLikeCount">0</span>
+        </button>
+        <a class="btn-primary" id="modalViewPostBtn" href="#">게시글 보기</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/community.js"></script>
+<script>
+  // 갤러리 페이지 추가 기능: 검색 연동
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn   = document.getElementById('searchBtn');
+    const galleryGrid = document.getElementById('galleryGrid');
+
+    // 검색은 클라이언트 사이드 필터링 (갤러리 특성상 전체 로드 후 필터)
+    function filterCards(q) {
+      const cards = galleryGrid.querySelectorAll('.gallery-card');
+      const lq = q.toLowerCase().trim();
+      cards.forEach(card => {
+        const name = (card.querySelector('.gallery-card-name')?.textContent || '').toLowerCase();
+        const desc = (card.querySelector('.gallery-card-desc')?.textContent || '').toLowerCase();
+        card.style.display = (!lq || name.includes(lq) || desc.includes(lq)) ? '' : 'none';
+      });
+    }
+
+    searchBtn?.addEventListener('click', () => filterCards(searchInput?.value || ''));
+    searchInput?.addEventListener('keydown', e => { if (e.key === 'Enter') filterCards(searchInput.value); });
+    searchInput?.addEventListener('input', () => { if (!searchInput.value) filterCards(''); });
+
+    // 더보기 버튼 (pagination alternative)
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    loadMoreBtn?.addEventListener('click', () => {
+      // CommunityGallery 인스턴스에 접근하기 위해 전역 변수로 노출됨
+      if (window.__gallery) {
+        window.__gallery.page++;
+        window.__gallery.loadGallery();
+      }
+    });
+  });
+</script>
+</body>
+</html>

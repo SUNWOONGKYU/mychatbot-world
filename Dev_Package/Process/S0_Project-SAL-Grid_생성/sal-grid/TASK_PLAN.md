@@ -8,10 +8,10 @@
 | 프로젝트명 | My Chatbot World — AI 챗봇 생성 플랫폼 |
 | Method | Vanilla |
 | 생성일 | 2026-02-11 |
-| 최종 수정 | 2026-03-04 |
-| 총 Task 수 | 56 |
-| 완료 Task | 32 |
-| 전체 진척률 | 57% |
+| 최종 수정 | 2026-03-05 |
+| 총 Task 수 | 73 |
+| 완료 Task | 63 |
+| 전체 진척률 | 86% |
 
 ---
 
@@ -21,6 +21,7 @@
 |------|------|------|
 | 2026-02-11 | v1.0 | Dev_Package 최초 생성 (구 아카이브 기반) |
 | 2026-03-04 | v2.0 | Dev_Package_archive_20260304에서 신규 Dev_Package로 이식. 프로토타입_개선안 반영하여 21개 신규 Task 추가 (S2: +8, S3: +6, S4: +7). 총 Task 수 35 → 56. |
+| 2026-03-05 | v3.0 | 5대 메뉴 확정 (Birth/Learning/Skills/Jobs/Community) + 어드민 기능 추가. 17개 신규 Task (S2: +2, S3: +7, S4: +8). 총 Task 수 56 → 73. |
 
 ---
 
@@ -29,10 +30,10 @@
 | Stage | 한글명 | Task 수 | 완료 | 진척률 |
 |-------|--------|---------|------|--------|
 | S1 | 개발 준비 | 4 | 4 | 100% |
-| S2 | 개발 1차 | 18 | 10 | 56% |
-| S3 | 개발 2차 | 18 | 11 | 61% |
-| S4 | 개발 마무리 | 16 | 7 | 44% |
-| **합계** | | **56** | **32** | **57%** |
+| S2 | 개발 1차 | 20 | 18 | 90% |
+| S3 | 개발 2차 | 25 | 18 | 72% |
+| S4 | 개발 마무리 | 24 | 23 | 96% |
+| **합계** | | **73** | **63** | **86%** |
 
 ---
 
@@ -41,16 +42,16 @@
 | Area | S1 | S2 | S3 | S4 | 합계 |
 |------|----|----|----|-----|------|
 | M (Documentation) | 1 | 0 | 0 | 1 | 2 |
-| F (Frontend) | 0 | 7 | 6 | 4 | 17 |
-| BA (Backend APIs) | 0 | 4 | 5 | 3 | 12 |
-| DB (Database) | 1 | 1 | 2 | 1 | 5 |
-| BI (Backend Infra) | 1 | 0 | 1 | 0 | 2 |
-| S (Security) | 0 | 2 | 0 | 0 | 2 |
-| T (Testing) | 0 | 1 | 1 | 4 | 6 |
+| F (Frontend) | 0 | 8 | 10 | 8 | 26 |
+| BA (Backend APIs) | 0 | 4 | 7 | 5 | 16 |
+| DB (Database) | 1 | 1 | 3 | 1 | 6 |
+| BI (Backend Infra) | 1 | 1 | 1 | 0 | 3 |
+| S (Security) | 0 | 2 | 0 | 1 | 3 |
+| T (Testing) | 0 | 1 | 1 | 5 | 7 |
 | DO (DevOps) | 1 | 0 | 0 | 2 | 3 |
 | E (External) | 0 | 1 | 3 | 1 | 5 |
 | CS (Content/System) | 0 | 2 | 1 | 0 | 3 |
-| **합계** | **4** | **18** | **18** | **16** | **56** |
+| **합계** | **4** | **20** | **25** | **24** | **73** |
 
 ---
 
@@ -89,8 +90,10 @@
 | S2BA4 | 게스트 생성/템플릿/사용량 API | BA | S2BA2, S2DB1 | Pending | 0% |
 | S2DB1 | Phase 1 DB 스키마 (usage_logs, bot_templates) | DB | S1DB1 | Pending | 0% |
 | S2CS2 | 직업별 템플릿 콘텐츠 | CS | S2DB1 | Pending | 0% |
+| S2F8 | 대메뉴 5개 업데이트 (탄생/학습/스킬장터/구봇구직/봇마당) | F | S2F1 | Pending | 0% |
+| S2BI2 | API 미배포 파일 Root 동기화 | BI | S1BI1 | Pending | 0% |
 
-**S2 완료율: 10/18 (56%) — Stage Gate: Pending**
+**S2 완료율: 10/20 (50%) — Stage Gate: Pending**
 
 ---
 
@@ -116,8 +119,15 @@
 | S3BA5 | 성장 지표/레벨 API | BA | S3BA1, S3DB2 | Pending | 0% |
 | S3CS1 | 챗봇스쿨 콘텐츠 시스템 | CS | S2CS1 | Pending | 0% |
 | S3DB2 | Phase 2 DB 스키마 (bot_growth) | DB | S3DB1 | Pending | 0% |
+| S3F8 | Learning(학습) 전용 페이지 | F | S2F8, S3BA1 | Pending | 0% |
+| S3F9 | Jobs(구봇구직) 챗봇 목록/탐색 페이지 | F | S2F8, S3BA6 | Pending | 0% |
+| S3F10 | Jobs(구봇구직) 중개 상세/매칭 페이지 | F | S3F9 | Pending | 0% |
+| S3F11 | Community(봇마당) 게시판 페이지 | F | S2F8, S3BA7 | Pending | 0% |
+| S3BA6 | Jobs(구봇구직) 중개 API | BA | S3BA3, S3DB3 | Pending | 0% |
+| S3BA7 | Community(봇마당) API | BA | S3DB3 | Pending | 0% |
+| S3DB3 | Jobs/Community/Admin DB 스키마 확장 | DB | S3DB1 | Pending | 0% |
 
-**S3 완료율: 11/18 (61%) — Stage Gate: Pending**
+**S3 완료율: 11/25 (44%) — Stage Gate: Pending**
 
 ---
 
@@ -141,8 +151,16 @@
 | S4BA3 | 상속 API | BA | S4DB1 | Pending | 0% |
 | S4DB1 | Phase 3 DB (revenue, marketplace, inheritance) | DB | S3DB2 | Pending | 0% |
 | S4T4 | 전체 통합 테스트 | T | S4F2, S4F3, S4F4, S4BA2, S4BA3 | Pending | 0% |
+| S4F5 | 어드민 대시보드 UI | F | S4BA5, S4S1 | Completed | 100% |
+| S4F6 | 어드민 사용자/챗봇 관리 UI | F | S4F5, S4BA4 | Completed | 100% |
+| S4F7 | 어드민 스킬장터/구봇구직 관리 UI | F | S4F5, S4BA4 | Completed | 100% |
+| S4F8 | 어드민 결제/콘텐츠/시스템 관리 UI | F | S4F5, S4BA4 | Completed | 100% |
+| S4BA4 | 어드민 API (인증 + CRUD) | BA | S4S1, S3DB3 | Completed | 100% |
+| S4BA5 | 어드민 통계/대시보드 API | BA | S4BA4 | Completed | 100% |
+| S4S1 | 어드민 권한 체계 + 감사 로그 | S | S3DB3, S2S1 | Completed | 100% |
+| S4T5 | 신규 기능 통합 테스트 | T | S3F8, S3F9, S3F11, S4F5 | Pending | 0% |
 
-**S4 완료율: 7/16 (44%) — Stage Gate: Pending**
+**S4 완료율: 7/24 (29%) — Stage Gate: Pending**
 
 ---
 
@@ -153,5 +171,7 @@ S2F1, S2F2, S2F3, S2F4, S2BA1, S2BA2, S2BA3, S2S1, S2CS1, S2T1,
 S2E1, S2F5, S2F6, S2S2, S2F7, S2BA4, S2DB1, S2CS2,
 S3F1, S3F2, S3F4, S3F5, S3BI1, S3BA1, S3BA3, S3BA4, S3DB1, S3E1, S3E2, S3T1,
 S3F6, S3F7, S3E3, S3BA5, S3CS1, S3DB2,
+S3F8, S3F9, S3F10, S3F11, S3BA6, S3BA7, S3DB3,
 S4F1, S4BA1, S4E1, S4T1, S4T2, S4T3, S4DO1, S4DO2, S4M1,
-S4F2, S4F3, S4F4, S4BA2, S4BA3, S4DB1, S4T4
+S4F2, S4F3, S4F4, S4BA2, S4BA3, S4DB1, S4T4,
+S4F5, S4F6, S4F7, S4F8, S4BA4, S4BA5, S4S1, S4T5

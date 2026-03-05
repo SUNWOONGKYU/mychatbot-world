@@ -1,0 +1,28 @@
+{
+  "scenarioId": "product-inquiry",
+  "scenarioName": "상품/서비스 문의 응대",
+  "description": "고객의 상품 및 서비스 문의에 명확하고 친절하게 답변하는 법을 학습합니다.",
+  "xpReward": 10,
+  "steps": [
+    {
+      "stepId": 1,
+      "userPrompt": "이 제품이 정확히 어떤 기능을 하는 건가요?",
+      "expectedTopics": ["기능 설명", "특징", "용도"]
+    },
+    {
+      "stepId": 2,
+      "userPrompt": "가격은 얼마인가요? 다른 옵션도 있나요?",
+      "expectedTopics": ["가격 안내", "옵션", "플랜 비교"]
+    },
+    {
+      "stepId": 3,
+      "userPrompt": "비슷한 다른 제품과 비교하면 어떤 장점이 있나요?",
+      "expectedTopics": ["차별점", "장점", "경쟁력"]
+    },
+    {
+      "stepId": 4,
+      "userPrompt": "구매 후 환불이나 교환은 어떻게 되나요?",
+      "expectedTopics": ["환불 정책", "교환 절차", "고객 보호"]
+    }
+  ]
+}

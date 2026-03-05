@@ -1,0 +1,853 @@
+<!-- @task S4F2 -->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스킬 업로드 — My Chatbot World</title>
+  <meta name="description" content="나만의 스킬을 마켓플레이스에 업로드하세요.">
+  <style>
+    /* ===== 리셋 & 기본 ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #0d0d12;
+      --color-surface: #16161c;
+      --color-surface-2: #1c1c24;
+      --color-border: rgba(255,255,255,0.07);
+      --color-border-2: rgba(255,255,255,0.04);
+      --color-text: #f1f5f9;
+      --color-text-muted: rgba(255,255,255,0.5);
+      --color-text-faint: rgba(255,255,255,0.3);
+      --color-primary: #4f46e5;
+      --color-primary-light: #6366f1;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== 사이드바 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 50;
+      transition: transform 300ms ease;
+    }
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .sidebar-nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 150ms ease;
+    }
+
+    .sidebar-nav-item a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--color-text);
+    }
+
+    .sidebar-nav-item.active a {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .sidebar-nav-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      width: 1.25rem;
+      text-align: center;
+    }
+
+    /* ===== 모바일 헤더 ===== */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      z-index: 60;
+    }
+
+    .mobile-brand {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--color-primary-light);
+      text-decoration: none;
+    }
+
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 45;
+    }
+
+    /* ===== 메인 콘텐츠 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2.5rem 3rem;
+      max-width: calc(var(--sidebar-width) + 680px);
+    }
+
+    /* ===== 페이지 헤더 ===== */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 150ms ease;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      border-color: var(--color-primary-light);
+      color: var(--color-text);
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 0.375rem;
+    }
+
+    /* ===== 폼 카드 ===== */
+    .form-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+    }
+
+    /* ===== 폼 그룹 ===== */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-label .required {
+      color: var(--color-danger);
+      margin-left: 0.25rem;
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--color-text-faint);
+      margin-top: 0.375rem;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      color: var(--color-text);
+      font-size: 0.9375rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--color-primary-light);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-color: var(--color-danger);
+    }
+
+    .field-error {
+      font-size: 0.75rem;
+      color: #fca5a5;
+      margin-top: 0.375rem;
+      display: none;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    .form-select option {
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    /* ===== 가격 입력 래퍼 ===== */
+    .price-wrap {
+      position: relative;
+    }
+
+    .price-unit {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8125rem;
+      color: var(--color-text-faint);
+      pointer-events: none;
+    }
+
+    .form-input.price-input {
+      padding-right: 5.5rem;
+    }
+
+    /* ===== 폼 구분선 ===== */
+    .form-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: 1.75rem 0;
+    }
+
+    /* ===== 봇 ID 안내 ===== */
+    .bot-id-info {
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      font-size: 0.8125rem;
+      color: #a5b4fc;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ===== 제출 버튼 영역 ===== */
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.875rem;
+      margin-top: 2rem;
+    }
+
+    .cancel-btn {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 150ms ease;
+    }
+
+    .cancel-btn:hover {
+      border-color: var(--color-text-muted);
+      color: var(--color-text);
+    }
+
+    .submit-btn {
+      padding: 0.75rem 2rem;
+      background: var(--color-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms ease, transform 150ms ease, opacity 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: var(--color-primary-light);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ===== 알림 배너 ===== */
+    .alert {
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .alert.visible {
+      display: flex;
+    }
+
+    .alert-success {
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #34d399;
+    }
+
+    .alert-error {
+      background: rgba(239,68,68,0.10);
+      border: 1px solid rgba(239,68,68,0.25);
+      color: #fca5a5;
+    }
+
+    /* ===== 스피너 ===== */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .spinner.visible {
+      display: inline-block;
+    }
+
+    /* ===== 모바일 반응형 ===== */
+    @media (max-width: 768px) {
+      .mobile-header {
+        display: flex;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1.25rem 1rem;
+        margin-top: 56px;
+        max-width: 100%;
+      }
+
+      .page-title {
+        font-size: 1.375rem;
+      }
+
+      .form-card {
+        padding: 1.25rem;
+      }
+
+      .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .cancel-btn,
+      .submit-btn {
+        text-align: center;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 모바일 헤더 -->
+  <header class="mobile-header">
+    <a href="../../index.html" class="mobile-brand">MCW</a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴 열기">&#9776;</button>
+  </header>
+
+  <!-- 사이드바 오버레이 -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar" id="sidebar">
+    <a href="../../index.html" class="sidebar-brand">
+      <span class="sidebar-nav-icon">&#9733;</span>
+      My Chatbot World
+    </a>
+    <nav>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="../home/index.html">
+            <span class="sidebar-nav-icon">&#8962;</span>
+            홈
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../bot/index.html">
+            <span class="sidebar-nav-icon">&#129302;</span>
+            내 챗봇
+          </a>
+        </li>
+        <li class="sidebar-nav-item active">
+          <a href="index.html">
+            <span class="sidebar-nav-icon">&#128722;</span>
+            마켓플레이스
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../business/index.html">
+            <span class="sidebar-nav-icon">&#128188;</span>
+            비즈니스
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../mypage/index.html">
+            <span class="sidebar-nav-icon">&#128100;</span>
+            마이페이지
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="main-content">
+
+    <!-- 페이지 헤더 -->
+    <div class="page-header">
+      <a href="index.html" class="back-btn" title="마켓플레이스로 돌아가기">&#8592;</a>
+      <div>
+        <h1 class="page-title">스킬 업로드</h1>
+        <p class="page-subtitle">마켓플레이스에 나만의 스킬을 공개하세요.</p>
+      </div>
+    </div>
+
+    <!-- 알림 배너 -->
+    <div class="alert alert-success" id="successAlert">
+      <span>&#10003;</span>
+      <span id="successMessage">스킬이 성공적으로 업로드되었습니다!</span>
+    </div>
+    <div class="alert alert-error" id="errorAlert">
+      <span>&#9888;</span>
+      <span id="errorMessage">업로드에 실패했습니다. 다시 시도해주세요.</span>
+    </div>
+
+    <!-- 봇 ID 안내 -->
+    <div class="bot-id-info">
+      <span>&#8505;</span>
+      <span>
+        스킬은 특정 챗봇과 연결됩니다.
+        아래에서 연결할 챗봇 ID를 입력하거나, 마이페이지에서 봇 ID를 확인하세요.
+      </span>
+    </div>
+
+    <!-- 업로드 폼 -->
+    <div class="form-card">
+      <form id="uploadForm" novalidate>
+
+        <!-- 스킬 이름 -->
+        <div class="form-group">
+          <label class="form-label" for="skillName">
+            스킬 이름<span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="skillName"
+            name="skillName"
+            placeholder="예: 이메일 요약 스킬"
+            maxlength="80"
+            autocomplete="off"
+          />
+          <div class="field-error" id="skillNameError">스킬 이름을 입력해주세요.</div>
+        </div>
+
+        <!-- 설명 -->
+        <div class="form-group">
+          <label class="form-label" for="description">
+            설명<span class="required">*</span>
+          </label>
+          <textarea
+            class="form-textarea"
+            id="description"
+            name="description"
+            placeholder="이 스킬이 무엇을 하는지 자세히 설명해주세요."
+            maxlength="1000"
+          ></textarea>
+          <div class="form-hint">최대 1,000자</div>
+          <div class="field-error" id="descriptionError">설명을 입력해주세요.</div>
+        </div>
+
+        <!-- 카테고리 -->
+        <div class="form-group">
+          <label class="form-label" for="category">
+            카테고리<span class="required">*</span>
+          </label>
+          <select class="form-select" id="category" name="category">
+            <option value="">카테고리 선택</option>
+            <option value="productivity">생산성</option>
+            <option value="communication">커뮤니케이션</option>
+            <option value="analysis">분석</option>
+            <option value="education">교육</option>
+            <option value="entertainment">엔터테인먼트</option>
+            <option value="utility">유틸리티</option>
+            <option value="business">비즈니스</option>
+            <option value="other">기타</option>
+          </select>
+          <div class="field-error" id="categoryError">카테고리를 선택해주세요.</div>
+        </div>
+
+        <!-- 가격 -->
+        <div class="form-group">
+          <label class="form-label" for="price">
+            가격
+          </label>
+          <div class="price-wrap">
+            <input
+              type="number"
+              class="form-input price-input"
+              id="price"
+              name="price"
+              placeholder="0"
+              min="0"
+              max="99999"
+              value="0"
+            />
+            <span class="price-unit">크레딧 (0 = 무료)</span>
+          </div>
+          <div class="form-hint">0을 입력하면 무료로 제공됩니다.</div>
+          <div class="field-error" id="priceError">올바른 가격을 입력해주세요 (0 이상).</div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- 봇 ID -->
+        <div class="form-group">
+          <label class="form-label" for="botId">
+            챗봇 ID<span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="botId"
+            name="botId"
+            placeholder="예: bot_abc123"
+            autocomplete="off"
+          />
+          <div class="form-hint">연결할 챗봇의 ID를 입력하세요. 마이페이지에서 확인할 수 있습니다.</div>
+          <div class="field-error" id="botIdError">챗봇 ID를 입력해주세요.</div>
+        </div>
+
+        <!-- 액션 버튼 -->
+        <div class="form-actions">
+          <a href="index.html" class="cancel-btn">취소</a>
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span class="spinner" id="spinner"></span>
+            <span id="submitLabel">업로드하기</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+
+  <script>
+    /* ===== 인증 체크 — 페이지 로드 시 ===== */
+    const _authToken = localStorage.getItem('sb-hlpovizxnrnspobddxmq-auth-token');
+    if (!_authToken) {
+      window.location.href = '/pages/auth/login.html';
+    }
+
+    /* ===== Supabase 토큰 가져오기 ===== */
+    const SUPABASE_KEY = 'sb-hlpovizxnrnspobddxmq-auth-token';
+    const API_BASE = '/api/Backend_APIs/marketplace';
+
+    function getAuthToken() {
+      try {
+        const raw = localStorage.getItem(SUPABASE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed?.access_token || parsed?.session?.access_token || null;
+      } catch {
+        return null;
+      }
+    }
+
+    /* ===== 유효성 검사 헬퍼 ===== */
+    function setFieldError(fieldId, errorId, message) {
+      const field = document.getElementById(fieldId);
+      const error = document.getElementById(errorId);
+      if (message) {
+        field.classList.add('error');
+        error.textContent = message;
+        error.classList.add('visible');
+      } else {
+        field.classList.remove('error');
+        error.classList.remove('visible');
+      }
+    }
+
+    function validateForm(data) {
+      let valid = true;
+
+      if (!data.skillName.trim()) {
+        setFieldError('skillName', 'skillNameError', '스킬 이름을 입력해주세요.');
+        valid = false;
+      } else {
+        setFieldError('skillName', 'skillNameError', '');
+      }
+
+      if (!data.description.trim()) {
+        setFieldError('description', 'descriptionError', '설명을 입력해주세요.');
+        valid = false;
+      } else {
+        setFieldError('description', 'descriptionError', '');
+      }
+
+      if (!data.category) {
+        setFieldError('category', 'categoryError', '카테고리를 선택해주세요.');
+        valid = false;
+      } else {
+        setFieldError('category', 'categoryError', '');
+      }
+
+      const priceNum = Number(data.price);
+      if (isNaN(priceNum) || priceNum < 0) {
+        setFieldError('price', 'priceError', '올바른 가격을 입력해주세요 (0 이상).');
+        valid = false;
+      } else {
+        setFieldError('price', 'priceError', '');
+      }
+
+      if (!data.botId.trim()) {
+        setFieldError('botId', 'botIdError', '챗봇 ID를 입력해주세요.');
+        valid = false;
+      } else {
+        setFieldError('botId', 'botIdError', '');
+      }
+
+      return valid;
+    }
+
+    /* ===== 알림 배너 제어 ===== */
+    function showAlert(type, message) {
+      document.getElementById('successAlert').classList.remove('visible');
+      document.getElementById('errorAlert').classList.remove('visible');
+
+      if (type === 'success') {
+        document.getElementById('successMessage').textContent = message;
+        document.getElementById('successAlert').classList.add('visible');
+      } else {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorAlert').classList.add('visible');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ===== 폼 제출 ===== */
+    document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const data = {
+        skillName:   document.getElementById('skillName').value,
+        description: document.getElementById('description').value,
+        category:    document.getElementById('category').value,
+        price:       document.getElementById('price').value,
+        botId:       document.getElementById('botId').value,
+      };
+
+      if (!validateForm(data)) return;
+
+      /* 로딩 상태 */
+      const submitBtn  = document.getElementById('submitBtn');
+      const spinner    = document.getElementById('spinner');
+      const submitLabel = document.getElementById('submitLabel');
+      submitBtn.disabled = true;
+      spinner.classList.add('visible');
+      submitLabel.textContent = '업로드 중...';
+
+      /* 인증 토큰 */
+      const token = getAuthToken();
+      if (!token) {
+        showAlert('error', '로그인이 필요합니다. 로그인 후 다시 시도해주세요.');
+        submitBtn.disabled = false;
+        spinner.classList.remove('visible');
+        submitLabel.textContent = '업로드하기';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}?action=publish`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            skillName:   data.skillName.trim(),
+            description: data.description.trim(),
+            category:    data.category,
+            price:       Number(data.price),
+            botId:       data.botId.trim(),
+          }),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || json.error) {
+          throw new Error(json.error || `HTTP ${res.status}`);
+        }
+
+        /* 성공 */
+        showAlert('success', '스킬이 성공적으로 업로드되었습니다!');
+
+        /* 2초 후 마켓플레이스로 이동 */
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+
+      } catch (err) {
+        console.error('[Upload] 업로드 실패:', err);
+        showAlert('error', err.message || '업로드에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        submitBtn.disabled = false;
+        spinner.classList.remove('visible');
+        submitLabel.textContent = '업로드하기';
+      }
+    });
+
+    /* ===== 모바일 사이드바 토글 ===== */
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+  </script>
+
+</body>
+</html>

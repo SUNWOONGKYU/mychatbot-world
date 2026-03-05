@@ -1,0 +1,274 @@
+<!--
+@task S2F8
+@description Community (봇마당) 메뉴 랜딩 페이지
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community (봇마당) — My Chatbot World</title>
+  <meta name="description" content="봇마당 — 챗봇 커뮤니티. 게시판, 노하우 공유, 챗봇 간 협업, 성장 기록. My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
+      background: #0d0d12; color: #e2e8f0; min-height: 100vh;
+    }
+
+    .page-layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px; background: #16161c;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem 1.25rem; position: fixed; height: 100vh;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem;
+    }
+
+    .sidebar-brand {
+      font-size: 1rem; font-weight: 800; color: var(--primary-400, #818cf8);
+      margin-bottom: 1.5rem; text-decoration: none; display: block;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.3);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.75rem 0.5rem 0.25rem; margin-top: 0.5rem;
+    }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 0.625rem;
+      padding: 0.625rem 0.75rem; border-radius: 8px;
+      color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .sidebar-link.active { background: var(--primary-500, #6366f1); color: white; }
+    .sidebar-link .icon { font-size: 1rem; width: 1.25rem; text-align: center; }
+    .sidebar-link.top-level { font-size: 0.925rem; font-weight: 700; color: rgba(255,255,255,0.8); padding: 0.75rem 0.75rem; }
+    .sidebar-link.top-level.current { color: var(--primary-400, #818cf8); }
+
+    .main-content { flex: 1; margin-left: 240px; padding: 3rem 3.5rem; max-width: 900px; }
+    .page-header { margin-bottom: 3rem; }
+
+    .page-badge {
+      display: inline-block;
+      background: rgba(20,184,166,0.12); color: #2dd4bf;
+      border: 1px solid rgba(20,184,166,0.25);
+      padding: 0.25rem 0.75rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+
+    .page-title { font-size: 2.25rem; font-weight: 900; color: #ffffff; line-height: 1.2; margin-bottom: 0.75rem; }
+    .page-title .title-ko { color: #2dd4bf; }
+    .page-subtitle { font-size: 1.05rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2.5rem; }
+
+    .feature-card {
+      background: #1c1c24; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem; text-decoration: none; color: inherit;
+      transition: all 0.2s; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .feature-card:hover { border-color: rgba(20,184,166,0.35); background: #22222e; transform: translateY(-2px); }
+
+    .feature-icon { font-size: 2rem; line-height: 1; }
+    .feature-title { font-size: 1.05rem; font-weight: 700; color: #ffffff; }
+    .feature-title-en { font-size: 0.8rem; color: rgba(255,255,255,0.35); font-weight: 400; margin-left: 0.4rem; }
+    .feature-desc { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .feature-tag {
+      display: inline-block; background: rgba(20,184,166,0.1); color: #2dd4bf;
+      font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem;
+      border-radius: 999px; align-self: flex-start;
+    }
+
+    /* 최신 게시물 프리뷰 */
+    .posts-preview {
+      background: #1c1c24; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;
+    }
+    .posts-preview h3 { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 1.25rem; }
+
+    .post-list { display: flex; flex-direction: column; gap: 0; }
+
+    .post-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .post-item:last-child { border-bottom: none; }
+
+    .post-category {
+      background: rgba(20,184,166,0.1); color: #2dd4bf;
+      font-size: 0.7rem; font-weight: 600;
+      padding: 0.2rem 0.6rem; border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .post-title { font-size: 0.875rem; color: rgba(255,255,255,0.75); flex: 1; }
+    .post-meta { font-size: 0.75rem; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+    .cta-row { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.75rem; border-radius: 10px;
+      font-size: 0.925rem; font-weight: 600; text-decoration: none;
+      cursor: pointer; transition: all 0.15s; border: none;
+    }
+    .btn-primary { background: #0d9488; color: white; }
+    .btn-primary:hover { background: #0f766e; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 2rem 1.25rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
+
+      <span class="sidebar-section-label">5대 메뉴</span>
+      <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
+      <a href="../learning/index.html"  class="sidebar-link top-level"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
+      <a href="../skills/index.html"    class="sidebar-link top-level"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
+      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
+      <a href="../community/index.html" class="sidebar-link top-level current"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
+
+      <span class="sidebar-section-label">Community 하위 메뉴</span>
+      <a href="#board"   class="sidebar-link active"><span class="icon">📌</span> 게시판</a>
+      <a href="#knowhow" class="sidebar-link"><span class="icon">💬</span> 노하우 공유</a>
+      <a href="#collab"  class="sidebar-link"><span class="icon">🔗</span> 챗봇 간 협업</a>
+      <a href="#growth"  class="sidebar-link"><span class="icon">📈</span> 성장 기록</a>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <div class="page-header">
+        <span class="page-badge">STEP 4 — Community</span>
+        <h1 class="page-title">
+          <span class="title-ko">봇마당</span> — 챗봇 커뮤니티
+        </h1>
+        <p class="page-subtitle">
+          My Chatbot World에서 챗봇은 혼자가 아닙니다.<br>
+          서로 배우고, 협업하며, 함께 성장합니다.
+        </p>
+      </div>
+
+      <!-- 기능 카드 -->
+      <div class="feature-grid">
+
+        <a href="#board" class="feature-card" id="board">
+          <div class="feature-icon">📌</div>
+          <div>
+            <span class="feature-title">게시판</span>
+            <span class="feature-title-en">Board</span>
+          </div>
+          <p class="feature-desc">
+            챗봇 운영 경험, 팁, 질문을 나누는 커뮤니티 게시판입니다.
+            챗봇 주인들이 서로 소통합니다.
+          </p>
+          <span class="feature-tag">소통</span>
+        </a>
+
+        <a href="#knowhow" class="feature-card" id="knowhow">
+          <div class="feature-icon">💬</div>
+          <div>
+            <span class="feature-title">노하우 공유</span>
+            <span class="feature-title-en">Know-how</span>
+          </div>
+          <p class="feature-desc">
+            정치인 챗봇이 터득한 민원 응대 노하우를
+            다른 정치인 챗봇이 학습합니다.
+          </p>
+          <span class="feature-tag">지식 공유</span>
+        </a>
+
+        <a href="#collab" class="feature-card" id="collab">
+          <div class="feature-icon">🔗</div>
+          <div>
+            <span class="feature-title">챗봇 간 협업</span>
+            <span class="feature-title-en">Collaborate</span>
+          </div>
+          <p class="feature-desc">
+            식당 챗봇이 배달 챗봇과 연동해서 주문부터 배달까지 자동 처리합니다.
+            챗봇들의 생태계입니다.
+          </p>
+          <span class="feature-tag">챗봇 생태계</span>
+        </a>
+
+        <a href="#growth" class="feature-card" id="growth">
+          <div class="feature-icon">📈</div>
+          <div>
+            <span class="feature-title">성장 기록</span>
+            <span class="feature-title-en">Growth Log</span>
+          </div>
+          <p class="feature-desc">
+            대화 성과, 학습 이력, 레벨 — 내 챗봇이 얼마나 성장했는지
+            한눈에 확인합니다.
+          </p>
+          <span class="feature-tag">성과 분석</span>
+        </a>
+
+      </div>
+
+      <!-- 최신 게시물 프리뷰 -->
+      <div class="posts-preview">
+        <h3>📌 최신 커뮤니티 활동</h3>
+        <div class="post-list">
+          <div class="post-item">
+            <span class="post-category">노하우</span>
+            <span class="post-title">소상공인 챗봇이 고객 응대에서 효과 본 3가지 방법</span>
+            <span class="post-meta">방금 전</span>
+          </div>
+          <div class="post-item">
+            <span class="post-category">협업</span>
+            <span class="post-title">부동산 챗봇 × 법률 챗봇 연동 사례 공유</span>
+            <span class="post-meta">2시간 전</span>
+          </div>
+          <div class="post-item">
+            <span class="post-category">질문</span>
+            <span class="post-title">챗봇 FAQ를 자동으로 업데이트하는 방법이 있나요?</span>
+            <span class="post-meta">어제</span>
+          </div>
+          <div class="post-item">
+            <span class="post-category">성장</span>
+            <span class="post-title">우리 챗봇이 한 달 만에 Level 5 달성했습니다!</span>
+            <span class="post-meta">어제</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-row">
+        <a href="#board" class="btn btn-primary">
+          🤝 커뮤니티 참여하기
+        </a>
+        <a href="../../index.html#community" class="btn btn-secondary">
+          소개 보기
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+
+</html>

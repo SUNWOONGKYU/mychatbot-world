@@ -1,0 +1,127 @@
+<!--
+@task S3F8
+@description Learning — 커리큘럼 상세 페이지 (모듈 아코디언, 진행률, 학습 시작)
+-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>커리큘럼 상세 — My Chatbot World</title>
+  <meta name="description" content="챗봇스쿨 커리큘럼 단계별 모듈 목록 및 학습 진행 상태. My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/learning.css">
+</head>
+
+<body>
+
+  <div class="page-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
+
+      <span class="sidebar-section-label">5대 메뉴</span>
+      <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
+      <a href="../learning/index.html"  class="sidebar-link top-level current"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
+      <a href="../skills/index.html"    class="sidebar-link top-level"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
+      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
+      <a href="../community/index.html" class="sidebar-link top-level"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
+
+      <span class="sidebar-section-label">Learning 하위</span>
+      <a href="index.html"       class="sidebar-link"><span class="icon">📚</span> 학습 홈</a>
+      <a href="curriculum.html"  class="sidebar-link active"><span class="icon">📋</span> 커리큘럼 상세</a>
+      <a href="certificate.html" class="sidebar-link"><span class="icon">🎓</span> 수료증</a>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <!-- 페이지 헤더 (JS가 과정 이름을 채움) -->
+      <div class="page-header">
+        <span class="page-badge">커리큘럼 상세</span>
+        <h1 class="page-title" id="curriculumTitle">
+          <span class="title-ko">기초 과정</span>
+        </h1>
+        <p class="page-subtitle" id="curriculumDesc">
+          커리큘럼을 로딩 중입니다...
+        </p>
+      </div>
+
+      <!-- 전체 진행바 -->
+      <div id="overallProgress" style="margin-bottom: 2rem;"></div>
+
+      <!-- 메타 정보 바 -->
+      <div class="curriculum-meta" id="curriculumMeta">
+        <!-- JS 동적 렌더링 -->
+      </div>
+
+      <!-- 모듈 아코디언 -->
+      <div class="section-title">학습 모듈</div>
+      <div class="accordion-list" id="moduleList">
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <span>모듈 로딩 중...</span>
+        </div>
+      </div>
+
+      <!-- 과정 전환 버튼 -->
+      <div class="cta-row" id="navButtons">
+        <a href="index.html" class="btn btn-secondary">학습 홈으로</a>
+        <a href="certificate.html" class="btn btn-outline-green">수료증 확인</a>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div class="toast hidden" id="toast"></div>
+
+  <!-- 스크립트 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/app.js"></script>
+  <script src="../../js/learning.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof MCW !== 'undefined') await MCW.ready;
+
+      // URL 파라미터로 커리큘럼 결정
+      const params = new URLSearchParams(window.location.search);
+      const curriculumId = params.get('id') || 'basic';
+
+      // 사이드바 커리큘럼 링크 동적 빌드
+      const sidebarCurr = document.querySelector('.sidebar-link[href="curriculum.html"]');
+      if (sidebarCurr) sidebarCurr.href = `curriculum.html?id=${curriculumId}`;
+
+      await initCurriculumPage();
+
+      // 헤더 텍스트 보정
+      const curriculum = (typeof CURRICULUM_DATA !== 'undefined')
+        ? CURRICULUM_DATA.find(c => c.id === curriculumId)
+        : null;
+      if (curriculum) {
+        const titleEl = document.getElementById('curriculumTitle');
+        const descEl  = document.getElementById('curriculumDesc');
+        if (titleEl) titleEl.innerHTML = `<span class="title-ko">${curriculum.title}</span>`;
+        if (descEl)  descEl.textContent = curriculum.desc;
+
+        // 과정 전환 네비게이션
+        const allIds = CURRICULUM_DATA.map(c => c.id);
+        const idx = allIds.indexOf(curriculumId);
+        const navEl = document.getElementById('navButtons');
+        if (navEl) {
+          const prevId = idx > 0 ? allIds[idx - 1] : null;
+          const nextId = idx < allIds.length - 1 ? allIds[idx + 1] : null;
+          navEl.innerHTML = `
+            ${prevId ? `<a href="curriculum.html?id=${prevId}" class="btn btn-secondary">이전 과정</a>` : ''}
+            <a href="index.html" class="btn btn-secondary">학습 홈</a>
+            ${nextId ? `<a href="curriculum.html?id=${nextId}" class="btn btn-primary">다음 과정</a>` : ''}
+            <a href="certificate.html" class="btn btn-outline-green">수료증 확인</a>`;
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

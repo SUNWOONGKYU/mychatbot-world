@@ -4,16 +4,19 @@
   "method_type": "Vanilla",
   "created_at": "2026-02-11",
   "updated_at": "2026-03-05",
-  "total_tasks": 56,
-  "completed_tasks": 56,
-  "overall_progress": 100,
+  "total_tasks": 73,
+  "completed_tasks": 72,
+  "overall_progress": 98,
   "task_ids": [
     "S1M1", "S1DB1", "S1BI1", "S1DO1",
     "S2F1", "S2F2", "S2F3", "S2F4", "S2BA1", "S2BA2", "S2BA3", "S2S1", "S2CS1", "S2T1",
     "S2E1", "S2F5", "S2F6", "S2S2", "S2F7", "S2BA4", "S2DB1", "S2CS2",
+    "S2F8", "S2BI2",
     "S3F1", "S3F2", "S3F4", "S3F5", "S3BI1", "S3BA1", "S3BA3", "S3BA4", "S3DB1", "S3E1", "S3E2", "S3T1",
     "S3F6", "S3F7", "S3E3", "S3BA5", "S3CS1", "S3DB2",
+    "S3F8", "S3F9", "S3F10", "S3F11", "S3BA6", "S3BA7", "S3DB3",
     "S4F1", "S4BA1", "S4E1", "S4T1", "S4T2", "S4T3", "S4DO1", "S4DO2", "S4M1",
-    "S4F2", "S4F3", "S4F4", "S4BA2", "S4BA3", "S4DB1", "S4T4"
+    "S4F2", "S4F3", "S4F4", "S4BA2", "S4BA3", "S4DB1", "S4T4",
+    "S4F5", "S4F6", "S4F7", "S4F8", "S4BA4", "S4BA5", "S4S1", "S4T5"
   ]
 }
