@@ -1,22 +1,23 @@
 /* @task S3F9 */
 /* ============================================================
-   구봇구직 스타일 — 다크 테마, 카드 그리드, 탭, 카테고리 태그,
-   검색바, 페이지네이션, 호버 효과, 반응형
+   구봇구직 스타일 — 카드 그리드, 탭, 카테고리 태그, 별점,
+   검색바, 필터 사이드바, 페이지네이션, 호버 효과, 반응형
    ============================================================ */
 
 /* ── CSS 변수 ── */
 :root {
-  --primary:        #3b82f6;
-  --primary-dark:   #2563eb;
-  --primary-light:  rgba(59, 130, 246, 0.15);
+  --primary:        #6C5CE7;
+  --primary-dark:   #5849c4;
+  --primary-light:  #e8e5fd;
   --secondary:      #00CEC9;
   --secondary-dark: #00a8a4;
 
-  --text-base:      #e2e8f0;
-  --text-muted:     rgba(255, 255, 255, 0.55);
-  --text-light:     rgba(255, 255, 255, 0.35);
-  --bg-card:        rgba(255, 255, 255, 0.04);
-  --border:         rgba(255, 255, 255, 0.08);
+  --text-base:      #1e293b;
+  --text-muted:     #64748b;
+  --text-light:     #94a3b8;
+  --bg-page:        #f8fafc;
+  --bg-card:        #ffffff;
+  --border:         #e2e8f0;
   --border-focus:   var(--primary);
 
   --radius-sm:  6px;
@@ -25,97 +26,80 @@
   --radius-xl:  24px;
   --radius-full: 9999px;
 
-  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.35);
-  --shadow-lg:  0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 12px 32px rgba(59, 130, 246, 0.2);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.10);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,.12);
+  --shadow-card-hover: 0 12px 32px rgba(108,92,231,.18);
 
   --transition: 0.2s ease;
   --transition-slow: 0.3s ease;
 
-  /* 카테고리 색상 (다크 테마) */
-  --cat-customer-bg:   rgba(29, 78, 216, 0.2);
-  --cat-customer-text: #93c5fd;
-  --cat-education-bg:  rgba(21, 128, 61, 0.2);
-  --cat-education-text: #86efac;
-  --cat-marketing-bg:  rgba(194, 65, 12, 0.2);
-  --cat-marketing-text: #fdba74;
-  --cat-dev-bg:        rgba(124, 58, 237, 0.2);
-  --cat-dev-text:      #c4b5fd;
-  --cat-etc-bg:        rgba(71, 85, 105, 0.2);
-  --cat-etc-text:      #94a3b8;
+  /* 카테고리 색상 */
+  --cat-customer-bg:  #EFF6FF;
+  --cat-customer-text: #1D4ED8;
+  --cat-education-bg:  #F0FDF4;
+  --cat-education-text: #15803D;
+  --cat-marketing-bg:  #FFF7ED;
+  --cat-marketing-text: #C2410C;
+  --cat-dev-bg:        #F5F3FF;
+  --cat-dev-text:      #7C3AED;
+  --cat-etc-bg:        #F8FAFC;
+  --cat-etc-text:      #475569;
 }
 
 /* ── 전역 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ============================================================
-   Hero 섹션
-   ============================================================ */
-.jobs-hero {
-  position: relative;
-  background: linear-gradient(180deg, #0f0c29 0%, #020d1a 100%);
-  padding: 5rem 1.5rem 4rem;
-  text-align: center;
-  overflow: hidden;
-}
-
-.jobs-hero::before {
-  content: '';
-  position: absolute;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.jobs-hero-inner {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.jobs-hero-badge {
-  display: inline-block;
-  padding: 0.375rem 1rem;
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: var(--radius-full);
-  color: #93c5fd;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 1.25rem;
-}
-
-.jobs-hero-title {
-  font-size: clamp(1.875rem, 4vw, 2.75rem);
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-  letter-spacing: -0.02em;
-}
-
-.jobs-hero-title .accent { color: var(--primary); }
-
-.jobs-hero-subtitle {
-  font-size: 1.0625rem;
-  color: rgba(255, 255, 255, 0.65);
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  background: var(--bg-page);
+  color: var(--text-base);
+  min-height: 100vh;
   line-height: 1.6;
-  margin-bottom: 2rem;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Hero 검색바 */
-.jobs-hero-search {
-  max-width: 560px;
-  margin: 0 auto;
+/* ============================================================
+   헤더
+   ============================================================ */
+.jobs-header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
 }
+
+.jobs-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 로고 */
+.jobs-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.jobs-logo-icon { font-size: 1.5rem; line-height: 1; }
+
+.jobs-logo-text {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+/* 검색바 */
+.jobs-search-form { flex: 1; max-width: 560px; }
 
 .jobs-search-wrap {
   position: relative;
@@ -125,7 +109,7 @@
 
 .jobs-search-icon {
   position: absolute;
-  left: 1rem;
+  left: 0.875rem;
   width: 18px;
   height: 18px;
   color: var(--text-muted);
@@ -135,30 +119,29 @@
 
 .jobs-search-input {
   width: 100%;
-  padding: 0.875rem 7rem 0.875rem 3rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  padding: 0.625rem 7rem 0.625rem 2.75rem;
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-full);
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   font-family: inherit;
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(8px);
+  color: var(--text-base);
+  background: var(--bg-page);
   transition: border-color var(--transition), box-shadow var(--transition);
   outline: none;
 }
 
 .jobs-search-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  background: #fff;
 }
 
-.jobs-search-input::placeholder { color: rgba(255, 255, 255, 0.35); }
+.jobs-search-input::placeholder { color: var(--text-light); }
 
 .jobs-search-btn {
   position: absolute;
-  right: 5px;
-  padding: 0.625rem 1.25rem;
+  right: 4px;
+  padding: 0.5rem 1.125rem;
   background: var(--primary);
   color: #fff;
   border: none;
@@ -173,16 +156,34 @@
 .jobs-search-btn:hover { background: var(--primary-dark); }
 .jobs-search-btn:active { transform: scale(.98); }
 
+/* 헤더 내비 */
+.jobs-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.jobs-nav-link {
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--transition), background var(--transition);
+}
+
+.jobs-nav-link:hover { color: var(--primary); background: var(--primary-light); }
+.jobs-nav-link--active { color: var(--primary); background: var(--primary-light); }
+
 /* ============================================================
    카테고리 필터 바
    ============================================================ */
 .jobs-category-bar {
-  background: rgba(15, 12, 41, 0.95);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  position: sticky;
-  top: 60px;
-  z-index: 50;
-  backdrop-filter: blur(12px);
+  background: #fff;
+  border-bottom: 1px solid var(--border);
 }
 
 .jobs-category-inner {
@@ -202,8 +203,8 @@
 .jobs-cat-btn {
   padding: 0.375rem 1rem;
   border-radius: var(--radius-full);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid var(--border);
+  background: #fff;
   color: var(--text-muted);
   font-size: 0.875rem;
   font-weight: 500;
@@ -216,7 +217,7 @@
 
 .jobs-cat-btn:hover {
   border-color: var(--primary);
-  color: #93c5fd;
+  color: var(--primary);
   background: var(--primary-light);
 }
 
@@ -270,7 +271,7 @@
   margin-bottom: -2px;
 }
 
-.jobs-tab:hover { color: #93c5fd; }
+.jobs-tab:hover { color: var(--primary); }
 
 .jobs-tab--active {
   color: var(--primary);
@@ -292,7 +293,7 @@
   height: 20px;
   padding: 0 6px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border);
   color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 700;
@@ -301,7 +302,7 @@
 
 .jobs-tab--active .jobs-tab-badge {
   background: var(--primary-light);
-  color: #93c5fd;
+  color: var(--primary);
 }
 
 /* ============================================================
@@ -345,7 +346,7 @@
   font-size: 0.875rem;
   font-family: inherit;
   color: var(--text-base);
-  background: rgba(255, 255, 255, 0.06);
+  background: #fff;
   cursor: pointer;
   outline: none;
   transition: border-color var(--transition);
@@ -353,12 +354,7 @@
 
 .jobs-sort-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-.jobs-sort-select option {
-  background: #1e1b3a;
-  color: #e2e8f0;
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 /* ============================================================
@@ -371,10 +367,12 @@
   min-height: 200px;
 }
 
+/* 태블릿: 2열 */
 @media (max-width: 1024px) {
   .jobs-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* 모바일: 1열 */
 @media (max-width: 640px) {
   .jobs-card-grid { grid-template-columns: 1fr; }
 }
@@ -399,7 +397,7 @@
 .jobs-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
-  border-color: rgba(59, 130, 246, 0.4);
+  border-color: var(--primary);
 }
 
 .jobs-card:focus-visible {
@@ -446,6 +444,12 @@
 .bot-card-avatar.cat-dev       { background: var(--cat-dev-bg); }
 .bot-card-avatar.cat-etc       { background: var(--cat-etc-bg); }
 
+.bot-card-avatar.cat-customer  .bot-avatar-placeholder { color: var(--cat-customer-text); }
+.bot-card-avatar.cat-education .bot-avatar-placeholder { color: var(--cat-education-text); }
+.bot-card-avatar.cat-marketing .bot-avatar-placeholder { color: var(--cat-marketing-text); }
+.bot-card-avatar.cat-dev       .bot-avatar-placeholder { color: var(--cat-dev-text); }
+.bot-card-avatar.cat-etc       .bot-avatar-placeholder { color: var(--cat-etc-text); }
+
 .bot-card-meta {
   display: flex;
   flex-direction: column;
@@ -469,7 +473,7 @@
 .bot-card-category.cat-education { background: var(--cat-education-bg); color: var(--cat-education-text); }
 .bot-card-category.cat-marketing { background: var(--cat-marketing-bg); color: var(--cat-marketing-text); }
 .bot-card-category.cat-dev       { background: var(--cat-dev-bg);       color: var(--cat-dev-text); }
-.bot-card-category.cat-etc       { background: var(--cat-etc-bg);       color: var(--cat-etc-text); border: 1px solid rgba(255,255,255,0.1); }
+.bot-card-category.cat-etc       { background: var(--cat-etc-bg);       color: var(--cat-etc-text); border: 1px solid var(--border); }
 
 /* ── 배지 ── */
 .bot-card-badge {
@@ -481,9 +485,9 @@
   letter-spacing: 0.02em;
 }
 
-.badge-new      { background: rgba(5, 150, 105, 0.25); color: #6ee7b7; }
-.badge-featured { background: rgba(217, 119, 6, 0.25); color: #fcd34d; }
-.badge-urgent   { background: rgba(220, 38, 38, 0.25); color: #fca5a5; }
+.badge-new      { background: #D1FAE5; color: #065F46; }
+.badge-featured { background: #FEF3C7; color: #92400E; }
+.badge-urgent   { background: #FEE2E2; color: #991B1B; }
 
 /* 카드 바디 */
 .bot-card-body {
@@ -528,7 +532,7 @@
   display: inline-block;
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.07);
+  background: #F1F5F9;
   color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 500;
@@ -537,7 +541,7 @@
 
 .jobs-card:hover .bot-skill-tag {
   background: var(--primary-light);
-  color: #93c5fd;
+  color: var(--primary);
 }
 
 /* 카드 푸터 */
@@ -617,7 +621,7 @@
 }
 
 .job-card-budget strong { color: var(--primary); font-weight: 700; }
-.deadline-urgent { color: #fca5a5; font-weight: 600; }
+.deadline-urgent { color: #DC2626; font-weight: 600; }
 
 /* ============================================================
    스켈레톤 로더
@@ -627,7 +631,7 @@
 }
 
 .jobs-card-skeleton {
-  background: rgba(255, 255, 255, 0.04);
+  background: #fff;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   height: 240px;
@@ -639,7 +643,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.6) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s infinite;
 }
@@ -700,7 +704,7 @@
 .jobs-empty-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
 .jobs-empty-btn--outline {
   background: transparent;
-  color: #93c5fd;
+  color: var(--primary);
   border: 1.5px solid var(--primary);
 }
 .jobs-empty-btn--outline:hover { background: var(--primary-light); }
@@ -725,14 +729,14 @@
   justify-content: center;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: #fff;
   color: var(--text-muted);
   cursor: pointer;
   transition: all var(--transition);
 }
 
 .jobs-page-btn svg { width: 16px; height: 16px; }
-.jobs-page-btn:hover:not(:disabled) { border-color: var(--primary); color: #93c5fd; background: var(--primary-light); }
+.jobs-page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 .jobs-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .jobs-page-num {
@@ -744,7 +748,7 @@
   justify-content: center;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: #fff;
   color: var(--text-muted);
   font-size: 0.875rem;
   font-weight: 500;
@@ -753,7 +757,7 @@
   transition: all var(--transition);
 }
 
-.jobs-page-num:hover { border-color: var(--primary); color: #93c5fd; background: var(--primary-light); }
+.jobs-page-num:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 .jobs-page-num--active {
   border-color: var(--primary);
   background: var(--primary);
@@ -774,6 +778,421 @@
 }
 
 /* ============================================================
+   검색 결과 헤더
+   ============================================================ */
+.search-result-header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+
+.search-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.search-breadcrumb-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.search-breadcrumb-link:hover { text-decoration: underline; }
+
+.search-breadcrumb-sep { width: 12px; height: 12px; }
+
+.search-result-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-base);
+  margin-bottom: 0.25rem;
+}
+
+.search-keyword-highlight { color: var(--primary); }
+.search-result-subtitle { font-weight: 400; font-size: 1rem; }
+
+.search-result-meta {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.search-result-meta-sep { margin: 0 0.375rem; }
+
+/* ============================================================
+   검색 레이아웃 (사이드바 + 결과)
+   ============================================================ */
+.search-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .search-layout { grid-template-columns: 220px 1fr; }
+}
+
+@media (max-width: 768px) {
+  .search-layout { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   필터 사이드바
+   ============================================================ */
+.search-sidebar {
+  position: sticky;
+  top: calc(60px + 1.5rem);
+}
+
+.search-filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-base);
+  cursor: pointer;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+
+.search-filter-toggle svg { width: 18px; height: 18px; }
+.search-filter-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+.filter-active-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .search-filter-toggle { display: flex; }
+  .search-filter-panel { display: none; }
+  .search-filter-panel.filter-panel--open { display: block; }
+}
+
+.search-filter-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.125rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-base);
+}
+
+.filter-reset-btn {
+  font-size: 0.8125rem;
+  color: var(--primary);
+  font-weight: 500;
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.filter-reset-btn:hover { text-decoration: underline; }
+
+/* 필터 그룹 */
+.filter-group {
+  border: none;
+  padding: 1rem 1.125rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-group:last-child { border-bottom: none; }
+
+.filter-group-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-base);
+  margin-bottom: 0.75rem;
+}
+
+.filter-price-display {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+/* 필터 옵션 */
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-options--skills { max-height: 180px; overflow-y: auto; }
+
+/* 체크박스 */
+.filter-checkbox, .filter-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+.filter-checkbox:hover, .filter-radio:hover { color: var(--text-base); }
+
+.filter-checkbox input, .filter-radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.filter-checkbox-box, .filter-radio-box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  flex-shrink: 0;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.filter-radio-box { border-radius: 50%; }
+
+.filter-checkbox input:checked ~ .filter-checkbox-box {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.filter-checkbox input:checked ~ .filter-checkbox-box::after {
+  content: '';
+  position: absolute;
+  top: 1px; left: 4px;
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.filter-radio input:checked ~ .filter-radio-box {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+.filter-radio input:checked ~ .filter-radio-box::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.filter-checkbox input:focus-visible ~ .filter-checkbox-box,
+.filter-radio input:focus-visible ~ .filter-radio-box {
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.filter-stars { color: #F59E0B; }
+
+/* 가격 범위 슬라이더 */
+.filter-range-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 0.75rem;
+}
+
+.filter-range {
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  background: var(--primary-light);
+  border-radius: var(--radius-full);
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.filter-price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-price-input-wrap { flex: 1; }
+
+.filter-price-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+.filter-price-input {
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: var(--text-base);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.filter-price-input:focus { border-color: var(--primary); }
+
+.filter-price-sep { color: var(--text-light); flex-shrink: 0; }
+
+/* 필터 적용 버튼 (모바일) */
+.filter-apply-btn {
+  display: none;
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin: 0.75rem 1.125rem;
+  width: calc(100% - 2.25rem);
+  transition: background var(--transition);
+}
+
+.filter-apply-btn:hover { background: var(--primary-dark); }
+
+@media (max-width: 768px) {
+  .filter-apply-btn { display: block; }
+  .search-sidebar { position: static; }
+}
+
+/* ============================================================
+   검색 결과 영역
+   ============================================================ */
+.search-results { width: 100%; }
+
+.search-toolbar { align-items: flex-start; }
+
+.search-card-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .search-card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .search-card-grid { grid-template-columns: 1fr; }
+}
+
+/* 검색 결과 없음 */
+.search-empty-icon { font-size: 4rem; }
+
+.search-empty-tips {
+  list-style: none;
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.search-empty-tips li {
+  padding: 0.25rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.search-empty-tips li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+}
+
+.search-empty-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ============================================================
+   키워드 하이라이트
+   ============================================================ */
+.search-highlight {
+  background: #FEF9C3;
+  color: #92400E;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   활성 필터 태그
+   ============================================================ */
+.search-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+  flex: 1;
+}
+
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.active-filter-remove {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+.active-filter-remove:hover { opacity: 1; }
+
+/* ============================================================
    패널
    ============================================================ */
 .jobs-panel { display: block; }
@@ -791,8 +1210,7 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.75rem 1.25rem;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1E293B;
   color: #fff;
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-lg);
@@ -801,11 +1219,10 @@
   z-index: 1000;
   white-space: nowrap;
   animation: toast-in 0.2s ease;
-  backdrop-filter: blur(12px);
 }
 
 .jobs-toast[hidden] { display: none; }
-.jobs-toast svg { width: 16px; height: 16px; color: #fca5a5; flex-shrink: 0; }
+.jobs-toast svg { width: 16px; height: 16px; color: #FCA5A5; flex-shrink: 0; }
 
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(-50%) translateY(8px); }
@@ -813,11 +1230,19 @@
 }
 
 /* ============================================================
-   반응형
+   반응형 — 헤더
    ============================================================ */
 @media (max-width: 768px) {
-  .jobs-hero { padding: 4rem 1.25rem 3rem; }
-  .jobs-hero-title { font-size: 1.75rem; }
+  .jobs-header-inner {
+    flex-wrap: wrap;
+    padding: 0.625rem 1rem;
+    gap: 0.625rem;
+  }
+
+  .jobs-search-form { order: 3; flex-basis: 100%; max-width: 100%; }
+  .jobs-header-nav { display: none; }
+
+  .jobs-logo-text { font-size: 1rem; }
 }
 
 @media (max-width: 480px) {
@@ -825,6 +1250,8 @@
   .jobs-tabs { gap: 0; }
   .jobs-tab { padding: 0.75rem 1rem; font-size: 0.875rem; }
   .jobs-tab-icon { display: none; }
+
   .jobs-toolbar { flex-direction: column; align-items: flex-start; }
+
   .bot-card-footer { flex-direction: column; align-items: flex-start; gap: 0.375rem; }
 }
