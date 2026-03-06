@@ -63,7 +63,7 @@ async function isAdmin(supabase, userId) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
       const { data: reports, count, error: fetchError } = await query;
       if (fetchError) {
         console.error('[community-report] list error:', fetchError.message);
-        return res.status(500).json({ error: 'Failed to fetch reports', detail: fetchError.message });
+        return res.status(500).json({ error: 'Failed to fetch reports', detail: 'Internal server error' });
       }
 
       return res.status(200).json({
@@ -119,6 +119,7 @@ export default async function handler(req, res) {
       if (!target_type) return res.status(400).json({ error: 'Missing required field: target_type (post|comment)' });
       if (!target_id) return res.status(400).json({ error: 'Missing required field: target_id' });
       if (!reason) return res.status(400).json({ error: 'Missing required field: reason' });
+      if (description && description.length > 1000) return res.status(400).json({ error: '신고 내용은 1000자를 초과할 수 없습니다.' });
       if (!ALLOWED_REASONS.includes(reason)) {
         return res.status(400).json({ error: `Invalid reason. Allowed values: ${ALLOWED_REASONS.join(', ')}` });
       }
@@ -151,7 +152,7 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[community-report] insert error:', insertError.message);
-        return res.status(500).json({ error: 'Failed to submit report', detail: insertError.message });
+        return res.status(500).json({ error: 'Failed to submit report', detail: 'Internal server error' });
       }
 
       return res.status(201).json({ report: newReport });
@@ -180,7 +181,7 @@ export default async function handler(req, res) {
 
       if (fetchErr) {
         if (fetchErr.code === 'PGRST116') return res.status(404).json({ error: 'Report not found' });
-        return res.status(500).json({ error: 'Failed to fetch report', detail: fetchErr.message });
+        return res.status(500).json({ error: 'Failed to fetch report', detail: 'Internal server error' });
       }
 
       const updates = {
@@ -199,7 +200,7 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[community-report] update error:', updateError.message);
-        return res.status(500).json({ error: 'Failed to update report status', detail: updateError.message });
+        return res.status(500).json({ error: 'Failed to update report status', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ report: updatedReport });

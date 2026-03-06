@@ -57,7 +57,8 @@
       </div>
       <div class="header-right">
         <!-- 로그인 시만 표시 (JS로 제어) -->
-        <button class="btn-write-header" id="writeBtn" onclick="location.href='write.html'" style="display:none">
+        <!-- TODO: replace onclick with addEventListener in community.js; e.g. document.getElementById('writeBtn').addEventListener('click', () => location.href='write.html') -->
+        <button class="btn-write-header" id="writeBtn" style="display:none">
           ✏️ 글쓰기
         </button>
         <div class="user-avatar" id="userAvatar" title="프로필">U</div>
@@ -73,22 +74,22 @@
 
       <!-- 카테고리 탭 -->
       <nav class="category-nav" role="tablist">
-        <button class="category-tab" data-category="all" role="tab">
+        <button class="category-tab" data-category="all" role="tab" aria-selected="true">
           전체 <span class="cat-count" id="catCountAll"></span>
         </button>
-        <button class="category-tab" data-category="free" role="tab">
+        <button class="category-tab" data-category="free" role="tab" aria-selected="false">
           자유게시판
         </button>
-        <button class="category-tab" data-category="showcase" role="tab">
+        <button class="category-tab" data-category="showcase" role="tab" aria-selected="false">
           챗봇 쇼케이스
         </button>
-        <button class="category-tab" data-category="tip" role="tab">
+        <button class="category-tab" data-category="tip" role="tab" aria-selected="false">
           팁 공유
         </button>
-        <button class="category-tab" data-category="qna" role="tab">
+        <button class="category-tab" data-category="qna" role="tab" aria-selected="false">
           Q&amp;A
         </button>
-        <button class="category-tab" data-category="notice" role="tab">
+        <button class="category-tab" data-category="notice" role="tab" aria-selected="false">
           공지사항
         </button>
       </nav>
@@ -136,6 +137,7 @@
   </div><!-- .main-content -->
 </div><!-- .app-layout -->
 
+<script src="../../js/utils.js"></script>
 <script src="../../js/community.js"></script>
 </body>
 </html>

@@ -36,7 +36,7 @@ async function authenticate(supabase, authHeader) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -61,10 +61,12 @@ export default async function handler(req, res) {
         if (fetchError) {
           if (fetchError.code === 'PGRST116') return res.status(404).json({ error: 'Post not found' });
           console.error('[community-post] fetch error:', fetchError.message);
-          return res.status(500).json({ error: 'Failed to fetch post', detail: fetchError.message });
+          return res.status(500).json({ error: 'Failed to fetch post', detail: 'Internal server error' });
         }
 
         // 조회수 증가 (비동기, 실패 무시)
+        // NOTE: views_count increment is not atomic. For high-traffic posts,
+        // consider using a Supabase RPC function for atomic increment.
         supabase
           .from('community_posts')
           .update({ views_count: (post.views_count || 0) + 1 })
@@ -94,7 +96,7 @@ export default async function handler(req, res) {
       const { data: posts, count, error: listError } = await query;
       if (listError) {
         console.error('[community-post] list error:', listError.message);
-        return res.status(500).json({ error: 'Failed to fetch posts', detail: listError.message });
+        return res.status(500).json({ error: 'Failed to fetch posts', detail: 'Internal server error' });
       }
 
       return res.status(200).json({
@@ -112,6 +114,8 @@ export default async function handler(req, res) {
       if (!title || !title.trim()) return res.status(400).json({ error: 'Missing required field: title' });
       if (!content || !content.trim()) return res.status(400).json({ error: 'Missing required field: content' });
       if (!category || !category.trim()) return res.status(400).json({ error: 'Missing required field: category' });
+      if (title && title.length > 200) return res.status(400).json({ error: '제목은 200자를 초과할 수 없습니다.' });
+      if (content && content.length > 10000) return res.status(400).json({ error: '내용은 10000자를 초과할 수 없습니다.' });
 
       const { data: newPost, error: insertError } = await supabase
         .from('community_posts')
@@ -129,7 +133,7 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[community-post] insert error:', insertError.message);
-        return res.status(500).json({ error: 'Failed to create post', detail: insertError.message });
+        return res.status(500).json({ error: 'Failed to create post', detail: 'Internal server error' });
       }
 
       return res.status(201).json({ post: newPost });
@@ -152,7 +156,7 @@ export default async function handler(req, res) {
 
       if (fetchErr) {
         if (fetchErr.code === 'PGRST116') return res.status(404).json({ error: 'Post not found' });
-        return res.status(500).json({ error: 'Failed to fetch post', detail: fetchErr.message });
+        return res.status(500).json({ error: 'Failed to fetch post', detail: 'Internal server error' });
       }
       if (existing.user_id !== userId) return res.status(403).json({ error: 'Forbidden: you are not the author of this post' });
 
@@ -170,7 +174,7 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[community-post] update error:', updateError.message);
-        return res.status(500).json({ error: 'Failed to update post', detail: updateError.message });
+        return res.status(500).json({ error: 'Failed to update post', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ post: updatedPost });
@@ -193,7 +197,7 @@ export default async function handler(req, res) {
 
       if (fetchErr) {
         if (fetchErr.code === 'PGRST116') return res.status(404).json({ error: 'Post not found' });
-        return res.status(500).json({ error: 'Failed to fetch post', detail: fetchErr.message });
+        return res.status(500).json({ error: 'Failed to fetch post', detail: 'Internal server error' });
       }
       if (existing.user_id !== userId) return res.status(403).json({ error: 'Forbidden: you are not the author of this post' });
 
@@ -204,7 +208,7 @@ export default async function handler(req, res) {
 
       if (deleteError) {
         console.error('[community-post] delete error:', deleteError.message);
-        return res.status(500).json({ error: 'Failed to delete post', detail: deleteError.message });
+        return res.status(500).json({ error: 'Failed to delete post', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ success: true, id });

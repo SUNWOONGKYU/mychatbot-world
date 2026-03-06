@@ -58,7 +58,7 @@ async function calculateAverageRating(supabase, botId, jobId) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
 
       if (error) {
         console.error('[job-review] GET error:', error.message);
-        return res.status(500).json({ error: 'Failed to fetch reviews', detail: error.message });
+        return res.status(500).json({ error: 'Failed to fetch reviews', detail: 'Internal server error' });
       }
 
       const avgRating = await calculateAverageRating(
@@ -147,6 +147,9 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'jobId, targetBotId, and rating are required' });
       }
 
+      if (comment && comment.length > 3000) return res.status(400).json({ error: 'comment는 3000자를 초과할 수 없습니다.' });
+      if (rating < 1 || rating > 5 || !Number.isInteger(rating)) return res.status(400).json({ error: 'rating은 1~5 사이의 정수여야 합니다.' });
+
       const ratingNum = parseFloat(rating);
       if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
         return res.status(400).json({ error: 'rating must be a number between 1 and 5' });
@@ -162,6 +165,10 @@ export default async function handler(req, res) {
       if (jobError || !job) {
         return res.status(404).json({ error: 'Job not found' });
       }
+
+      // 참여 검증 — 해당 job에 accepted 상태로 참여한 사용자만 리뷰 가능
+      const { data: participationCheck } = await supabase.from('bot_job_applications').select('id').eq('job_id', jobId).eq('applicant_user_id', userId).eq('status', 'accepted').single();
+      if (!participationCheck) return res.status(403).json({ error: '해당 일감에 참여한 사용자만 리뷰를 작성할 수 있습니다.' });
 
       // 중복 리뷰 확인 (동일 job + 동일 reviewer)
       const { data: existing } = await supabase
@@ -189,7 +196,7 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[job-review] Insert error:', insertError.message);
-        return res.status(500).json({ error: 'Failed to create review', detail: insertError.message });
+        return res.status(500).json({ error: 'Failed to create review', detail: 'Internal server error' });
       }
 
       // 업데이트된 평균 평점 계산
@@ -248,7 +255,7 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[job-review] Update error:', updateError.message);
-        return res.status(500).json({ error: 'Failed to update review', detail: updateError.message });
+        return res.status(500).json({ error: 'Failed to update review', detail: 'Internal server error' });
       }
 
       const avgRating = await calculateAverageRating(
@@ -290,7 +297,7 @@ export default async function handler(req, res) {
 
       if (deleteError) {
         console.error('[job-review] Delete error:', deleteError.message);
-        return res.status(500).json({ error: 'Failed to delete review', detail: deleteError.message });
+        return res.status(500).json({ error: 'Failed to delete review', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ message: 'Review deleted successfully' });

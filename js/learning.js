@@ -85,6 +85,8 @@ const CURRICULUM_DATA = [
   },
 ];
 
+// escapeHtml is loaded from js/utils.js
+
 /* ═══════════════════════════════════════════════
    2. 상태 관리
    ═══════════════════════════════════════════════ */
@@ -302,9 +304,9 @@ function renderUserBanner(user) {
   const overall = LearningState.overallProgress();
   el.innerHTML = `
     <div class="user-banner-info">
-      <div class="user-avatar">${name[0].toUpperCase()}</div>
+      <div class="user-avatar">${escapeHtml(name[0].toUpperCase())}</div>
       <div>
-        <div class="user-name">${name}</div>
+        <div class="user-name">${escapeHtml(name)}</div>
         <div class="user-level">학습 Lv.${Math.floor(overall / 25) + 1}</div>
       </div>
     </div>
@@ -338,8 +340,8 @@ function renderCurriculumGrid() {
 
     return `
       <div class="curriculum-card${progress >= 100 ? ' completed' : ''}${!unlocked ? ' locked' : ''}"
-           data-id="${c.id}"
-           onclick="${unlocked ? `navigateToCurriculum('${c.id}')` : 'showLockedMsg()'}">
+           data-id="${escapeHtml(c.id)}"
+           onclick="${unlocked ? `navigateToCurriculum('${escapeHtml(c.id)}')` : 'showLockedMsg()'}">
         <div class="card-header">
           <div class="card-icon">${c.icon}</div>
           ${renderCardBadge(progress, unlocked)}
@@ -449,8 +451,8 @@ function renderModuleAccordion(curriculum) {
     const dotClass = isDone ? 'dot-done' : isActive ? 'dot-active' : 'dot-locked';
 
     return `
-      <div class="accordion-item${isDone ? ' completed-item' : ''}" id="module-${mod.id}">
-        <div class="accordion-header" onclick="toggleAccordion('module-${mod.id}')">
+      <div class="accordion-item${isDone ? ' completed-item' : ''}" id="module-${escapeHtml(mod.id)}">
+        <div class="accordion-header" onclick="toggleAccordion('module-${escapeHtml(mod.id)}')">
           <div class="accordion-num ${numClass}">${isDone ? '✓' : String(idx + 1).padStart(2, '0')}</div>
           <div class="accordion-info">
             <div class="accordion-title">${mod.title}</div>
@@ -471,8 +473,8 @@ function renderModuleAccordion(curriculum) {
             ${isLocked
               ? `<button class="btn btn-secondary btn-sm" disabled>잠김 — 이전 모듈 완료 필요</button>`
               : isDone
-                ? `<button class="btn btn-outline-green btn-sm" onclick="startModule('${curriculum.id}','${mod.id}',${idx})">복습하기</button>`
-                : `<button class="btn btn-primary btn-sm" onclick="startModule('${curriculum.id}','${mod.id}',${idx})">학습 시작</button>`
+                ? `<button class="btn btn-outline-green btn-sm" onclick="startModule('${escapeHtml(curriculum.id)}','${escapeHtml(mod.id)}',${idx})">복습하기</button>`
+                : `<button class="btn btn-primary btn-sm" onclick="startModule('${escapeHtml(curriculum.id)}','${escapeHtml(mod.id)}',${idx})">학습 시작</button>`
             }
           </div>
         </div>
@@ -536,7 +538,7 @@ function renderCertificateCard(user) {
       </div>
       <div class="cert-body">
         <p class="cert-intro">이 증서는 다음 학습자가</p>
-        <div class="cert-name">${name}</div>
+        <div class="cert-name">${escapeHtml(name)}</div>
         <div class="cert-course">챗봇스쿨 전 과정 (기초 · 심화 · 실전 · 마스터)</div>
         <div class="cert-detail">을 성공적으로 이수하였음을 인증합니다.</div>
       </div>

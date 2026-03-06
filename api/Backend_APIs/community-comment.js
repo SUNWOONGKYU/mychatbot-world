@@ -60,7 +60,7 @@ function buildCommentTree(comments) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
 
       if (fetchError) {
         console.error('[community-comment] fetch error:', fetchError.message);
-        return res.status(500).json({ error: 'Failed to fetch comments', detail: fetchError.message });
+        return res.status(500).json({ error: 'Failed to fetch comments', detail: 'Internal server error' });
       }
 
       const tree = buildCommentTree(comments || []);
@@ -98,6 +98,7 @@ export default async function handler(req, res) {
       const { post_id, content, parent_id } = req.body || {};
       if (!post_id) return res.status(400).json({ error: 'Missing required field: post_id' });
       if (!content || !content.trim()) return res.status(400).json({ error: 'Missing required field: content' });
+      if (content && content.length > 3000) return res.status(400).json({ error: '댓글은 3000자를 초과할 수 없습니다.' });
 
       // 게시글 존재 여부 확인
       const { data: postCheck, error: postErr } = await supabase
@@ -108,7 +109,7 @@ export default async function handler(req, res) {
 
       if (postErr) {
         if (postErr.code === 'PGRST116') return res.status(404).json({ error: 'Post not found' });
-        return res.status(500).json({ error: 'Failed to verify post', detail: postErr.message });
+        return res.status(500).json({ error: 'Failed to verify post', detail: 'Internal server error' });
       }
 
       // parent_id 유효성 검사 (대댓글인 경우)
@@ -138,10 +139,12 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[community-comment] insert error:', insertError.message);
-        return res.status(500).json({ error: 'Failed to create comment', detail: insertError.message });
+        return res.status(500).json({ error: 'Failed to create comment', detail: 'Internal server error' });
       }
 
       // 게시글 comments_count 증가 (비동기, 실패 무시)
+      // NOTE: comments_count increment is not atomic. For high-traffic posts,
+      // consider using a Supabase RPC function for atomic increment.
       supabase
         .from('community_posts')
         .update({ comments_count: (postCheck.comments_count || 0) + 1 })
@@ -171,7 +174,7 @@ export default async function handler(req, res) {
 
       if (fetchErr) {
         if (fetchErr.code === 'PGRST116') return res.status(404).json({ error: 'Comment not found' });
-        return res.status(500).json({ error: 'Failed to fetch comment', detail: fetchErr.message });
+        return res.status(500).json({ error: 'Failed to fetch comment', detail: 'Internal server error' });
       }
       if (existing.user_id !== userId) return res.status(403).json({ error: 'Forbidden: you are not the author of this comment' });
 
@@ -184,7 +187,7 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[community-comment] update error:', updateError.message);
-        return res.status(500).json({ error: 'Failed to update comment', detail: updateError.message });
+        return res.status(500).json({ error: 'Failed to update comment', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ comment: updatedComment });
@@ -207,7 +210,7 @@ export default async function handler(req, res) {
 
       if (fetchErr) {
         if (fetchErr.code === 'PGRST116') return res.status(404).json({ error: 'Comment not found' });
-        return res.status(500).json({ error: 'Failed to fetch comment', detail: fetchErr.message });
+        return res.status(500).json({ error: 'Failed to fetch comment', detail: 'Internal server error' });
       }
       if (existing.user_id !== userId) return res.status(403).json({ error: 'Forbidden: you are not the author of this comment' });
 
@@ -218,10 +221,12 @@ export default async function handler(req, res) {
 
       if (deleteError) {
         console.error('[community-comment] delete error:', deleteError.message);
-        return res.status(500).json({ error: 'Failed to delete comment', detail: deleteError.message });
+        return res.status(500).json({ error: 'Failed to delete comment', detail: 'Internal server error' });
       }
 
       // 게시글 comments_count 감소 (비동기, 실패 무시)
+      // NOTE: comments_count decrement is not atomic. For high-traffic posts,
+      // consider using a Supabase RPC function for atomic decrement.
       supabase
         .from('community_posts')
         .select('comments_count')

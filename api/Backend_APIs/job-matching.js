@@ -104,7 +104,7 @@ function calcMatchScore(job, requirements) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -136,6 +136,11 @@ export default async function handler(req, res) {
   if (!Array.isArray(skills)) {
     return res.status(400).json({ error: 'skills must be an array of strings' });
   }
+
+  if (salaryMin !== undefined && (isNaN(Number(salaryMin)) || Number(salaryMin) < 0)) return res.status(400).json({ error: 'salaryMin must be a non-negative number' });
+  if (salaryMax !== undefined && (isNaN(Number(salaryMax)) || Number(salaryMax) < 0)) return res.status(400).json({ error: 'salaryMax must be a non-negative number' });
+  salaryMin = Number(salaryMin) || 0;
+  salaryMax = Number(salaryMax) || Infinity;
 
   const topN = Math.min(50, Math.max(1, parseInt(rawTopN, 10) || 10));
 
@@ -188,7 +193,7 @@ export default async function handler(req, res) {
 
     if (error) {
       console.error('[job-matching] Query error:', error.message);
-      return res.status(500).json({ error: 'Failed to fetch job candidates', detail: error.message });
+      return res.status(500).json({ error: 'Failed to fetch job candidates', detail: 'Internal server error' });
     }
 
     if (!candidates || candidates.length === 0) {
