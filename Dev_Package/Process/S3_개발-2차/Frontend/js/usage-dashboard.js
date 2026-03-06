@@ -185,7 +185,15 @@
     const remaining = Math.max(0, limit - used);
     const remainEl  = el('usageRemainingText');
     if (remainEl) {
-      remainEl.innerHTML = `무료 잔여: <strong>${formatNumber(remaining)}회</strong> 남았습니다.`;
+      // Build the text safely without innerHTML to prevent XSS.
+      remainEl.textContent = '';
+      const prefix = document.createTextNode('무료 잔여: ');
+      const strong = document.createElement('strong');
+      strong.textContent = formatNumber(remaining) + '회';
+      const suffix = document.createTextNode(' 남았습니다.');
+      remainEl.appendChild(prefix);
+      remainEl.appendChild(strong);
+      remainEl.appendChild(suffix);
     }
 
     // ---- 통계 카드 ----

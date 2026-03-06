@@ -4,6 +4,10 @@
    Task: S3F11 | Stage: S3 | Area: F
    ======================================================== */
 
+/* PERFORMANCE NOTE: @import blocks rendering because the browser must finish downloading this CSS
+   file before it can even start fetching the font. For better performance, move this font request
+   to a <link rel="stylesheet"> tag in the HTML <head> (already present in index.html as a <link>),
+   and remove this @import entirely. */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
 /* ===== 디자인 토큰 ===== */
@@ -1284,8 +1288,6 @@ img { max-width: 100%; }
 }
 
 /* ===== 갤러리 ===== */
-.gallery-container {}
-
 .gallery-toolbar {
   display: flex;
   align-items: center;

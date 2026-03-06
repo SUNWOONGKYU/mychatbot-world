@@ -8,6 +8,8 @@
 
 'use strict';
 
+// escapeHtml is loaded from js/utils.js
+
 /* ============================================================
    상수
    ============================================================ */
@@ -188,7 +190,7 @@ const DetailPage = (() => {
     const avatarEl = document.getElementById('detailAvatar');
     if (avatarEl) {
       if (bot.avatar_url) {
-        avatarEl.innerHTML = `<img src="${bot.avatar_url}" alt="${bot.name} 아바타" loading="lazy">`;
+        avatarEl.innerHTML = `<img src="${escapeHtml(bot.avatar_url)}" alt="${escapeHtml(bot.name)} 아바타" loading="lazy">`;
       } else {
         avatarEl.textContent = (bot.name || '봇').charAt(0).toUpperCase();
       }
@@ -229,7 +231,7 @@ const DetailPage = (() => {
     const skillsEl = document.getElementById('detailSkills');
     if (skillsEl && Array.isArray(bot.skills)) {
       skillsEl.innerHTML = bot.skills.map(s =>
-        `<span class="jd-skill-tag">${s}</span>`
+        `<span class="jd-skill-tag">${escapeHtml(s)}</span>`
       ).join('');
     }
 
@@ -282,23 +284,23 @@ const DetailPage = (() => {
     if (emptyEl) emptyEl.hidden = true;
 
     listEl.innerHTML = slice.map(review => `
-      <article class="jd-review-card" aria-label="${review.author_name || '작성자'} 리뷰">
+      <article class="jd-review-card" aria-label="${escapeHtml(review.author_name || '작성자')} 리뷰">
         <div class="jd-review-header">
           <div class="jd-review-author">
             <div class="jd-review-avatar" aria-hidden="true">
-              ${(review.author_name || '?').charAt(0).toUpperCase()}
+              ${escapeHtml((review.author_name || '?').charAt(0).toUpperCase())}
             </div>
             <div class="jd-review-author-info">
-              <span class="jd-review-name">${review.author_name || '익명'}</span>
+              <span class="jd-review-name">${escapeHtml(review.author_name || '익명')}</span>
               <span class="jd-review-date">${fmtDate(review.created_at)}</span>
             </div>
           </div>
           <div class="jd-review-meta">
-            <span class="jd-stars" aria-label="별점 ${review.rating}점">${starsText(review.rating)}</span>
+            <span class="jd-stars" aria-label="별점 ${escapeHtml(String(review.rating))}점">${starsText(review.rating)}</span>
             <span class="jd-review-rating-val">${(review.rating || 0).toFixed(1)}</span>
           </div>
         </div>
-        <p class="jd-review-content">${review.content || ''}</p>
+        <p class="jd-review-content">${escapeHtml(review.content || '')}</p>
       </article>
     `).join('');
 
@@ -377,7 +379,7 @@ const HirePage = (() => {
     const avatarEl = document.getElementById('sideAvatar');
     if (avatarEl) {
       if (bot.avatar_url) {
-        avatarEl.innerHTML = `<img src="${bot.avatar_url}" alt="${bot.name} 아바타" loading="lazy">`;
+        avatarEl.innerHTML = `<img src="${escapeHtml(bot.avatar_url)}" alt="${escapeHtml(bot.name)} 아바타" loading="lazy">`;
       } else {
         avatarEl.textContent = (bot.name || '봇').charAt(0).toUpperCase();
       }
@@ -689,8 +691,8 @@ const MatchPage = (() => {
     const rankLabel = rank <= 3 ? ['🥇', '🥈', '🥉'][rank - 1] : `${rank}위`;
 
     const avatarHtml = m.avatar_url
-      ? `<img src="${m.avatar_url}" alt="${m.bot_name} 아바타" loading="lazy">`
-      : (m.bot_name || '봇').charAt(0).toUpperCase();
+      ? `<img src="${escapeHtml(m.avatar_url)}" alt="${escapeHtml(m.bot_name)} 아바타" loading="lazy">`
+      : escapeHtml((m.bot_name || '봇').charAt(0).toUpperCase());
 
     const price = m.hourly_rate
       ? `${fmtNum(m.hourly_rate)}원<span class="jd-match-price-unit">/시간</span>`
@@ -699,11 +701,11 @@ const MatchPage = (() => {
         : '협의';
 
     const skills = Array.isArray(m.skills) && m.skills.length
-      ? m.skills.slice(0, 3).map(s => `<span class="jd-skill-tag" style="font-size:.75rem;padding:.15rem .5rem">${s}</span>`).join('')
+      ? m.skills.slice(0, 3).map(s => `<span class="jd-skill-tag" style="font-size:.75rem;padding:.15rem .5rem">${escapeHtml(s)}</span>`).join('')
       : '';
 
     return `
-      <article class="jd-match-card" aria-label="${m.bot_name} 매칭 결과">
+      <article class="jd-match-card" aria-label="${escapeHtml(m.bot_name)} 매칭 결과">
         <div class="jd-match-card-inner">
           <!-- 순위 -->
           <div class="jd-match-rank">
@@ -715,8 +717,8 @@ const MatchPage = (() => {
 
           <!-- 정보 -->
           <div class="jd-match-info">
-            <div class="jd-match-bot-name">${m.bot_name || '—'}</div>
-            <div class="jd-match-bot-desc">${m.description || ''}</div>
+            <div class="jd-match-bot-name">${escapeHtml(m.bot_name || '—')}</div>
+            <div class="jd-match-bot-desc">${escapeHtml(m.description || '')}</div>
             ${skills ? `<div class="jd-skill-tags" style="margin-bottom:.5rem">${skills}</div>` : ''}
 
             <!-- 매칭 점수 바 -->
@@ -756,9 +758,9 @@ const MatchPage = (() => {
             </div>
             <button
               class="jd-btn-select"
-              data-bot-id="${m.bot_id}"
-              data-bot-name="${m.bot_name}"
-              aria-label="${m.bot_name} 선택하기"
+              data-bot-id="${escapeHtml(m.bot_id)}"
+              data-bot-name="${escapeHtml(m.bot_name)}"
+              aria-label="${escapeHtml(m.bot_name)} 선택하기"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>

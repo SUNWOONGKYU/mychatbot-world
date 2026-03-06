@@ -391,8 +391,9 @@ body {
   transition: transform var(--transition-slow), box-shadow var(--transition-slow),
               border-color var(--transition);
   overflow: hidden;
-  outline: none;
 }
+/* Remove outline only for pointer/mouse focus; keyboard focus-visible ring is kept via :focus-visible below */
+.jobs-card:focus:not(:focus-visible) { outline: none; }
 
 .jobs-card:hover {
   transform: translateY(-4px);

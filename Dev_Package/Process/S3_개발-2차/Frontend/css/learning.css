@@ -94,8 +94,10 @@ body {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.75rem 1.5rem; border-radius: 10px;
   font-size: 0.925rem; font-weight: 600; text-decoration: none;
-  cursor: pointer; transition: all 0.15s; border: none; outline: none;
+  cursor: pointer; transition: all 0.15s; border: none;
 }
+/* Remove outline only for pointer/mouse focus; keep it for keyboard navigation */
+.btn:focus:not(:focus-visible) { outline: none; }
 .btn-primary { background: #059669; color: white; }
 .btn-primary:hover { background: #047857; transform: translateY(-1px); }
 .btn-secondary {

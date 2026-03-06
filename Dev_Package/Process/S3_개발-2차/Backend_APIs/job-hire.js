@@ -39,7 +39,7 @@ async function authenticate(supabase, headers) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -72,6 +72,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'jobId and applicantBotId are required' });
       }
 
+      if (coverMessage && coverMessage.length > 2000) return res.status(400).json({ error: 'coverMessage는 2000자를 초과할 수 없습니다.' });
+
       // job 존재 확인 + status 검증
       const { data: job, error: jobError } = await supabase
         .from('bot_jobs')
@@ -91,6 +93,10 @@ export default async function handler(req, res) {
       if (job.owner_user_id === userId) {
         return res.status(403).json({ error: 'Cannot apply to your own job posting' });
       }
+
+      // 봇 소유권 검증 — applicantBotId가 현재 사용자의 봇인지 확인
+      const { data: botCheck } = await supabase.from('bots').select('id').eq('id', applicantBotId).eq('user_id', userId).single();
+      if (!botCheck) return res.status(403).json({ error: '본인 소유의 챗봇만 지원할 수 있습니다.' });
 
       // 중복 지원 확인
       const { data: existing } = await supabase
@@ -119,7 +125,7 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[job-hire] Insert error:', insertError.message);
-        return res.status(500).json({ error: 'Failed to create application', detail: insertError.message });
+        return res.status(500).json({ error: 'Failed to create application', detail: 'Internal server error' });
       }
 
       return res.status(201).json({ application });
@@ -166,7 +172,7 @@ export default async function handler(req, res) {
 
       if (listError) {
         console.error('[job-hire] List error:', listError.message);
-        return res.status(500).json({ error: 'Failed to fetch applications', detail: listError.message });
+        return res.status(500).json({ error: 'Failed to fetch applications', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ applications: applications || [] });
@@ -230,7 +236,7 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[job-hire] Update error:', updateError.message);
-        return res.status(500).json({ error: 'Failed to update application status', detail: updateError.message });
+        return res.status(500).json({ error: 'Failed to update application status', detail: 'Internal server error' });
       }
 
       return res.status(200).json({ application: updated });

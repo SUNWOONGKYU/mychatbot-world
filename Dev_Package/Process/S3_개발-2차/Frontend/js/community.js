@@ -101,15 +101,7 @@ function formatCount(n) {
   return n;
 }
 
-/** XSS 방지 텍스트 이스케이프 */
-function escapeHtml(str) {
-  return String(str ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+// escapeHtml is loaded from js/utils.js
 
 /** 토스트 알림 */
 function showToast(message, type = 'info') {
@@ -338,6 +330,7 @@ class CommunityIndex {
     const writeBtn = document.getElementById('writeBtn');
     if (!writeBtn) return;
     writeBtn.style.display = isLoggedIn() ? '' : 'none';
+    writeBtn.addEventListener('click', () => { location.href = 'write.html'; });
   }
 
   /** URL 동기화 */
@@ -529,6 +522,9 @@ class CommunityPostDetail {
     setById('postViewCount', formatCount(p.view_count));
     setById('postLikeCount', formatCount(p.like_count));
     setById('postCommentCount', formatCount(p.comment_count));
+    // NOTE: content_html is intentionally rendered as HTML (server-generated rich content).
+    // Raw user input is always escaped via escapeHtml() before storage; this field is
+    // trusted server output. Plain-text fallback uses escapeHtml() for safety.
     setById('postBody', p.content_html || escapeHtml(p.content), true);
 
     // 아바타 이니셜

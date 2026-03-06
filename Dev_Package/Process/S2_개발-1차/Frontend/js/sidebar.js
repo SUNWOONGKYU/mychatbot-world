@@ -11,6 +11,8 @@
  *   5. Community(봇마당)  — 게시판, 커뮤니티 활동
  */
 
+// escapeHtml is loaded from js/utils.js
+
 const SidebarNav = (() => {
 
   /* ============================================================
@@ -122,20 +124,20 @@ const SidebarNav = (() => {
       const isActive = menu.id === activeId;
       const childrenHtml = menu.children.map(child => `
         <li>
-          <a href="${root}${child.href}" class="sidebar-child-link">
-            <span class="sidebar-child-label">${child.label}</span>
-            <span class="sidebar-child-label-en">${child.labelEn}</span>
+          <a href="${escapeHtml(root + child.href)}" class="sidebar-child-link">
+            <span class="sidebar-child-label">${escapeHtml(child.label)}</span>
+            <span class="sidebar-child-label-en">${escapeHtml(child.labelEn)}</span>
           </a>
         </li>
       `).join('');
 
       return `
         <li class="sidebar-menu-item ${isActive ? 'active' : ''}">
-          <a href="${root}${menu.href}" class="sidebar-menu-link ${isActive ? 'active' : ''}">
-            <span class="sidebar-menu-icon">${menu.icon}</span>
+          <a href="${escapeHtml(root + menu.href)}" class="sidebar-menu-link ${isActive ? 'active' : ''}">
+            <span class="sidebar-menu-icon">${escapeHtml(menu.icon)}</span>
             <span class="sidebar-menu-label">
-              <span class="sidebar-label-en">${menu.label}</span>
-              <span class="sidebar-label-ko">${menu.labelKo}</span>
+              <span class="sidebar-label-en">${escapeHtml(menu.label)}</span>
+              <span class="sidebar-label-ko">${escapeHtml(menu.labelKo)}</span>
             </span>
           </a>
           ${isActive ? `<ul class="sidebar-children">${childrenHtml}</ul>` : ''}
@@ -170,11 +172,11 @@ const SidebarNav = (() => {
 
     ul.innerHTML = MENU_DATA.map(menu => `
       <li>
-        <a href="${root}${menu.href}"
+        <a href="${escapeHtml(root + menu.href)}"
            class="navbar-link ${menu.id === activeId ? 'active' : ''}"
-           title="${menu.label} — ${menu.labelKo}">
-          ${menu.label}
-          <span class="navbar-link-ko">(${menu.labelKo})</span>
+           title="${escapeHtml(menu.label)} — ${escapeHtml(menu.labelKo)}">
+          ${escapeHtml(menu.label)}
+          <span class="navbar-link-ko">(${escapeHtml(menu.labelKo)})</span>
         </a>
       </li>
     `).join('');

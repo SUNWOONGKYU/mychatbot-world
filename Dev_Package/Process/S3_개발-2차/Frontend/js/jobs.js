@@ -142,6 +142,8 @@ async function loadBots() {
 
   } catch (err) {
     console.error('[Jobs] loadBots 오류:', err);
+    console.warn('[Jobs] API 연결 실패 — 구봇 목록을 데모 데이터로 표시합니다. (실제 서비스 데이터가 아닙니다)', err);
+    showDemoNotice('bot');
     // API 실패 시 목업 데이터로 폴백
     const mockData = generateMockBots(state.bot.category, state.bot.sort);
     state.bot.items = mockData;
@@ -186,6 +188,8 @@ async function loadJobs() {
 
   } catch (err) {
     console.error('[Jobs] loadJobs 오류:', err);
+    console.warn('[Jobs] API 연결 실패 — 일감 목록을 데모 데이터로 표시합니다. (실제 서비스 데이터가 아닙니다)', err);
+    showDemoNotice('job');
     const mockData = generateMockJobs(state.job.category);
     state.job.items = mockData;
     state.job.totalPages = Math.ceil(mockData.length / ITEMS_PER_PAGE);
@@ -243,6 +247,8 @@ async function loadSearchResults(keyword, filters = {}) {
 
   } catch (err) {
     console.error('[Jobs] loadSearchResults 오류:', err);
+    console.warn('[Jobs] API 연결 실패 — 검색 결과를 데모 데이터로 표시합니다. (실제 서비스 데이터가 아닙니다)', err);
+    showDemoNotice('search');
     const mockData = generateMockSearchResults(keyword, filters);
     state.search.results = mockData;
     state.search.totalPages = Math.ceil(mockData.length / ITEMS_PER_PAGE);
@@ -1130,16 +1136,7 @@ function bindTabs() {
    유틸리티 함수
    ============================================================ */
 
-/** HTML 이스케이프 */
-function escapeHtml(str) {
-  if (typeof str !== 'string') return String(str || '');
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+// escapeHtml is loaded from js/utils.js
 
 /** 키워드 하이라이트 */
 function highlightKeyword(text, keyword) {
@@ -1219,6 +1216,46 @@ function hideSkeleton(id) {
 function clearGrid(id) {
   const el = document.getElementById(id);
   if (el) el.innerHTML = '';
+}
+
+/**
+ * API 실패 시 데모 데이터 사용 중임을 사용자에게 알리는 배너를 표시합니다.
+ * @param {'bot'|'job'|'search'} context — 어느 탭/섹션에서 폴백이 발생했는지
+ */
+function showDemoNotice(context) {
+  // 이미 배너가 있으면 중복 추가하지 않음
+  const existingId = 'demoBanner-' + context;
+  if (document.getElementById(existingId)) return;
+
+  const contextLabels = { bot: '구봇 목록', job: '일감 목록', search: '검색 결과' };
+  const label = contextLabels[context] || '데이터';
+
+  const banner = document.createElement('div');
+  banner.id = existingId;
+  banner.setAttribute('role', 'status');
+  banner.style.cssText = [
+    'display:flex', 'align-items:center', 'gap:0.5rem',
+    'padding:0.6rem 1rem', 'margin-bottom:1rem',
+    'background:rgba(234,179,8,0.12)', 'border:1px solid rgba(234,179,8,0.35)',
+    'border-radius:8px', 'font-size:0.825rem', 'color:#fbbf24',
+  ].join(';');
+
+  const icon = document.createElement('span');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.textContent = '\u26A0\uFE0F'; // ⚠️ (literal unicode, no raw emoji)
+
+  const msg = document.createElement('span');
+  msg.textContent = label + ' — 서버에 연결할 수 없어 샘플 데이터를 표시 중입니다. (실제 데이터가 아닙니다)';
+
+  banner.appendChild(icon);
+  banner.appendChild(msg);
+
+  // 탭별 그리드 컨테이너 앞에 삽입
+  const gridIds = { bot: 'botGrid', job: 'jobGrid', search: 'searchGrid' };
+  const grid = document.getElementById(gridIds[context]);
+  if (grid && grid.parentNode) {
+    grid.parentNode.insertBefore(banner, grid);
+  }
 }
 
 /** 요소 표시 */

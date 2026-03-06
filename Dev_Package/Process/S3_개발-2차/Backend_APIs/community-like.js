@@ -34,7 +34,7 @@ async function authenticate(supabase, authHeader) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
 
       if (postErr) {
         if (postErr.code === 'PGRST116') return res.status(404).json({ error: 'Post not found' });
-        return res.status(500).json({ error: 'Failed to fetch post', detail: postErr.message });
+        return res.status(500).json({ error: 'Failed to fetch post', detail: 'Internal server error' });
       }
 
       // 현재 사용자 좋아요 여부 (토큰이 있는 경우)
@@ -102,7 +102,7 @@ export default async function handler(req, res) {
 
       if (postErr) {
         if (postErr.code === 'PGRST116') return res.status(404).json({ error: 'Post not found' });
-        return res.status(500).json({ error: 'Failed to fetch post', detail: postErr.message });
+        return res.status(500).json({ error: 'Failed to fetch post', detail: 'Internal server error' });
       }
 
       // 이미 좋아요했는지 확인
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
 
       if (likeCheckErr) {
         console.error('[community-like] like check error:', likeCheckErr.message);
-        return res.status(500).json({ error: 'Failed to check like status', detail: likeCheckErr.message });
+        return res.status(500).json({ error: 'Failed to check like status', detail: 'Internal server error' });
       }
 
       let liked;
@@ -130,7 +130,7 @@ export default async function handler(req, res) {
 
         if (deleteErr) {
           console.error('[community-like] unlike error:', deleteErr.message);
-          return res.status(500).json({ error: 'Failed to remove like', detail: deleteErr.message });
+          return res.status(500).json({ error: 'Failed to remove like', detail: 'Internal server error' });
         }
         liked = false;
         newLikesCount = Math.max(0, (post.likes_count || 1) - 1);
@@ -142,13 +142,15 @@ export default async function handler(req, res) {
 
         if (insertErr) {
           console.error('[community-like] like insert error:', insertErr.message);
-          return res.status(500).json({ error: 'Failed to add like', detail: insertErr.message });
+          return res.status(500).json({ error: 'Failed to add like', detail: 'Internal server error' });
         }
         liked = true;
         newLikesCount = (post.likes_count || 0) + 1;
       }
 
       // community_posts.likes_count 동기화
+      // NOTE: likes_count increment/decrement is not atomic. For high-traffic posts,
+      // consider using a Supabase RPC function for atomic increment/decrement.
       const { error: updateErr } = await supabase
         .from('community_posts')
         .update({ likes_count: newLikesCount })
