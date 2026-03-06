@@ -1,0 +1,225 @@
+/* ============================================
+   Sub-Pages — Common Styles
+   Shared by Birth, Learning, Skills, Jobs, Community
+   ============================================ */
+
+/* --- Body dark override --- */
+body.page-dark {
+  background: #0f0c29;
+  color: rgba(255,255,255,0.85);
+}
+
+/* --- Navbar: always "scrolled" look on sub-pages --- */
+body.page-dark .navbar {
+  background: rgba(15, 12, 41, 0.95);
+  backdrop-filter: blur(20px);
+  padding: var(--space-3) 0;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.3);
+}
+
+.navbar-links a.nav-menu-item.active {
+  color: white;
+}
+
+.navbar-links a.nav-menu-item.active .nav-ko {
+  opacity: 0.8;
+}
+
+/* --- Mobile Nav Toggle --- */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--space-2);
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  body.page-dark .navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 12, 41, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: var(--space-4) var(--space-6);
+    gap: var(--space-4);
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  body.page-dark .navbar-links.open {
+    display: flex;
+  }
+
+  body.page-dark .navbar-cta {
+    display: none;
+  }
+}
+
+/* --- Page Hero --- */
+.page-hero {
+  position: relative;
+  padding: 10rem 0 5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.page-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.page-hero-orb {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: float 8s ease-in-out infinite;
+  background: var(--page-accent, var(--primary-500));
+}
+
+.page-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.page-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-6);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--page-accent, var(--primary-300));
+}
+
+.page-hero-title {
+  font-size: var(--font-size-6xl);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-4);
+  color: white;
+}
+
+.page-hero-title .accent {
+  color: var(--page-accent, var(--primary-400));
+}
+
+.page-hero-subtitle {
+  font-size: var(--font-size-lg);
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .page-hero {
+    padding: 7rem 0 3rem;
+  }
+
+  .page-hero-title {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+/* --- Page Sections --- */
+.page-section {
+  padding: var(--space-16) 0;
+}
+
+.page-section-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: white;
+  margin-bottom: var(--space-8);
+}
+
+/* --- Glass Card (dark) --- */
+.glass-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.glass-card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-3px);
+}
+
+/* --- Page Footer --- */
+.page-footer {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: var(--space-12) 0 var(--space-8);
+  text-align: center;
+}
+
+.page-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+  list-style: none;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.page-footer-links a {
+  color: rgba(255,255,255,0.5);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.page-footer-links a:hover {
+  color: white;
+}
+
+.page-footer-copy {
+  font-size: var(--font-size-xs);
+  color: rgba(255,255,255,0.3);
+}
+
+/* --- Common CTA Button (accent colored) --- */
+.btn-accent {
+  background: var(--page-accent, var(--primary-500));
+  color: white;
+}
+
+.btn-accent:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}

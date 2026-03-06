@@ -1,0 +1,117 @@
+/* ============================================
+   Birth Page — Amber Accent #f59e0b
+   @task S2F8
+   ============================================ */
+
+:root {
+  --page-accent: #f59e0b;
+  --page-accent-rgb: 245, 158, 11;
+}
+
+/* Feature grid */
+.birth-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.birth-card:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.birth-card .card-icon {
+  font-size: 2rem;
+}
+
+.birth-card .card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.birth-card .card-title-en {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 400;
+  margin-left: 0.4rem;
+}
+
+.birth-card .card-desc {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+}
+
+.birth-card .card-tag {
+  display: inline-block;
+  margin-top: var(--space-2);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+/* Timeline */
+.birth-timeline {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.birth-step {
+  text-align: center;
+  flex: 0 0 130px;
+}
+
+.birth-step-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.15);
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #f59e0b;
+  font-size: 1.25rem;
+  margin: 0 auto var(--space-3);
+}
+
+.birth-step-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: var(--space-1);
+}
+
+.birth-step-desc {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.birth-arrow {
+  font-size: 1.5rem;
+  color: rgba(255,255,255,0.2);
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .birth-features {
+    grid-template-columns: 1fr;
+  }
+
+  .birth-timeline {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .birth-arrow {
+    transform: rotate(90deg);
+  }
+}
