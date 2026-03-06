@@ -9,6 +9,10 @@
 $pythonw = "C:\Python314\pythonw.exe"
 $script  = "C:\claude-project\cpc-agent-server\server.py"
 $workdir = "C:\claude-project\cpc-agent-server"
+
+# 경로 검증
+if (-not (Test-Path $pythonw)) { Write-Error "pythonw.exe 없음: $pythonw"; exit 1 }
+if (-not (Test-Path $script))  { Write-Error "server.py 없음: $script"; exit 1 }
 $taskName = "CPC-AgentServer"
 
 # 기존 작업 제거 (재등록용)

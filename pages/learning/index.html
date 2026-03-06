@@ -11,68 +11,71 @@
   <title>Learning (학습) — My Chatbot World</title>
   <meta name="description" content="챗봇스쿨 커리큘럼 학습. 기초부터 마스터까지 단계별로 성장하세요. My Chatbot World.">
   <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/pages.css">
   <link rel="stylesheet" href="../../css/learning.css">
 </head>
 
-<body>
+<body class="page-dark">
 
-  <div class="page-layout">
-
-    <!-- 사이드바 -->
-    <aside class="sidebar">
-      <a href="../../index.html" class="sidebar-brand">My Chatbot World</a>
-
-      <span class="sidebar-section-label">5대 메뉴</span>
-      <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
-      <a href="../learning/index.html"  class="sidebar-link top-level current"><span class="icon">📚</span> Learning <small style="opacity:.5">(학습)</small></a>
-      <a href="../skills/index.html"    class="sidebar-link top-level"><span class="icon">🔧</span> Skills <small style="opacity:.5">(스킬장터)</small></a>
-      <a href="../jobs/index.html"      class="sidebar-link top-level"><span class="icon">💼</span> Jobs <small style="opacity:.5">(구봇구직)</small></a>
-      <a href="../community/index.html" class="sidebar-link top-level"><span class="icon">🤝</span> Community <small style="opacity:.5">(봇마당)</small></a>
-
-      <span class="sidebar-section-label">Learning 하위</span>
-      <a href="index.html"      class="sidebar-link active"><span class="icon">📚</span> 학습 홈</a>
-      <a href="curriculum.html" class="sidebar-link"><span class="icon">📋</span> 커리큘럼 상세</a>
-      <a href="certificate.html"class="sidebar-link"><span class="icon">🎓</span> 수료증</a>
-    </aside>
-
-    <!-- 메인 콘텐츠 -->
-    <main class="main-content">
-
-      <!-- 페이지 헤더 -->
-      <div class="page-header">
-        <span class="page-badge">STEP 2 — Learning</span>
-        <h1 class="page-title">
-          <span class="title-ko">학습</span> — 챗봇스쿨
-        </h1>
-        <p class="page-subtitle">
-          갓 태어난 챗봇은 아직 초보입니다.<br>
-          챗봇스쿨에서 체계적으로 배우고 성장합니다.
-        </p>
+  <!-- Navbar -->
+  <nav class="page-navbar" id="pageNavbar">
+    <div class="page-navbar-inner">
+      <a href="../../index.html" class="page-navbar-logo">My Chatbot World</a>
+      <button class="page-navbar-toggle" id="navToggle" aria-label="메뉴">☰</button>
+      <ul class="page-navbar-links">
+        <li><a href="../birth/index.html"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
+        <li><a href="../learning/index.html" class="active"><span class="nav-en">Learning</span><span class="nav-ko">학습</span></a></li>
+        <li><a href="../skills/index.html"><span class="nav-en">Skills</span><span class="nav-ko">스킬장터</span></a></li>
+        <li><a href="../jobs/index.html"><span class="nav-en">Jobs</span><span class="nav-ko">구봇구직</span></a></li>
+        <li><a href="../community/index.html"><span class="nav-en">Community</span><span class="nav-ko">봇마당</span></a></li>
+      </ul>
+      <div class="page-navbar-cta">
+        <a href="../login.html" class="btn btn-secondary btn-sm">로그인</a>
+        <a href="../signup.html" class="btn btn-primary btn-sm">회원가입</a>
       </div>
+    </div>
+  </nav>
 
-      <!-- 사용자 배너 (로그인 시) -->
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="page-hero-bg">
+      <div class="page-hero-orb page-hero-orb-1" style="background: radial-gradient(circle, rgba(165,180,252,0.3) 0%, transparent 70%);"></div>
+      <div class="page-hero-orb page-hero-orb-2" style="background: radial-gradient(circle, rgba(165,180,252,0.15) 0%, transparent 70%);"></div>
+    </div>
+    <div class="page-hero-content">
+      <div class="page-hero-badge">STEP 2 — LEARNING</div>
+      <h1 class="page-hero-title">
+        <span class="accent">학습</span> — 챗봇스쿨
+      </h1>
+      <p class="page-hero-subtitle">
+        갓 태어난 챗봇은 아직 초보입니다. 챗봇스쿨에서 체계적으로 배우고 성장합니다.
+      </p>
+      <div class="page-hero-stats">
+        <div class="page-hero-stat">
+          <div class="page-hero-stat-value" id="statCompleted" style="color:#a5b4fc">0/4</div>
+          <div class="page-hero-stat-label">완료 과정</div>
+        </div>
+        <div class="page-hero-stat">
+          <div class="page-hero-stat-value" id="statOverall" style="color:#a5b4fc">0%</div>
+          <div class="page-hero-stat-label">전체 진행률</div>
+        </div>
+        <div class="page-hero-stat">
+          <div class="page-hero-stat-value" id="statSessions" style="color:#a5b4fc">0</div>
+          <div class="page-hero-stat-label">학습 세션</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 페이지 본문 -->
+  <main class="page-main">
+
+      <!-- 사용자 배너 -->
       <div class="user-banner" id="userBanner"></div>
-
-      <!-- 요약 통계 -->
-      <div class="progress-summary">
-        <div class="summary-card">
-          <div class="summary-value" id="statCompleted">0/4</div>
-          <div class="summary-label">완료 과정</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-value" id="statOverall">0%</div>
-          <div class="summary-label">전체 진행률</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-value" id="statSessions">0</div>
-          <div class="summary-label">학습 세션</div>
-        </div>
-      </div>
 
       <!-- 커리큘럼 단계 그리드 -->
       <div class="section-title">커리큘럼 — 4단계 학습 과정</div>
       <div class="curriculum-grid" id="curriculumGrid">
-        <!-- JS에서 동적 렌더링 -->
         <div class="loading-spinner">
           <div class="spinner-ring"></div>
           <span>커리큘럼 로딩 중...</span>
@@ -93,8 +96,21 @@
         <a href="certificate.html" class="btn btn-secondary">수료증 확인</a>
       </div>
 
-    </main>
-  </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="page-footer-inner">
+      <div class="page-footer-links">
+        <a href="../birth/index.html"><span class="footer-en">Birth</span><span class="footer-ko">탄생</span></a>
+        <a href="../learning/index.html"><span class="footer-en">Learning</span><span class="footer-ko">학습</span></a>
+        <a href="../skills/index.html"><span class="footer-en">Skills</span><span class="footer-ko">스킬장터</span></a>
+        <a href="../jobs/index.html"><span class="footer-en">Jobs</span><span class="footer-ko">구봇구직</span></a>
+        <a href="../community/index.html"><span class="footer-en">Community</span><span class="footer-ko">봇마당</span></a>
+      </div>
+      <p class="page-footer-copy">&copy; 2026 My Chatbot World. All rights reserved.</p>
+    </div>
+  </footer>
 
   <!-- 토스트 알림 -->
   <div class="toast hidden" id="toast"></div>
