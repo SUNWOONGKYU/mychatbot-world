@@ -1,14 +1,1016 @@
 /* ============================================
    Skills Page — Emerald Accent #10b981
-   @task S2F8
+   @task S3F12 (확장: 마켓플레이스 + 상세 + 마이스킬)
    ============================================ */
 
 :root {
   --page-accent: #10b981;
   --page-accent-rgb: 16, 185, 129;
+  --sk-accent: #10b981;
+  --sk-accent-dim: rgba(16, 185, 129, 0.12);
+  --sk-accent-border: rgba(16, 185, 129, 0.3);
+  --sk-glass: rgba(255,255,255,0.04);
+  --sk-glass-border: rgba(255,255,255,0.08);
+  --sk-text-dim: rgba(255,255,255,0.5);
+  --sk-radius: 1rem;
 }
 
-/* Feature grid */
+/* ── Navbar: 마이스킬 배지 ── */
+.my-skills-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  background: var(--sk-accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  margin-left: 0.3rem;
+  line-height: 1;
+}
+
+/* ══════════════════════════════════════════
+   PRESET SECTION
+══════════════════════════════════════════ */
+.sk-preset-section {
+  padding: 3rem 0 2rem;
+}
+
+.sk-section-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.sk-section-sub {
+  font-size: 0.9rem;
+  color: var(--sk-text-dim);
+  margin-bottom: 1.5rem;
+}
+
+.sk-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+}
+
+.sk-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.75rem;
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: var(--sk-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  color: white;
+}
+
+.sk-preset-btn:hover {
+  background: var(--sk-accent-dim);
+  border-color: var(--sk-accent-border);
+  transform: translateY(-2px);
+}
+
+.sk-preset-icon {
+  font-size: 1.6rem;
+}
+
+.sk-preset-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  line-height: 1.3;
+}
+
+.sk-preset-count {
+  font-size: 0.7rem;
+  color: var(--sk-accent);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════
+   CATEGORY FILTER BAR
+══════════════════════════════════════════ */
+.sk-filter-bar {
+  padding: 1rem 0;
+  border-top: 1px solid var(--sk-glass-border);
+  border-bottom: 1px solid var(--sk-glass-border);
+  position: sticky;
+  top: 60px;
+  background: rgba(15, 12, 41, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.sk-chip-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sk-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sk-chip:hover {
+  background: var(--sk-accent-dim);
+  border-color: var(--sk-accent-border);
+  color: #34d399;
+}
+
+.sk-chip--active {
+  background: var(--sk-accent-dim);
+  border-color: var(--sk-accent);
+  color: #34d399;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   TOOLBAR (검색 + 정렬)
+══════════════════════════════════════════ */
+.sk-toolbar {
+  padding: 1.25rem 0 0.75rem;
+}
+
+.sk-toolbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* 검색 */
+.sk-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.sk-search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--sk-text-dim);
+  pointer-events: none;
+}
+
+.sk-search-input {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sk-search-input::placeholder { color: var(--sk-text-dim); }
+
+.sk-search-input:focus {
+  border-color: var(--sk-accent);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+/* 오른쪽 도구 */
+.sk-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+/* 무료 토글 */
+.sk-free-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sk-free-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.sk-toggle-track {
+  width: 2.5rem;
+  height: 1.25rem;
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.sk-toggle-track::after {
+  content: '';
+  position: absolute;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: white;
+  top: 0.175rem;
+  left: 0.175rem;
+  transition: transform 0.2s;
+}
+
+.sk-free-toggle input:checked ~ .sk-toggle-track {
+  background: var(--sk-accent);
+}
+
+.sk-free-toggle input:checked ~ .sk-toggle-track::after {
+  transform: translateX(1.25rem);
+}
+
+.sk-toggle-label {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.7);
+}
+
+/* 정렬 */
+.sk-sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sk-sort-label {
+  font-size: 0.85rem;
+  color: var(--sk-text-dim);
+  white-space: nowrap;
+}
+
+.sk-sort-select {
+  padding: 0.4rem 0.75rem;
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: white;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
+}
+
+.sk-sort-select option { background: #1a1730; }
+
+.sk-sort-select:focus { border-color: var(--sk-accent); }
+
+/* 마이스킬 버튼 */
+.sk-my-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.875rem;
+  background: var(--sk-accent-dim);
+  border: 1px solid var(--sk-accent-border);
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  color: #34d399;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.sk-my-btn:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--sk-accent);
+}
+
+/* 결과 카운트 */
+.sk-result-count {
+  font-size: 0.85rem;
+  color: var(--sk-text-dim);
+  margin-top: 0.5rem;
+}
+
+.sk-result-count strong {
+  color: white;
+}
+
+/* ══════════════════════════════════════════
+   SKILL GRID
+══════════════════════════════════════════ */
+.sk-main {
+  padding: 1.5rem 0 4rem;
+}
+
+.sk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+/* 스킬 카드 */
+.sk-card {
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: var(--sk-radius);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.sk-card-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.sk-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.sk-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.sk-cat {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  background: var(--sk-accent-dim);
+  color: #34d399;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.sk-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.sk-desc {
+  font-size: 0.8rem;
+  color: var(--sk-text-dim);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.sk-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.sk-stars {
+  color: #fbbf24;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.sk-rating {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+.sk-installs {
+  font-size: 0.7rem;
+  color: var(--sk-text-dim);
+}
+
+/* 카드 푸터 */
+.sk-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--sk-glass-border);
+  background: rgba(0,0,0,0.1);
+}
+
+.sk-price {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.sk-price.free { color: #34d399; }
+.sk-price.paid { color: #fbbf24; }
+
+.sk-btn {
+  padding: 0.35rem 0.875rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.sk-btn--install {
+  background: var(--sk-accent);
+  color: white;
+}
+
+.sk-btn--install:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+.sk-btn--remove {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.sk-btn--remove:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* ══════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════ */
+.sk-empty {
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.sk-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.sk-empty-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.sk-empty-desc {
+  font-size: 0.9rem;
+  color: var(--sk-text-dim);
+  margin-bottom: 1.5rem;
+}
+
+.sk-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.5rem;
+  background: var(--sk-accent);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.2s;
+}
+
+.sk-empty-btn:hover { filter: brightness(1.15); }
+
+/* ══════════════════════════════════════════
+   PURCHASE MODAL
+══════════════════════════════════════════ */
+.sk-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.sk-modal {
+  background: #1a1730;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.sk-modal-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.sk-modal-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.sk-modal-name {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.sk-modal-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--sk-accent);
+  margin-bottom: 0.75rem;
+}
+
+.sk-modal-note {
+  font-size: 0.8rem;
+  color: var(--sk-text-dim);
+  margin-bottom: 1.5rem;
+}
+
+.sk-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.sk-modal-btn {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.sk-modal-btn--cancel {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.sk-modal-btn--cancel:hover {
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+.sk-modal-btn--confirm {
+  background: var(--sk-accent);
+  color: white;
+}
+
+.sk-modal-btn--confirm:hover { filter: brightness(1.15); }
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+.sk-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--sk-accent-border);
+  color: #34d399;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  z-index: 9998;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* ══════════════════════════════════════════
+   BACK BAR (detail + my)
+══════════════════════════════════════════ */
+.sk-back-bar {
+  padding: 5rem 0 0;
+}
+
+.sk-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--sk-text-dim);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.sk-back-link:hover { color: white; }
+
+/* ══════════════════════════════════════════
+   DETAIL PAGE
+══════════════════════════════════════════ */
+.sk-detail-main {
+  padding: 2rem 0 4rem;
+}
+
+.sk-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 헤더 카드 */
+.sk-detail-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.sk-detail-icon {
+  font-size: 3.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.sk-detail-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sk-detail-cat {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.75rem;
+  background: var(--sk-accent-dim);
+  color: #34d399;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+}
+
+.sk-detail-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+
+.sk-detail-desc {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.sk-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--sk-text-dim);
+}
+
+.sk-rating-num {
+  color: rgba(255,255,255,0.6);
+}
+
+.sk-detail-sep {
+  color: rgba(255,255,255,0.2);
+}
+
+.sk-detail-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.sk-detail-price {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.sk-detail-price.free { color: #34d399; }
+.sk-detail-price.paid { color: #fbbf24; }
+
+.sk-detail-btn {
+  padding: 0.7rem 1.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.sk-detail-btn--install,
+.sk-detail-btn:not(.sk-detail-btn--remove) {
+  background: var(--sk-accent);
+  color: white;
+}
+
+.sk-detail-btn--install:hover,
+.sk-detail-btn:not(.sk-detail-btn--remove):hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+.sk-detail-btn--remove {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.sk-detail-btn--remove:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* 섹션 */
+.sk-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sk-detail-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.sk-detail-prompt-note {
+  font-size: 0.8rem;
+  color: var(--sk-text-dim);
+  margin: 0;
+}
+
+.sk-detail-prompt {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.7);
+  padding: 1rem 1.25rem;
+  background: rgba(0,0,0,0.2);
+  border-left: 3px solid var(--sk-accent);
+  border-radius: 0.25rem 0.75rem 0.75rem 0.25rem;
+  margin: 0;
+  font-style: italic;
+}
+
+/* 정보 표 */
+.sk-detail-dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.sk-detail-dl-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: rgba(0,0,0,0.15);
+  border-radius: 0.5rem;
+}
+
+.sk-detail-dl-row dt {
+  font-size: 0.75rem;
+  color: var(--sk-text-dim);
+  font-weight: 500;
+}
+
+.sk-detail-dl-row dd {
+  font-size: 0.9rem;
+  color: white;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* 스켈레톤 */
+.sk-detail-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sk-skeleton-header,
+.sk-skeleton-body {
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: var(--sk-radius);
+  animation: sk-pulse 1.5s ease-in-out infinite;
+}
+
+.sk-skeleton-header { height: 140px; }
+.sk-skeleton-body { height: 200px; }
+
+@keyframes sk-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ══════════════════════════════════════════
+   MY SKILLS PAGE
+══════════════════════════════════════════ */
+.sk-my-hero {
+  padding: 2rem 0 1.5rem;
+}
+
+.sk-my-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: white;
+  margin: 0 0 0.4rem;
+}
+
+.sk-my-subtitle {
+  font-size: 0.95rem;
+  color: var(--sk-text-dim);
+  margin: 0;
+}
+
+.sk-my-main {
+  padding: 0 0 4rem;
+}
+
+.sk-my-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sk-my-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--sk-glass);
+  border: 1px solid var(--sk-glass-border);
+  border-radius: var(--sk-radius);
+  transition: all 0.2s;
+}
+
+.sk-my-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.sk-my-item--inactive {
+  opacity: 0.55;
+}
+
+.sk-my-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.sk-my-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.sk-my-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.sk-my-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sk-my-cat {
+  font-size: 0.75rem;
+  color: var(--sk-text-dim);
+  margin-bottom: 0.2rem;
+}
+
+.sk-my-desc {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sk-my-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+}
+
+.sk-my-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.sk-my-status.active {
+  background: var(--sk-accent-dim);
+  color: #34d399;
+  border: 1px solid var(--sk-accent-border);
+}
+
+.sk-my-status.inactive {
+  background: rgba(255,255,255,0.04);
+  color: var(--sk-text-dim);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.sk-my-toggle-btn,
+.sk-my-remove-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.sk-my-toggle-btn {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.65);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.sk-my-toggle-btn:hover {
+  background: var(--sk-accent-dim);
+  border-color: var(--sk-accent-border);
+  color: #34d399;
+}
+
+.sk-my-remove-btn {
+  background: rgba(239, 68, 68, 0.06);
+  color: rgba(248, 113, 113, 0.7);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+}
+
+.sk-my-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* ══════════════════════════════════════════
+   LEGACY (S2 호환: 기존 features 섹션)
+══════════════════════════════════════════ */
 .skills-features {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -19,29 +1021,10 @@
   border-color: rgba(16, 185, 129, 0.3);
 }
 
-.skills-card .card-icon {
-  font-size: 2rem;
-}
-
-.skills-card .card-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: white;
-}
-
-.skills-card .card-title-en {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.35);
-  font-weight: 400;
-  margin-left: 0.4rem;
-}
-
-.skills-card .card-desc {
-  font-size: 0.875rem;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.6;
-}
-
+.skills-card .card-icon { font-size: 2rem; }
+.skills-card .card-title { font-size: 1.1rem; font-weight: 700; color: white; }
+.skills-card .card-title-en { font-size: 0.8rem; color: rgba(255,255,255,0.35); font-weight: 400; margin-left: 0.4rem; }
+.skills-card .card-desc { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
 .skills-card .card-tag {
   display: inline-block;
   margin-top: var(--space-2);
@@ -54,21 +1037,8 @@
   align-self: flex-start;
 }
 
-/* Skill Chips Showcase */
-.skills-showcase-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: var(--space-4);
-}
-
-.skills-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-}
-
+.skills-showcase-title { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: var(--space-4); }
+.skills-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
 .skill-chip {
   display: inline-flex;
   align-items: center;
@@ -82,15 +1052,96 @@
   cursor: pointer;
   transition: all var(--transition-fast);
 }
-
 .skill-chip:hover {
   background: rgba(16, 185, 129, 0.1);
   border-color: rgba(16, 185, 129, 0.3);
   color: #34d399;
 }
 
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .sk-preset-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .sk-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
+  .sk-preset-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sk-toolbar-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sk-toolbar-right {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .sk-detail-header {
+    flex-direction: column;
+  }
+
+  .sk-detail-action {
+    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .sk-detail-btn {
+    flex: 1;
+  }
+
+  .sk-detail-dl {
+    grid-template-columns: 1fr;
+  }
+
+  .sk-my-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .sk-my-item-right {
+    align-self: flex-end;
+  }
+
   .skills-features {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .sk-preset-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .sk-preset-btn {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .sk-preset-icon {
+    font-size: 1.25rem;
+  }
+
+  .sk-chip-row {
+    gap: 0.35rem;
+  }
+
+  .sk-chip {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
   }
 }

@@ -1,0 +1,326 @@
+<!--
+@task S3F12
+@description Skills 상세 페이지 — 스킬 정보, 설치/제거, 유료 구매 모달
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스킬 상세 — My Chatbot World</title>
+  <meta name="description" content="스킬 상세 정보. My Chatbot World 스킬장터.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/pages.css">
+  <link rel="stylesheet" href="../../css/skills.css">
+</head>
+<body class="page-dark">
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../../index.html" class="navbar-logo"><span>My Chatbot World</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">&#9776;</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="../birth/index.html" class="nav-menu-item"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
+        <li><a href="../learning/index.html" class="nav-menu-item"><span class="nav-en">Learning</span><span class="nav-ko">학습</span></a></li>
+        <li><a href="../skills/index.html" class="nav-menu-item active"><span class="nav-en">Skills</span><span class="nav-ko">스킬장터</span></a></li>
+        <li><a href="../jobs/index.html" class="nav-menu-item"><span class="nav-en">Jobs</span><span class="nav-ko">구봇구직</span></a></li>
+        <li><a href="../community/index.html" class="nav-menu-item"><span class="nav-en">Community</span><span class="nav-ko">봇마당</span></a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="../login.html" class="btn btn-secondary btn-sm">로그인</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Back Link -->
+  <div class="sk-back-bar">
+    <div class="container">
+      <a href="index.html" class="sk-back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+        스킬장터로 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <!-- Detail Content -->
+  <main class="sk-detail-main">
+    <div class="container">
+
+      <!-- Skeleton (로딩 중) -->
+      <div class="sk-detail-skeleton" id="detailSkeleton">
+        <div class="sk-skeleton-header"></div>
+        <div class="sk-skeleton-body"></div>
+      </div>
+
+      <!-- 실제 콘텐츠 (JS가 채움) -->
+      <div class="sk-detail-content" id="detailContent" hidden>
+
+        <!-- 헤더 -->
+        <div class="sk-detail-header glass-card">
+          <div class="sk-detail-icon" id="detailIcon"></div>
+          <div class="sk-detail-header-info">
+            <span class="sk-detail-cat" id="detailCat"></span>
+            <h1 class="sk-detail-title" id="detailName"></h1>
+            <p class="sk-detail-desc" id="detailDesc"></p>
+            <div class="sk-detail-meta">
+              <span class="sk-stars" id="detailStars" aria-label="평점"></span>
+              <span class="sk-rating-num" id="detailRating"></span>
+              <span class="sk-detail-sep">·</span>
+              <span id="detailInstalls"></span>
+            </div>
+          </div>
+          <div class="sk-detail-action">
+            <div class="sk-detail-price" id="detailPrice"></div>
+            <button class="sk-detail-btn" id="detailInstallBtn">설치하기</button>
+          </div>
+        </div>
+
+        <!-- 시스템 프롬프트 -->
+        <div class="sk-detail-section glass-card">
+          <h2 class="sk-detail-section-title">스킬 동작 방식</h2>
+          <p class="sk-detail-prompt-note">이 스킬이 챗봇에게 부여하는 시스템 지시입니다.</p>
+          <blockquote class="sk-detail-prompt" id="detailPrompt"></blockquote>
+        </div>
+
+        <!-- 정보 -->
+        <div class="sk-detail-section glass-card">
+          <h2 class="sk-detail-section-title">스킬 정보</h2>
+          <dl class="sk-detail-dl">
+            <div class="sk-detail-dl-row">
+              <dt>카테고리</dt>
+              <dd id="detailInfoCat"></dd>
+            </div>
+            <div class="sk-detail-dl-row">
+              <dt>가격</dt>
+              <dd id="detailInfoPrice"></dd>
+            </div>
+            <div class="sk-detail-dl-row">
+              <dt>설치 수</dt>
+              <dd id="detailInfoInstalls"></dd>
+            </div>
+            <div class="sk-detail-dl-row">
+              <dt>평점</dt>
+              <dd id="detailInfoRating"></dd>
+            </div>
+          </dl>
+        </div>
+
+      </div>
+
+      <!-- 오류 상태 -->
+      <div class="sk-empty" id="detailError" hidden>
+        <div class="sk-empty-icon">❓</div>
+        <h3 class="sk-empty-title">스킬을 찾을 수 없습니다</h3>
+        <p class="sk-empty-desc">잘못된 스킬 ID입니다.</p>
+        <a href="index.html" class="sk-empty-btn">스킬장터로 이동</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 구매 확인 모달 -->
+  <div class="sk-modal-overlay" id="purchaseModal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="sk-modal">
+      <div class="sk-modal-icon" id="modalSkillIcon">🎯</div>
+      <h3 class="sk-modal-title" id="modalTitle">스킬 구매</h3>
+      <p class="sk-modal-name" id="modalSkillName"></p>
+      <p class="sk-modal-price" id="modalSkillPrice"></p>
+      <p class="sk-modal-note">실제 포인트 차감 없이 체험합니다.</p>
+      <div class="sk-modal-actions">
+        <button class="sk-modal-btn sk-modal-btn--cancel" id="modalCancelBtn">취소</button>
+        <button class="sk-modal-btn sk-modal-btn--confirm" id="modalConfirmBtn">구매 체험</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="sk-toast" id="skillsToast" role="alert" aria-live="assertive" hidden></div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="container">
+      <ul class="page-footer-links">
+        <li><a href="../birth/index.html">Birth</a></li>
+        <li><a href="../learning/index.html">Learning</a></li>
+        <li><a href="../skills/index.html">Skills</a></li>
+        <li><a href="../jobs/index.html">Jobs</a></li>
+        <li><a href="../community/index.html">Community</a></li>
+      </ul>
+      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/app.js"></script>
+  <script src="../../js/skills.js"></script>
+  <script>
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarLinks')?.classList.toggle('open');
+    });
+
+    /* ── 상세 페이지 로직 ── */
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const skillId = params.get('id');
+
+      function getCurrentBotId() {
+        const c = localStorage.getItem('mcw_current_bot');
+        if (c) return c;
+        const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
+        return bots.length > 0 ? bots[0].id : 'default';
+      }
+      function getCurrentPersonaId() {
+        const botId = getCurrentBotId();
+        const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
+        const bot = bots.find(b => b.id === botId);
+        return (bot && bot.personas && bot.personas[0]) ? bot.personas[0].id : 'default';
+      }
+      function getInstalled() {
+        const key = `mcw_skills_${getCurrentBotId()}_${getCurrentPersonaId()}`;
+        return JSON.parse(localStorage.getItem(key) || '[]');
+      }
+      function setInstalled(list) {
+        const key = `mcw_skills_${getCurrentBotId()}_${getCurrentPersonaId()}`;
+        localStorage.setItem(key, JSON.stringify(list));
+      }
+      function isInstalled(id) { return getInstalled().includes(id); }
+      function installSkill(id) {
+        const l = getInstalled();
+        if (!l.includes(id)) { l.push(id); setInstalled(l); }
+      }
+      function removeSkill(id) {
+        setInstalled(getInstalled().filter(i => i !== id));
+      }
+
+      function buildStars(r) {
+        const full = Math.floor(r), half = r - full >= 0.5 ? 1 : 0, empty = 5 - full - half;
+        return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+      }
+
+      function showToast(msg) {
+        if (window.MCW && MCW.showToast) { MCW.showToast(msg); return; }
+        const el = document.getElementById('skillsToast');
+        if (!el) return;
+        el.textContent = msg;
+        el.hidden = false;
+        clearTimeout(el._t);
+        el._t = setTimeout(() => { el.hidden = true; }, 3000);
+      }
+
+      function openModal(skill) {
+        const m = document.getElementById('purchaseModal');
+        if (!m) return;
+        document.getElementById('modalSkillIcon').textContent = skill.icon;
+        document.getElementById('modalSkillName').textContent = skill.name;
+        document.getElementById('modalSkillPrice').textContent = `₩${(skill.price || 0).toLocaleString()}`;
+        m.dataset.skillId = skill.id;
+        m.hidden = false;
+        document.getElementById('modalConfirmBtn').focus();
+      }
+      function closeModal() { const m = document.getElementById('purchaseModal'); if (m) m.hidden = true; }
+
+      function updateBtn(skill) {
+        const btn = document.getElementById('detailInstallBtn');
+        if (!btn) return;
+        if (isInstalled(skill.id)) {
+          btn.textContent = '제거하기';
+          btn.classList.add('sk-detail-btn--remove');
+          btn.classList.remove('sk-detail-btn--install');
+        } else {
+          btn.textContent = skill.isFree ? '설치하기' : '구매하기';
+          btn.classList.add('sk-detail-btn--install');
+          btn.classList.remove('sk-detail-btn--remove');
+        }
+      }
+
+      function renderDetail(skill) {
+        document.title = `${skill.name} — My Chatbot World`;
+        document.getElementById('detailSkeleton').hidden = true;
+        document.getElementById('detailContent').hidden = false;
+
+        document.getElementById('detailIcon').textContent = skill.icon;
+        document.getElementById('detailCat').textContent = skill.category;
+        document.getElementById('detailName').textContent = skill.name;
+        document.getElementById('detailDesc').textContent = skill.description;
+
+        const starsEl = document.getElementById('detailStars');
+        starsEl.textContent = buildStars(skill.rating || 0);
+        starsEl.setAttribute('aria-label', `평점 ${skill.rating}`);
+        document.getElementById('detailRating').textContent = `${(skill.rating || 0).toFixed(1)}점`;
+        document.getElementById('detailInstalls').textContent = `${(skill.installs || 0).toLocaleString()}회 설치`;
+
+        const priceEl = document.getElementById('detailPrice');
+        priceEl.textContent = skill.isFree ? '무료' : `₩${(skill.price || 0).toLocaleString()}`;
+        priceEl.className = `sk-detail-price ${skill.isFree ? 'free' : 'paid'}`;
+
+        document.getElementById('detailPrompt').textContent = skill.systemPrompt || '(시스템 프롬프트 없음)';
+
+        document.getElementById('detailInfoCat').textContent = skill.category;
+        document.getElementById('detailInfoPrice').textContent = skill.isFree ? '무료' : `₩${(skill.price || 0).toLocaleString()}`;
+        document.getElementById('detailInfoInstalls').textContent = `${(skill.installs || 0).toLocaleString()}회`;
+        document.getElementById('detailInfoRating').textContent = `${(skill.rating || 0).toFixed(1)} / 5.0`;
+
+        updateBtn(skill);
+
+        // 설치/제거 버튼
+        const btn = document.getElementById('detailInstallBtn');
+        btn.addEventListener('click', () => {
+          if (isInstalled(skill.id)) {
+            removeSkill(skill.id);
+            showToast(`"${skill.name}" 스킬을 제거했습니다.`);
+          } else {
+            if (!skill.isFree) { openModal(skill); return; }
+            installSkill(skill.id);
+            showToast(`"${skill.name}" 스킬을 설치했습니다!`);
+          }
+          updateBtn(skill);
+        });
+      }
+
+      function init() {
+        if (!skillId) {
+          document.getElementById('detailSkeleton').hidden = true;
+          document.getElementById('detailError').hidden = false;
+          return;
+        }
+        const skills = (window.MCW && MCW.skills) ? MCW.skills : [];
+        const skill = skills.find(s => s.id === skillId);
+        if (!skill) {
+          document.getElementById('detailSkeleton').hidden = true;
+          document.getElementById('detailError').hidden = false;
+          return;
+        }
+        renderDetail(skill);
+      }
+
+      // 모달 이벤트
+      document.getElementById('modalCancelBtn')?.addEventListener('click', closeModal);
+      document.getElementById('purchaseModal')?.addEventListener('click', e => {
+        if (e.target === document.getElementById('purchaseModal')) closeModal();
+      });
+      document.getElementById('modalConfirmBtn')?.addEventListener('click', () => {
+        const m = document.getElementById('purchaseModal');
+        const id = m?.dataset.skillId;
+        const skills = (window.MCW && MCW.skills) ? MCW.skills : [];
+        const skill = skills.find(s => s.id === id);
+        if (skill) {
+          installSkill(id);
+          showToast(`"${skill.name}" 구매 완료! 스킬이 설치되었습니다.`);
+          closeModal();
+          updateBtn(skill);
+        }
+      });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 // @task S3F8
+// @task S3F14
 /**
  * learning.js — Learning 페이지 전용 로직
- * My Chatbot World | S3F8
+ * My Chatbot World | S3F8, S3F14
  *
  * 담당:
  *  - Supabase Auth 사용자 로그인 상태 확인
@@ -9,6 +10,9 @@
  *  - 학습 진행 상태 관리 (LocalStorage + Supabase bot_growth)
  *  - school-session.js API 연동 (시나리오 기반 학습)
  *  - 수료증 발급 조건 체크
+ *  - [S3F14] startModule() → 시나리오 AI 대화 연결
+ *  - [S3F14] 커리큘럼 → 시나리오 매핑
+ *  - [S3F14] learning-progress API Supabase 동기화
  */
 
 /* ═══════════════════════════════════════════════
@@ -223,6 +227,106 @@ const SchoolAPI = {
 };
 
 /* ═══════════════════════════════════════════════
+   4-A. 커리큘럼 → 시나리오 매핑 [S3F14]
+   ═══════════════════════════════════════════════ */
+const CURRICULUM_SCENARIO_MAP = {
+  'basic':        ['basic-greeting'],
+  'intermediate': ['complaint-handling'],
+  'advanced':     ['product-inquiry', 'advanced-qa'],
+  'master':       ['advanced-qa', 'master-eval'],
+};
+
+/* ═══════════════════════════════════════════════
+   4-B. Learning Progress Supabase API [S3F14]
+   ═══════════════════════════════════════════════ */
+const ProgressAPI = {
+  BASE: '/api/Backend_APIs/learning-progress',
+
+  /**
+   * 서버에서 진행률 로드
+   * @param {string} botId
+   * @returns {Promise<Object|null>} { progress, history, stats } or null
+   */
+  async load(botId) {
+    if (!botId) return null;
+    const token = await Auth.getToken();
+    if (!token) return null;
+    try {
+      const res = await fetch(`${this.BASE}?botId=${encodeURIComponent(botId)}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (e) {
+      console.warn('[learning] ProgressAPI.load error:', e.message);
+      return null;
+    }
+  },
+
+  /**
+   * 시나리오 완료 후 서버에 진행률 저장
+   * @param {string} botId
+   * @param {string} curriculumId
+   * @param {Object} progress  e.g. { basic: 75 }
+   * @param {Object} historyEntry
+   * @returns {Promise<Object|null>}
+   */
+  async save(botId, curriculumId, progress, historyEntry) {
+    if (!botId) return null;
+    const token = await Auth.getToken();
+    if (!token) return null;
+    try {
+      const res = await fetch(this.BASE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ botId, curriculumId, progress, historyEntry }),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (e) {
+      console.warn('[learning] ProgressAPI.save error:', e.message);
+      return null;
+    }
+  },
+};
+
+/* ═══════════════════════════════════════════════
+   4-C. 시나리오 세션 상태 [S3F14]
+   ═══════════════════════════════════════════════ */
+const ScenarioSession = {
+  _curr: null,  // { curriculumId, moduleId, stepIndex, botId, scenarioIds, scenarioIdx, currentStep, totalSteps }
+
+  open(curriculumId, moduleId, stepIndex, botId) {
+    const scenarioIds = CURRICULUM_SCENARIO_MAP[curriculumId] || ['basic-greeting'];
+    this._curr = {
+      curriculumId,
+      moduleId,
+      stepIndex,
+      botId,
+      scenarioIds,
+      scenarioIdx: 0,
+      currentStep: 0,
+      totalSteps: null,
+      messages: [],
+    };
+  },
+
+  get() { return this._curr; },
+
+  close() { this._curr = null; },
+
+  /** 현재 scenarioId 반환 */
+  scenarioId() {
+    const c = this._curr;
+    if (!c) return null;
+    return c.scenarioIds[c.scenarioIdx] || c.scenarioIds[0];
+  },
+};
+
+/* ═══════════════════════════════════════════════
    5. 커리큘럼 잠금 여부 결정
    ═══════════════════════════════════════════════ */
 /**
@@ -291,6 +395,9 @@ async function initIndexPage() {
 
   // 최근 학습 이력
   renderRecentHistory();
+
+  // [S3F14] 서버 진행률 동기화 (비동기, UI 블로킹 없음)
+  _loadProgressFromServer().catch(() => {});
 }
 
 function renderUserBanner(user) {
@@ -600,28 +707,410 @@ function toggleAccordion(id) {
   item.classList.toggle('open');
 }
 
-/** 모듈 학습 시작 */
-function startModule(curriculumId, moduleId, stepIndex) {
+/** 모듈 학습 시작 — 시나리오 AI 대화 연결 [S3F14] */
+async function startModule(curriculumId, moduleId, stepIndex) {
   const curriculum = CURRICULUM_DATA.find(c => c.id === curriculumId);
   if (!curriculum) return;
 
-  // 진행률 업데이트 (시연: 모듈 시작 시 25% 증가, 최대 100)
-  const currentProgress = LearningState.getProgress(curriculumId);
-  const newProgress = Math.min(100, currentProgress + Math.round(100 / curriculum.modules.length));
-  LearningState.setProgress(curriculumId, newProgress);
+  const module = curriculum.modules[stepIndex];
+
+  // 봇 ID 가져오기 (로컬스토리지 or URL 파라미터)
+  const botId = _getActiveBotId();
+
+  // 시나리오 세션 초기화
+  ScenarioSession.open(curriculumId, moduleId, stepIndex, botId);
+
+  // 모달 열기
+  _openSessionModal(curriculum, module);
+
+  // 첫 번째 시나리오 시작 메시지 (step 0 = 시나리오 소개)
+  const scenarioId = ScenarioSession.scenarioId();
+  _appendModalMessage('system', `시나리오: <strong>${_scenarioLabel(scenarioId)}</strong> 학습을 시작합니다. 고객이 먼저 말을 겁니다.`);
+
+  // 시나리오 첫 step의 고객 발화를 서버에서 받아와 표시
+  await _fetchAndShowAIOpening(botId, scenarioId);
+}
+
+/**
+ * 첫 step: currentStep=0, userMessage='__INIT__' 로 API 호출해
+ * 고객의 첫 발화(userPrompt)를 표시만 하고 사용자 응답 대기
+ * [S3F14]
+ */
+async function _fetchAndShowAIOpening(botId, scenarioId) {
+  // school-session API 호출: step 0 초기화
+  // 첫 발화는 시나리오 JSON의 steps[0].userPrompt 를 직접 보여준다 (API 없이)
+  // API는 userMessage(챗봇 응답)을 평가하는 구조이므로,
+  // 첫 고객 발화는 시나리오 JSON 정보가 없어도 힌트에서 알려주므로
+  // 더미 userMessage로 API 호출 후 nextHint로 첫 발화를 유도한다.
+  const sess = ScenarioSession.get();
+  if (!sess) return;
+
+  _setModalLoading(true);
+  try {
+    const result = await SchoolAPI.sendMessage({
+      botId: botId || 'anonymous',
+      scenarioId,
+      userMessage: '안녕하세요, 학습을 시작합니다.',
+      currentStep: 0,
+    });
+
+    const s = ScenarioSession.get();
+    if (!s) return; // 모달이 닫혔을 수 있음
+
+    // totalSteps 기록
+    s.totalSteps = result.sessionProgress?.totalSteps ?? 1;
+    s.currentStep = 1; // 다음 응답부터 step 1
+
+    // 고객 첫 발화 (AI 응답)
+    _appendModalMessage('customer', result.response);
+
+    // 힌트 표시
+    if (result.nextHint) {
+      _setModalHint(result.nextHint);
+    }
+
+    // 진행률 헤더 갱신
+    _updateModalProgress(result.sessionProgress);
+
+  } catch (err) {
+    console.warn('[learning] _fetchAndShowAIOpening error:', err.message);
+    // 폴백: 고객 첫 발화 없이 사용자 입력만 활성화
+    _appendModalMessage('system', '시나리오에 연결하지 못했습니다. 자유롭게 연습해보세요.');
+    const s = ScenarioSession.get();
+    if (s) { s.totalSteps = 3; s.currentStep = 0; }
+  } finally {
+    _setModalLoading(false);
+  }
+}
+
+/**
+ * 사용자가 챗봇 응답을 제출했을 때 처리 [S3F14]
+ */
+async function submitSessionMessage() {
+  const sess = ScenarioSession.get();
+  if (!sess) return;
+
+  const textarea = document.getElementById('sessionInput');
+  if (!textarea) return;
+  const userMessage = textarea.value.trim();
+  if (!userMessage) return;
+
+  // 입력 비우기 + 로딩
+  textarea.value = '';
+  _appendModalMessage('chatbot', userMessage);
+  _setModalLoading(true);
+
+  const scenarioId = ScenarioSession.scenarioId();
+
+  try {
+    const result = await SchoolAPI.sendMessage({
+      botId: sess.botId || 'anonymous',
+      scenarioId,
+      userMessage,
+      currentStep: sess.currentStep,
+    });
+
+    const s = ScenarioSession.get();
+    if (!s) return;
+
+    // totalSteps 보정
+    if (result.sessionProgress?.totalSteps) {
+      s.totalSteps = result.sessionProgress.totalSteps;
+    }
+
+    // AI(고객) 반응 표시
+    _appendModalMessage('customer', result.response);
+
+    // 진행률 갱신
+    _updateModalProgress(result.sessionProgress);
+
+    // step 진행
+    s.currentStep = result.sessionProgress?.currentStep ?? s.currentStep + 1;
+
+    // 힌트
+    if (result.nextHint) {
+      _setModalHint(result.nextHint);
+    }
+
+    // 시나리오 완료 처리
+    if (result.sessionProgress?.isCompleted) {
+      await _handleScenarioComplete(result);
+    }
+
+  } catch (err) {
+    console.warn('[learning] submitSessionMessage error:', err.message);
+    _appendModalMessage('system', `오류가 발생했습니다: ${err.message}`);
+  } finally {
+    _setModalLoading(false);
+  }
+}
+
+/**
+ * 시나리오 완료 처리 [S3F14]
+ */
+async function _handleScenarioComplete(result) {
+  const sess = ScenarioSession.get();
+  if (!sess) return;
+
+  const curriculum = CURRICULUM_DATA.find(c => c.id === sess.curriculumId);
+  if (!curriculum) return;
+
+  // 진행률 계산
+  const currentProgress = LearningState.getProgress(sess.curriculumId);
+  const progressPerModule = Math.round(100 / curriculum.modules.length);
+  const newProgress = Math.min(100, currentProgress + progressPerModule);
+
+  // LocalStorage 업데이트
+  LearningState.setProgress(sess.curriculumId, newProgress);
 
   // 히스토리 기록
-  LearningState.addHistory({
+  const historyEntry = {
     icon: curriculum.icon,
-    title: curriculum.modules[stepIndex]?.title || '모듈 학습',
+    title: curriculum.modules[sess.stepIndex]?.title || '모듈 학습',
     curriculum: curriculum.title,
     progress: newProgress,
-  });
+    scenarioId: ScenarioSession.scenarioId(),
+  };
+  LearningState.addHistory(historyEntry);
 
-  showToast(`${curriculum.modules[stepIndex]?.title} 학습을 시작합니다!`);
+  // Supabase 동기화 (비동기, 실패해도 계속)
+  _syncProgressToServer(sess.botId, sess.curriculumId, newProgress, historyEntry);
 
-  // 아코디언 새로고침 (진행 상태 반영)
-  setTimeout(() => renderModuleAccordion(curriculum), 600);
+  // 완료 메시지
+  _appendModalMessage('system',
+    `시나리오 완료! +${result.sessionProgress?.percentage ?? 0}점 달성. ` +
+    `진행률: ${newProgress}%`
+  );
+
+  // XP 토스트
+  showToast(`${curriculum.modules[sess.stepIndex]?.title} 완료! 진행률 ${newProgress}%`, 4000);
+
+  // 버튼: 다음 시나리오 또는 닫기
+  _showModalCompletionButtons(sess, newProgress);
+
+  // 통계 카드 실시간 갱신
+  renderSummaryCards();
+
+  // 최근 이력 갱신
+  renderRecentHistory();
+
+  // 아코디언 갱신 (curriculum 페이지일 경우)
+  setTimeout(() => renderModuleAccordion(curriculum), 500);
+}
+
+/**
+ * Supabase에 진행률 동기화 [S3F14]
+ */
+async function _syncProgressToServer(botId, curriculumId, newProgressValue, historyEntry) {
+  try {
+    const progressPayload = { [curriculumId]: newProgressValue };
+    const result = await ProgressAPI.save(botId, curriculumId, progressPayload, historyEntry);
+    if (result) {
+      console.info('[learning] progress synced to server:', result.progress);
+    }
+  } catch (e) {
+    console.warn('[learning] _syncProgressToServer failed:', e.message);
+  }
+}
+
+/**
+ * 페이지 로드 시 서버 진행률을 가져와 LocalStorage와 병합 [S3F14]
+ */
+async function _loadProgressFromServer() {
+  const botId = _getActiveBotId();
+  if (!botId) return;
+
+  const data = await ProgressAPI.load(botId);
+  if (!data?.progress) return;
+
+  // max 전략으로 병합
+  const serverProgress = data.progress;
+  const local = LearningState.get();
+
+  let changed = false;
+  for (const [key, val] of Object.entries(serverProgress)) {
+    const localVal = local[key]?.progress ?? 0;
+    if (val > localVal) {
+      LearningState.setProgress(key, val);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    console.info('[learning] progress updated from server');
+    renderSummaryCards();
+    renderCurriculumGrid();
+    renderRecentHistory();
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   모달 UI 헬퍼 함수 [S3F14]
+   ═══════════════════════════════════════════════ */
+
+function _getActiveBotId() {
+  // URL 파라미터 > localStorage mcw_active_bot > null
+  const params = new URLSearchParams(window.location.search);
+  return params.get('botId') || localStorage.getItem('mcw_active_bot') || null;
+}
+
+function _scenarioLabel(scenarioId) {
+  const labels = {
+    'basic-greeting':     '기본 인사 학습',
+    'complaint-handling': '불만 고객 응대',
+    'product-inquiry':    '상품 문의 응대',
+    'advanced-qa':        '심화 Q&A 응대',
+    'master-eval':        '마스터 종합 평가',
+  };
+  return labels[scenarioId] || scenarioId;
+}
+
+function _openSessionModal(curriculum, module) {
+  const modal = document.getElementById('learningSessionModal');
+  if (!modal) return;
+
+  // 헤더 초기화
+  const titleEl = modal.querySelector('#modalCurriculumTitle');
+  if (titleEl) titleEl.textContent = `${curriculum.title} — ${module?.title || '학습'}`;
+
+  const progEl = modal.querySelector('#modalStepProgress');
+  if (progEl) progEl.textContent = 'Step 1 / ?';
+
+  // 메시지 영역 초기화
+  const msgList = modal.querySelector('#sessionMessages');
+  if (msgList) msgList.innerHTML = '';
+
+  // 힌트 초기화
+  const hintEl = modal.querySelector('#sessionHint');
+  if (hintEl) hintEl.textContent = '';
+
+  // 입력 활성화
+  const inp = document.getElementById('sessionInput');
+  if (inp) { inp.value = ''; inp.disabled = false; }
+
+  const sendBtn = document.getElementById('sessionSendBtn');
+  if (sendBtn) sendBtn.disabled = false;
+
+  // 완료 버튼 숨기기
+  const completionRow = modal.querySelector('#sessionCompletionRow');
+  if (completionRow) completionRow.style.display = 'none';
+
+  // 모달 표시
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSessionModal() {
+  const modal = document.getElementById('learningSessionModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+  document.body.style.overflow = '';
+  ScenarioSession.close();
+}
+
+function _appendModalMessage(role, text) {
+  const msgList = document.getElementById('sessionMessages');
+  if (!msgList) return;
+
+  const div = document.createElement('div');
+  div.className = `session-msg session-msg--${role}`;
+
+  if (role === 'customer') {
+    div.innerHTML = `<span class="msg-label">고객</span><div class="msg-bubble">${_safeHtml(text)}</div>`;
+  } else if (role === 'chatbot') {
+    div.innerHTML = `<div class="msg-bubble">${_safeHtml(text)}</div><span class="msg-label">챗봇(나)</span>`;
+  } else {
+    // system
+    div.innerHTML = `<div class="msg-system">${text}</div>`;
+  }
+
+  msgList.appendChild(div);
+  msgList.scrollTop = msgList.scrollHeight;
+}
+
+function _safeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function _setModalLoading(isLoading) {
+  const sendBtn = document.getElementById('sessionSendBtn');
+  const inp = document.getElementById('sessionInput');
+  if (sendBtn) sendBtn.disabled = isLoading;
+  if (inp) inp.disabled = isLoading;
+
+  const loadingEl = document.getElementById('sessionLoadingIndicator');
+  if (loadingEl) loadingEl.style.display = isLoading ? 'flex' : 'none';
+}
+
+function _setModalHint(hintText) {
+  const hintEl = document.getElementById('sessionHint');
+  if (hintEl) hintEl.textContent = hintText;
+}
+
+function _updateModalProgress(sessionProgress) {
+  if (!sessionProgress) return;
+  const progEl = document.getElementById('modalStepProgress');
+  if (progEl) {
+    progEl.textContent = `Step ${sessionProgress.currentStep} / ${sessionProgress.totalSteps}`;
+  }
+  const barEl = document.getElementById('modalProgressBar');
+  if (barEl) {
+    barEl.style.width = `${sessionProgress.percentage ?? 0}%`;
+  }
+}
+
+function _showModalCompletionButtons(sess, newProgress) {
+  const completionRow = document.getElementById('sessionCompletionRow');
+  if (!completionRow) return;
+
+  // 다음 시나리오 여부 확인
+  const hasNextScenario = sess.scenarioIdx + 1 < sess.scenarioIds.length;
+
+  completionRow.innerHTML = hasNextScenario
+    ? `<button class="btn btn-primary btn-sm" onclick="continueNextScenario()">다음 시나리오 계속</button>
+       <button class="btn btn-secondary btn-sm" onclick="closeSessionModal()">닫기</button>`
+    : `<button class="btn btn-primary btn-sm" onclick="closeSessionModal()">완료 — 닫기</button>`;
+
+  completionRow.style.display = 'flex';
+
+  // 입력창 비활성화
+  const inp = document.getElementById('sessionInput');
+  const btn = document.getElementById('sessionSendBtn');
+  if (inp) inp.disabled = true;
+  if (btn) btn.disabled = true;
+}
+
+/** 다음 시나리오로 이동 [S3F14] */
+async function continueNextScenario() {
+  const sess = ScenarioSession.get();
+  if (!sess) return;
+
+  sess.scenarioIdx += 1;
+  sess.currentStep = 0;
+  sess.totalSteps = null;
+  sess.messages = [];
+
+  // 완료 버튼 숨기기
+  const completionRow = document.getElementById('sessionCompletionRow');
+  if (completionRow) completionRow.style.display = 'none';
+
+  // 입력창 활성화
+  const inp = document.getElementById('sessionInput');
+  const btn = document.getElementById('sessionSendBtn');
+  if (inp) inp.disabled = false;
+  if (btn) btn.disabled = false;
+
+  const scenarioId = ScenarioSession.scenarioId();
+  _appendModalMessage('system', `--- 다음 시나리오: <strong>${_scenarioLabel(scenarioId)}</strong> ---`);
+
+  await _fetchAndShowAIOpening(sess.botId, scenarioId);
 }
 
 /** 수료증 다운로드 (간단 인쇄 구현) */
@@ -665,10 +1154,15 @@ function showToast(message, duration = 3000) {
    ═══════════════════════════════════════════════ */
 window.LearningState = LearningState;
 window.SchoolAPI = SchoolAPI;
+window.ProgressAPI = ProgressAPI;
+window.ScenarioSession = ScenarioSession;
 window.navigateToCurriculum = navigateToCurriculum;
 window.showLockedMsg = showLockedMsg;
 window.toggleAccordion = toggleAccordion;
 window.startModule = startModule;
+window.submitSessionMessage = submitSessionMessage;
+window.closeSessionModal = closeSessionModal;
+window.continueNextScenario = continueNextScenario;
 window.downloadCert = downloadCert;
 window.shareCert = shareCert;
 window.showToast = showToast;

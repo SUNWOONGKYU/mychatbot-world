@@ -1,6 +1,7 @@
 <!--
 @task S3F8
-@description Learning(학습) 메인 페이지 — 커리큘럼 목록, 진행 상태, 최근 이력
+@task S3F14
+@description Learning(학습) 메인 페이지 — 커리큘럼 목록, 진행 상태, 최근 이력, 시나리오 AI 대화 모달
 -->
 <!DOCTYPE html>
 <html lang="ko">
@@ -115,6 +116,63 @@
 
   <!-- Toast -->
   <div class="toast hidden" id="toast"></div>
+
+  <!-- ===== 학습 시나리오 대화 모달 [S3F14] ===== -->
+  <div id="learningSessionModal" class="session-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalCurriculumTitle">
+    <!-- Backdrop -->
+    <div class="session-modal-backdrop" onclick="closeSessionModal()"></div>
+
+    <!-- Dialog -->
+    <div class="session-modal-dialog">
+
+      <!-- 헤더 -->
+      <div class="session-modal-header">
+        <div class="session-modal-header-left">
+          <div class="session-modal-title" id="modalCurriculumTitle">학습 세션</div>
+          <div class="session-step-badge" id="modalStepProgress">Step 1 / ?</div>
+        </div>
+        <button class="session-modal-close" onclick="closeSessionModal()" aria-label="닫기">&times;</button>
+      </div>
+
+      <!-- 진행 바 -->
+      <div class="session-progress-track">
+        <div class="session-progress-fill" id="modalProgressBar" style="width:0%"></div>
+      </div>
+
+      <!-- 대화 메시지 영역 -->
+      <div class="session-messages" id="sessionMessages">
+        <!-- 메시지가 동적으로 추가됩니다 -->
+      </div>
+
+      <!-- 로딩 표시 -->
+      <div class="session-loading hidden" id="sessionLoadingIndicator">
+        <div class="session-spinner"></div>
+        <span>AI 고객이 응답 중...</span>
+      </div>
+
+      <!-- 힌트 -->
+      <div class="session-hint" id="sessionHint"></div>
+
+      <!-- 완료 버튼 행 (완료 시 표시) -->
+      <div class="session-completion-row" id="sessionCompletionRow" style="display:none"></div>
+
+      <!-- 입력 폼 -->
+      <div class="session-input-area">
+        <textarea
+          id="sessionInput"
+          class="session-textarea"
+          placeholder="챗봇으로서 고객에게 답변을 입력하세요..."
+          rows="3"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitSessionMessage();}"
+        ></textarea>
+        <button id="sessionSendBtn" class="btn btn-primary session-send-btn" onclick="submitSessionMessage()">
+          전송
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <!-- ===== /학습 시나리오 대화 모달 ===== -->
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

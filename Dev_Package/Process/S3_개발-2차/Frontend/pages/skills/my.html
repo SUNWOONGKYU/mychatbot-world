@@ -1,0 +1,232 @@
+<!--
+@task S3F12
+@description 마이 스킬 페이지 — 내 챗봇 장착 스킬 목록, 토글, 제거
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이 스킬 — My Chatbot World</title>
+  <meta name="description" content="내 챗봇에 장착된 스킬 목록을 관리합니다. My Chatbot World.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/pages.css">
+  <link rel="stylesheet" href="../../css/skills.css">
+</head>
+<body class="page-dark">
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../../index.html" class="navbar-logo"><span>My Chatbot World</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">&#9776;</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="../birth/index.html" class="nav-menu-item"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
+        <li><a href="../learning/index.html" class="nav-menu-item"><span class="nav-en">Learning</span><span class="nav-ko">학습</span></a></li>
+        <li><a href="../skills/index.html" class="nav-menu-item active"><span class="nav-en">Skills</span><span class="nav-ko">스킬장터</span></a></li>
+        <li><a href="../jobs/index.html" class="nav-menu-item"><span class="nav-en">Jobs</span><span class="nav-ko">구봇구직</span></a></li>
+        <li><a href="../community/index.html" class="nav-menu-item"><span class="nav-en">Community</span><span class="nav-ko">봇마당</span></a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="../login.html" class="btn btn-secondary btn-sm">로그인</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Back Link -->
+  <div class="sk-back-bar">
+    <div class="container">
+      <a href="index.html" class="sk-back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+        스킬장터로 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <!-- Hero (compact) -->
+  <section class="sk-my-hero">
+    <div class="container">
+      <h1 class="sk-my-title">
+        <span class="accent">마이</span> 스킬
+      </h1>
+      <p class="sk-my-subtitle">내 챗봇에 장착된 스킬을 관리합니다.</p>
+    </div>
+  </section>
+
+  <!-- My Skills Content -->
+  <main class="sk-my-main">
+    <div class="container">
+
+      <!-- 장착된 스킬 목록 -->
+      <div class="sk-my-list" id="mySkillsList" aria-live="polite" aria-label="장착된 스킬 목록">
+        <!-- JS 렌더링 -->
+      </div>
+
+      <!-- 빈 상태 -->
+      <div class="sk-empty" id="mySkillsEmpty" hidden>
+        <div class="sk-empty-icon">🎯</div>
+        <h3 class="sk-empty-title">장착된 스킬이 없습니다</h3>
+        <p class="sk-empty-desc">스킬장터에서 마음에 드는 스킬을 찾아 설치해보세요.</p>
+        <a href="index.html" class="sk-empty-btn">스킬장터 둘러보기</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div class="sk-toast" id="skillsToast" role="alert" aria-live="assertive" hidden></div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="container">
+      <ul class="page-footer-links">
+        <li><a href="../birth/index.html">Birth</a></li>
+        <li><a href="../learning/index.html">Learning</a></li>
+        <li><a href="../skills/index.html">Skills</a></li>
+        <li><a href="../jobs/index.html">Jobs</a></li>
+        <li><a href="../community/index.html">Community</a></li>
+      </ul>
+      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarLinks')?.classList.toggle('open');
+    });
+
+    (function () {
+      function getCurrentBotId() {
+        const c = localStorage.getItem('mcw_current_bot');
+        if (c) return c;
+        const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
+        return bots.length > 0 ? bots[0].id : 'default';
+      }
+      function getCurrentPersonaId() {
+        const botId = getCurrentBotId();
+        const bots = JSON.parse(localStorage.getItem('mcw_bots') || '[]');
+        const bot = bots.find(b => b.id === botId);
+        return (bot && bot.personas && bot.personas[0]) ? bot.personas[0].id : 'default';
+      }
+      function storageKey() {
+        return `mcw_skills_${getCurrentBotId()}_${getCurrentPersonaId()}`;
+      }
+      function getInstalledIds() {
+        return JSON.parse(localStorage.getItem(storageKey()) || '[]');
+      }
+      function saveInstalledIds(list) {
+        localStorage.setItem(storageKey(), JSON.stringify(list));
+      }
+
+      /* 활성화 상태 저장 키 */
+      function activeKey() {
+        return `mcw_skills_active_${getCurrentBotId()}_${getCurrentPersonaId()}`;
+      }
+      function getActiveMap() {
+        return JSON.parse(localStorage.getItem(activeKey()) || '{}');
+      }
+      function setActive(skillId, val) {
+        const m = getActiveMap();
+        m[skillId] = val;
+        localStorage.setItem(activeKey(), JSON.stringify(m));
+      }
+      function isActive(skillId) {
+        const m = getActiveMap();
+        return skillId in m ? m[skillId] : true; // 기본값: 활성
+      }
+
+      function showToast(msg) {
+        if (window.MCW && MCW.showToast) { MCW.showToast(msg); return; }
+        const el = document.getElementById('skillsToast');
+        if (!el) return;
+        el.textContent = msg;
+        el.hidden = false;
+        clearTimeout(el._t);
+        el._t = setTimeout(() => { el.hidden = true; }, 3000);
+      }
+
+      function buildItem(skill, active) {
+        const activeClass = active ? '' : 'sk-my-item--inactive';
+        const toggleLabel = active ? '비활성화' : '활성화';
+        return `
+          <div class="sk-my-item ${activeClass}" data-skill-id="${skill.id}">
+            <div class="sk-my-item-left">
+              <span class="sk-my-icon">${skill.icon}</span>
+              <div class="sk-my-info">
+                <div class="sk-my-name">${skill.name}</div>
+                <div class="sk-my-cat">${skill.category} · ${skill.isFree ? '무료' : `₩${(skill.price || 0).toLocaleString()}`}</div>
+                <div class="sk-my-desc">${skill.description}</div>
+              </div>
+            </div>
+            <div class="sk-my-item-right">
+              <span class="sk-my-status ${active ? 'active' : 'inactive'}">${active ? '활성' : '비활성'}</span>
+              <button class="sk-my-toggle-btn" data-skill-id="${skill.id}" data-active="${active}"
+                aria-label="${skill.name} ${toggleLabel}" aria-pressed="${active}">
+                ${toggleLabel}
+              </button>
+              <button class="sk-my-remove-btn" data-skill-id="${skill.id}"
+                aria-label="${skill.name} 제거">
+                제거
+              </button>
+            </div>
+          </div>`;
+      }
+
+      function render() {
+        const ids = getInstalledIds();
+        const list = document.getElementById('mySkillsList');
+        const empty = document.getElementById('mySkillsEmpty');
+        if (!list) return;
+
+        const skills = (window.MCW && MCW.skills) ? MCW.skills : [];
+        const installed = ids.map(id => skills.find(s => s.id === id)).filter(Boolean);
+
+        if (installed.length === 0) {
+          list.innerHTML = '';
+          if (empty) empty.hidden = false;
+          return;
+        }
+
+        if (empty) empty.hidden = true;
+        list.innerHTML = installed.map(skill => buildItem(skill, isActive(skill.id))).join('');
+
+        // 토글 이벤트
+        list.querySelectorAll('.sk-my-toggle-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.skillId;
+            const curr = btn.dataset.active === 'true';
+            setActive(id, !curr);
+            const skill = skills.find(s => s.id === id);
+            showToast(skill
+              ? `"${skill.name}" 스킬을 ${curr ? '비활성화' : '활성화'}했습니다.`
+              : '변경되었습니다.');
+            render();
+          });
+        });
+
+        // 제거 이벤트
+        list.querySelectorAll('.sk-my-remove-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.skillId;
+            const updated = getInstalledIds().filter(i => i !== id);
+            saveInstalledIds(updated);
+            const skill = skills.find(s => s.id === id);
+            showToast(skill ? `"${skill.name}" 스킬을 제거했습니다.` : '제거되었습니다.');
+            render();
+          });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', render);
+      } else {
+        render();
+      }
+    })();
+  </script>
+</body>
+</html>

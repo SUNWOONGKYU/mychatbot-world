@@ -234,10 +234,11 @@ const CommunityLike = {
    ==================================================== */
 const CommunityReport = {
   /** 신고 */
-  async submit({ targetId, targetType = 'post', reason, detail = '' }) {
+  // S3T2: 파라미터명 detail → description (community-report.js API 정합성 수정)
+  async submit({ targetId, targetType = 'post', reason, description = '' }) {
     return apiFetch('/Backend_APIs/community-report', {
       method: 'POST',
-      body: JSON.stringify({ target_id: targetId, target_type: targetType, reason, detail }),
+      body: JSON.stringify({ target_id: targetId, target_type: targetType, reason, description }),
     });
   },
 };
@@ -783,12 +784,12 @@ class CommunityPostDetail {
 
     submitBtn?.addEventListener('click', async () => {
       const reason = reportModal.querySelector('input[name="reportReason"]:checked')?.value;
-      const detail = reportModal.querySelector('.report-detail-textarea')?.value.trim() || '';
+      const description = reportModal.querySelector('.report-detail-textarea')?.value.trim() || ''; // S3T2: detail → description
       if (!reason) { showToast('신고 사유를 선택하세요.', 'error'); return; }
 
       submitBtn.disabled = true;
       try {
-        await CommunityReport.submit({ targetId: this.postId, targetType: 'post', reason, detail });
+        await CommunityReport.submit({ targetId: this.postId, targetType: 'post', reason, description });
         reportModal.classList.remove('visible');
         showToast('신고가 접수되었습니다.', 'success');
       } catch (err) {
@@ -1208,3 +1209,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new CommunityIndex().init();
   }
 });
+
+// S3T2: 정합성 수정 — CommunityReport.submit detail→description (API 파라미터 통일), 검색 keyword API 연결 확인 완료

@@ -1,0 +1,33 @@
+{
+  "scenarioId": "advanced-qa",
+  "scenarioName": "고급 Q&A 학습",
+  "description": "복합적인 고객 질문에 정확하고 친절하게 응대하는 법을 학습합니다.",
+  "xpReward": 25,
+  "steps": [
+    {
+      "stepId": 1,
+      "userPrompt": "A 제품과 B 제품의 가격 차이가 뭔가요? 어떤 게 더 좋아요?",
+      "expectedTopics": ["가격 비교", "제품 특징", "추천", "차이점"]
+    },
+    {
+      "stepId": 2,
+      "userPrompt": "구매 후 환불이 가능한가요? 환불 기한은 어떻게 되나요?",
+      "expectedTopics": ["환불 정책", "기한", "조건", "절차"]
+    },
+    {
+      "stepId": 3,
+      "userPrompt": "저는 완전 초보자인데, 어떤 제품을 추천해 주시겠어요?",
+      "expectedTopics": ["수준 파악", "제품 추천", "설명", "가이드"]
+    },
+    {
+      "stepId": 4,
+      "userPrompt": "배송은 언제 도착하나요? 배송비는 따로 내나요?",
+      "expectedTopics": ["배송 기간", "배송비", "추적", "배송 방식"]
+    },
+    {
+      "stepId": 5,
+      "userPrompt": "A 제품을 구매하면서 배송료 할인이나 사은품이 있을까요?",
+      "expectedTopics": ["프로모션", "할인", "사은품", "특별 혜택"]
+    }
+  ]
+}

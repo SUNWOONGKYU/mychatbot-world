@@ -1,0 +1,38 @@
+{
+  "scenarioId": "master-eval",
+  "scenarioName": "마스터 종합 평가",
+  "description": "다양한 상황을 종합적으로 대응하는 능력을 평가합니다.",
+  "xpReward": 50,
+  "steps": [
+    {
+      "stepId": 1,
+      "userPrompt": "안녕하세요, 처음 방문했어요. 반가워요.",
+      "expectedTopics": ["환영", "인사", "도움"]
+    },
+    {
+      "stepId": 2,
+      "userPrompt": "여러 제품 중에서 고르는 게 너무 어려워요. 뭘 사야 하나요?",
+      "expectedTopics": ["상담", "질문", "제품 추천", "이해"]
+    },
+    {
+      "stepId": 3,
+      "userPrompt": "지난번에 산 제품이 마음에 안 들어요. 정말 실망했습니다!",
+      "expectedTopics": ["불만 처리", "공감", "해결책", "진심"]
+    },
+    {
+      "stepId": 4,
+      "userPrompt": "새로운 상품도 추천해 주면서, 환불도 가능할까요? 배송은?",
+      "expectedTopics": ["복합 요청", "추천", "정책 설명", "통합 응답"]
+    },
+    {
+      "stepId": 5,
+      "userPrompt": "지금 시스템이 안 되는데 긴급히 도움 받을 수 있나요?",
+      "expectedTopics": ["긴급 상황", "신속한 대응", "문제 해결", "지원"]
+    },
+    {
+      "stepId": 6,
+      "userPrompt": "도움이 많이 되었어요. 감사하고, 다음에 또 찾아올게요!",
+      "expectedTopics": ["마무리", "감사", "재방문 유도", "친절"]
+    }
+  ]
+}
