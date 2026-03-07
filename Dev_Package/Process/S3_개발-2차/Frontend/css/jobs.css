@@ -26,6 +26,8 @@
   display: flex;
   gap: var(--space-2);
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
 
 .jobs-cat-btn {
@@ -131,6 +133,11 @@
   font-size: var(--font-size-sm);
   font-family: var(--font-sans);
   cursor: pointer;
+}
+
+.jobs-sort-select option {
+  background: #1a1a2e;
+  color: white;
 }
 
 /* Card grid */
@@ -362,6 +369,13 @@
 .jobs-hero-search input:focus {
   border-color: rgba(59, 130, 246, 0.5);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  outline: none;
+}
+
+.jobs-hero-search input:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 .jobs-hero-search .search-icon {

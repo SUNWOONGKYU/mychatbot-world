@@ -91,6 +91,7 @@ body.page-dark .navbar {
   transform: translate(-50%, -50%);
   animation: float 8s ease-in-out infinite;
   background: var(--page-accent, var(--primary-500));
+  will-change: transform, opacity;
 }
 
 .page-hero-content {
@@ -193,6 +194,7 @@ body.page-dark .navbar {
   justify-content: center;
   gap: var(--space-8);
   list-style: none;
+  padding: 0;
   margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
@@ -217,9 +219,20 @@ body.page-dark .navbar {
 .btn-accent {
   background: var(--page-accent, var(--primary-500));
   color: white;
+  border: none;
 }
 
 .btn-accent:hover {
-  opacity: 0.9;
+  filter: brightness(1.15);
   transform: translateY(-2px);
+}
+
+/* --- Focus-visible for accessibility --- */
+.category-tab:focus-visible,
+.sort-btn:focus-visible,
+.page-btn:focus-visible,
+.btn-accent:focus-visible,
+.nav-toggle:focus-visible {
+  outline: 2px solid var(--page-accent, var(--primary-400));
+  outline-offset: 2px;
 }
