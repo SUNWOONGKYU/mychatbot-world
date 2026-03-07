@@ -227,6 +227,12 @@ body.page-dark .navbar {
   transform: translateY(-2px);
 }
 
+/* --- Utility classes --- */
+.text-center { text-align: center; }
+.flex-center { justify-content: center; }
+.mt-section { margin-top: var(--space-12); }
+.mb-section { margin-bottom: var(--space-12); }
+
 /* --- Focus-visible for accessibility --- */
 .category-tab:focus-visible,
 .sort-btn:focus-visible,
