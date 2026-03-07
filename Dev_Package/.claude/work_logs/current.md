@@ -170,3 +170,46 @@
 ### 다음 단계
 - S2 Pending Tasks (10개) 실행 시작
 - S2F8 (대메뉴 5개 업데이트)부터 착수 권장
+
+---
+
+## 7. 6개 신규 Task 추가 — v4.0 (2026-03-07)
+
+### 작업 상태: 완료
+
+### 배경
+프로토타입 기능 점검 결과, Birth/Skills는 정적 소개 페이지, Learning은 카운터만 증가하는 가짜 진행률, Jobs/Community는 API 경로/파라미터 불일치 발견.
+모든 페이지가 실제 기능 구현되도록 6개 신규 Task 추가.
+총 Task 수: 73 → 79 (6개 추가)
+
+### TASK_PLAN.md v3.0→v4.0 동기화 수정
+기존 TASK_PLAN.md가 JSON 실제 상태와 심각한 불일치 (63 completed 표시 vs 실제 72 completed).
+모든 Task 상태를 grid_records JSON과 동기화 완료.
+
+### 추가된 Task 목록
+
+| Task ID | Task 이름 | Stage | Area | Dependencies |
+|---------|-----------|-------|------|-------------|
+| S3F12 | Skills 마켓플레이스 기능 구현 | S3 | F | S2F8 |
+| S3F13 | Birth 위자드 데이터 영속화 + 랜딩 연결 | S3 | F | S3F4 |
+| S3F14 | Learning 학습→시나리오 AI 대화 연결 | S3 | F | S3F8, S3CS1, S3BA8 |
+| S3BA8 | Learning 진행률 Supabase 동기화 API | S3 | BA | S3BA5, S3DB2 |
+| S3CS2 | 누락 시나리오 템플릿 추가 | S3 | CS | S3CS1 |
+| S3T2 | Jobs/Community API 정합성 수정 | S3 | T | S3F9, S3F11, S3BA6, S3BA7 |
+
+### 업데이트된 5개 동기화 위치
+1. TASK_PLAN.md — v4.0 완전 재작성 (79 Tasks, 상태 동기화)
+2. index.json — task_ids 배열에 6개 ID 추가, total_tasks: 79
+3. grid_records/ — 6개 JSON 파일 생성
+4. task-instructions/ — 6개 instruction 파일 생성
+5. verification-instructions/ — 6개 verification 파일 생성
+
+### Stage별 변경
+| Stage | 기존 | 추가 | 변경 후 |
+|-------|------|------|---------|
+| S3 | 25 | +6 | 31 |
+| **합계** | **73** | **+6** | **79** |
+
+### 다음 단계
+- 6개 신규 Task 실행 (S3F12, S3F13, S3F14, S3BA8, S3CS2, S3T2)
+- 실행 순서: S3CS2, S3BA8 (선행) → S3F12, S3F13, S3T2 (병렬) → S3F14 (S3BA8 의존)
