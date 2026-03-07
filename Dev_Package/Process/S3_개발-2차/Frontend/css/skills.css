@@ -1145,3 +1145,43 @@
     font-size: 0.8rem;
   }
 }
+
+/* ── 유료 스킬 잠금 (추후 출시) ── */
+.sk-card--locked {
+  opacity: 0.65;
+  cursor: default;
+  position: relative;
+}
+
+.sk-card--locked .sk-card-link {
+  cursor: default;
+  display: block;
+}
+
+.sk-coming-soon {
+  margin-left: auto;
+  background: rgba(234,179,8,0.15);
+  color: #eab308;
+  border: 1px solid rgba(234,179,8,0.3);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.sk-price.paid {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.78rem;
+}
+
+.sk-btn--coming {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: not-allowed;
+}
