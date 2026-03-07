@@ -290,3 +290,179 @@
     width: 120px;
   }
 }
+
+/* ============================================
+   업보트 / 다운보트 (Vote Controls)
+   ============================================ */
+
+/* 게시글 상세 — 큰 투표 버튼 */
+.vote-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg, 12px);
+  padding: 0.25rem 0.35rem;
+}
+
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.65rem;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font-sans, system-ui);
+}
+
+.vote-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.8);
+}
+
+.vote-btn.vote-up:hover,
+.vote-btn.vote-up.active {
+  color: #22c55e;
+  background: rgba(34,197,94,0.12);
+}
+
+.vote-btn.vote-down:hover,
+.vote-btn.vote-down.active {
+  color: #ef4444;
+  background: rgba(239,68,68,0.12);
+}
+
+.vote-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vote-score {
+  min-width: 2rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.7);
+  padding: 0 0.25rem;
+}
+
+.vote-score.positive {
+  color: #22c55e;
+}
+
+.vote-score.negative {
+  color: #ef4444;
+}
+
+/* 게시글 목록 — 소형 투표 점수 표시 */
+.post-vote-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  font-weight: 600;
+}
+
+.post-vote-score.positive {
+  color: #22c55e;
+}
+
+.post-vote-score.negative {
+  color: #ef4444;
+}
+
+.vote-arrow {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.3);
+  line-height: 1;
+}
+
+.vote-arrow.voted {
+  color: inherit;
+}
+
+/* 댓글 — 소형 투표 버튼 */
+.comment-vote-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.vote-up-sm,
+.vote-down-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: rgba(255,255,255,0.35);
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  font-family: var(--font-sans, system-ui);
+}
+
+.vote-up-sm:hover,
+.vote-up-sm.active {
+  color: #22c55e;
+  background: rgba(34,197,94,0.1);
+}
+
+.vote-down-sm:hover,
+.vote-down-sm.active {
+  color: #ef4444;
+  background: rgba(239,68,68,0.1);
+}
+
+.vote-up-sm:disabled,
+.vote-down-sm:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.comment-vote-score {
+  min-width: 1.2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+}
+
+.comment-vote-score.positive {
+  color: #22c55e;
+}
+
+.comment-vote-score.negative {
+  color: #ef4444;
+}
+
+/* 갤러리 카드 — 소형 투표 */
+.gallery-vote-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  margin-left: auto;
+}
+
+.gallery-vote-score {
+  min-width: 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+}
+
+/* 모달 투표 */
+.modal-footer .vote-controls {
+  background: rgba(255,255,255,0.08);
+}

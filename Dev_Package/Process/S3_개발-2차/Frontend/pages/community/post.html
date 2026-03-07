@@ -65,7 +65,7 @@
               </div>
               <div class="post-detail-stats">
                 <span class="post-detail-stat">👁 <span id="postViewCount">0</span></span>
-                <span class="post-detail-stat">♥ <span id="postLikeCount">0</span></span>
+                <span class="post-detail-stat">⇅ <span id="postVoteScore">0</span></span>
                 <span class="post-detail-stat">💬 <span id="postCommentCount">0</span></span>
               </div>
             </div>
@@ -79,11 +79,12 @@
           <!-- 게시글 액션 바 -->
           <div class="post-actions-bar">
             <div class="post-left-actions">
-              <!-- 좋아요 버튼 -->
-              <button class="btn-like" id="likeBtn" aria-label="좋아요">
-                <span class="like-icon">♥</span>
-                좋아요 <span class="like-count">0</span>
-              </button>
+              <!-- 업보트/다운보트 -->
+              <div class="vote-controls" id="voteControls">
+                <button class="vote-btn vote-up" id="voteUpBtn" aria-label="추천">▲ 추천</button>
+                <span class="vote-score" id="voteScore">0</span>
+                <button class="vote-btn vote-down" id="voteDownBtn" aria-label="비추천">▼ 비추천</button>
+              </div>
             </div>
             <div class="post-right-actions">
               <!-- 수정 버튼 (본인만, JS로 표시/숨김) -->

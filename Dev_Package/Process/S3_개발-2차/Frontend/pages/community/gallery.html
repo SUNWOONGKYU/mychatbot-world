@@ -99,10 +99,11 @@
         </div>
         <p class="modal-bot-desc" id="modalBotDesc"></p>
         <div class="modal-footer">
-          <button class="btn-like" id="modalLikeBtn">
-            <span class="like-icon">♥</span>
-            좋아요 <span id="modalLikeCount">0</span>
-          </button>
+          <div class="vote-controls">
+            <button class="vote-btn vote-up" id="modalVoteUpBtn" aria-label="추천">▲</button>
+            <span class="vote-score" id="modalVoteScore">0</span>
+            <button class="vote-btn vote-down" id="modalVoteDownBtn" aria-label="비추천">▼</button>
+          </div>
           <a class="btn-primary" id="modalViewPostBtn" href="#">게시글 보기</a>
         </div>
       </div>

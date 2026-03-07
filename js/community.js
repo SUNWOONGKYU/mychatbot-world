@@ -223,13 +223,24 @@ const CommunityComment = {
 /* ====================================================
    5. API 모듈: community-like.js
    ==================================================== */
-const CommunityLike = {
-  /** 좋아요 토글 (POST) — 백엔드는 post_id 필드만 지원 */
-  async toggle({ targetId, targetType = 'post' }) {
+const CommunityVote = {
+  /** 업보트/다운보트 투표 (POST) — 게시글 + 댓글 모두 지원 */
+  async vote({ targetId, targetType = 'post', voteType = 'up' }) {
     return apiFetch('/Backend_APIs/community-like', {
       method: 'POST',
-      body: JSON.stringify({ post_id: targetId }),
+      body: JSON.stringify({ target_type: targetType, target_id: targetId, vote_type: voteType }),
     });
+  },
+  /** 투표 현황 조회 (GET) */
+  async getStatus({ targetId, targetType = 'post' }) {
+    return apiFetch(`/Backend_APIs/community-like?target_type=${targetType}&target_id=${targetId}`);
+  },
+};
+
+// 하위호환 별칭
+const CommunityLike = {
+  async toggle({ targetId, targetType = 'post' }) {
+    return CommunityVote.vote({ targetId, targetType, voteType: 'up' });
   },
 };
 
@@ -395,10 +406,12 @@ class CommunityIndex {
   renderPostItem(post) {
     const pinClass = post.is_pinned ? 'pinned' : '';
     const pinIcon  = post.is_pinned ? '<span class="pin-icon">📌</span>' : '';
-    // 백엔드 응답 필드: likes_count, comments_count, views_count, user_id
-    const likes    = post.likes_count ?? post.like_count ?? 0;
-    const comments = post.comments_count ?? post.comment_count ?? 0;
-    const views    = post.views_count ?? post.view_count ?? 0;
+    const upvotes   = post.upvotes ?? post.likes_count ?? post.like_count ?? 0;
+    const downvotes = post.downvotes ?? 0;
+    const score     = upvotes - downvotes;
+    const comments  = post.comments_count ?? post.comment_count ?? 0;
+    const views     = post.views_count ?? post.view_count ?? 0;
+    const userVote  = post.user_vote || (post.user_liked ? 'up' : null);
     return `
       <div class="post-item ${pinClass}" data-id="${post.id}">
         <div class="post-title-cell">
@@ -414,7 +427,11 @@ class CommunityIndex {
             <span>${formatDate(post.created_at)}</span>
           </div>
         </div>
-        <div class="post-stat post-stat-icon ${post.user_liked ? 'liked' : ''}">♥ ${formatCount(likes)}</div>
+        <div class="post-stat post-vote-score ${score > 0 ? 'positive' : score < 0 ? 'negative' : ''}">
+          <span class="vote-arrow ${userVote === 'up' ? 'voted' : ''}">▲</span>
+          ${formatCount(score)}
+          <span class="vote-arrow ${userVote === 'down' ? 'voted' : ''}">▼</span>
+        </div>
         <div class="post-stat">💬 ${formatCount(comments)}</div>
         <div class="post-stat">👁 ${formatCount(views)}</div>
         <div class="post-date-cell">${formatDate(post.created_at)}</div>
@@ -478,7 +495,7 @@ class CommunityPostDetail {
     this.bindSidebar();
     await this.loadPost();
     await this.loadComments();
-    this.bindLike();
+    this.bindVote();
     this.bindCommentForm();
     this.bindReport();
     this.bindBackBtn();
@@ -526,15 +543,17 @@ class CommunityPostDetail {
     if (catEl) catEl.innerHTML = categoryBadgeHtml(p.category);
 
     setById('postTitle', escapeHtml(p.title), true);
-    // 백엔드 응답 필드 호환: likes_count/like_count, views_count/view_count 등
-    const likes    = p.likes_count ?? p.like_count ?? 0;
-    const views    = p.views_count ?? p.view_count ?? 0;
-    const comments = p.comments_count ?? p.comment_count ?? 0;
+    // 업보트/다운보트 + 기존 호환
+    const upvotes   = p.upvotes ?? p.likes_count ?? p.like_count ?? 0;
+    const downvotes = p.downvotes ?? 0;
+    const score     = upvotes - downvotes;
+    const views     = p.views_count ?? p.view_count ?? 0;
+    const comments  = p.comments_count ?? p.comment_count ?? 0;
     const authorNick = p.author_nickname || p.author?.email?.split('@')[0] || '익명';
     setById('postAuthorNickname', authorNick);
     setById('postDate', formatDate(p.created_at));
     setById('postViewCount', formatCount(views));
-    setById('postLikeCount', formatCount(likes));
+    setById('postVoteScore', formatCount(score));
     setById('postCommentCount', formatCount(comments));
     // NOTE: content_html is intentionally rendered as HTML (server-generated rich content).
     // Raw user input is always escaped via escapeHtml() before storage; this field is
@@ -548,12 +567,16 @@ class CommunityPostDetail {
       avatarEl.textContent = nick.charAt(0).toUpperCase();
     }
 
-    // 좋아요 버튼 상태
-    const likeBtn = document.getElementById('likeBtn');
-    if (likeBtn) {
-      likeBtn.classList.toggle('active', !!p.user_liked);
-      const likeCountEl = likeBtn.querySelector('.like-count');
-      if (likeCountEl) likeCountEl.textContent = formatCount(likes);
+    // 업보트/다운보트 버튼 상태
+    const userVote = p.user_vote || (p.user_liked ? 'up' : null);
+    const voteUpBtn = document.getElementById('voteUpBtn');
+    const voteDownBtn = document.getElementById('voteDownBtn');
+    const voteScoreEl = document.getElementById('voteScore');
+    if (voteUpBtn) voteUpBtn.classList.toggle('active', userVote === 'up');
+    if (voteDownBtn) voteDownBtn.classList.toggle('active', userVote === 'down');
+    if (voteScoreEl) {
+      voteScoreEl.textContent = formatCount(score);
+      voteScoreEl.className = `vote-score ${score > 0 ? 'positive' : score < 0 ? 'negative' : ''}`;
     }
 
     // 수정/삭제 버튼 — 본인 글만 (백엔드: user_id 또는 author_id)
@@ -629,8 +652,8 @@ class CommunityPostDetail {
     });
 
     // 댓글 좋아요
-    container.querySelectorAll('.btn-comment-like[data-comment-id]').forEach(btn => {
-      btn.addEventListener('click', () => this.toggleCommentLike(btn));
+    container.querySelectorAll('.vote-btn[data-comment-id]').forEach(btn => {
+      btn.addEventListener('click', () => this.handleCommentVote(btn));
     });
   }
 
@@ -658,9 +681,11 @@ class CommunityPostDetail {
         </div>
         ${!isDeleted ? `
         <div class="comment-footer">
-          <button class="btn-comment-like ${comment.user_liked ? 'active' : ''}" data-comment-id="${comment.id}">
-            ♥ <span class="comment-like-count">${formatCount(comment.like_count)}</span>
-          </button>
+          <div class="comment-vote-controls" data-comment-id="${comment.id}">
+            <button class="vote-btn vote-up-sm ${(comment.user_vote === 'up') ? 'active' : ''}" data-vote="up" data-comment-id="${comment.id}" aria-label="추천">▲</button>
+            <span class="comment-vote-score ${((comment.upvotes||0)-(comment.downvotes||0)) > 0 ? 'positive' : ((comment.upvotes||0)-(comment.downvotes||0)) < 0 ? 'negative' : ''}">${formatCount((comment.upvotes||0)-(comment.downvotes||0))}</span>
+            <button class="vote-btn vote-down-sm ${(comment.user_vote === 'down') ? 'active' : ''}" data-vote="down" data-comment-id="${comment.id}" aria-label="비추천">▼</button>
+          </div>
         </div>` : ''}
         ${!isReply && !isDeleted && isLoggedIn() ? `
         <div class="reply-form" id="reply-form-${comment.id}">
@@ -714,37 +739,64 @@ class CommunityPostDetail {
     }
   }
 
-  async toggleCommentLike(btn) {
+  async handleCommentVote(btn) {
     if (!isLoggedIn()) { showToast('로그인이 필요합니다.', 'error'); return; }
     const commentId = btn.dataset.commentId;
+    const voteType = btn.dataset.vote; // 'up' or 'down'
+    btn.disabled = true;
     try {
-      const res = await CommunityLike.toggle({ targetId: commentId, targetType: 'comment' });
-      btn.classList.toggle('active', res.liked);
-      const countEl = btn.querySelector('.comment-like-count');
-      if (countEl) countEl.textContent = formatCount(res.likes_count ?? res.like_count ?? 0);
+      const res = await CommunityVote.vote({ targetId: commentId, targetType: 'comment', voteType });
+      // 부모 컨트롤에서 모든 버튼 상태 업데이트
+      const controls = btn.closest('.comment-vote-controls');
+      if (controls) {
+        const upBtn = controls.querySelector('.vote-up-sm');
+        const downBtn = controls.querySelector('.vote-down-sm');
+        const scoreEl = controls.querySelector('.comment-vote-score');
+        if (upBtn) upBtn.classList.toggle('active', res.user_vote === 'up');
+        if (downBtn) downBtn.classList.toggle('active', res.user_vote === 'down');
+        if (scoreEl) {
+          scoreEl.textContent = formatCount(res.score);
+          scoreEl.className = `comment-vote-score ${res.score > 0 ? 'positive' : res.score < 0 ? 'negative' : ''}`;
+        }
+      }
     } catch (err) {
-      showToast('좋아요 처리에 실패했습니다.', 'error');
+      showToast('투표 처리에 실패했습니다.', 'error');
+    } finally {
+      btn.disabled = false;
     }
   }
 
-  /** 게시글 좋아요 토글 */
-  bindLike() {
-    const likeBtn = document.getElementById('likeBtn');
-    if (!likeBtn) return;
-    likeBtn.addEventListener('click', async () => {
+  /** 게시글 업보트/다운보트 바인딩 */
+  bindVote() {
+    const voteUpBtn = document.getElementById('voteUpBtn');
+    const voteDownBtn = document.getElementById('voteDownBtn');
+    const voteScoreEl = document.getElementById('voteScore');
+
+    const handleVote = async (voteType) => {
       if (!isLoggedIn()) { showToast('로그인이 필요합니다.', 'error'); return; }
-      likeBtn.disabled = true;
+      if (voteUpBtn) voteUpBtn.disabled = true;
+      if (voteDownBtn) voteDownBtn.disabled = true;
       try {
-        const res = await CommunityLike.toggle({ targetId: this.postId, targetType: 'post' });
-        likeBtn.classList.toggle('active', res.liked);
-        const countEl = likeBtn.querySelector('.like-count');
-        if (countEl) countEl.textContent = formatCount(res.likes_count ?? res.like_count ?? 0);
+        const res = await CommunityVote.vote({ targetId: this.postId, targetType: 'post', voteType });
+        if (voteUpBtn) voteUpBtn.classList.toggle('active', res.user_vote === 'up');
+        if (voteDownBtn) voteDownBtn.classList.toggle('active', res.user_vote === 'down');
+        if (voteScoreEl) {
+          voteScoreEl.textContent = formatCount(res.score);
+          voteScoreEl.className = `vote-score ${res.score > 0 ? 'positive' : res.score < 0 ? 'negative' : ''}`;
+        }
+        // 헤더의 점수도 업데이트
+        const headerScore = document.getElementById('postVoteScore');
+        if (headerScore) headerScore.textContent = formatCount(res.score);
       } catch (err) {
-        showToast('좋아요 처리에 실패했습니다.', 'error');
+        showToast('투표 처리에 실패했습니다.', 'error');
       } finally {
-        likeBtn.disabled = false;
+        if (voteUpBtn) voteUpBtn.disabled = false;
+        if (voteDownBtn) voteDownBtn.disabled = false;
       }
-    });
+    };
+
+    voteUpBtn?.addEventListener('click', () => handleVote('up'));
+    voteDownBtn?.addEventListener('click', () => handleVote('down'));
   }
 
   /** 댓글 작성 폼 */
@@ -1086,11 +1138,11 @@ class CommunityGallery {
         card.addEventListener('click', () => this.openModal(this.posts[i]));
       });
 
-      // 갤러리 좋아요 버튼
-      grid.querySelectorAll('.gallery-like-btn').forEach(btn => {
+      // 갤러리 투표 버튼
+      grid.querySelectorAll('.gallery-vote-controls .vote-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
-          this.toggleGalleryLike(btn);
+          this.handleGalleryVote(btn);
         });
       });
     } catch (err) {
@@ -1117,25 +1169,34 @@ class CommunityGallery {
               <div class="mini-avatar">${initial}</div>
               <span>${escapeHtml(nick)}</span>
             </div>
-            <button class="gallery-like-btn ${post.user_liked ? 'gallery-card-likes liked' : 'gallery-card-likes'}" data-post-id="${post.id}">
-              ♥ <span class="gallery-like-count">${formatCount(post.likes_count ?? post.like_count ?? 0)}</span>
-            </button>
+            <div class="gallery-vote-controls" data-post-id="${post.id}">
+              <button class="vote-btn vote-up-sm ${post.user_vote === 'up' ? 'active' : ''}" data-vote="up" data-post-id="${post.id}">▲</button>
+              <span class="gallery-vote-score">${formatCount((post.upvotes??post.likes_count??post.like_count??0)-(post.downvotes??0))}</span>
+              <button class="vote-btn vote-down-sm ${post.user_vote === 'down' ? 'active' : ''}" data-vote="down" data-post-id="${post.id}">▼</button>
+            </div>
           </div>
         </div>
       </div>`;
   }
 
-  async toggleGalleryLike(btn) {
+  async handleGalleryVote(btn) {
     if (!isLoggedIn()) { showToast('로그인이 필요합니다.', 'error'); return; }
     const postId = btn.dataset.postId;
+    const voteType = btn.dataset.vote;
     btn.disabled = true;
     try {
-      const res = await CommunityLike.toggle({ targetId: postId, targetType: 'post' });
-      btn.classList.toggle('liked', res.liked);
-      const countEl = btn.querySelector('.gallery-like-count');
-      if (countEl) countEl.textContent = formatCount(res.likes_count ?? res.like_count ?? 0);
+      const res = await CommunityVote.vote({ targetId: postId, targetType: 'post', voteType });
+      const controls = btn.closest('.gallery-vote-controls');
+      if (controls) {
+        const upBtn = controls.querySelector('.vote-up-sm');
+        const downBtn = controls.querySelector('.vote-down-sm');
+        const scoreEl = controls.querySelector('.gallery-vote-score');
+        if (upBtn) upBtn.classList.toggle('active', res.user_vote === 'up');
+        if (downBtn) downBtn.classList.toggle('active', res.user_vote === 'down');
+        if (scoreEl) scoreEl.textContent = formatCount(res.score);
+      }
     } catch {
-      showToast('좋아요 처리에 실패했습니다.', 'error');
+      showToast('투표 처리에 실패했습니다.', 'error');
     } finally {
       btn.disabled = false;
     }
@@ -1155,7 +1216,8 @@ class CommunityGallery {
     setById('modalBotName', escapeHtml(post.title), true);
     setById('modalBotAuthor', post.author_nickname || '익명');
     setById('modalBotDesc', escapeHtml(post.content?.slice(0, 400) || ''), true);
-    setById('modalLikeCount', formatCount(post.likes_count ?? post.like_count ?? 0));
+    const modalScore = (post.upvotes ?? post.likes_count ?? post.like_count ?? 0) - (post.downvotes ?? 0);
+    setById('modalVoteScore', formatCount(modalScore));
 
     const avatarEl = modal.querySelector('#modalBotAvatar');
     if (avatarEl) {
@@ -1169,20 +1231,26 @@ class CommunityGallery {
     const viewPostBtn = modal.querySelector('#modalViewPostBtn');
     if (viewPostBtn) viewPostBtn.href = `post.html?id=${post.id}`;
 
-    const likeBtn = modal.querySelector('#modalLikeBtn');
-    if (likeBtn) {
-      likeBtn.classList.toggle('active', !!post.user_liked);
-      likeBtn.onclick = async () => {
-        if (!isLoggedIn()) { showToast('로그인이 필요합니다.', 'error'); return; }
-        try {
-          const res = await CommunityLike.toggle({ targetId: post.id, targetType: 'post' });
-          likeBtn.classList.toggle('active', res.liked);
-          post.user_liked = res.liked;
-          post.likes_count = res.likes_count ?? res.like_count ?? 0;
-          setById('modalLikeCount', formatCount(post.likes_count));
-        } catch { showToast('좋아요 처리에 실패했습니다.', 'error'); }
-      };
-    }
+    const modalUpBtn = modal.querySelector('#modalVoteUpBtn');
+    const modalDownBtn = modal.querySelector('#modalVoteDownBtn');
+    const modalUserVote = post.user_vote || (post.user_liked ? 'up' : null);
+    if (modalUpBtn) modalUpBtn.classList.toggle('active', modalUserVote === 'up');
+    if (modalDownBtn) modalDownBtn.classList.toggle('active', modalUserVote === 'down');
+
+    const handleModalVote = async (voteType) => {
+      if (!isLoggedIn()) { showToast('로그인이 필요합니다.', 'error'); return; }
+      try {
+        const res = await CommunityVote.vote({ targetId: post.id, targetType: 'post', voteType });
+        if (modalUpBtn) modalUpBtn.classList.toggle('active', res.user_vote === 'up');
+        if (modalDownBtn) modalDownBtn.classList.toggle('active', res.user_vote === 'down');
+        post.user_vote = res.user_vote;
+        post.upvotes = res.upvotes;
+        post.downvotes = res.downvotes;
+        setById('modalVoteScore', formatCount(res.score));
+      } catch { showToast('투표 처리에 실패했습니다.', 'error'); }
+    };
+    if (modalUpBtn) modalUpBtn.onclick = () => handleModalVote('up');
+    if (modalDownBtn) modalDownBtn.onclick = () => handleModalVote('down');
 
     modal.classList.add('visible');
     document.body.style.overflow = 'hidden';
