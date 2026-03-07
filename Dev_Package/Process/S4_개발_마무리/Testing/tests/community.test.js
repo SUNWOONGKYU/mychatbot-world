@@ -1,6 +1,6 @@
 /**
  * @task S4T5
- * @description 봇마당 커뮤니티 통합 테스트
+ * @description 봇카페 커뮤니티 통합 테스트
  *   - community-post.js CRUD (목록, 상세, 작성, 수정, 삭제)
  *   - community-comment.js (댓글 작성, 트리 구조 대댓글, 삭제)
  *   - community-like.js (좋아요 토글, 카운트 동기화)

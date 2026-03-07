@@ -1,6 +1,6 @@
 /* @task S3F11 */
 /**
- * community.js — 봇마당 커뮤니티 클라이언트 로직
+ * community.js — 봇카페 커뮤니티 클라이언트 로직
  * Task: S3F11 | Stage: S3 | Area: F
  *
  * API 모듈 연동:
@@ -564,7 +564,7 @@ class CommunityPostDetail {
       loginPromptEl?.style && (loginPromptEl.style.display = '');
     }
 
-    document.title = `${p.title} — 봇마당 | My Chatbot World`;
+    document.title = `${p.title} — 봇카페 | My Chatbot World`;
   }
 
   /** 댓글 목록 로드 & 트리 렌더 */
@@ -867,7 +867,7 @@ class CommunityWrite {
   updatePageTitle() {
     const titleEl = document.getElementById('writeFormTitle');
     if (titleEl) titleEl.textContent = this.isEdit ? '게시글 수정' : '새 글 작성';
-    document.title = `${this.isEdit ? '수정' : '글쓰기'} — 봇마당 | My Chatbot World`;
+    document.title = `${this.isEdit ? '수정' : '글쓰기'} — 봇카페 | My Chatbot World`;
   }
 
   async loadCategories() {

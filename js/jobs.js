@@ -8,7 +8,7 @@
 /* ============================================================
    상수 정의
    ============================================================ */
-const JOBS_API = '/api/Backend_APIs/job-list.js';
+const JOBS_API = '/api/Backend_APIs/job-list'; // S3T2: .js 확장자 제거
 const ITEMS_PER_PAGE = 12;
 const PAGE_WINDOW = 5; // 표시할 페이지 번호 수
 
@@ -1372,3 +1372,5 @@ const JobsApp = {
 
 // 전역 노출 (HTML의 인라인 스크립트에서 접근)
 window.JobsApp = JobsApp;
+
+// S3T2: 정합성 수정 — JOBS_API .js 확장자 제거, hero 검색폼/카드 클릭 연결 확인 완료

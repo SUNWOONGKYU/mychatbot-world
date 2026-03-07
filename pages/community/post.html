@@ -4,52 +4,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>게시글 상세 — 봇마당 | My Chatbot World</title>
-  <meta name="description" content="봇마당 게시글 상세 보기">
+  <title>게시글 상세 — 봇카페 | My Chatbot World</title>
+  <meta name="description" content="봇카페 게시글 상세 보기">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/pages.css">
   <link rel="stylesheet" href="../../css/community.css">
 </head>
-<body>
-<div class="app-layout">
+<body class="page-dark">
 
-  <!-- 사이드바 오버레이 (모바일) -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-  <!-- ===== 사이드바 ===== -->
-  <aside class="sidebar" id="sidebar">
-    <a href="/" class="sidebar-logo">
-      <div class="logo-icon">M</div>
-      <span>My Chatbot World</span>
-    </a>
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">메인</div>
-      <a href="/pages/home/" class="nav-item"><span class="nav-icon">🏠</span> 홈</a>
-      <a href="/pages/bot/" class="nav-item"><span class="nav-icon">🤖</span> 내 챗봇</a>
-      <div class="nav-section-label">커뮤니티</div>
-      <a href="/pages/community/index.html" class="nav-item active"><span class="nav-icon">💬</span> 봇마당</a>
-      <a href="/pages/community/gallery.html" class="nav-item"><span class="nav-icon">🎨</span> 쇼케이스</a>
-      <a href="/pages/jobs/" class="nav-item"><span class="nav-icon">💼</span> 채용</a>
-    </nav>
-  </aside>
-
-  <!-- ===== 메인 콘텐츠 ===== -->
-  <div class="main-content">
-
-    <!-- 상단 헤더 -->
-    <header class="top-header">
-      <div class="header-left">
-        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
-        <span class="page-title">봇마당</span>
+  <!-- ===== 네비게이션 바 ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../../index.html" class="navbar-logo"><span>My Chatbot World</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">&#9776;</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="../birth/index.html" class="nav-menu-item"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
+        <li><a href="../learning/index.html" class="nav-menu-item"><span class="nav-en">Learning</span><span class="nav-ko">학습</span></a></li>
+        <li><a href="../skills/index.html" class="nav-menu-item"><span class="nav-en">Skills</span><span class="nav-ko">스킬장터</span></a></li>
+        <li><a href="../jobs/index.html" class="nav-menu-item"><span class="nav-en">Jobs</span><span class="nav-ko">구봇구직</span></a></li>
+        <li><a href="../community/index.html" class="nav-menu-item active"><span class="nav-en">Community</span><span class="nav-ko">봇카페</span></a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="../login.html" class="btn btn-secondary btn-sm">로그인</a>
       </div>
-      <div class="header-right">
-        <div class="user-avatar" id="userAvatar" title="프로필">U</div>
-      </div>
-    </header>
+    </div>
+  </nav>
 
-    <!-- 본문 -->
-    <main class="page-content">
+  <!-- ===== 본문 ===== -->
+  <main>
+    <div class="container">
       <div class="post-detail-container">
 
         <!-- 목록으로 돌아가기 -->
@@ -160,51 +146,65 @@
         </section>
 
       </div><!-- .post-detail-container -->
-    </main>
-  </div><!-- .main-content -->
-</div><!-- .app-layout -->
+    </div><!-- .container -->
+  </main>
 
-<!-- ===== 신고 모달 ===== -->
-<div class="modal-overlay report-modal" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="reportModalTitle">게시글 신고</h3>
-      <button class="modal-close" aria-label="닫기">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="report-form">
-        <div class="report-options" role="radiogroup" aria-label="신고 사유">
-          <label class="report-option">
-            <input type="radio" name="reportReason" value="spam"> 스팸 / 광고
-          </label>
-          <label class="report-option">
-            <input type="radio" name="reportReason" value="inappropriate"> 음란물 / 부적절한 내용
-          </label>
-          <label class="report-option">
-            <input type="radio" name="reportReason" value="hate"> 혐오 / 차별 발언
-          </label>
-          <label class="report-option">
-            <input type="radio" name="reportReason" value="privacy"> 개인정보 침해
-          </label>
-          <label class="report-option">
-            <input type="radio" name="reportReason" value="other"> 기타
-          </label>
-        </div>
-        <textarea
-          class="report-detail-textarea"
-          placeholder="추가 설명 (선택사항)"
-          maxlength="300"
-          aria-label="신고 상세 내용"
-        ></textarea>
-        <div style="display:flex; gap:0.5rem; justify-content:flex-end">
-          <button class="btn-secondary modal-close">취소</button>
-          <button class="btn-primary report-submit-btn">신고 접수</button>
+  <!-- ===== 신고 모달 ===== -->
+  <div class="modal-overlay report-modal" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="reportModalTitle">게시글 신고</h3>
+        <button class="modal-close" aria-label="닫기">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="report-form">
+          <div class="report-options" role="radiogroup" aria-label="신고 사유">
+            <label class="report-option">
+              <input type="radio" name="reportReason" value="spam"> 스팸 / 광고
+            </label>
+            <label class="report-option">
+              <input type="radio" name="reportReason" value="inappropriate"> 음란물 / 부적절한 내용
+            </label>
+            <label class="report-option">
+              <input type="radio" name="reportReason" value="hate"> 혐오 / 차별 발언
+            </label>
+            <label class="report-option">
+              <input type="radio" name="reportReason" value="privacy"> 개인정보 침해
+            </label>
+            <label class="report-option">
+              <input type="radio" name="reportReason" value="other"> 기타
+            </label>
+          </div>
+          <textarea
+            class="report-detail-textarea"
+            placeholder="추가 설명 (선택사항)"
+            maxlength="300"
+            aria-label="신고 상세 내용"
+          ></textarea>
+          <div style="display:flex; gap:0.5rem; justify-content:flex-end">
+            <button class="btn-secondary modal-close">취소</button>
+            <button class="btn-primary report-submit-btn">신고 접수</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="../../js/community.js"></script>
+  <!-- ===== 푸터 ===== -->
+  <footer class="page-footer">
+    <div class="container">
+      <ul class="page-footer-links">
+        <li><a href="../birth/index.html">Birth</a></li>
+        <li><a href="../learning/index.html">Learning</a></li>
+        <li><a href="../skills/index.html">Skills</a></li>
+        <li><a href="../jobs/index.html">Jobs</a></li>
+        <li><a href="../community/index.html">Community</a></li>
+      </ul>
+      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/community.js"></script>
 </body>
 </html>

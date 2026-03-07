@@ -244,3 +244,50 @@
 ### 전체 결과
 - 총 Task: 79개 | 완료: 78개 (99%) | Pending: 1개 (S2S2 카카오 로그인)
 - 모든 페이지 기능 구현 완료 (정적 소개→동적 기능 전환)
+
+---
+
+## 9. Community(봇카페) 수리 + 봇마당→봇카페 글로벌 리네임 (2026-03-07)
+
+### 작업 상태: 완료
+
+### 배경
+- Community 페이지가 완전 미작동 — 프론트엔드↔백엔드 API 정합성 불일치 5건 + 이름 결정
+- PO 결정: 한글 이름 "봇카페" (영어 "Community" 유지)
+
+### API 정합성 수정 7건 (js/community.js)
+| # | 수정 내용 | Before | After |
+|---|----------|--------|-------|
+| 1 | GET 단건 조회 | path param `/post/${id}` | query param `?id=${id}` |
+| 2 | UPDATE 메서드 | PUT | PATCH |
+| 3 | UPDATE body | path param | body `{id, ...}` |
+| 4 | DELETE 게시글 | path param | query param `?id=${id}` |
+| 5 | DELETE 댓글 | path param | query param `?id=${id}` |
+| 6 | 좋아요 토글 | `{target_id, target_type}` | `{post_id}` |
+| 7 | 정렬 파라미터 | `latest/popular/comments` | `created_at/likes_count/comments_count` |
+
+### 추가 수정 (community.js)
+- 응답 파싱: `res.posts || res.data`, `res.post || res.data`
+- 필드명 정규화: `likes_count ?? like_count`, `views_count ?? view_count`, `comments_count ?? comment_count`
+- 작성자 추출: `post.user_id || post.author_id`
+
+### HTML 리빌드 (3 페이지)
+- `pages/community/post.html` — 사이드바→navbar, utils.js 추가
+- `pages/community/write.html` — 사이드바→navbar, hero 섹션, utils.js 추가
+- `pages/community/gallery.html` — 사이드바→navbar, hero 섹션, utils.js 추가
+
+### 봇마당→봇카페 글로벌 리네임
+- Root HTML: 14개 파일
+- JS: sidebar.js, community.js
+- CSS: community.css
+- API: community-category.js
+- Stage 폴더: 17 HTML + 4 JS 파일
+
+### 검증 결과
+- Verification Agent 9/9 항목 PASS
+- 비차단 참고: 댓글 좋아요 미지원 (백엔드가 게시글 좋아요만 지원)
+
+### SAL Grid 업데이트 (Approach A — 수정 이력만 기록)
+- S3F11.json: modification_history + task_name/remarks 봇카페 반영
+- S3BA7.json: modification_history + task_name/remarks 봇카페 반영
+- S3T2.json: modification_history 추가

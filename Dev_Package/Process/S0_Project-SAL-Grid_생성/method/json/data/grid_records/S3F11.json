@@ -1,6 +1,6 @@
 {
     "task_id": "S3F11",
-    "task_name": "Community(봇마당) 게시판 페이지",
+    "task_name": "Community(봇카페) 게시판 페이지",
     "stage": 3,
     "area": "F",
     "task_status": "Completed",
@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Frontend/pages/community/index.html, Process/S3_개발-2차/Frontend/pages/community/post.html, Process/S3_개발-2차/Frontend/pages/community/write.html, Process/S3_개발-2차/Frontend/pages/community/gallery.html, Process/S3_개발-2차/Frontend/js/community.js, Process/S3_개발-2차/Frontend/css/community.css",
-    "modification_history": "",
+    "modification_history": "2026-03-07: Community 수리 — API 정합성 7건 수정 + 봇마당→봇카페 이름 변경 + post/write/gallery.html navbar 리빌드 + utils.js 추가",
     "verification_instruction": "sal-grid/verification-instructions/S3F11_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",
@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "봇마당 = 커뮤니티. 게시판, 자유 토론, 챗봇 쇼케이스, 팁 공유."
+    "remarks": "봇카페 = 커뮤니티. 게시판, 자유 토론, 챗봇 쇼케이스, 팁 공유."
 }

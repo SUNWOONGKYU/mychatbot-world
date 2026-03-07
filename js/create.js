@@ -1,3 +1,4 @@
+// @task S3F13
 /**
  * Create Page JavaScript - 5-step chatbot creation wizard v15.0
  * Steps: 기본정보 → 대표 페르소나 → 인터뷰 → AI분석 → 완성
@@ -256,6 +257,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     addPersonaCard('avatar');
     initVoicePicker();
 
+    // === S3F13: URL 파라미터 ?step=N 처리 ===
+    const urlParams = new URLSearchParams(window.location.search);
+    const stepParam = urlParams.get('step');
+    if (stepParam) {
+        const targetStep = parseInt(stepParam, 10);
+        if (!isNaN(targetStep) && targetStep >= 1 && targetStep <= PART1_STEPS) {
+            // 드래프트 복원 없이 바로 해당 단계로 이동 (유효성 검사 우회)
+            setTimeout(() => _jumpToStep(targetStep), 100);
+            return; // 드래프트 복원 건너뜀
+        }
+    }
+
     // 저장된 초안이 있으면 복원
     const draft = loadDraft();
     if (draft && draft.step > 1) {
@@ -268,6 +281,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         restoreDraft(draft);
     }
 });
+
+// === S3F13: 유효성 검사 없이 특정 Step으로 직접 점프 ===
+function _jumpToStep(step) {
+    for (let i = 1; i <= PART1_STEPS; i++) {
+        const el = document.getElementById('step' + i);
+        if (el) {
+            el.classList.toggle('hidden', i !== step);
+            if (i === step) {
+                el.style.animation = 'none';
+                el.offsetHeight;
+                el.style.animation = 'fadeIn 0.5s ease';
+            }
+        }
+    }
+    currentStep = step;
+
+    if (step === 8) _setupDeployStep();
+
+    const pct = Math.round((step / PART1_STEPS) * 100);
+    const fill = document.getElementById('progressFill');
+    if (fill) fill.style.width = pct + '%';
+
+    document.querySelectorAll('.progress-step').forEach((el, idx) => {
+        el.classList.toggle('active', idx + 1 === step);
+        el.classList.toggle('completed', idx + 1 < step);
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 // === 챗봇 이름 → 사용자명 자동 생성 ===
 let _usernameManuallyEdited = false;
@@ -801,6 +843,22 @@ async function completeCreation() {
         voice: getSelectedVoice()
     };
 
+    // === S3F13: Steps 6-8 데이터 영속화 ===
+    // 아바타: 업로드 이미지가 있으면 이미지 우선, 없으면 이모지 키
+    if (window._avatarImageData) {
+        botData.avatarImage = window._avatarImageData;
+    }
+    botData.avatar = selectedAvatarEmoji;
+
+    // 테마 (다크/라이트 모드 + 색상)
+    botData.theme = {
+        mode: selectedThemeMode,
+        color: selectedThemeColor
+    };
+
+    // 음성 (이미 botData.voice에 설정됨, 명시적 재확인)
+    botData.voice = getSelectedVoice();
+
     // 1) localStorage 저장 (기존 방식, 즉시 사용 가능)
     MCW.storage.saveBot(botData);
     savedBotId = botData.id;
@@ -833,6 +891,7 @@ async function completeCreation() {
     const finalUrl = baseUrl + '/bot/' + username;
     window._deployUrl = finalUrl;
     window._deployUsername = username;
+    window._savedBotId = botData.id;
 }
 
 function _setupDeployStep() {
@@ -845,6 +904,100 @@ function _setupDeployStep() {
     if (chatLinkEl) chatLinkEl.href = '/bot/' + encodeURIComponent(window._deployUsername || '');
     if (qrEl) qrEl.innerHTML =
         '<img src="' + MCW.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
+
+    // === S3F13: Step 8 완료 후 온보딩 카드 표시 ===
+    _showOnboardingCards();
+}
+
+// === S3F13: 온보딩 카드 3개 표시 ===
+function _showOnboardingCards() {
+    const botId = window._savedBotId || savedBotId || '';
+    const username = window._deployUsername || '';
+
+    // 이미 온보딩 카드가 있으면 중복 생성 방지
+    if (document.getElementById('onboardingCards')) return;
+
+    const onboardingHtml = `
+        <div id="onboardingCards" style="
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        ">
+            <h3 style="
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: rgba(255,255,255,0.9);
+                margin-bottom: 1rem;
+                text-align: center;
+            ">다음 단계로 이동하세요</h3>
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1rem;
+            ">
+                <a href="/pages/bot/index.html?id=${encodeURIComponent(botId)}"
+                   style="
+                    display: block;
+                    padding: 1.25rem 1rem;
+                    background: rgba(124, 58, 237, 0.15);
+                    border: 1px solid rgba(124, 58, 237, 0.4);
+                    border-radius: 12px;
+                    text-align: center;
+                    text-decoration: none;
+                    transition: background 0.2s, border-color 0.2s;
+                   "
+                   onmouseover="this.style.background='rgba(124,58,237,0.3)';this.style.borderColor='rgba(124,58,237,0.7)'"
+                   onmouseout="this.style.background='rgba(124,58,237,0.15)';this.style.borderColor='rgba(124,58,237,0.4)'"
+                >
+                    <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">💬</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 0.25rem;">지금 대화해보기</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">챗봇과 첫 대화</div>
+                </a>
+                <a href="/pages/home/index.html"
+                   style="
+                    display: block;
+                    padding: 1.25rem 1rem;
+                    background: rgba(37, 99, 235, 0.15);
+                    border: 1px solid rgba(37, 99, 235, 0.4);
+                    border-radius: 12px;
+                    text-align: center;
+                    text-decoration: none;
+                    transition: background 0.2s, border-color 0.2s;
+                   "
+                   onmouseover="this.style.background='rgba(37,99,235,0.3)';this.style.borderColor='rgba(37,99,235,0.7)'"
+                   onmouseout="this.style.background='rgba(37,99,235,0.15)';this.style.borderColor='rgba(37,99,235,0.4)'"
+                >
+                    <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">❓</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 0.25rem;">FAQ 추가하기</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">자주 묻는 질문 관리</div>
+                </a>
+                <a href="/pages/skills/index.html"
+                   style="
+                    display: block;
+                    padding: 1.25rem 1rem;
+                    background: rgba(22, 163, 74, 0.15);
+                    border: 1px solid rgba(22, 163, 74, 0.4);
+                    border-radius: 12px;
+                    text-align: center;
+                    text-decoration: none;
+                    transition: background 0.2s, border-color 0.2s;
+                   "
+                   onmouseover="this.style.background='rgba(22,163,74,0.3)';this.style.borderColor='rgba(22,163,74,0.7)'"
+                   onmouseout="this.style.background='rgba(22,163,74,0.15)';this.style.borderColor='rgba(22,163,74,0.4)'"
+                >
+                    <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">⚡</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 0.25rem;">스킬 장착하기</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">챗봇 능력 강화</div>
+                </a>
+            </div>
+        </div>
+    `;
+
+    // Step 8 컨테이너 내부에 온보딩 카드 삽입
+    const step8 = document.getElementById('step8');
+    if (step8) {
+        step8.insertAdjacentHTML('beforeend', onboardingHtml);
+    }
 }
 
 async function downloadQR() {

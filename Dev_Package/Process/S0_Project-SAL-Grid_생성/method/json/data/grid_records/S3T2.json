@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Dev_Package/Process/S3_개발-2차/Frontend/js/jobs.js, Dev_Package/Process/S3_개발-2차/Frontend/js/community.js",
-    "modification_history": "",
+    "modification_history": "2026-03-07: Community 프론트엔드 API 정합성 7건 재수정 — GET/DELETE path→query, PUT→PATCH, 필드명 정규화, sort 매핑",
     "verification_instruction": "sal-grid/verification-instructions/S3T2_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",

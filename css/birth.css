@@ -1,52 +1,117 @@
-/* ============================================================
-   birth.css — Birth (탄생) 페이지 전용 스타일
-   Accent: Amber #f59e0b
-   ============================================================ */
+/* ============================================
+   Birth Page — Amber Accent #f59e0b
+   @task S2F8
+   ============================================ */
 
-/* ── Hero 배경 오버라이드 ── */
-.page-hero {
-  background: linear-gradient(180deg, #0f0c29 0%, #1a1200 100%);
+:root {
+  --page-accent: #f59e0b;
+  --page-accent-rgb: 245, 158, 11;
 }
 
-/* ── Orb 글로우 — Amber ── */
-.page-hero-orb-1 {
-  background: rgba(245, 158, 11, 0.3);
+/* Feature grid */
+.birth-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
-.page-hero-orb-2 {
-  background: rgba(245, 158, 11, 0.15);
-}
-
-/* ── Hero 배지 ── */
-.page-hero-badge {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+.birth-card:hover {
   border-color: rgba(245, 158, 11, 0.3);
 }
 
-/* ── Hero 타이틀 accent ── */
-.page-hero-title .accent {
-  color: #f59e0b;
+.birth-card .card-icon {
+  font-size: 2rem;
 }
 
-/* ── 기능 카드 hover ── */
-.page-card:hover {
-  border-color: rgba(245, 158, 11, 0.35);
-  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.08);
+.birth-card .card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
 }
 
-/* ── 카드 태그 ── */
-.page-card-tag {
+.birth-card .card-title-en {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 400;
+  margin-left: 0.4rem;
+}
+
+.birth-card .card-desc {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+}
+
+.birth-card .card-tag {
+  display: inline-block;
+  margin-top: var(--space-2);
   background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+/* Timeline */
+.birth-timeline {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.birth-step {
+  text-align: center;
+  flex: 0 0 130px;
+}
+
+.birth-step-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.15);
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
   color: #f59e0b;
+  font-size: 1.25rem;
+  margin: 0 auto var(--space-3);
 }
 
-/* ── CTA 버튼 Primary ── */
-.birth-btn-primary {
-  background: #d97706;
+.birth-step-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: var(--space-1);
 }
 
-.birth-btn-primary:hover {
-  background: #b45309;
-  box-shadow: 0 4px 20px rgba(217, 119, 6, 0.35);
+.birth-step-desc {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.birth-arrow {
+  font-size: 1.5rem;
+  color: rgba(255,255,255,0.2);
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .birth-features {
+    grid-template-columns: 1fr;
+  }
+
+  .birth-timeline {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .birth-arrow {
+    transform: rotate(90deg);
+  }
 }

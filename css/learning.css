@@ -1,560 +1,499 @@
-// @task S3F8
-/* ============================================================
-   learning.css — Learning 페이지 전용 스타일
-   My Chatbot World | S3F8
-   ============================================================ */
+/* ============================================
+   Learning Page — Lavender Accent #a5b4fc
+   @task S3F8
+   ============================================ */
 
-/* ── 베이스 리셋 & 공통 ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', sans-serif;
-  background: #0d0d12;
-  color: #e2e8f0;
-  min-height: 100vh;
+:root {
+  --page-accent: #a5b4fc;
+  --page-accent-rgb: 165, 180, 252;
 }
 
-/* ── 레이아웃 ── */
-.page-layout { display: flex; min-height: 100vh; }
-
-.sidebar {
-  width: 240px;
-  background: #16161c;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  padding: 2rem 1.25rem;
-  position: fixed;
-  height: 100vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 100;
-}
-
-.sidebar-brand {
-  font-size: 1rem; font-weight: 800;
-  color: var(--primary-400, #818cf8);
-  margin-bottom: 1.5rem;
-  text-decoration: none; display: block;
-}
-
-.sidebar-section-label {
-  font-size: 0.7rem; font-weight: 600;
-  color: rgba(255,255,255,0.3);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  padding: 0.75rem 0.5rem 0.25rem; margin-top: 0.5rem;
-}
-
-.sidebar-link {
-  display: flex; align-items: center; gap: 0.625rem;
-  padding: 0.625rem 0.75rem; border-radius: 8px;
-  color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
-  text-decoration: none; transition: all 0.15s;
-}
-.sidebar-link:hover { background: rgba(255,255,255,0.05); color: white; }
-.sidebar-link.active { background: #059669; color: white; }
-.sidebar-link .icon { font-size: 1rem; width: 1.25rem; text-align: center; }
-.sidebar-link.top-level {
-  font-size: 0.925rem; font-weight: 700;
-  color: rgba(255,255,255,0.8); padding: 0.75rem 0.75rem;
-}
-.sidebar-link.top-level.current { color: #34d399; }
-
-.main-content {
-  flex: 1;
-  margin-left: 240px;
-  padding: 3rem 3.5rem;
-  max-width: calc(100% - 240px);
-}
-
-/* ── 페이지 헤더 ── */
-.page-header { margin-bottom: 2.5rem; }
-
-.page-badge {
-  display: inline-block;
-  background: rgba(16,185,129,0.12);
-  color: #34d399;
-  border: 1px solid rgba(16,185,129,0.25);
-  padding: 0.25rem 0.75rem; border-radius: 999px;
-  font-size: 0.75rem; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem;
-}
-
-.page-title {
-  font-size: 2.25rem; font-weight: 900; color: #ffffff;
-  line-height: 1.2; margin-bottom: 0.75rem;
-}
-.page-title .title-ko { color: #34d399; }
-.page-subtitle {
-  font-size: 1.05rem; color: rgba(255,255,255,0.55); line-height: 1.7;
-}
-
-/* ── 공통 버튼 ── */
-.btn {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.75rem 1.5rem; border-radius: 10px;
-  font-size: 0.925rem; font-weight: 600; text-decoration: none;
-  cursor: pointer; transition: all 0.15s; border: none;
-}
-/* Remove outline only for pointer/mouse focus; keep it for keyboard navigation */
-.btn:focus:not(:focus-visible) { outline: none; }
-.btn-primary { background: #059669; color: white; }
-.btn-primary:hover { background: #047857; transform: translateY(-1px); }
-.btn-secondary {
-  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.btn-secondary:hover { background: rgba(255,255,255,0.1); }
-.btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
-.btn-outline-green {
-  background: transparent;
-  color: #34d399;
-  border: 1px solid rgba(52,211,153,0.4);
-}
-.btn-outline-green:hover {
-  background: rgba(52,211,153,0.1);
-  border-color: #34d399;
-}
-
-/* ── 사용자 상태 배너 ── */
-.user-banner {
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.2);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 2rem;
+/* Stats summary */
+.learning-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-}
-.user-banner-info { display: flex; align-items: center; gap: 0.75rem; }
-.user-avatar {
-  width: 2.25rem; height: 2.25rem; border-radius: 50%;
-  background: linear-gradient(135deg, #059669, #34d399);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.875rem; font-weight: 700; color: white;
-  flex-shrink: 0;
-}
-.user-name { font-size: 0.925rem; font-weight: 600; color: white; }
-.user-level { font-size: 0.775rem; color: #34d399; }
-.user-xp { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
-
-/* ── 전체 진행 상황 요약 카드 ── */
-.progress-summary {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1rem; margin-bottom: 2.5rem;
+  margin-bottom: var(--space-8);
 }
 
-.summary-card {
-  background: #1c1c24;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px; padding: 1.25rem;
+.stat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5) var(--space-4);
   text-align: center;
 }
-.summary-value {
-  font-size: 1.75rem; font-weight: 900; color: #34d399;
-  line-height: 1; margin-bottom: 0.4rem;
-}
-.summary-label { font-size: 0.8rem; color: rgba(255,255,255,0.45); }
 
-/* ── 섹션 타이틀 ── */
-.section-title {
-  font-size: 1.1rem; font-weight: 700; color: white;
-  margin-bottom: 1.25rem;
-  display: flex; align-items: center; gap: 0.5rem;
+.stat-value {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: #a5b4fc;
 }
 
-/* ──────────────────────────────────────────────
-   커리큘럼 카드 (index.html — 4단계 그리드)
-   ────────────────────────────────────────────── */
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: rgba(255,255,255,0.5);
+  margin-top: var(--space-1);
+}
+
+/* User banner */
+.user-banner {
+  margin-bottom: var(--space-6);
+}
+
+/* Curriculum grid */
 .curriculum-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem; margin-bottom: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: var(--space-12);
 }
 
 .curriculum-card {
-  background: #1c1c24;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px; padding: 1.75rem;
-  text-decoration: none; color: inherit;
-  transition: all 0.2s; cursor: pointer;
-  display: flex; flex-direction: column; gap: 1rem;
-  position: relative; overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
 }
-.curriculum-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #059669, #34d399);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.3s;
-}
-.curriculum-card:hover::before { transform: scaleX(1); }
+
 .curriculum-card:hover {
-  border-color: rgba(16,185,129,0.35);
-  background: #22222e;
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(165, 180, 252, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(16,185,129,0.08);
 }
-.curriculum-card.completed {
-  border-color: rgba(16,185,129,0.3);
-}
-.curriculum-card.locked {
-  opacity: 0.55; cursor: not-allowed;
-}
-.curriculum-card.locked:hover { transform: none; box-shadow: none; }
 
-.card-header {
-  display: flex; align-items: flex-start;
-  justify-content: space-between; gap: 0.75rem;
+.curriculum-card .card-level {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a5b4fc;
+  margin-bottom: var(--space-2);
 }
-.card-icon {
-  font-size: 2rem; line-height: 1;
-  width: 3rem; height: 3rem;
-  background: rgba(16,185,129,0.1);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+
+.curriculum-card .card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: var(--space-2);
 }
-.card-badge {
-  display: inline-flex; align-items: center;
-  font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem;
+
+.curriculum-card .card-desc {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+  margin-bottom: var(--space-4);
+}
+
+.curriculum-card .progress-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
   border-radius: 999px;
-}
-.badge-active {
-  background: rgba(16,185,129,0.15); color: #34d399;
-  border: 1px solid rgba(16,185,129,0.3);
-}
-.badge-completed {
-  background: rgba(99,102,241,0.15); color: #818cf8;
-  border: 1px solid rgba(99,102,241,0.3);
-}
-.badge-locked {
-  background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.badge-upcoming {
-  background: rgba(245,158,11,0.1); color: #fbbf24;
-  border: 1px solid rgba(245,158,11,0.25);
+  overflow: hidden;
 }
 
-.card-title { font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 0.2rem; }
-.card-subtitle { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 400; }
-.card-desc { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
-
-/* ── 프로그레스 바 ── */
-.progress-bar-wrap {
-  display: flex; flex-direction: column; gap: 0.4rem;
-}
-.progress-bar-row {
-  display: flex; align-items: center; justify-content: space-between;
-}
-.progress-label { font-size: 0.775rem; color: rgba(255,255,255,0.45); }
-.progress-pct { font-size: 0.775rem; color: #34d399; font-weight: 600; }
-
-.progress-track {
-  height: 6px; background: rgba(255,255,255,0.08);
-  border-radius: 999px; overflow: hidden;
-}
-.progress-fill {
+.curriculum-card .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #059669, #34d399);
+  background: #a5b4fc;
   border-radius: 999px;
-  transition: width 0.6s ease;
-}
-.progress-fill.complete {
-  background: linear-gradient(90deg, #6366f1, #818cf8);
+  transition: width 0.5s;
 }
 
-/* ── 모듈 수 태그 ── */
-.card-modules {
-  display: flex; align-items: center; gap: 0.5rem;
-  font-size: 0.8rem; color: rgba(255,255,255,0.35);
-}
-.card-modules .dot {
-  width: 3px; height: 3px; border-radius: 50%;
-  background: rgba(255,255,255,0.2);
+.curriculum-card .progress-text {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: var(--space-2);
+  text-align: right;
 }
 
-/* ── 최근 학습 이력 ── */
-.history-list { display: flex; flex-direction: column; gap: 0.625rem; }
-
+/* Recent history */
 .history-item {
-  display: flex; align-items: center; gap: 1rem;
-  background: #1c1c24;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px; padding: 0.875rem 1rem;
-  transition: border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.history-item:hover { border-color: rgba(16,185,129,0.2); }
+
+.history-item:last-child {
+  border-bottom: none;
+}
 
 .history-icon {
-  font-size: 1.25rem; width: 2rem; text-align: center; flex-shrink: 0;
+  font-size: 1.5rem;
 }
-.history-content { flex: 1; min-width: 0; }
-.history-title { font-size: 0.875rem; font-weight: 600; color: white; }
+
+.history-info {
+  flex: 1;
+}
+
+.history-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+}
+
 .history-meta {
-  font-size: 0.775rem; color: rgba(255,255,255,0.35); margin-top: 0.15rem;
-}
-.history-time { font-size: 0.75rem; color: rgba(255,255,255,0.25); flex-shrink: 0; }
-
-/* ── 빈 상태 ── */
-.empty-state {
-  text-align: center; padding: 3rem 2rem;
-  background: #1c1c24;
-  border: 1px dashed rgba(255,255,255,0.1);
-  border-radius: 16px;
-}
-.empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
-.empty-title { font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
-.empty-desc { font-size: 0.875rem; color: rgba(255,255,255,0.3); }
-
-/* ── CTA 행 ── */
-.cta-row { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
-
-/* ──────────────────────────────────────────────
-   curriculum.html — 커리큘럼 상세 (아코디언)
-   ────────────────────────────────────────────── */
-.curriculum-meta {
-  background: rgba(16,185,129,0.07);
-  border: 1px solid rgba(16,185,129,0.15);
-  border-radius: 12px; padding: 1.25rem 1.5rem;
-  margin-bottom: 2rem;
-  display: flex; align-items: center; gap: 2rem;
-  flex-wrap: wrap;
-}
-.meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
-.meta-label { font-size: 0.7rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.06em; }
-.meta-value { font-size: 0.95rem; font-weight: 700; color: white; }
-.meta-value.green { color: #34d399; }
-
-/* 아코디언 */
-.accordion-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
-
-.accordion-item {
-  background: #1c1c24;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px; overflow: hidden;
-  transition: border-color 0.2s;
-}
-.accordion-item.open { border-color: rgba(16,185,129,0.25); }
-.accordion-item.completed-item { border-color: rgba(99,102,241,0.2); }
-
-.accordion-header {
-  display: flex; align-items: center; gap: 1rem;
-  padding: 1.1rem 1.25rem; cursor: pointer;
-  transition: background 0.15s; user-select: none;
-}
-.accordion-header:hover { background: rgba(255,255,255,0.03); }
-
-.accordion-num {
-  width: 2rem; height: 2rem; border-radius: 50%;
-  background: rgba(16,185,129,0.12); color: #34d399;
-  font-size: 0.75rem; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.accordion-num.done {
-  background: rgba(99,102,241,0.15); color: #818cf8;
-}
-.accordion-num.locked-num {
-  background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
 }
 
-.accordion-info { flex: 1; min-width: 0; }
-.accordion-title { font-size: 0.95rem; font-weight: 600; color: white; margin-bottom: 0.15rem; }
-.accordion-subtitle { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
-
-.accordion-right {
-  display: flex; align-items: center; gap: 0.75rem;
-  flex-shrink: 0;
-}
-.module-time {
-  font-size: 0.775rem; color: rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.05); padding: 0.2rem 0.6rem; border-radius: 6px;
-}
-.status-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-}
-.status-dot.dot-done { background: #6366f1; }
-.status-dot.dot-active { background: #34d399; box-shadow: 0 0 6px rgba(52,211,153,0.5); }
-.status-dot.dot-locked { background: rgba(255,255,255,0.1); }
-
-.accordion-chevron {
-  font-size: 0.75rem; color: rgba(255,255,255,0.3);
-  transition: transform 0.2s;
-}
-.accordion-item.open .accordion-chevron { transform: rotate(180deg); }
-
-.accordion-body {
-  display: none; padding: 0 1.25rem 1.25rem;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-.accordion-item.open .accordion-body { display: block; }
-
-.accordion-desc {
-  font-size: 0.875rem; color: rgba(255,255,255,0.5);
-  line-height: 1.7; margin: 1rem 0;
+.history-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
 }
 
-.module-topics { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-.topic-tag {
-  font-size: 0.75rem; color: #34d399;
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.2);
-  padding: 0.2rem 0.6rem; border-radius: 999px;
-}
-
-/* ──────────────────────────────────────────────
-   certificate.html — 수료증
-   ────────────────────────────────────────────── */
-.cert-container { max-width: 720px; }
-
-.cert-card {
-  background: linear-gradient(135deg, #1c1c24 0%, #22222e 100%);
-  border: 1px solid rgba(16,185,129,0.2);
-  border-radius: 20px; padding: 3rem;
-  position: relative; overflow: hidden;
-  margin-bottom: 2rem;
-  box-shadow: 0 0 60px rgba(16,185,129,0.06);
-}
-.cert-card::before {
-  content: '';
-  position: absolute; top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(ellipse at 60% 40%, rgba(52,211,153,0.04) 0%, transparent 60%);
-  pointer-events: none;
-}
-.cert-card::after {
-  content: '';
-  position: absolute; inset: 0; border-radius: 20px;
-  border: 1px solid rgba(52,211,153,0.15);
-  pointer-events: none;
-}
-
-.cert-watermark {
-  position: absolute; bottom: 2rem; right: 2rem;
-  font-size: 5rem; opacity: 0.04; line-height: 1;
-  user-select: none; pointer-events: none;
-}
-
-.cert-header {
-  text-align: center; border-bottom: 1px solid rgba(255,255,255,0.07);
-  padding-bottom: 1.75rem; margin-bottom: 2rem;
-}
-.cert-logo { font-size: 0.875rem; color: rgba(255,255,255,0.35); margin-bottom: 1.5rem; letter-spacing: 0.15em; }
-.cert-title { font-size: 1.75rem; font-weight: 900; color: white; margin-bottom: 0.5rem; }
-.cert-subtitle { font-size: 0.875rem; color: #34d399; }
-
-.cert-body { text-align: center; margin-bottom: 2rem; }
-.cert-intro { font-size: 0.875rem; color: rgba(255,255,255,0.45); margin-bottom: 0.75rem; }
-.cert-name {
-  font-size: 2rem; font-weight: 900; color: #34d399;
-  border-bottom: 2px solid rgba(52,211,153,0.3);
-  display: inline-block; padding: 0 1.5rem 0.5rem; margin-bottom: 1.25rem;
-}
-.cert-course {
-  font-size: 1rem; font-weight: 700; color: white;
-  margin-bottom: 0.5rem;
-}
-.cert-detail { font-size: 0.875rem; color: rgba(255,255,255,0.45); }
-
-.cert-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1.5rem;
-  border-top: 1px solid rgba(255,255,255,0.07); padding-top: 1.75rem;
-}
-.cert-meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
-.cert-meta-label { font-size: 0.7rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.08em; }
-.cert-meta-value { font-size: 0.9rem; font-weight: 600; color: white; }
-
-.cert-grade {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  background: rgba(16,185,129,0.1);
-  border: 1px solid rgba(16,185,129,0.3);
-  padding: 0.35rem 1rem; border-radius: 8px;
-  font-size: 0.875rem; font-weight: 700; color: #34d399;
-}
-
-/* 수료증 없음 상태 */
-.cert-pending {
-  background: #1c1c24;
-  border: 1px dashed rgba(255,255,255,0.1);
-  border-radius: 20px; padding: 3rem;
-  text-align: center; margin-bottom: 2rem;
-}
-.cert-pending-icon { font-size: 4rem; margin-bottom: 1.25rem; opacity: 0.3; }
-.cert-pending-title { font-size: 1.25rem; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; }
-.cert-pending-desc { font-size: 0.9rem; color: rgba(255,255,255,0.35); line-height: 1.7; max-width: 400px; margin: 0 auto; }
-
-/* 수료 요건 목록 */
-.cert-requirements {
-  background: #1c1c24;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;
-}
-.cert-req-title { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 1.25rem; }
-.req-list { display: flex; flex-direction: column; gap: 0.75rem; }
-.req-item { display: flex; align-items: center; gap: 0.875rem; }
-.req-check {
-  width: 1.375rem; height: 1.375rem; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
-}
-.req-check.done { background: rgba(16,185,129,0.15); color: #34d399; }
-.req-check.pending { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); }
-.req-text { font-size: 0.875rem; color: rgba(255,255,255,0.6); }
-.req-text.completed { color: white; }
-
-/* ── 수료증 액션 버튼 ── */
-.cert-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-/* ──────────────────────────────────────────────
-   공통 로딩 스피너
-   ────────────────────────────────────────────── */
+/* Loading */
 .loading-spinner {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 1rem; padding: 4rem;
-  color: rgba(255,255,255,0.4); font-size: 0.875rem;
+  text-align: center;
+  padding: var(--space-12);
+  color: rgba(255,255,255,0.4);
 }
+
 .spinner-ring {
-  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  width: 32px;
+  height: 32px;
   border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: #34d399;
-  animation: spin 0.75s linear infinite;
+  border-top-color: #a5b4fc;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto var(--space-3);
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── 알림 토스트 ── */
+/* Toast */
 .toast {
-  position: fixed; bottom: 2rem; right: 2rem;
-  background: #1c2a1e; border: 1px solid rgba(16,185,129,0.3);
-  color: #34d399; border-radius: 10px;
-  padding: 0.875rem 1.25rem; font-size: 0.875rem; font-weight: 500;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  z-index: 9999; transform: translateY(0); opacity: 1;
-  transition: all 0.3s;
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  padding: var(--space-3) var(--space-6);
+  background: var(--gray-900);
+  color: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  z-index: 9999;
 }
-.toast.hidden { transform: translateY(1rem); opacity: 0; pointer-events: none; }
 
-/* ── 반응형 ── */
-@media (max-width: 900px) {
-  .curriculum-grid { grid-template-columns: 1fr; }
-  .progress-summary { grid-template-columns: repeat(3, 1fr); }
+.toast.hidden {
+  display: none;
+}
+
+/* CTA */
+.cta-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: var(--space-8);
+  flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main-content { margin-left: 0; padding: 2rem 1.25rem; }
-  .progress-summary { grid-template-columns: 1fr 1fr; }
-  .cert-card { padding: 2rem 1.5rem; }
-  .cert-name { font-size: 1.5rem; }
-  .cert-footer { flex-direction: column; align-items: flex-start; }
-  .curriculum-meta { gap: 1.25rem; }
+  .learning-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media (max-width: 480px) {
-  .progress-summary { grid-template-columns: 1fr; }
-  .main-content { padding: 1.5rem 1rem; }
-  .page-title { font-size: 1.75rem; }
+/* ══════════════════════════════════════════════════
+   학습 시나리오 대화 모달 [S3F14]
+   accent: #a5b4fc (라벤더)
+   ══════════════════════════════════════════════════ */
+
+/* 모달 오버레이 */
+.session-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.session-modal.hidden {
+  display: none !important;
+}
+
+/* 반투명 배경 */
+.session-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+/* 다이얼로그 */
+.session-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  background: #1a1b2e;
+  border: 1px solid rgba(165, 180, 252, 0.18);
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+/* 헤더 */
+.session-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.session-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.session-modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.session-step-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #a5b4fc;
+  background: rgba(165, 180, 252, 0.12);
+  border: 1px solid rgba(165, 180, 252, 0.25);
+  border-radius: 999px;
+  padding: 0.18rem 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+.session-modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.session-modal-close:hover {
+  color: #fff;
+}
+
+/* 세션 진행 바 */
+.session-progress-track {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.session-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #a5b4fc, #818cf8);
+  border-radius: 0 999px 999px 0;
+  transition: width 0.5s ease;
+}
+
+/* 메시지 영역 */
+.session-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 240px;
+}
+
+.session-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.session-messages::-webkit-scrollbar-thumb {
+  background: rgba(165, 180, 252, 0.25);
+  border-radius: 4px;
+}
+
+/* 메시지 버블 공통 */
+.session-msg {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+  max-width: 85%;
+}
+
+/* 고객 메시지 (좌측) */
+.session-msg--customer {
+  align-self: flex-start;
+  flex-direction: row;
+}
+
+.session-msg--customer .msg-bubble {
+  background: rgba(165, 180, 252, 0.12);
+  border: 1px solid rgba(165, 180, 252, 0.22);
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 챗봇(사용자) 메시지 (우측) */
+.session-msg--chatbot {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.session-msg--chatbot .msg-bubble {
+  background: rgba(99, 102, 241, 0.22);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  color: #fff;
+}
+
+/* 공통 버블 스타일 */
+.msg-bubble {
+  padding: 0.6rem 0.9rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+/* 발화자 레이블 */
+.msg-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  padding-bottom: 0.2rem;
+}
+
+/* 시스템 메시지 */
+.session-msg--system {
+  align-self: center;
+  max-width: 100%;
+}
+
+.msg-system {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+  padding: 0.25rem 0.9rem;
+  text-align: center;
+}
+
+/* 로딩 표시 */
+.session-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1.25rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.session-loading.hidden {
+  display: none !important;
+}
+
+.session-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #a5b4fc;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 힌트 */
+.session-hint {
+  padding: 0.4rem 1.25rem;
+  font-size: 0.75rem;
+  color: #a5b4fc;
+  min-height: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* 완료 버튼 행 */
+.session-completion-row {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* 입력 폼 */
+.session-input-area {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  padding: 0.75rem 1.25rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.session-textarea {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  color: #fff;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.6rem 0.9rem;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.session-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.session-textarea:focus {
+  border-color: rgba(165, 180, 252, 0.45);
+}
+
+.session-textarea:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.session-send-btn {
+  flex-shrink: 0;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+/* ── 모바일 조정 ── */
+@media (max-width: 640px) {
+  .session-modal {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .session-modal-dialog {
+    max-height: 95vh;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+
+  .session-msg {
+    max-width: 92%;
+  }
 }

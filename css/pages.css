@@ -1,177 +1,97 @@
-/* ============================================================
-   pages.css — 5개 서브페이지 공통 레이아웃
-   공통 Navbar + Hero Base + Footer + Body Dark Theme
-   ============================================================ */
+/* ============================================
+   Sub-Pages — Common Styles
+   Shared by Birth, Learning, Skills, Jobs, Community
+   ============================================ */
 
-/* ── Body Dark Theme ── */
+/* --- Body dark override --- */
 body.page-dark {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
   background: #0f0c29;
-  color: #e2e8f0;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: rgba(255,255,255,0.85);
 }
 
-/* ============================================================
-   공통 Navbar (랜딩 페이지와 동일)
-   ============================================================ */
-.page-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  padding: 1rem 0;
-  background: rgba(15, 12, 41, 0.85);
+/* --- Navbar: always "scrolled" look on sub-pages --- */
+body.page-dark .navbar {
+  background: rgba(15, 12, 41, 0.95);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  transition: all 0.25s ease;
-}
-
-.page-navbar.scrolled {
-  padding: 0.75rem 0;
+  padding: var(--space-3) 0;
   box-shadow: 0 1px 20px rgba(0,0,0,0.3);
 }
 
-.page-navbar-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.page-navbar-logo {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: white;
-  text-decoration: none;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.page-navbar-links {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.page-navbar-links a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.2;
-  color: rgba(255,255,255,0.6);
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: color 0.15s ease;
-  position: relative;
-}
-
-.page-navbar-links a:hover {
-  color: rgba(255,255,255,0.9);
-}
-
-.page-navbar-links a.active {
+.navbar-links a.nav-menu-item.active {
   color: white;
 }
 
-.page-navbar-links a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
+.navbar-links a.nav-menu-item.active .nav-ko {
+  opacity: 0.8;
 }
 
-.page-navbar-links .nav-en {
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.page-navbar-links .nav-ko {
-  font-size: 0.7rem;
-  opacity: 0.55;
-  margin-top: 2px;
-}
-
-.page-navbar-cta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.page-navbar-cta .btn {
-  padding: 0.5rem 1.25rem;
-  font-size: 0.875rem;
-}
-
-/* 모바일 햄버거 */
-.page-navbar-toggle {
+/* --- Mobile Nav Toggle --- */
+.nav-toggle {
   display: none;
   background: none;
   border: none;
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  padding: 0.25rem;
+  padding: var(--space-2);
+  line-height: 1;
 }
 
-/* ============================================================
-   Hero Base
-   ============================================================ */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  body.page-dark .navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 12, 41, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: var(--space-4) var(--space-6);
+    gap: var(--space-4);
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  body.page-dark .navbar-links.open {
+    display: flex;
+  }
+
+  body.page-dark .navbar-cta {
+    display: none;
+  }
+}
+
+/* --- Page Hero --- */
 .page-hero {
   position: relative;
-  padding: 8rem 1.5rem 4rem;
-  overflow: hidden;
+  padding: 10rem 0 5rem;
   text-align: center;
+  overflow: hidden;
 }
 
 .page-hero-bg {
   position: absolute;
   inset: 0;
-  z-index: 0;
   overflow: hidden;
 }
 
-/* 오브 글로우 — accent color는 페이지별 CSS에서 설정 */
 .page-hero-orb {
   position: absolute;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.page-hero-orb-1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
+  filter: blur(100px);
+  opacity: 0.3;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-}
-
-.page-hero-orb-2 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  right: -100px;
-  opacity: 0.2;
+  transform: translate(-50%, -50%);
+  animation: float 8s ease-in-out infinite;
+  background: var(--page-accent, var(--primary-500));
+  will-change: transform, opacity;
 }
 
 .page-hero-content {
@@ -179,421 +99,146 @@ body.page-dark {
   z-index: 1;
   max-width: 800px;
   margin: 0 auto;
+  padding: 0 var(--space-6);
 }
 
 .page-hero-badge {
-  display: inline-block;
-  padding: 0.3rem 1rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 1.25rem;
-  border: 1px solid;
+  margin-bottom: var(--space-6);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--page-accent, var(--primary-300));
 }
 
 .page-hero-title {
-  font-size: 2.75rem;
+  font-size: var(--font-size-6xl);
   font-weight: 900;
-  color: #ffffff;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-  letter-spacing: -0.02em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-4);
+  color: white;
 }
 
 .page-hero-title .accent {
-  /* accent color set per page */
+  color: var(--page-accent, var(--primary-400));
 }
 
 .page-hero-subtitle {
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
   color: rgba(255,255,255,0.55);
   line-height: 1.7;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* Hero 내 통계 카드 (Learning 등에서 사용) */
-.page-hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-top: 2rem;
+@media (max-width: 768px) {
+  .page-hero {
+    padding: 7rem 0 3rem;
+  }
+
+  .page-hero-title {
+    font-size: var(--font-size-4xl);
+  }
 }
 
-.page-hero-stat {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 1rem 1.5rem;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  min-width: 120px;
+/* --- Page Sections --- */
+.page-section {
+  padding: var(--space-16) 0;
 }
 
-.page-hero-stat-value {
-  font-size: 1.75rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 0.35rem;
-}
-
-.page-hero-stat-label {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.45);
-}
-
-/* ============================================================
-   Main Content Area
-   ============================================================ */
-.page-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
-}
-
-.page-main--narrow {
-  max-width: 900px;
-}
-
-/* Section Title */
 .page-section-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
   color: white;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  margin-bottom: var(--space-8);
 }
 
-/* ============================================================
-   공통 카드 (글래스모피즘)
-   ============================================================ */
-.page-card {
+/* --- Glass Card (dark) --- */
+.glass-card {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 1.75rem;
-  transition: all 0.25s ease;
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
-.page-card:hover {
+.glass-card:hover {
   background: rgba(255,255,255,0.07);
   border-color: rgba(255,255,255,0.15);
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
 }
 
-.page-card-icon {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.page-card-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.page-card-title-en {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.35);
-  font-weight: 400;
-  margin-left: 0.4rem;
-}
-
-.page-card-desc {
-  font-size: 0.875rem;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.6;
-}
-
-.page-card-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  align-self: flex-start;
-}
-
-/* ============================================================
-   공통 그리드
-   ============================================================ */
-.page-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.page-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-/* ============================================================
-   공통 CTA 버튼
-   ============================================================ */
-.page-cta-row {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: 12px;
-  font-size: 0.925rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  outline: none;
-}
-
-.page-btn-primary {
-  color: white;
-}
-
-.page-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
-.page-btn-secondary {
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.8);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-.page-btn-secondary:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.2);
-}
-
-/* ============================================================
-   공통 Footer
-   ============================================================ */
+/* --- Page Footer --- */
 .page-footer {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 3rem 1.5rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: var(--space-12) 0 var(--space-8);
   text-align: center;
-}
-
-.page-footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .page-footer-links {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-8);
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
 
 .page-footer-links a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  color: rgba(255,255,255,0.45);
-  text-decoration: none;
-  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  font-size: var(--font-size-sm);
   font-weight: 500;
-  transition: color 0.15s;
+  transition: color var(--transition-fast);
 }
 
 .page-footer-links a:hover {
-  color: rgba(255,255,255,0.8);
-}
-
-.page-footer-links .footer-en {
-  font-weight: 600;
-}
-
-.page-footer-links .footer-ko {
-  font-size: 0.7rem;
-  opacity: 0.65;
+  color: white;
 }
 
 .page-footer-copy {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.25);
+  font-size: var(--font-size-xs);
+  color: rgba(255,255,255,0.3);
 }
 
-/* ============================================================
-   Sticky Bar (카테고리 필터 등)
-   ============================================================ */
-.page-sticky-bar {
-  position: sticky;
-  top: 64px; /* navbar height */
-  z-index: 100;
-  background: rgba(15, 12, 41, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding: 0.75rem 0;
+/* --- Common CTA Button (accent colored) --- */
+.btn-accent {
+  background: var(--page-accent, var(--primary-500));
+  color: white;
+  border: none;
 }
 
-.page-sticky-bar-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+.btn-accent:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
 }
 
-.page-sticky-bar-inner::-webkit-scrollbar { display: none; }
+/* --- Utility classes --- */
+.text-center { text-align: center; }
+.flex-center { justify-content: center; }
+.mt-section { margin-top: var(--space-12); }
+.mb-section { margin-bottom: var(--space-12); }
 
-/* ============================================================
-   Toolbar (정렬 + 검색)
-   ============================================================ */
-.page-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-}
-
-/* ============================================================
-   Pagination
-   ============================================================ */
-.page-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.375rem;
-  margin-top: 2.5rem;
-}
-
-/* ============================================================
-   Toast
-   ============================================================ */
-.page-toast {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.75rem 1.25rem;
-  background: rgba(28, 28, 36, 0.95);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
-  border-radius: 999px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  font-size: 0.875rem;
-  font-weight: 500;
-  z-index: 9999;
-  animation: page-toast-in 0.3s ease-out;
-}
-
-.page-toast[hidden] { display: none; }
-
-@keyframes page-toast-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-/* ============================================================
-   Loading Spinner
-   ============================================================ */
-.page-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 4rem;
-  color: rgba(255,255,255,0.4);
-  font-size: 0.875rem;
-}
-
-.page-spinner {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: currentColor;
-  animation: page-spin 0.75s linear infinite;
-}
-
-@keyframes page-spin { to { transform: rotate(360deg); } }
-
-/* ============================================================
-   반응형
-   ============================================================ */
-@media (max-width: 1024px) {
-  .page-grid-3 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 768px) {
-  .page-navbar-links { display: none; }
-  .page-navbar-cta { display: none; }
-  .page-navbar-toggle { display: flex; }
-
-  .page-hero {
-    padding: 6rem 1rem 3rem;
-  }
-
-  .page-hero-title {
-    font-size: 2rem;
-  }
-
-  .page-hero-stats {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .page-hero-stat {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .page-grid-2,
-  .page-grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .page-main {
-    padding: 1.5rem 1rem 3rem;
-  }
-
-  .page-footer-links {
-    flex-direction: column;
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .page-hero-title {
-    font-size: 1.75rem;
-  }
-
-  .page-hero-subtitle {
-    font-size: 1rem;
-  }
+/* --- Focus-visible for accessibility --- */
+.category-tab:focus-visible,
+.sort-btn:focus-visible,
+.page-btn:focus-visible,
+.btn-accent:focus-visible,
+.nav-toggle:focus-visible {
+  outline: 2px solid var(--page-accent, var(--primary-400));
+  outline-offset: 2px;
 }

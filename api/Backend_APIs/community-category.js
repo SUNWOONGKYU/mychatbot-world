@@ -8,7 +8,7 @@
  */
 
 /**
- * 봇마당 커뮤니티 카테고리 목록.
+ * 봇카페 커뮤니티 카테고리 목록.
  * slug: URL 파라미터로 사용되는 영문 식별자
  * name: 화면에 표시되는 한국어 레이블
  * description: 카테고리 설명
@@ -20,7 +20,7 @@ const CATEGORIES = [
     id: 'notice',
     slug: 'notice',
     name: '공지사항',
-    description: '봇마당 운영팀의 공지 및 업데이트 소식',
+    description: '봇카페 운영팀의 공지 및 업데이트 소식',
     icon: 'megaphone',
     order: 1,
   },

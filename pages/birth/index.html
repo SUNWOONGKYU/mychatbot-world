@@ -1,6 +1,6 @@
 <!--
-@task S2F8
-@description Birth (탄생) 메뉴 랜딩 페이지
+@task S3F13
+@description Birth (탄생) 메뉴 랜딩 페이지 — Create Step 직접 연결
 -->
 <!DOCTYPE html>
 <html lang="ko">
@@ -27,7 +27,7 @@
         <li><a href="../learning/index.html" class="nav-menu-item"><span class="nav-en">Learning</span><span class="nav-ko">학습</span></a></li>
         <li><a href="../skills/index.html" class="nav-menu-item"><span class="nav-en">Skills</span><span class="nav-ko">스킬장터</span></a></li>
         <li><a href="../jobs/index.html" class="nav-menu-item"><span class="nav-en">Jobs</span><span class="nav-ko">구봇구직</span></a></li>
-        <li><a href="../community/index.html" class="nav-menu-item"><span class="nav-en">Community</span><span class="nav-ko">봇마당</span></a></li>
+        <li><a href="../community/index.html" class="nav-menu-item"><span class="nav-en">Community</span><span class="nav-ko">봇카페</span></a></li>
       </ul>
       <div class="navbar-cta">
         <a href="../login.html" class="btn btn-secondary btn-sm">로그인</a>
@@ -54,6 +54,7 @@
       <h2 class="page-section-title">4대 기능</h2>
       <div class="birth-features">
 
+        <!-- 챗봇 생성: Step 1 (기본정보) -->
         <a href="../create/index.html" class="glass-card birth-card">
           <div class="card-icon">✨</div>
           <div class="card-title">챗봇 생성 <span class="card-title-en">Create Bot</span></div>
@@ -61,26 +62,29 @@
           <span class="card-tag">5분 인터뷰</span>
         </a>
 
-        <div class="glass-card birth-card">
+        <!-- 성격 설정: Step 2 (페르소나) -->
+        <a href="../create/index.html?step=2" class="glass-card birth-card">
           <div class="card-icon">🎭</div>
           <div class="card-title">성격 설정 <span class="card-title-en">Persona Setup</span></div>
           <p class="card-desc">대면용(공개) 페르소나와 도우미(비공개) 페르소나를 구성합니다. 말투, 어조, 성격을 세밀하게 조정합니다.</p>
           <span class="card-tag">페르소나</span>
-        </div>
+        </a>
 
-        <div class="glass-card birth-card">
+        <!-- 외형 설정: Step 7 (테마) -->
+        <a href="../create/index.html?step=7" class="glass-card birth-card">
           <div class="card-icon">🎨</div>
           <div class="card-title">외형 설정 <span class="card-title-en">Appearance</span></div>
           <p class="card-desc">챗봇 위젯의 색상, 폰트, 버튼 스타일 등 시각적 요소를 브랜드에 맞게 커스터마이즈합니다.</p>
           <span class="card-tag">커스터마이즈</span>
-        </div>
+        </a>
 
-        <div class="glass-card birth-card">
+        <!-- 아바타: Step 6 (아바타 설정) -->
+        <a href="../create/index.html?step=6" class="glass-card birth-card">
           <div class="card-icon">🤖</div>
           <div class="card-title">아바타 <span class="card-title-en">Avatar</span></div>
           <p class="card-desc">챗봇의 프로필 이미지(아바타)를 설정합니다. AI 생성 이미지 또는 직접 업로드를 지원합니다.</p>
           <span class="card-tag">AI 이미지</span>
-        </div>
+        </a>
 
       </div>
     </div>
@@ -116,7 +120,7 @@
         </div>
       </div>
 
-      <div style="text-align:center; margin-top: 4rem;">
+      <div class="text-center mt-section">
         <a href="../create/index.html" class="btn btn-accent btn-xl">챗봇 생성 시작하기</a>
       </div>
     </div>
@@ -132,7 +136,7 @@
         <li><a href="../jobs/index.html">Jobs</a></li>
         <li><a href="../community/index.html">Community</a></li>
       </ul>
-      <p class="page-footer-copy">&copy; 2025 My Chatbot World. All rights reserved.</p>
+      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
     </div>
   </footer>
 

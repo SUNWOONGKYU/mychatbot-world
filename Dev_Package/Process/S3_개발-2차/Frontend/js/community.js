@@ -1,10 +1,10 @@
 /* @task S3F11 */
 /**
- * community.js — 봇마당 커뮤니티 클라이언트 로직
+ * community.js — 봇카페 커뮤니티 클라이언트 로직
  * Task: S3F11 | Stage: S3 | Area: F
  *
  * API 모듈 연동:
- *  - community-post.js     (GET 목록/상세, POST 작성, PUT 수정, DELETE 삭제)
+ *  - community-post.js     (GET 목록/상세, POST 작성, PATCH 수정, DELETE 삭제)
  *  - community-comment.js  (GET 댓글, POST 작성, DELETE 삭제)
  *  - community-like.js     (POST 토글)
  *  - community-report.js   (POST 신고)
@@ -158,13 +158,17 @@ const CommunityCategory = {
 const CommunityPost = {
   /** 게시글 목록 */
   async list({ category = '', sort = 'latest', page = 1, limit = 20, q = '' } = {}) {
-    const params = new URLSearchParams({ category, sort, page, limit, q });
+    // sort 매핑: 프론트엔드 → 백엔드 컬럼명
+    const sortMap = { latest: 'created_at', popular: 'likes_count', comments: 'comments_count' };
+    const sortCol = sortMap[sort] || sort;
+    const params = new URLSearchParams({ category, sort: sortCol, page, limit });
+    if (q) params.set('q', q);
     return apiFetch(`/Backend_APIs/community-post?${params}`);
   },
 
   /** 게시글 상세 */
   async get(postId) {
-    return apiFetch(`/Backend_APIs/community-post/${postId}`);
+    return apiFetch(`/Backend_APIs/community-post?id=${postId}`);
   },
 
   /** 게시글 작성 */
@@ -177,15 +181,15 @@ const CommunityPost = {
 
   /** 게시글 수정 */
   async update(postId, { category, title, content }) {
-    return apiFetch(`/Backend_APIs/community-post/${postId}`, {
-      method: 'PUT',
-      body: JSON.stringify({ category, title, content }),
+    return apiFetch('/Backend_APIs/community-post', {
+      method: 'PATCH',
+      body: JSON.stringify({ id: postId, category, title, content }),
     });
   },
 
   /** 게시글 삭제 */
   async delete(postId) {
-    return apiFetch(`/Backend_APIs/community-post/${postId}`, {
+    return apiFetch(`/Backend_APIs/community-post?id=${postId}`, {
       method: 'DELETE',
     });
   },
@@ -210,7 +214,7 @@ const CommunityComment = {
 
   /** 댓글 삭제 */
   async delete(commentId) {
-    return apiFetch(`/Backend_APIs/community-comment/${commentId}`, {
+    return apiFetch(`/Backend_APIs/community-comment?id=${commentId}`, {
       method: 'DELETE',
     });
   },
@@ -220,11 +224,11 @@ const CommunityComment = {
    5. API 모듈: community-like.js
    ==================================================== */
 const CommunityLike = {
-  /** 좋아요 토글 (POST/게시글 or 댓글) */
+  /** 좋아요 토글 (POST) — 백엔드는 post_id 필드만 지원 */
   async toggle({ targetId, targetType = 'post' }) {
     return apiFetch('/Backend_APIs/community-like', {
       method: 'POST',
-      body: JSON.stringify({ target_id: targetId, target_type: targetType }),
+      body: JSON.stringify({ post_id: targetId }),
     });
   },
 };
@@ -361,8 +365,8 @@ class CommunityIndex {
         q:        this.currentQ,
       });
 
-      const posts = res.data || res.posts || res || [];
-      this.totalPages = res.total_pages || res.totalPages || 1;
+      const posts = res.posts || res.data || [];
+      this.totalPages = res.pagination?.totalPages || res.total_pages || res.totalPages || 1;
 
       if (!posts.length) {
         listEl.innerHTML = `
@@ -391,6 +395,10 @@ class CommunityIndex {
   renderPostItem(post) {
     const pinClass = post.is_pinned ? 'pinned' : '';
     const pinIcon  = post.is_pinned ? '<span class="pin-icon">📌</span>' : '';
+    // 백엔드 응답 필드: likes_count, comments_count, views_count, user_id
+    const likes    = post.likes_count ?? post.like_count ?? 0;
+    const comments = post.comments_count ?? post.comment_count ?? 0;
+    const views    = post.views_count ?? post.view_count ?? 0;
     return `
       <div class="post-item ${pinClass}" data-id="${post.id}">
         <div class="post-title-cell">
@@ -398,7 +406,7 @@ class CommunityIndex {
             ${pinIcon}
             ${categoryBadgeHtml(post.category)}
             <span class="post-title-text">${escapeHtml(post.title)}</span>
-            ${post.comment_count ? `<span class="post-comment-count">[${formatCount(post.comment_count)}]</span>` : ''}
+            ${comments ? `<span class="post-comment-count">[${formatCount(comments)}]</span>` : ''}
           </div>
           <div class="post-meta-row">
             <span class="post-author-name">${escapeHtml(post.author_nickname || post.author_name || '익명')}</span>
@@ -406,9 +414,9 @@ class CommunityIndex {
             <span>${formatDate(post.created_at)}</span>
           </div>
         </div>
-        <div class="post-stat post-stat-icon ${post.user_liked ? 'liked' : ''}">♥ ${formatCount(post.like_count)}</div>
-        <div class="post-stat">💬 ${formatCount(post.comment_count)}</div>
-        <div class="post-stat">👁 ${formatCount(post.view_count)}</div>
+        <div class="post-stat post-stat-icon ${post.user_liked ? 'liked' : ''}">♥ ${formatCount(likes)}</div>
+        <div class="post-stat">💬 ${formatCount(comments)}</div>
+        <div class="post-stat">👁 ${formatCount(views)}</div>
         <div class="post-date-cell">${formatDate(post.created_at)}</div>
       </div>`;
   }
@@ -495,7 +503,7 @@ class CommunityPostDetail {
   async loadPost() {
     try {
       const res = await CommunityPost.get(this.postId);
-      this.post = res.data || res;
+      this.post = res.post || res.data || res;
       this.renderPost();
     } catch (err) {
       console.error('[PostDetail] loadPost error:', err);
@@ -518,11 +526,16 @@ class CommunityPostDetail {
     if (catEl) catEl.innerHTML = categoryBadgeHtml(p.category);
 
     setById('postTitle', escapeHtml(p.title), true);
-    setById('postAuthorNickname', p.author_nickname || '익명');
+    // 백엔드 응답 필드 호환: likes_count/like_count, views_count/view_count 등
+    const likes    = p.likes_count ?? p.like_count ?? 0;
+    const views    = p.views_count ?? p.view_count ?? 0;
+    const comments = p.comments_count ?? p.comment_count ?? 0;
+    const authorNick = p.author_nickname || p.author?.email?.split('@')[0] || '익명';
+    setById('postAuthorNickname', authorNick);
     setById('postDate', formatDate(p.created_at));
-    setById('postViewCount', formatCount(p.view_count));
-    setById('postLikeCount', formatCount(p.like_count));
-    setById('postCommentCount', formatCount(p.comment_count));
+    setById('postViewCount', formatCount(views));
+    setById('postLikeCount', formatCount(likes));
+    setById('postCommentCount', formatCount(comments));
     // NOTE: content_html is intentionally rendered as HTML (server-generated rich content).
     // Raw user input is always escaped via escapeHtml() before storage; this field is
     // trusted server output. Plain-text fallback uses escapeHtml() for safety.
@@ -540,13 +553,13 @@ class CommunityPostDetail {
     if (likeBtn) {
       likeBtn.classList.toggle('active', !!p.user_liked);
       const likeCountEl = likeBtn.querySelector('.like-count');
-      if (likeCountEl) likeCountEl.textContent = formatCount(p.like_count);
+      if (likeCountEl) likeCountEl.textContent = formatCount(likes);
     }
 
-    // 수정/삭제 버튼 — 본인 글만
+    // 수정/삭제 버튼 — 본인 글만 (백엔드: user_id 또는 author_id)
     const editBtn   = document.getElementById('editBtn');
     const deleteBtn = document.getElementById('deleteBtn');
-    const isOwner   = this.user && (this.user.id === p.author_id);
+    const isOwner   = this.user && (this.user.id === (p.user_id || p.author_id));
     if (editBtn)   editBtn.style.display   = isOwner ? '' : 'none';
     if (deleteBtn) deleteBtn.style.display = isOwner ? '' : 'none';
 
@@ -561,7 +574,7 @@ class CommunityPostDetail {
       loginPromptEl?.style && (loginPromptEl.style.display = '');
     }
 
-    document.title = `${p.title} — 봇마당 | My Chatbot World`;
+    document.title = `${p.title} — 봇카페 | My Chatbot World`;
   }
 
   /** 댓글 목록 로드 & 트리 렌더 */
@@ -570,7 +583,7 @@ class CommunityPostDetail {
     if (!listEl) return;
     try {
       const res = await CommunityComment.list(this.postId);
-      this.comments = res.data || res || [];
+      this.comments = res.comments || res.data || [];
       this.renderCommentTree(listEl);
     } catch (err) {
       console.error('[PostDetail] loadComments error:', err);
@@ -622,7 +635,7 @@ class CommunityPostDetail {
   }
 
   commentHtml(comment, isReply) {
-    const isOwner   = this.user && (this.user.id === comment.author_id);
+    const isOwner   = this.user && (this.user.id === (comment.user_id || comment.author_id));
     const isDeleted = comment.is_deleted;
     const nick      = comment.author_nickname || '익명';
     const initial   = nick.charAt(0).toUpperCase();
@@ -708,7 +721,7 @@ class CommunityPostDetail {
       const res = await CommunityLike.toggle({ targetId: commentId, targetType: 'comment' });
       btn.classList.toggle('active', res.liked);
       const countEl = btn.querySelector('.comment-like-count');
-      if (countEl) countEl.textContent = formatCount(res.like_count);
+      if (countEl) countEl.textContent = formatCount(res.likes_count ?? res.like_count ?? 0);
     } catch (err) {
       showToast('좋아요 처리에 실패했습니다.', 'error');
     }
@@ -725,7 +738,7 @@ class CommunityPostDetail {
         const res = await CommunityLike.toggle({ targetId: this.postId, targetType: 'post' });
         likeBtn.classList.toggle('active', res.liked);
         const countEl = likeBtn.querySelector('.like-count');
-        if (countEl) countEl.textContent = formatCount(res.like_count);
+        if (countEl) countEl.textContent = formatCount(res.likes_count ?? res.like_count ?? 0);
       } catch (err) {
         showToast('좋아요 처리에 실패했습니다.', 'error');
       } finally {
@@ -864,7 +877,7 @@ class CommunityWrite {
   updatePageTitle() {
     const titleEl = document.getElementById('writeFormTitle');
     if (titleEl) titleEl.textContent = this.isEdit ? '게시글 수정' : '새 글 작성';
-    document.title = `${this.isEdit ? '수정' : '글쓰기'} — 봇마당 | My Chatbot World`;
+    document.title = `${this.isEdit ? '수정' : '글쓰기'} — 봇카페 | My Chatbot World`;
   }
 
   async loadCategories() {
@@ -896,7 +909,7 @@ class CommunityWrite {
   async loadExistingPost() {
     try {
       const res  = await CommunityPost.get(this.postId);
-      const post = res.data || res;
+      const post = res.post || res.data || res;
 
       const catEl     = document.getElementById('categorySelect');
       const titleEl   = document.getElementById('postTitleInput');
@@ -906,9 +919,9 @@ class CommunityWrite {
       if (titleEl)   titleEl.value   = post.title || '';
       if (contentEl) contentEl.value = post.content || '';
 
-      // 본인 글인지 확인
+      // 본인 글인지 확인 (백엔드: user_id)
       const user = getCurrentUser();
-      if (user && user.id !== post.author_id) {
+      if (user && user.id !== (post.user_id || post.author_id)) {
         showToast('수정 권한이 없습니다.', 'error');
         setTimeout(() => { window.location.href = `post.html?id=${this.postId}`; }, 1200);
       }
@@ -949,7 +962,7 @@ class CommunityWrite {
         } else {
           res = await CommunityPost.create({ category, title, content });
         }
-        const postId = res.data?.id || res.id || this.postId;
+        const postId = res.post?.id || res.data?.id || res.id || this.postId;
         showToast(this.isEdit ? '수정되었습니다.' : '등록되었습니다.', 'success');
         setTimeout(() => { window.location.href = `post.html?id=${postId}`; }, 800);
       } catch (err) {
@@ -1061,7 +1074,7 @@ class CommunityGallery {
 
     try {
       const res = await CommunityPost.list({ category: 'showcase', sort: this.sort, page: this.page, limit: 24 });
-      this.posts = res.data || res.posts || res || [];
+      this.posts = res.posts || res.data || [];
 
       if (!this.posts.length) {
         grid.innerHTML = '<div class="posts-empty" style="grid-column:1/-1"><div class="empty-icon">🤖</div><p>아직 등록된 챗봇이 없습니다.</p></div>';
@@ -1105,7 +1118,7 @@ class CommunityGallery {
               <span>${escapeHtml(nick)}</span>
             </div>
             <button class="gallery-like-btn ${post.user_liked ? 'gallery-card-likes liked' : 'gallery-card-likes'}" data-post-id="${post.id}">
-              ♥ <span class="gallery-like-count">${formatCount(post.like_count)}</span>
+              ♥ <span class="gallery-like-count">${formatCount(post.likes_count ?? post.like_count ?? 0)}</span>
             </button>
           </div>
         </div>
@@ -1120,7 +1133,7 @@ class CommunityGallery {
       const res = await CommunityLike.toggle({ targetId: postId, targetType: 'post' });
       btn.classList.toggle('liked', res.liked);
       const countEl = btn.querySelector('.gallery-like-count');
-      if (countEl) countEl.textContent = formatCount(res.like_count);
+      if (countEl) countEl.textContent = formatCount(res.likes_count ?? res.like_count ?? 0);
     } catch {
       showToast('좋아요 처리에 실패했습니다.', 'error');
     } finally {
@@ -1142,7 +1155,7 @@ class CommunityGallery {
     setById('modalBotName', escapeHtml(post.title), true);
     setById('modalBotAuthor', post.author_nickname || '익명');
     setById('modalBotDesc', escapeHtml(post.content?.slice(0, 400) || ''), true);
-    setById('modalLikeCount', formatCount(post.like_count));
+    setById('modalLikeCount', formatCount(post.likes_count ?? post.like_count ?? 0));
 
     const avatarEl = modal.querySelector('#modalBotAvatar');
     if (avatarEl) {
@@ -1165,8 +1178,8 @@ class CommunityGallery {
           const res = await CommunityLike.toggle({ targetId: post.id, targetType: 'post' });
           likeBtn.classList.toggle('active', res.liked);
           post.user_liked = res.liked;
-          post.like_count = res.like_count;
-          setById('modalLikeCount', formatCount(res.like_count));
+          post.likes_count = res.likes_count ?? res.like_count ?? 0;
+          setById('modalLikeCount', formatCount(post.likes_count));
         } catch { showToast('좋아요 처리에 실패했습니다.', 'error'); }
       };
     }

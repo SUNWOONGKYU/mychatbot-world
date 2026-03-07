@@ -1,143 +1,138 @@
-<!-- @task S3F11 -->
+<!--
+@task S3F11
+@description Community(봇카페) 메인 페이지 — 카테고리 탭, 게시글 목록, 정렬/검색
+-->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>봇마당 — My Chatbot World</title>
-  <meta name="description" content="챗봇 사용자들의 커뮤니티 공간. 자유게시판, 챗봇 쇼케이스, 팁 공유, Q&A를 한 곳에서.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <title>Community (봇카페) — My Chatbot World</title>
+  <meta name="description" content="챗봇 사용자들의 커뮤니티 공간. 자유게시판, 챗봇 쇼케이스, 팁 공유, Q&amp;A를 한 곳에서.">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/pages.css">
   <link rel="stylesheet" href="../../css/community.css">
 </head>
-<body>
-<div class="app-layout">
+<body class="page-dark">
 
-  <!-- 사이드바 오버레이 (모바일) -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="../../index.html" class="navbar-logo"><span>My Chatbot World</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">&#9776;</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="../birth/index.html" class="nav-menu-item"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
+        <li><a href="../learning/index.html" class="nav-menu-item"><span class="nav-en">Learning</span><span class="nav-ko">학습</span></a></li>
+        <li><a href="../skills/index.html" class="nav-menu-item"><span class="nav-en">Skills</span><span class="nav-ko">스킬장터</span></a></li>
+        <li><a href="../jobs/index.html" class="nav-menu-item"><span class="nav-en">Jobs</span><span class="nav-ko">구봇구직</span></a></li>
+        <li><a href="../community/index.html" class="nav-menu-item active"><span class="nav-en">Community</span><span class="nav-ko">봇카페</span></a></li>
+      </ul>
+      <div class="navbar-cta">
+        <a href="../login.html" class="btn btn-secondary btn-sm">로그인</a>
+      </div>
+    </div>
+  </nav>
 
-  <!-- ===== 사이드바 ===== -->
-  <aside class="sidebar" id="sidebar">
-    <a href="/" class="sidebar-logo">
-      <div class="logo-icon">M</div>
-      <span>My Chatbot World</span>
-    </a>
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="page-hero-bg"><div class="page-hero-orb"></div></div>
+    <div class="page-hero-content">
+      <span class="page-hero-badge">STEP 5 — COMMUNITY</span>
+      <h1 class="page-hero-title"><span class="accent">봇카페</span> 커뮤니티</h1>
+      <p class="page-hero-subtitle">
+        챗봇 사용자들의 자유로운 소통 공간입니다.<br>
+        자유게시판, 쇼케이스, 팁 공유, Q&amp;A를 한 곳에서.
+      </p>
+      <div class="community-hero-actions">
+        <button class="btn-write" id="writeBtn" style="display:none">✏️ 글쓰기</button>
+      </div>
+    </div>
+  </section>
 
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">메인</div>
-      <a href="/pages/home/" class="nav-item">
-        <span class="nav-icon">🏠</span> 홈
-      </a>
-      <a href="/pages/bot/" class="nav-item">
-        <span class="nav-icon">🤖</span> 내 챗봇
-      </a>
+  <!-- Content -->
+  <div class="container">
 
-      <div class="nav-section-label">커뮤니티</div>
-      <a href="/pages/community/index.html" class="nav-item active">
-        <span class="nav-icon">💬</span> 봇마당
-      </a>
-      <a href="/pages/community/gallery.html" class="nav-item">
-        <span class="nav-icon">🎨</span> 쇼케이스
-      </a>
-      <a href="/pages/jobs/" class="nav-item">
-        <span class="nav-icon">💼</span> 채용
-      </a>
+    <!-- Category tabs -->
+    <nav class="community-tabs" role="tablist">
+      <button class="category-tab" data-category="all" role="tab" aria-selected="true">
+        전체 <span class="cat-count" id="catCountAll"></span>
+      </button>
+      <button class="category-tab" data-category="free" role="tab" aria-selected="false">
+        자유게시판
+      </button>
+      <button class="category-tab" data-category="showcase" role="tab" aria-selected="false">
+        챗봇 쇼케이스
+      </button>
+      <button class="category-tab" data-category="tip" role="tab" aria-selected="false">
+        팁 공유
+      </button>
+      <button class="category-tab" data-category="qna" role="tab" aria-selected="false">
+        Q&amp;A
+      </button>
+      <button class="category-tab" data-category="notice" role="tab" aria-selected="false">
+        공지사항
+      </button>
     </nav>
-  </aside>
 
-  <!-- ===== 메인 콘텐츠 ===== -->
-  <div class="main-content">
-
-    <!-- 상단 헤더 -->
-    <header class="top-header">
-      <div class="header-left">
-        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
-        <span class="page-title">봇마당</span>
+    <!-- Toolbar -->
+    <div class="posts-toolbar">
+      <div class="sort-group">
+        <button class="sort-btn active" data-sort="latest">최신순</button>
+        <button class="sort-btn" data-sort="popular">인기순</button>
+        <button class="sort-btn" data-sort="comments">댓글순</button>
       </div>
-      <div class="header-right">
-        <!-- 로그인 시만 표시 (JS로 제어) -->
-        <!-- TODO: replace onclick with addEventListener in community.js; e.g. document.getElementById('writeBtn').addEventListener('click', () => location.href='write.html') -->
-        <button class="btn-write-header" id="writeBtn" style="display:none">
-          ✏️ 글쓰기
-        </button>
-        <div class="user-avatar" id="userAvatar" title="프로필">U</div>
+      <div class="search-box">
+        <button id="searchBtn" aria-label="검색">🔍</button>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="검색어 입력..."
+          aria-label="게시글 검색"
+          maxlength="60"
+        >
       </div>
-    </header>
+    </div>
 
-    <!-- 본문 -->
-    <main class="page-content">
-      <div class="community-header">
-        <h1>봇마당 커뮤니티</h1>
-        <p>챗봇 사용자들의 자유로운 소통 공간입니다.</p>
+    <!-- Posts list -->
+    <section class="posts-list" id="postsList" role="list">
+      <div class="posts-list-header" aria-hidden="true">
+        <span>제목</span>
+        <span>좋아요</span>
+        <span>댓글</span>
+        <span>조회</span>
+        <span>날짜</span>
       </div>
-
-      <!-- 카테고리 탭 -->
-      <nav class="category-nav" role="tablist">
-        <button class="category-tab" data-category="all" role="tab" aria-selected="true">
-          전체 <span class="cat-count" id="catCountAll"></span>
-        </button>
-        <button class="category-tab" data-category="free" role="tab" aria-selected="false">
-          자유게시판
-        </button>
-        <button class="category-tab" data-category="showcase" role="tab" aria-selected="false">
-          챗봇 쇼케이스
-        </button>
-        <button class="category-tab" data-category="tip" role="tab" aria-selected="false">
-          팁 공유
-        </button>
-        <button class="category-tab" data-category="qna" role="tab" aria-selected="false">
-          Q&amp;A
-        </button>
-        <button class="category-tab" data-category="notice" role="tab" aria-selected="false">
-          공지사항
-        </button>
-      </nav>
-
-      <!-- 툴바 -->
-      <div class="posts-toolbar">
-        <div class="sort-group">
-          <button class="sort-btn" data-sort="latest">최신순</button>
-          <button class="sort-btn" data-sort="popular">인기순</button>
-          <button class="sort-btn" data-sort="comments">댓글순</button>
-        </div>
-        <div class="search-box">
-          <button id="searchBtn" aria-label="검색">🔍</button>
-          <input
-            type="search"
-            id="searchInput"
-            placeholder="검색어 입력..."
-            aria-label="게시글 검색"
-            maxlength="60"
-          >
-        </div>
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        불러오는 중...
       </div>
+    </section>
 
-      <!-- 게시글 목록 -->
-      <section class="posts-list" id="postsList" role="list">
-        <!-- 헤더 행 (데스크탑) -->
-        <div class="posts-list-header" aria-hidden="true">
-          <span>제목</span>
-          <span>좋아요</span>
-          <span>댓글</span>
-          <span>조회</span>
-          <span>날짜</span>
-        </div>
-        <!-- JS로 채워짐 -->
-        <div class="loading-spinner">
-          <div class="spinner"></div>
-          불러오는 중...
-        </div>
-      </section>
+    <!-- Pagination -->
+    <nav class="pagination" id="pagination" aria-label="페이지 네비게이션"></nav>
 
-      <!-- 페이지네이션 -->
-      <nav class="pagination" id="pagination" aria-label="페이지 네비게이션"></nav>
+  </div>
 
-    </main>
-  </div><!-- .main-content -->
-</div><!-- .app-layout -->
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="container">
+      <ul class="page-footer-links">
+        <li><a href="../birth/index.html">Birth</a></li>
+        <li><a href="../learning/index.html">Learning</a></li>
+        <li><a href="../skills/index.html">Skills</a></li>
+        <li><a href="../jobs/index.html">Jobs</a></li>
+        <li><a href="../community/index.html">Community</a></li>
+      </ul>
+      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
+    </div>
+  </footer>
 
-<script src="../../js/utils.js"></script>
-<script src="../../js/community.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/community.js"></script>
+  <script>
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarLinks')?.classList.toggle('open');
+    });
+  </script>
 </body>
 </html>

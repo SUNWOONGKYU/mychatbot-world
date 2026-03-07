@@ -8,7 +8,7 @@
  *   2. Learning (학습)    — FAQ 관리, 학습 커리큘럼, 챗봇스쿨
  *   3. Skills   (스킬장터) — 스킬 목록, 구매/판매, 마이 스킬
  *   4. Jobs     (구봇구직) — 채용 목록, 지원/등록, 매칭
- *   5. Community(봇마당)  — 게시판, 커뮤니티 활동
+ *   5. Community(봇카페)  — 게시판, 커뮤니티 활동
  */
 
 const SidebarNav = (() => {
@@ -77,7 +77,7 @@ const SidebarNav = (() => {
     {
       id: 'community',
       label: 'Community',
-      labelKo: '봇마당',
+      labelKo: '봇카페',
       icon: '🤝',
       href: 'pages/community/index.html',
       description: '커뮤니티',

@@ -96,7 +96,7 @@ const MAIN_MENUS = [
   { id: 'home',       label: '홈',        path: '/' },
   { id: 'chatbots',   label: '챗봇 마켓', path: '/chatbots' },
   { id: 'jobs',       label: '구봇구직',   path: '/jobs' },
-  { id: 'community',  label: '봇마당',     path: '/community' },
+  { id: 'community',  label: '봇카페',     path: '/community' },
   { id: 'learning',   label: '봇학교',     path: '/learning' },
 ];
 
@@ -449,7 +449,7 @@ describe('시나리오 4: 메뉴 네비게이션 (5대 메뉴 전환)', () => {
     expect(menu.path).toBe('/jobs');
   });
 
-  it('봇마당 메뉴 네비게이션 — path = "/community"', async () => {
+  it('봇카페 메뉴 네비게이션 — path = "/community"', async () => {
     const menu = navigateTo(MAIN_MENUS, 'community');
     expect(menu.path).toBe('/community');
   });

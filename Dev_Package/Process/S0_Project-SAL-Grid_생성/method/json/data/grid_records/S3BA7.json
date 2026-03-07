@@ -1,6 +1,6 @@
 {
     "task_id": "S3BA7",
-    "task_name": "Community(봇마당) API",
+    "task_name": "Community(봇카페) API",
     "stage": 3,
     "area": "BA",
     "task_status": "Completed",
@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Backend_APIs/community-post.js, community-comment.js, community-like.js, community-report.js, community-category.js",
-    "modification_history": "",
+    "modification_history": "2026-03-07: 봇마당→봇카페 이름 변경 (community-category.js 공지사항 description 업데이트)",
     "verification_instruction": "sal-grid/verification-instructions/S3BA7_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",
@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "봇마당 커뮤니티 API: 게시글 CRUD, 댓글, 좋아요, 신고, 카테고리별 조회."
+    "remarks": "봇카페 커뮤니티 API: 게시글 CRUD, 댓글, 좋아요, 신고, 카테고리별 조회."
 }
