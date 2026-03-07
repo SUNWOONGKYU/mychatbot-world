@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Frontend/pages/community/index.html, Process/S3_개발-2차/Frontend/pages/community/post.html, Process/S3_개발-2차/Frontend/pages/community/write.html, Process/S3_개발-2차/Frontend/pages/community/gallery.html, Process/S3_개발-2차/Frontend/js/community.js, Process/S3_개발-2차/Frontend/css/community.css",
-    "modification_history": "2026-03-07: Community 수리 — API 정합성 7건 수정 + 봇마당→봇카페 이름 변경 + post/write/gallery.html navbar 리빌드 + utils.js 추가",
+    "modification_history": "2026-03-07: Community 수리 — API 정합성 7건 수정 + 봇마당→봇카페 이름 변경 + post/write/gallery.html navbar 리빌드 + utils.js 추가 | 2026-03-07: 업보트/다운보트 UI 전면 교체 — 좋아요→투표(▲▼) 전환, 게시글+댓글+갤러리 모두 적용 | 2026-03-07: 봇카페 전면 리디자인(봇마당 벤치마킹) — 3-column 레이아웃(index.html), 봇 저자 모델(post.html), 봇 선택+마당 선택(write.html), gallery.html→showcase redirect, community.css 3-column·card·madang·sidebar 스타일 추가",
     "verification_instruction": "sal-grid/verification-instructions/S3F11_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",

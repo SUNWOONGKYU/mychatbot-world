@@ -291,3 +291,108 @@
 - S3F11.json: modification_history + task_name/remarks 봇카페 반영
 - S3BA7.json: modification_history + task_name/remarks 봇카페 반영
 - S3T2.json: modification_history 추가
+
+---
+
+## 10. 업보트/다운보트 시스템 구현 (2026-03-07)
+
+### 작업 상태: 완료
+
+### 배경
+- 기존 Community(봇카페)는 단순 좋아요(toggle) 기능만 게시글에 제공
+- 댓글 좋아요는 미지원 상태
+- PO 요청: 게시글 + 댓글 모두 업보트/다운보트 지원
+
+### 구현 범위 (4 Layer)
+
+| Layer | 파일 | 내용 |
+|-------|------|------|
+| DB | add_community_votes_table.sql | community_votes 테이블 + posts/comments에 upvotes/downvotes 컬럼 |
+| Backend | community-like.js (전면 재작성) | POST: vote(up/down), GET: status, 같은투표=취소, 반대투표=전환 |
+| Frontend JS | community.js | CommunityVote 모듈, 게시글/댓글/갤러리 vote UI |
+| Frontend HTML/CSS | post.html, gallery.html, community.css | ▲▼ 투표 버튼 + 스코어 표시 |
+
+### 핵심 설계
+- **community_votes 테이블**: user_id + target_type(post/comment) + target_id + vote_type(up/down), UNIQUE 제약
+- **투표 로직**: 같은 투표 재클릭 = 취소(delete), 반대 투표 = 전환(update)
+- **비정규화**: posts/comments 테이블의 upvotes/downvotes 컬럼 동기화 (syncVoteCounts)
+- **하위호환**: CommunityLike alias 유지, 응답에 likes_count/is_liked 포함
+
+### 수정 파일 (10개)
+1. `Dev_Package/Process/S3_개발-2차/Database/add_community_votes_table.sql` — NEW
+2. `Dev_Package/Process/S3_개발-2차/Backend_APIs/community-like.js` — REWRITE
+3. `js/community.js` — 다수 수정 (CommunityVote, vote UI, handleCommentVote 등)
+4. `css/community.css` — vote 스타일 ~180줄 추가
+5. `pages/community/post.html` — 좋아요→투표 UI 교체
+6. `pages/community/gallery.html` — 모달 좋아요→투표 UI 교체
+7. `api/Backend_APIs/community-like.js` — Stage→Root 복사
+8. `Dev_Package/Process/S3_개발-2차/Frontend/js/community.js` — Stage 동기화
+9. `Dev_Package/Process/S3_개발-2차/Frontend/css/community.css` — Stage 동기화
+10. `Dev_Package/Process/S3_개발-2차/Frontend/pages/community/post.html` — Stage 동기화
+
+### 검증 결과
+- Verification Agent 8/8 항목 PASS
+
+### Git Commit
+- `2f0150b`: feat: 업보트/다운보트 시스템 구현 — 게시글 + 댓글 모두 지원
+
+### SAL Grid 업데이트 (Approach A)
+- S3F11.json: modification_history 업보트/다운보트 UI 추가
+- S3BA7.json: modification_history community-like.js 재작성 + remarks 업보트/다운보트 반영
+- S3T2.json: modification_history 업보트/다운보트 정합성 추가
+
+### 미완료 항목
+- **DB 마이그레이션 실행 필요**: add_community_votes_table.sql을 Supabase에서 실행해야 실제 작동
+
+---
+
+## 11. 봇카페 전면 리디자인 — 봇마당 벤치마킹 (2026-03-07)
+
+### 작업 상태: 완료 (Phase 0~5)
+
+### 핵심 컨셉 변경
+- **챗봇이 글쓰고 인간은 읽기+투표만** (botmadang.org 벤치마킹)
+- **마당 시스템**: 하드코딩 카테고리 → DB 테이블 기반 동적 마당
+- **3-column 레이아웃**: 마당 nav(200px) + 피드(1fr) + 사이드바(280px)
+- **카드형 포스트**: 봇 이모지 + 봇 이름 + 카르마 + 미리보기
+
+### Phase별 작업 내역
+
+| Phase | 내용 | 파일 수 |
+|-------|------|---------|
+| 0 (DB) | community_bot_redesign.sql — 마당 테이블, 봇 컬럼, 트리거, RLS | 1 |
+| 1 (API) | community-post.js/comment.js 재작성 + madang.js/bookmark.js 신규 + category.js 래퍼 | 5 |
+| 2 (JS) | community.js 전면 재작성 — 4개 클래스 + 3개 API 모듈 | 1 |
+| 3 (HTML) | index/write/post.html 재작성, gallery.html redirect | 4 |
+| 4 (CSS) | community.css 3-column·카드·마당nav·사이드바·봇칩 스타일 추가 | 1 |
+
+### 생성/수정 파일 목록
+
+**Stage 저장 (Dev_Package/Process/S3_개발-2차/):**
+- Database/community_bot_redesign.sql (NEW)
+- Backend_APIs/community-post.js (REWRITE)
+- Backend_APIs/community-comment.js (REWRITE)
+- Backend_APIs/community-madang.js (NEW)
+- Backend_APIs/community-bookmark.js (NEW)
+- Backend_APIs/community-category.js (MODIFY — wrapper)
+- Frontend/js/community.js (REWRITE)
+- Frontend/css/community.css (EXTEND — 3-column 스타일 추가)
+- Frontend/pages/community/index.html (REWRITE — 3-column)
+- Frontend/pages/community/write.html (REWRITE — 봇+마당 선택)
+- Frontend/pages/community/post.html (REWRITE — 봇 저자)
+- Frontend/pages/community/gallery.html (REPLACE — showcase redirect)
+
+### 핵심 설계 결정
+- **봇 소유권 검증**: mcw_bots.owner_id === userId 이중 체크
+- **하위호환**: category 필드 병행 기록, community-category.js 래퍼 유지
+- **트리거**: 투표 시 봇 카르마 자동 갱신, 마당 post_count 자동 갱신
+- **my-bots 엔드포인트**: community-post.js action=my-bots (파일 추가 없이 재활용)
+
+### SAL Grid 업데이트 (Approach A)
+- S3F11.json: modification_history + generated_files 추가 (CSS 포함)
+- S3BA7.json: modification_history + generated_files(madang.js, bookmark.js 추가)
+- S3T2.json: modification_history community.js 전면 재작성 내역 추가
+
+### 미완료 항목 (유저 수동 작업 필요)
+1. **DB 마이그레이션**: community_bot_redesign.sql을 Supabase SQL Editor에서 실행
+2. **git commit + push** → Vercel 자동 배포 (Stage→Root 자동 동기화)
