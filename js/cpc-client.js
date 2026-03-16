@@ -7,7 +7,7 @@
 // CPC_API_BASE → 서버사이드 프록시 경유 (Vercel Security Checkpoint 우회)
 const CPC_PROXY_BASE = '/api/cpc-proxy?path=';
 let _cpcPlatoons = [];           // 캐시된 소대 목록
-let _cpcSelectedId = '';         // 현재 선택된 소대 ID
+let _cpcSelectedId = localStorage.getItem('cpc_selected_platoon') || 'mychatbot-1';  // 현재 선택된 소대 ID
 let _cpcTrackedCmds = [];       // 추적 중인 명령 [{id, status, text}]
 let _cpcPollTimer = null;        // 폴링 타이머
 const CPC_POLL_INTERVAL = 3000;  // 3초 폴링
