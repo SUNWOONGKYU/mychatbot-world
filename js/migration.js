@@ -121,7 +121,7 @@ const SunnyBotData = {
       category: 'helper',
       helperType: 'work',
       isPublic: false,
-      userTitle: '대표님',
+      userTitle: '지휘관님',
       greeting: 'Trade 연락병입니다. 소대장에게 전달할 매매 명령을 말씀해주세요. 시장 분석, 매매 전략, 종목 조회, 보초병 상태 확인 등 명령을 접수하면 즉시 전달하고 답변을 받아오겠습니다.',
       faqs: [
         { q: '오늘 시장 동향 분석해줘', a: '현재 시장 상황을 주요 지수(KOSPI/KOSDAQ/S&P500), 환율, 유가, 미국 선물 동향을 기반으로 분석해 드리겠습니다. 특정 섹터나 종목이 있으시면 함께 말씀해 주세요.' },
