@@ -74,8 +74,7 @@ function channelWaitForResult(cmdId, conversationId) {
         if (shown) return;
         shown = true;
         const cleaned = cpcStripMarkdown(text);
-        const short = cleaned.length > 500 ? cleaned.substring(0, 500) + '...' : cleaned;
-        addMessage('system', '📡 [Claude Code] ' + cpcSafeHtml(short), 'cpc-result');
+        addMessage('system', '📡 [Claude Code] ' + cpcSafeHtml(cleaned), 'cpc-result');
         if (voiceOutputEnabled && cleaned) {
             const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
             if (typeof speak === 'function') speak(speakText);
@@ -168,8 +167,7 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
         shown = true;
         _cpcTrackedCmds = _cpcTrackedCmds.filter(c => c.id !== cmdId);
         const cleaned = cpcStripMarkdown(rawResult);
-        const short = cleaned.length > 200 ? cleaned.substring(0, 200) + '...' : cleaned;
-        addMessage('system', '📡 [CPC] ' + cpcSafeHtml(short), 'cpc-result');
+        addMessage('system', '📡 [CPC] ' + cpcSafeHtml(cleaned), 'cpc-result');
         if (voiceOutputEnabled && cleaned) {
             const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
             if (_audioSource) {
@@ -251,9 +249,8 @@ async function cpcPollTrackedCommands() {
             }
             if (fresh.status === 'DONE') {
                 const rawResult = cpcStripMarkdown(fresh.result);
-                const shortResult = rawResult.length > 80 ? rawResult.substring(0, 80) + '...' : rawResult;
-                const resultMsg = shortResult
-                    ? '[CPC] 명령 완료: ' + cpcSafeHtml(shortResult)
+                const resultMsg = rawResult
+                    ? '[CPC] 명령 완료: ' + cpcSafeHtml(rawResult)
                     : '[CPC] 명령 완료: "' + escapeHtml(tracked.text) + '"';
                 addMessage('system', resultMsg);
                 // CPC 결과 음성 읽기
