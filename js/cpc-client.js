@@ -38,6 +38,86 @@ function cpcSafeHtml(text) {
     return escaped;
 }
 
+// === Channel Relay (C+ 방안: CPC → 터널 → claude -p) ===
+const CHANNEL_RELAY_URL = '/api/cpc-proxy?path=' + encodeURIComponent('/api/channel/relay');
+const CHANNEL_REPLY_BASE = '/api/cpc-proxy?path=' + encodeURIComponent('/api/channel/reply');
+
+async function channelRelay(projectName, userMessage, conversationId, userId) {
+    try {
+        const res = await fetch(CHANNEL_RELAY_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                project_name: projectName,
+                user_message: userMessage,
+                conversation_id: conversationId || 'conv_' + Date.now(),
+                user_id: userId || 'sunny',
+            }),
+        });
+        if (!res.ok) throw new Error(`relay ${res.status}`);
+        return await res.json();
+    } catch (e) {
+        console.warn('[Channel] relay 실패:', e.message);
+        return null;
+    }
+}
+
+function channelWaitForResult(cmdId, conversationId) {
+    const POLL_MS = 3000;
+    const TIMEOUT_MS = 300000; // 5분 (claude -p 작업 시간)
+    const start = Date.now();
+    let shown = false;
+
+    function showResult(text) {
+        if (shown) return;
+        shown = true;
+        const cleaned = cpcStripMarkdown(text);
+        const short = cleaned.length > 500 ? cleaned.substring(0, 500) + '...' : cleaned;
+        addMessage('system', '📡 [Claude Code] ' + cpcSafeHtml(short), 'cpc-result');
+        if (voiceOutputEnabled && cleaned) {
+            const speakText = cleaned.length > 100 ? cleaned.substring(0, 100) : cleaned;
+            if (typeof speak === 'function') speak(speakText);
+        }
+    }
+
+    function poll() {
+        if (shown) return;
+        if (Date.now() - start > TIMEOUT_MS) {
+            showResult('응답 타임아웃 (5분). Claude Code 세션 상태를 확인하세요.');
+            return;
+        }
+        fetch(CHANNEL_REPLY_BASE + '&cmd_id=' + encodeURIComponent(cmdId), {
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.result) {
+                    showResult(data.result);
+                } else {
+                    setTimeout(poll, POLL_MS);
+                }
+            })
+            .catch(() => setTimeout(poll, POLL_MS));
+    }
+
+    addMessage('system', '⏳ [Claude Code] 작업 실행 중... (최대 5분)');
+    setTimeout(poll, 3000);
+}
+
+// 채널 모드: 프로젝트명 → 소대 키 접두사 매핑
+function channelProjectName(platoonId) {
+    if (!platoonId) return '';
+    const prefix = platoonId.replace(/-\d+$/, '');
+    const map = {
+        'mychatbot': 'mychatbot-world',
+        'ssalworks': 'ssal-works',
+        'studycircle': 'ai-study-circle',
+        'politician': 'politician-finder',
+        'valuelink': 'valuelink',
+    };
+    return map[prefix] || prefix;
+}
+
 // --- CPC API 호출 (프록시 경유) ---
 async function cpcFetch(path, options = {}) {
     try {
@@ -102,18 +182,12 @@ function cpcWaitForResult(cmdId, platoonId, cmdText) {
     function poll() {
         if (shown) return;
         if (Date.now() - start > TIMEOUT_MS) {
-            // 타임아웃 → 리모트는 실패 안내, 일반은 Vercel AI 폴백
+            // 타임아웃 → 소대장 처리 대기 안내 (DONE 처리 금지 — CC 단독 처리 원칙)
             if (isRemote) {
                 showResult('리모트 컨트롤은 소대장 세션(Claude Code)이 가동 중이어야 합니다. /cpc-engage 실행 후 다시 시도해주세요.');
             } else {
-                console.log('[CPC] 타임아웃 → Vercel AI 폴백:', cmdId);
-                fetch('/api/cpc-process', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ commandId: cmdId, platoonId, text: cmdText })
-                }).then(r => r.json()).then(data => {
-                    showResult((data && (data.result || data.detail)) || '명령 처리됨');
-                }).catch(() => showResult('명령 전달됨'));
+                console.log('[CPC] 타임아웃 — 소대장 처리 대기 (폴백 없음):', cmdId);
+                showResult('소대장이 처리 중입니다. 잠시 후 다시 확인해주세요.');
             }
             return;
         }
