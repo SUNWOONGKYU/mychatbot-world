@@ -1081,3 +1081,62 @@ html.chat-page {
     background: #f5f5f5;
     color: #666;
 }
+
+/* CPC 승인 요청 UI */
+.cpc-approval-box {
+    background: rgba(124, 58, 237, 0.12);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 4px 0;
+}
+.cpc-approval-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #a78bfa;
+    margin-bottom: 6px;
+}
+.cpc-approval-desc {
+    font-size: 0.82rem;
+    color: #e2e8f0;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+.cpc-approval-buttons {
+    display: flex;
+    gap: 10px;
+}
+.cpc-btn-approve, .cpc-btn-deny {
+    padding: 6px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.cpc-btn-approve {
+    background: #10b981;
+    color: #fff;
+}
+.cpc-btn-approve:hover { opacity: 0.85; }
+.cpc-btn-deny {
+    background: #ef4444;
+    color: #fff;
+}
+.cpc-btn-deny:hover { opacity: 0.85; }
+.cpc-btn-approve:disabled, .cpc-btn-deny:disabled {
+    cursor: not-allowed;
+}
+.cpc-approval-status {
+    font-size: 0.8rem;
+}
+
+/* Light mode */
+.chat-body.light .cpc-approval-box {
+    background: rgba(124, 58, 237, 0.06);
+    border-color: rgba(124, 58, 237, 0.25);
+}
+.chat-body.light .cpc-approval-header { color: #7c3aed; }
+.chat-body.light .cpc-approval-desc { color: #334155; }

@@ -307,6 +307,20 @@ async function cpcPollLeaderMessages() {
         const allCmds = await cpcGetCommands(_cpcSelectedId);
         if (!allCmds || allCmds.length === 0) return;
 
+        // source=approval_request인 PENDING 명령 찾기 (승인 요청)
+        const approvalReqs = allCmds.filter(c =>
+            c.source === 'approval_request' && c.status === 'PENDING'
+        );
+        for (const req of approvalReqs) {
+            if (_cpcShownApprovals.has(req.id)) continue;
+            _cpcShownApprovals.add(req.id);
+            cpcShowApprovalUI(req.id, req.text || req.command);
+            // ACKED로 변경
+            try {
+                await cpcFetch(`/api/commands/${req.id}/ack`, { method: 'PATCH' });
+            } catch(e) { console.warn('[CPC] approval ack failed', e); }
+        }
+
         // source=platoon_leader인 PENDING 명령 찾기 (CC가 보낸 메시지)
         const leaderMsgs = allCmds.filter(c =>
             c.source === 'platoon_leader' && c.status === 'PENDING'
@@ -333,6 +347,62 @@ async function cpcPollLeaderMessages() {
         }
     } catch(e) {
         console.warn('[CPC] leader poll error', e);
+    }
+}
+
+// --- 승인 요청 UI ---
+const _cpcShownApprovals = new Set();
+
+function cpcShowApprovalUI(approvalId, description) {
+    const cleaned = cpcStripMarkdown(description);
+    const uniqueClass = 'approval-' + approvalId;
+
+    const html = `
+        <div class="cpc-approval-box ${uniqueClass}">
+            <div class="cpc-approval-header">승인 요청</div>
+            <div class="cpc-approval-desc">${cpcSafeHtml(cleaned)}</div>
+            <div class="cpc-approval-buttons">
+                <button class="cpc-btn-approve" onclick="cpcRespondApproval('${approvalId}', true)">승인</button>
+                <button class="cpc-btn-deny" onclick="cpcRespondApproval('${approvalId}', false)">거부</button>
+            </div>
+        </div>`;
+
+    addMessage('system', html, 'cpc-approval');
+
+    // 음성 안내
+    if (voiceOutputEnabled && typeof speak === 'function') {
+        speak('소대장이 승인을 요청했습니다. ' + (cleaned.length > 80 ? cleaned.substring(0, 80) : cleaned));
+    }
+}
+
+async function cpcRespondApproval(approvalId, approved) {
+    const decision = approved ? 'APPROVED' : 'DENIED';
+    const responseText = `${approvalId}:${decision}`;
+
+    // 버튼 비활성화
+    const box = document.querySelector('.approval-' + CSS.escape(approvalId));
+    if (box) {
+        const btns = box.querySelectorAll('button');
+        btns.forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+        const statusEl = document.createElement('div');
+        statusEl.className = 'cpc-approval-status';
+        statusEl.textContent = approved ? '승인됨' : '거부됨';
+        statusEl.style.color = approved ? '#10b981' : '#ef4444';
+        statusEl.style.fontWeight = 'bold';
+        statusEl.style.marginTop = '8px';
+        box.appendChild(statusEl);
+    }
+
+    // CPC에 응답 전송 (source=approval_response)
+    try {
+        await cpcFetch(
+            `/api/platoons/${encodeURIComponent(_cpcSelectedId)}/commands`,
+            { method: 'POST', body: JSON.stringify({ text: responseText, source: 'approval_response' }) }
+        );
+        addMessage('system', `[CPC] 승인 응답 전송: ${decision}`);
+    } catch(e) {
+        console.warn('[CPC] approval response failed', e);
+        addMessage('system', '[CPC] 승인 응답 전송 실패');
     }
 }
 

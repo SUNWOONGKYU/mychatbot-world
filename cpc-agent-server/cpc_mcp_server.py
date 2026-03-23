@@ -12,6 +12,12 @@ keyboard injection 없이 네이티브로 명령 처리 가능.
       timeout 내 명령 없으면 null 반환.
   - report_cpc_result(cmd_id, result)
       CPC에 DONE 보고 (연락병 웹챗봇에 표시됨).
+  - send_cpc_message(platoon_id, text)
+      CC에서 챗봇으로 메시지 전송.
+  - request_cpc_approval(platoon_id, description)
+      챗봇에 승인/거부 버튼 표시. approval_id 반환.
+  - wait_cpc_approval(platoon_id, approval_id, timeout)
+      사용자의 승인/거부 응답 대기.
 
 사용 흐름 (cpc-engage 이후):
   loop:
@@ -129,6 +135,52 @@ def _tool_send_cpc_message(platoon_id: str, text: str) -> dict:
         return {'ok': False, 'error': str(e)}
 
 
+def _tool_request_cpc_approval(platoon_id: str, description: str) -> dict:
+    """소대장이 챗봇에 승인 요청을 보낸다. 반환된 approval_id로 wait_cpc_approval 호출."""
+    try:
+        resp = _http_post(
+            f'/api/platoons/{platoon_id}/commands',
+            {'text': description, 'source': 'approval_request'},
+        )
+        approval_id = resp.get('id', '')
+        return {'ok': True, 'approval_id': approval_id, 'response': resp}
+    except Exception as e:
+        return {'ok': False, 'error': str(e)}
+
+
+def _tool_wait_cpc_approval(platoon_id: str, approval_id: str, timeout: int = 120) -> dict:
+    """챗봇 사용자의 승인/거부 응답을 대기한다. APPROVED 또는 DENIED 반환."""
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            data = _http_get(f'/api/platoons/{platoon_id}/commands')
+            cmds = data if isinstance(data, list) else data.get('data', [])
+            # approval_response 중 이 approval_id를 참조하는 응답 찾기
+            for c in cmds:
+                if (c.get('source') == 'approval_response'
+                        and c.get('text', '').startswith(approval_id)):
+                    # text 형식: "{approval_id}:APPROVED" 또는 "{approval_id}:DENIED:사유"
+                    parts = c.get('text', '').split(':', 2)
+                    decision = parts[1] if len(parts) > 1 else 'UNKNOWN'
+                    reason = parts[2] if len(parts) > 2 else ''
+                    # ACK 처리
+                    try:
+                        cmd_id = c.get('id', '')
+                        _http_patch(f'/api/commands/{cmd_id}/ack', {})
+                    except Exception:
+                        pass
+                    return {
+                        'approved': decision == 'APPROVED',
+                        'decision': decision,
+                        'reason': reason,
+                        'approval_id': approval_id,
+                    }
+        except Exception:
+            pass
+        time.sleep(2)
+    return {'approved': False, 'decision': 'TIMEOUT', 'reason': '승인 대기 시간 초과', 'approval_id': approval_id}
+
+
 # ─── MCP 프로토콜 ─────────────────────────────────────────────────────────────
 
 TOOLS = [
@@ -177,6 +229,55 @@ TOOLS = [
                 },
             },
             'required': ['platoon_id', 'text'],
+        },
+    },
+    {
+        'name': 'request_cpc_approval',
+        'description': (
+            '소대장이 웹챗봇 사용자에게 승인을 요청한다. '
+            '챗봇 화면에 description과 승인/거부 버튼이 표시된다. '
+            '반환된 approval_id를 wait_cpc_approval에 전달하여 응답을 대기.'
+        ),
+        'inputSchema': {
+            'type': 'object',
+            'properties': {
+                'platoon_id': {
+                    'type': 'string',
+                    'description': '소대 ID (예: mychatbot-1)',
+                },
+                'description': {
+                    'type': 'string',
+                    'description': '승인 요청 설명 (챗봇에 표시됨). 예: "pages/bot/chat.js 파일을 수정해도 될까요?"',
+                },
+            },
+            'required': ['platoon_id', 'description'],
+        },
+    },
+    {
+        'name': 'wait_cpc_approval',
+        'description': (
+            'request_cpc_approval로 보낸 승인 요청의 응답을 대기한다. '
+            '사용자가 승인/거부 버튼을 클릭하면 결과 반환. '
+            '반환값: {approved: bool, decision: "APPROVED"|"DENIED"|"TIMEOUT", reason: str}'
+        ),
+        'inputSchema': {
+            'type': 'object',
+            'properties': {
+                'platoon_id': {
+                    'type': 'string',
+                    'description': '소대 ID',
+                },
+                'approval_id': {
+                    'type': 'string',
+                    'description': 'request_cpc_approval에서 반환된 approval_id',
+                },
+                'timeout': {
+                    'type': 'integer',
+                    'description': '대기 시간 (초). 기본값 120.',
+                    'default': 120,
+                },
+            },
+            'required': ['platoon_id', 'approval_id'],
         },
     },
     {
@@ -254,6 +355,35 @@ def _handle(req: dict):
                 result = _tool_send_cpc_message(
                     platoon_id=args['platoon_id'],
                     text=args['text'],
+                )
+                text = json.dumps(result, ensure_ascii=False)
+                _send({
+                    'jsonrpc': '2.0', 'id': req_id,
+                    'result': {
+                        'content': [{'type': 'text', 'text': text}],
+                        'isError': False,
+                    },
+                })
+
+            elif name == 'request_cpc_approval':
+                result = _tool_request_cpc_approval(
+                    platoon_id=args['platoon_id'],
+                    description=args['description'],
+                )
+                text = json.dumps(result, ensure_ascii=False)
+                _send({
+                    'jsonrpc': '2.0', 'id': req_id,
+                    'result': {
+                        'content': [{'type': 'text', 'text': text}],
+                        'isError': False,
+                    },
+                })
+
+            elif name == 'wait_cpc_approval':
+                result = _tool_wait_cpc_approval(
+                    platoon_id=args['platoon_id'],
+                    approval_id=args['approval_id'],
+                    timeout=int(args.get('timeout', 120)),
                 )
                 text = json.dumps(result, ensure_ascii=False)
                 _send({
