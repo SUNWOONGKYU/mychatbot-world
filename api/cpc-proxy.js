@@ -20,7 +20,14 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'path required (must start with /api/)' });
     }
 
-    const url = `${CPC_BASE}${path}`;
+    // 추가 쿼리 파라미터를 path에 병합 (cmd_id, status 등)
+    const extra = Object.entries(req.query)
+        .filter(([k]) => k !== 'path')
+        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+        .join('&');
+    const sep = path.includes('?') ? '&' : '?';
+    const url = extra ? `${CPC_BASE}${path}${sep}${extra}` : `${CPC_BASE}${path}`;
+
     const options = {
         method: req.method,
         headers: { 'Content-Type': 'application/json' },

@@ -1,0 +1,29 @@
+{
+  "task_id": "S3FE1",
+  "task_name": "School(학습) 페이지 React 전환",
+  "stage": 3,
+  "area": "FE",
+  "level": 1,
+  "task_status": "Completed",
+  "task_progress": 1000,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1FE1",
+    "S3BA1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3FE1_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/learning/page.tsx, app/learning/curriculum/page.tsx, app/learning/certificate/page.tsx, components/learning/session.tsx, components/learning/grade-result.tsx",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S3FE1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": ""
+}

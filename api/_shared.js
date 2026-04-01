@@ -7,7 +7,7 @@
  */
 
 // TODO: xsai SDK 통합 — chat.js/chat-stream.js에서 getOptimalModel() 연동 시 사용 예정
-import { generateText } from '@xsai/generate-text';
+// import { generateText } from '@xsai/generate-text'; // 패키지 deprecated, 연동 시 대체 SDK 사용
 
 // ─── API Key Rotation + Cooldown ───
 // Note: On Vercel serverless, KEY_COOLDOWNS resets on cold start.
@@ -91,7 +91,6 @@ export async function compactHistory(history, apiKey) {
 }
 
 // ─── Skill System Prompt Builder (token budget) ───
-const SILENT_REPLY_TOKEN = '__SILENT__';
 
 /**
  * Builds a token-budgeted skill section for the system prompt.
@@ -171,7 +170,7 @@ export function checkDmPolicy(botConfig, userId) {
 
 /**
  * Builds the full system message for AI chat, including persona, FAQs, skills, and rules.
- * Applies persona-specific role rules (CPC liaison, avatar, default).
+ * Applies persona-specific role rules (CPC direct connect, avatar, default).
  * @param {Object} botConfig - Full bot configuration
  * @param {string} [botConfig.botName] - Bot display name
  * @param {string} [botConfig.personaName] - Active persona name
@@ -187,15 +186,15 @@ export function buildSystemMessage(botConfig) {
   const personaName = botConfig?.personaName || '';
   const personaCategory = botConfig?.personaCategory || '';
   const userTitle = botConfig?.userTitle || '';
-  const isCpcLiaison = personaName === 'Claude 연락병' || personaName === 'Trade 연락병';
+  // v22.3: CPC 직접 연결 페르소나 (Claude Code / Trader) — AI 중간 처리 없이 소대장에게 직접 전달
+  const isCpcDirect = personaName === 'Claude Code' || personaName === 'Trader';
 
   let roleRules;
-  if (isCpcLiaison) {
+  if (isCpcDirect) {
     roleRules = `- 사용자를 "${userTitle || '지휘관님'}"이라고 부르세요
 - CPC 소대장은 "소대장"이라고만 부르세요 (님 붙이지 마세요)
-- 중요: 사용자의 메시지가 소대장에게 전달할 명령이면 (개발/작업/계산/코드/파일/배포/테스트/리모트/원격/연결/remote 포함), 반드시 "${SILENT_REPLY_TOKEN}" 한 단어만 반환하세요. 다른 말 붙이지 마세요. CPC 시스템이 자동으로 소대장에게 전달합니다.
-- 특히 "리모트", "원격", "remote" 관련 요청은 절대 직접 URL을 반환하지 마세요. 반드시 "${SILENT_REPLY_TOKEN}"만 반환하세요. URL은 소대장(Claude Code)만 생성할 수 있습니다.
-- 일상적인 인사, 안부, 상태 질문, 일반 대화에만 직접 답변하세요.`;
+- 이 페르소나는 CPC 소대장과 직접 연결됩니다. 메시지는 소대장에게 자동으로 전달됩니다.
+- 소대장이 처리 중임을 간단히 안내하세요.`;
   } else if (personaCategory === 'avatar') {
     roleRules = `- 사용자를 "${userTitle || '고객님'}"이라고 부르세요
 - "지휘관", "소대장", "연락병" 등 군사 용어를 절대 사용하지 마세요`;
@@ -207,9 +206,9 @@ export function buildSystemMessage(botConfig) {
   const skillSection = buildSkillSection(botConfig?.skills || []);
   const faqSection = buildFaqSection(botConfig?.faqs || []);
 
-  // CPC 소대 현황 (연락병에게만)
+  // CPC 소대 현황 (CPC 직접 연결 페르소나에게만)
   let cpcSection = '';
-  if (isCpcLiaison && botConfig?.cpcPlatoons?.length) {
+  if (isCpcDirect && botConfig?.cpcPlatoons?.length) {
     const lines = botConfig.cpcPlatoons.map(p => {
       return `  - ${p.name}: 상태=${p.status}`;
     });
@@ -237,10 +236,9 @@ ${roleRules}`;
  * @type {string[]}
  */
 export const MODEL_STACK = [
-  'google/gemini-2.0-flash-exp:free',  // 무료 모델 우선
   'google/gemini-2.5-flash',
   'openai/gpt-4o',
-  'anthropic/claude-sonnet-4.5',
+  'anthropic/claude-sonnet-4-6',
   'deepseek/deepseek-chat',
 ];
 

@@ -1,0 +1,587 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1114" width="1400" height="1114" font-family="'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f1e"/>
+      <stop offset="100%" style="stop-color:#1a1a3e"/>
+    </linearGradient>
+    <!-- API layer gradient -->
+    <linearGradient id="apiGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1d4ed8"/>
+      <stop offset="100%" style="stop-color:#1e3a8a"/>
+    </linearGradient>
+    <!-- Client layer gradient -->
+    <linearGradient id="clientGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#065f46"/>
+      <stop offset="100%" style="stop-color:#064e3b"/>
+    </linearGradient>
+    <!-- Storage layer gradient -->
+    <linearGradient id="storageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4c1d95"/>
+      <stop offset="100%" style="stop-color:#3b0764"/>
+    </linearGradient>
+    <!-- Card gradients -->
+    <linearGradient id="sharedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="testGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7f1d1d"/>
+      <stop offset="100%" style="stop-color:#991b1b"/>
+    </linearGradient>
+    <linearGradient id="channelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#164e63"/>
+    </linearGradient>
+    <!-- Glow filters -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="strongGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <!-- Arrow markers -->
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrowWhite" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Main background -->
+  <rect width="1400" height="1114" fill="url(#bgGrad)"/>
+
+  <!-- Grid pattern (subtle) -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="0.2" opacity="0.05"/>
+  </pattern>
+  <rect width="1400" height="1114" fill="url(#grid)"/>
+
+  <!-- ===== TITLE AREA ===== -->
+  <rect x="20" y="12" width="1360" height="72" rx="10" fill="#0d1b3e" stroke="#3b82f6" stroke-width="1.5" opacity="0.9"/>
+  <text x="700" y="38" text-anchor="middle" fill="#e2e8f0" font-size="22" font-weight="bold">My Chatbot World (MCW) — 아키텍처 (After)</text>
+  <text x="700" y="62" text-anchor="middle" fill="#94a3b8" font-size="13">OpenClaw 개선 적용 후 · API 레이어 + 클라이언트 레이어 + 스토리지 레이어</text>
+  <!-- Score badge -->
+  <rect x="1255" y="16" width="112" height="62" rx="8" fill="#1c1917" stroke="#f59e0b" stroke-width="2" filter="url(#glow)"/>
+  <text x="1311" y="42" text-anchor="middle" fill="#fbbf24" font-size="26" font-weight="bold">100</text>
+  <text x="1311" y="69" text-anchor="middle" fill="#f59e0b" font-size="11">/100 품질 점수</text>
+
+  <!-- ===== BEFORE vs AFTER (top-left badge) ===== -->
+  <rect x="20" y="95" width="310" height="130" rx="8" fill="#111827" stroke="#374151" stroke-width="1" opacity="0.9"/>
+  <text x="35" y="114" fill="#6b7280" font-size="11" font-weight="bold">BEFORE</text>
+  <text x="35" y="130" fill="#6b7280" font-size="10">- 단일 API 키, 로테이션 없음</text>
+  <text x="35" y="145" fill="#6b7280" font-size="10">- 스트리밍 없음 (REST만)</text>
+  <text x="35" y="160" fill="#6b7280" font-size="10">- 컨텍스트 오버플로우 미처리</text>
+  <text x="35" y="175" fill="#6b7280" font-size="10">- 중복 코드 (chat.js / chat-stream.js)</text>
+  <text x="35" y="190" fill="#6b7280" font-size="10">- 테스트 없음 · 훅 없음 · DM 정책 없음</text>
+  <!-- Arrow -->
+  <text x="342" y="162" fill="#f59e0b" font-size="20" font-weight="bold">-&gt;</text>
+  <text x="340" y="176" fill="#f59e0b" font-size="11">개선</text>
+
+  <!-- ===== LAYER LABELS ===== -->
+  <!-- API Layer label -->
+  <rect x="340" y="95" width="700" height="22" rx="4" fill="#1e3a8a" opacity="0.7"/>
+  <text x="690" y="111" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="bold">API LAYER (api/)</text>
+
+  <!-- Client Layer label -->
+  <rect x="340" y="560" width="700" height="22" rx="4" fill="#064e3b" opacity="0.7"/>
+  <text x="690" y="576" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="bold">CLIENT LAYER (js/)</text>
+
+  <!-- Storage Layer label -->
+  <rect x="1055" y="95" width="325" height="22" rx="4" fill="#3b0764" opacity="0.7"/>
+  <text x="1217" y="111" text-anchor="middle" fill="#c4b5fd" font-size="12" font-weight="bold">DATA FLOW &amp; INFRA</text>
+
+  <!-- ===== API LAYER ===== -->
+  <!-- API Layer outer box -->
+  <rect x="340" y="117" width="700" height="432" rx="12" fill="#0c1832" stroke="#3b82f6" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- _shared.js card -->
+  <rect x="355" y="128" width="330" height="290" rx="10" fill="url(#sharedGrad)" stroke="#60a5fa" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="355" y="128" width="330" height="32" rx="10" fill="#1e40af"/>
+  <rect x="355" y="148" width="330" height="12" fill="#1e40af"/>
+  <text x="520" y="149" text-anchor="middle" fill="#bfdbfe" font-size="13" font-weight="bold">_shared.js</text>
+  <text x="520" y="163" text-anchor="middle" fill="#93c5fd" font-size="10">8개 공유 함수 + CPC 소대 현황 (DRY)</text>
+
+  <!-- shared.js functions (2 columns) -->
+  <rect x="365" y="172" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="440" y="187" text-anchor="middle" fill="#bfdbfe" font-size="10">getAvailableKeys()</text>
+  <rect x="527" y="172" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="600" y="187" text-anchor="middle" fill="#bfdbfe" font-size="10">markKeyFailed()</text>
+
+  <rect x="365" y="200" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="440" y="215" text-anchor="middle" fill="#bfdbfe" font-size="10">isContextOverflow()</text>
+  <rect x="527" y="200" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="600" y="215" text-anchor="middle" fill="#bfdbfe" font-size="10">compactHistory()</text>
+
+  <rect x="365" y="228" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="440" y="243" text-anchor="middle" fill="#bfdbfe" font-size="10">buildSkillSection()</text>
+  <rect x="527" y="228" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="600" y="243" text-anchor="middle" fill="#bfdbfe" font-size="10">buildFaqSection()</text>
+
+  <rect x="365" y="256" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="440" y="271" text-anchor="middle" fill="#bfdbfe" font-size="10">checkDmPolicy()</text>
+  <rect x="527" y="256" width="148" height="22" rx="4" fill="#1e3a8a" opacity="0.8"/>
+  <text x="600" y="271" text-anchor="middle" fill="#bfdbfe" font-size="10">buildSystemMessage()</text>
+
+  <!-- MODEL_STACK -->
+  <rect x="365" y="286" width="310" height="50" rx="6" fill="#0f172a" stroke="#3b82f6" stroke-width="1"/>
+  <text x="520" y="302" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="bold">MODEL_STACK — 4-모델 워터폴</text>
+  <text x="520" y="318" text-anchor="middle" fill="#93c5fd" font-size="9">Gemini Flash → GPT-4o → Claude Sonnet → DeepSeek</text>
+  <!-- model icons -->
+  <rect x="374" y="326" width="60" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="404" y="337" text-anchor="middle" fill="#38bdf8" font-size="8">Gemini</text>
+  <rect x="441" y="326" width="55" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="469" y="337" text-anchor="middle" fill="#34d399" font-size="8">GPT-4o</text>
+  <rect x="503" y="326" width="65" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="535" y="337" text-anchor="middle" fill="#f97316" font-size="8">Claude</text>
+  <rect x="575" y="326" width="95" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="622" y="337" text-anchor="middle" fill="#a78bfa" font-size="8">DeepSeek</text>
+
+  <!-- API Key Rotation box inside shared.js -->
+  <rect x="365" y="348" width="310" height="58" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="520" y="364" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">API 키 로테이션</text>
+  <text x="520" y="379" text-anchor="middle" fill="#fde68a" font-size="9">다중 키 풀 · 30초 쿨다운 · 실패 키 마킹</text>
+  <text x="520" y="394" text-anchor="middle" fill="#fde68a" font-size="9">Context Overflow → AI 요약(compact) → 재시도</text>
+
+  <!-- Test card -->
+  <rect x="355" y="428" width="330" height="110" rx="10" fill="url(#testGrad)" stroke="#f87171" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="355" y="428" width="330" height="32" rx="10" fill="#7f1d1d"/>
+  <rect x="355" y="448" width="330" height="12" fill="#7f1d1d"/>
+  <text x="520" y="449" text-anchor="middle" fill="#fecaca" font-size="13" font-weight="bold">_shared.test.js</text>
+  <text x="520" y="463" text-anchor="middle" fill="#fca5a5" font-size="10">28개 단위 테스트 · vitest</text>
+  <rect x="367" y="470" width="90" height="18" rx="4" fill="#450a0a"/>
+  <text x="412" y="482" text-anchor="middle" fill="#fca5a5" font-size="9">키 로테이션</text>
+  <rect x="465" y="470" width="90" height="18" rx="4" fill="#450a0a"/>
+  <text x="510" y="482" text-anchor="middle" fill="#fca5a5" font-size="9">컨텍스트 감지</text>
+  <rect x="563" y="470" width="110" height="18" rx="4" fill="#450a0a"/>
+  <text x="618" y="482" text-anchor="middle" fill="#fca5a5" font-size="9">DM 정책 검증</text>
+  <rect x="367" y="494" width="90" height="18" rx="4" fill="#450a0a"/>
+  <text x="412" y="506" text-anchor="middle" fill="#fca5a5" font-size="9">히스토리 압축</text>
+  <rect x="465" y="494" width="90" height="18" rx="4" fill="#450a0a"/>
+  <text x="510" y="506" text-anchor="middle" fill="#fca5a5" font-size="9">스킬 섹션</text>
+  <rect x="563" y="494" width="110" height="18" rx="4" fill="#450a0a"/>
+  <text x="618" y="506" text-anchor="middle" fill="#fca5a5" font-size="9">시스템 메시지</text>
+
+  <!-- chat.js API card -->
+  <rect x="700" y="128" width="330" height="110" rx="10" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="700" y="128" width="330" height="32" rx="10" fill="#1d4ed8"/>
+  <rect x="700" y="148" width="330" height="12" fill="#1d4ed8"/>
+  <text x="865" y="149" text-anchor="middle" fill="#bfdbfe" font-size="13" font-weight="bold">chat.js (API)</text>
+  <text x="865" y="163" text-anchor="middle" fill="#93c5fd" font-size="10">비스트리밍 REST API (폴백)</text>
+  <rect x="712" y="170" width="140" height="18" rx="4" fill="#0f172a"/>
+  <text x="782" y="182" text-anchor="middle" fill="#93c5fd" font-size="9">POST /api/chat</text>
+  <rect x="860" y="170" width="160" height="18" rx="4" fill="#0f172a"/>
+  <text x="940" y="182" text-anchor="middle" fill="#93c5fd" font-size="9">JSON Response</text>
+  <rect x="712" y="195" width="140" height="18" rx="4" fill="#0f172a"/>
+  <text x="782" y="207" text-anchor="middle" fill="#93c5fd" font-size="9">_shared 활용</text>
+  <rect x="860" y="195" width="160" height="18" rx="4" fill="#0f172a"/>
+  <text x="940" y="207" text-anchor="middle" fill="#93c5fd" font-size="9">에러 폴백 처리</text>
+  <rect x="712" y="220" width="305" height="14" rx="3" fill="#1e40af" opacity="0.5"/>
+  <text x="864" y="230" text-anchor="middle" fill="#bfdbfe" font-size="9">Fallback when SSE unavailable</text>
+
+  <!-- chat-stream.js card -->
+  <rect x="700" y="250" width="330" height="110" rx="10" fill="#1e3a8a" stroke="#22d3ee" stroke-width="2" filter="url(#strongGlow)"/>
+  <rect x="700" y="250" width="330" height="32" rx="10" fill="#0e7490"/>
+  <rect x="700" y="270" width="330" height="12" fill="#0e7490"/>
+  <text x="865" y="271" text-anchor="middle" fill="#a5f3fc" font-size="13" font-weight="bold">chat-stream.js</text>
+  <text x="865" y="285" text-anchor="middle" fill="#67e8f9" font-size="10">SSE 실시간 스트리밍 (1차)</text>
+  <rect x="712" y="292" width="140" height="18" rx="4" fill="#0f172a"/>
+  <text x="782" y="304" text-anchor="middle" fill="#67e8f9" font-size="9">GET /api/chat-stream</text>
+  <rect x="860" y="292" width="160" height="18" rx="4" fill="#0f172a"/>
+  <text x="940" y="304" text-anchor="middle" fill="#67e8f9" font-size="9">text/event-stream</text>
+  <rect x="712" y="317" width="140" height="18" rx="4" fill="#0f172a"/>
+  <text x="782" y="329" text-anchor="middle" fill="#67e8f9" font-size="9">청크 단위 전송</text>
+  <rect x="860" y="317" width="160" height="18" rx="4" fill="#0f172a"/>
+  <text x="940" y="329" text-anchor="middle" fill="#67e8f9" font-size="9">실시간 렌더링</text>
+  <rect x="712" y="342" width="305" height="14" rx="3" fill="#164e63" opacity="0.8"/>
+  <text x="864" y="352" text-anchor="middle" fill="#a5f3fc" font-size="9">Server-Sent Events · 저지연 응답</text>
+
+  <!-- skills.js card -->
+  <rect x="700" y="372" width="330" height="90" rx="10" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="700" y="372" width="330" height="32" rx="10" fill="#1e40af"/>
+  <rect x="700" y="392" width="330" height="12" fill="#1e40af"/>
+  <text x="865" y="393" text-anchor="middle" fill="#bfdbfe" font-size="13" font-weight="bold">skills.js (API)</text>
+  <text x="865" y="407" text-anchor="middle" fill="#93c5fd" font-size="10">스킬 카탈로그 API</text>
+  <rect x="712" y="414" width="140" height="18" rx="4" fill="#0f172a"/>
+  <text x="782" y="426" text-anchor="middle" fill="#93c5fd" font-size="9">GET /api/skills</text>
+  <rect x="860" y="414" width="160" height="18" rx="4" fill="#0f172a"/>
+  <text x="940" y="426" text-anchor="middle" fill="#93c5fd" font-size="9">21개 스킬 반환</text>
+  <rect x="712" y="439" width="305" height="16" rx="3" fill="#1e40af" opacity="0.4"/>
+  <text x="864" y="451" text-anchor="middle" fill="#bfdbfe" font-size="9">스킬 토큰 예산 계산 · systemPrompt 포함</text>
+
+  <!-- skills.js + test card -->
+  <rect x="700" y="474" width="330" height="62" rx="10" fill="#7f1d1d" stroke="#f87171" stroke-width="1" filter="url(#shadow)"/>
+  <text x="865" y="494" text-anchor="middle" fill="#fecaca" font-size="12" font-weight="bold">Shared.test.js 연동 검증</text>
+  <text x="865" y="510" text-anchor="middle" fill="#fca5a5" font-size="9">vitest · 28 tests · 단위 / 통합 커버리지</text>
+  <text x="865" y="525" text-anchor="middle" fill="#fca5a5" font-size="9">JSDoc 문서화 완료</text>
+
+  <!-- ===== CLIENT LAYER ===== -->
+  <!-- Client layer outer box -->
+  <rect x="340" y="583" width="700" height="498" rx="12" fill="#041f12" stroke="#10b981" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- app.js card -->
+  <rect x="355" y="594" width="330" height="240" rx="10" fill="url(#clientGrad)" stroke="#34d399" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="355" y="594" width="330" height="32" rx="10" fill="#065f46"/>
+  <rect x="355" y="614" width="330" height="12" fill="#065f46"/>
+  <text x="520" y="615" text-anchor="middle" fill="#a7f3d0" font-size="13" font-weight="bold">app.js — MCW 코어</text>
+  <text x="520" y="629" text-anchor="middle" fill="#6ee7b7" font-size="10">21개 스킬 · 6개 프리셋 · 훅 시스템</text>
+
+  <rect x="365" y="638" width="310" height="36" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="520" y="652" text-anchor="middle" fill="#34d399" font-size="10" font-weight="bold">21개 스킬 (systemPrompt 포함)</text>
+  <text x="520" y="667" text-anchor="middle" fill="#6ee7b7" font-size="9">일반상담 · 번역 · 요약 · 코드리뷰 · 의료상담 · 법률 · 창작 ...</text>
+
+  <rect x="365" y="682" width="148" height="36" rx="6" fill="#0f172a"/>
+  <text x="440" y="696" text-anchor="middle" fill="#34d399" font-size="10" font-weight="bold">6개 스킬 프리셋</text>
+  <text x="440" y="710" text-anchor="middle" fill="#6ee7b7" font-size="9">전문가 · 친구 · 교사 ...</text>
+  <rect x="527" y="682" width="148" height="36" rx="6" fill="#0f172a"/>
+  <text x="600" y="696" text-anchor="middle" fill="#34d399" font-size="10" font-weight="bold">syncSkills()</text>
+  <text x="600" y="710" text-anchor="middle" fill="#6ee7b7" font-size="9">서버 카탈로그 동기화</text>
+
+  <!-- Hook System -->
+  <rect x="365" y="726" width="310" height="50" rx="6" fill="#0f172a" stroke="#fbbf24" stroke-width="1"/>
+  <text x="520" y="742" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">미니 훅 시스템</text>
+  <rect x="375" y="752" width="130" height="18" rx="4" fill="#1c1404"/>
+  <text x="440" y="764" text-anchor="middle" fill="#fde68a" font-size="9">before_send</text>
+  <rect x="515" y="752" width="150" height="18" rx="4" fill="#1c1404"/>
+  <text x="590" y="764" text-anchor="middle" fill="#fde68a" font-size="9">after_receive</text>
+
+  <!-- Supabase config -->
+  <rect x="365" y="784" width="310" height="40" rx="6" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="520" y="800" text-anchor="middle" fill="#c4b5fd" font-size="10" font-weight="bold">Supabase 설정</text>
+  <text x="520" y="815" text-anchor="middle" fill="#a78bfa" font-size="9">SB_URL · SB_KEY · 연결 초기화</text>
+
+  <!-- chat.js CLIENT card -->
+  <rect x="700" y="594" width="330" height="240" rx="10" fill="url(#clientGrad)" stroke="#34d399" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="700" y="594" width="330" height="32" rx="10" fill="#065f46"/>
+  <rect x="700" y="614" width="330" height="12" fill="#065f46"/>
+  <text x="865" y="615" text-anchor="middle" fill="#a7f3d0" font-size="13" font-weight="bold">chat.js — 채팅 인터페이스</text>
+  <text x="865" y="629" text-anchor="middle" fill="#6ee7b7" font-size="10">SSE + CPC 연동 · 리모트 URL 링크 · 보안</text>
+
+  <rect x="712" y="638" width="305" height="22" rx="5" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
+  <text x="864" y="653" text-anchor="middle" fill="#67e8f9" font-size="9">SSE 스트리밍 수신 -&gt; REST 폴백 (자동)</text>
+
+  <rect x="712" y="666" width="148" height="22" rx="4" fill="#0f172a"/>
+  <text x="786" y="680" text-anchor="middle" fill="#6ee7b7" font-size="9">Silent Reply 처리</text>
+  <rect x="868" y="666" width="148" height="22" rx="4" fill="#0f172a"/>
+  <text x="942" y="680" text-anchor="middle" fill="#6ee7b7" font-size="9">CPC 양방향 연동</text>
+
+  <rect x="712" y="694" width="305" height="34" rx="5" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="864" y="708" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="bold">TTS 3-tier 폴백</text>
+  <text x="864" y="721" text-anchor="middle" fill="#fde68a" font-size="9">OpenAI TTS → SpeechSynthesis → Google TTS</text>
+
+  <rect x="712" y="734" width="305" height="22" rx="5" fill="#0f172a" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="864" y="749" text-anchor="middle" fill="#c4b5fd" font-size="9">STT (Whisper) + 무음 감지</text>
+
+  <rect x="712" y="762" width="148" height="22" rx="4" fill="#0f172a"/>
+  <text x="786" y="776" text-anchor="middle" fill="#6ee7b7" font-size="9">Per-persona 통계</text>
+  <rect x="868" y="762" width="148" height="22" rx="4" fill="#0f172a"/>
+  <text x="942" y="776" text-anchor="middle" fill="#6ee7b7" font-size="9">DM 정책 (페어링 UI)</text>
+
+  <rect x="712" y="790" width="305" height="20" rx="4" fill="#0f172a" stroke="#ef4444" stroke-width="1"/>
+  <text x="864" y="804" text-anchor="middle" fill="#fca5a5" font-size="9">XSS 방어 · escapeHtml() · 입력 sanitization</text>
+
+  <!-- kb-manager.js card -->
+  <rect x="355" y="845" width="330" height="225" rx="10" fill="url(#clientGrad)" stroke="#34d399" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="355" y="845" width="330" height="32" rx="10" fill="#065f46"/>
+  <rect x="355" y="865" width="330" height="12" fill="#065f46"/>
+  <text x="520" y="866" text-anchor="middle" fill="#a7f3d0" font-size="13" font-weight="bold">kb-manager.js</text>
+  <text x="520" y="880" text-anchor="middle" fill="#6ee7b7" font-size="10">4-Layer 스토리지 아키텍처</text>
+
+  <!-- 4 layer boxes -->
+  <rect x="365" y="888" width="310" height="22" rx="4" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="520" y="903" text-anchor="middle" fill="#c4b5fd" font-size="9">Layer 1: localStorage (빠른 소규모 데이터)</text>
+  <rect x="365" y="916" width="310" height="22" rx="4" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="520" y="931" text-anchor="middle" fill="#c4b5fd" font-size="9">Layer 2: IndexedDB (대용량 로컬 저장)</text>
+  <rect x="365" y="944" width="310" height="22" rx="4" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="520" y="959" text-anchor="middle" fill="#c4b5fd" font-size="9">Layer 3: Supabase DB (구조화 데이터 + RLS)</text>
+  <rect x="365" y="972" width="310" height="22" rx="4" fill="#1e1b4b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="520" y="987" text-anchor="middle" fill="#c4b5fd" font-size="9">Layer 4: Supabase Storage (파일 · 미디어)</text>
+
+  <rect x="365" y="1002" width="148" height="30" rx="5" fill="#0f172a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="440" y="1014" text-anchor="middle" fill="#c4b5fd" font-size="9" font-weight="bold">벡터 메모리</text>
+  <text x="440" y="1026" text-anchor="middle" fill="#a78bfa" font-size="8">pgvector semantic search</text>
+  <rect x="527" y="1002" width="148" height="30" rx="5" fill="#0f172a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="600" y="1014" text-anchor="middle" fill="#c4b5fd" font-size="9" font-weight="bold">키워드 검색</text>
+  <text x="600" y="1026" text-anchor="middle" fill="#a78bfa" font-size="8">폴백 검색 엔진</text>
+
+  <rect x="365" y="1040" width="310" height="22" rx="4" fill="#064e3b" opacity="0.8"/>
+  <text x="520" y="1055" text-anchor="middle" fill="#6ee7b7" font-size="9">민감도 x 크기 매트릭스 → 레이어 자동 라우팅</text>
+
+  <!-- channel-adapter.js card -->
+  <rect x="700" y="845" width="330" height="225" rx="10" fill="url(#channelGrad)" stroke="#38bdf8" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="700" y="845" width="330" height="32" rx="10" fill="#0c4a6e"/>
+  <rect x="700" y="865" width="330" height="12" fill="#0c4a6e"/>
+  <text x="865" y="866" text-anchor="middle" fill="#bae6fd" font-size="13" font-weight="bold">channel-adapter.js</text>
+  <text x="865" y="880" text-anchor="middle" fill="#7dd3fc" font-size="10">채널 어댑터 패턴 · 확장 가능 설계</text>
+
+  <!-- Abstract adapter -->
+  <rect x="712" y="890" width="305" height="28" rx="5" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="864" y="902" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="bold">ChannelAdapter (추상 인터페이스)</text>
+  <text x="864" y="912" text-anchor="middle" fill="#38bdf8" font-size="8">send() · receive() · formatMessage()</text>
+
+  <!-- Arrow down from abstract -->
+  <line x1="864" y1="918" x2="786" y2="934" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="864" y1="918" x2="942" y2="934" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- WebChat adapter -->
+  <rect x="712" y="934" width="140" height="44" rx="5" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+  <text x="782" y="950" text-anchor="middle" fill="#34d399" font-size="10" font-weight="bold">WebChatAdapter</text>
+  <text x="782" y="964" text-anchor="middle" fill="#6ee7b7" font-size="8">브라우저 채팅 UI</text>
+  <text x="782" y="972" text-anchor="middle" fill="#6ee7b7" font-size="8">SSE 스트리밍</text>
+
+  <!-- Telegram adapter -->
+  <rect x="868" y="934" width="140" height="44" rx="5" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="938" y="950" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="bold">TelegramAdapter</text>
+  <text x="938" y="964" text-anchor="middle" fill="#7dd3fc" font-size="8">Telegram Bot API</text>
+  <text x="938" y="972" text-anchor="middle" fill="#7dd3fc" font-size="8">Webhook 처리</text>
+
+  <!-- ChannelManager -->
+  <rect x="712" y="988" width="305" height="28" rx="5" fill="#0f172a" stroke="#fbbf24" stroke-width="1"/>
+  <text x="864" y="1003" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">ChannelManager</text>
+  <text x="864" y="1014" text-anchor="middle" fill="#fde68a" font-size="8">어댑터 등록 · 라우팅 · 관리</text>
+
+  <!-- Extensible note -->
+  <rect x="712" y="1024" width="305" height="36" rx="5" fill="#1c2432" stroke="#64748b" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="864" y="1040" text-anchor="middle" fill="#94a3b8" font-size="9" font-weight="bold">확장 가능 (플러그인 방식)</text>
+  <text x="864" y="1052" text-anchor="middle" fill="#64748b" font-size="8">Discord · Slack · LINE · KakaoTalk ...</text>
+
+  <!-- ===== DATA FLOW / INFRA PANEL (right side) ===== -->
+  <rect x="1055" y="117" width="325" height="964" rx="12" fill="#0a0a1f" stroke="#6d28d9" stroke-width="1.5" opacity="0.9"/>
+
+  <!-- Data Flow title -->
+  <rect x="1065" y="127" width="305" height="26" rx="6" fill="#1e1b4b"/>
+  <text x="1217" y="144" text-anchor="middle" fill="#c4b5fd" font-size="12" font-weight="bold">데이터 플로우</text>
+
+  <!-- User input flow -->
+  <rect x="1065" y="163" width="305" height="36" rx="8" fill="#1a1a3e" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="1217" y="178" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="bold">사용자 입력 (User)</text>
+  <text x="1217" y="192" text-anchor="middle" fill="#fde68a" font-size="9">텍스트 · 음성(STT/Whisper) · 파일</text>
+
+  <!-- Arrow -->
+  <line x1="1217" y1="199" x2="1217" y2="214" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Hook: before_send -->
+  <rect x="1065" y="214" width="305" height="26" rx="6" fill="#1c1404" stroke="#fbbf24" stroke-width="1"/>
+  <text x="1217" y="232" text-anchor="middle" fill="#fde68a" font-size="10">훅: before_send 실행</text>
+
+  <line x1="1217" y1="240" x2="1217" y2="255" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Skills injection -->
+  <rect x="1065" y="255" width="305" height="36" rx="6" fill="#052e16" stroke="#34d399" stroke-width="1"/>
+  <text x="1217" y="270" text-anchor="middle" fill="#a7f3d0" font-size="10" font-weight="bold">스킬 주입</text>
+  <text x="1217" y="284" text-anchor="middle" fill="#6ee7b7" font-size="9">app.js 21개 → chat.js → API → 시스템 프롬프트</text>
+
+  <line x1="1217" y1="291" x2="1217" y2="306" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrowCyan)"/>
+
+  <!-- SSE Streaming -->
+  <rect x="1065" y="306" width="305" height="52" rx="6" fill="#0c2233" stroke="#22d3ee" stroke-width="2"/>
+  <text x="1217" y="323" text-anchor="middle" fill="#67e8f9" font-size="10" font-weight="bold">SSE 스트리밍 (1차)</text>
+  <text x="1217" y="337" text-anchor="middle" fill="#a5f3fc" font-size="9">chat-stream.js → 실시간 토큰 전송</text>
+  <text x="1217" y="351" text-anchor="middle" fill="#a5f3fc" font-size="9">실패 시 → REST 폴백 자동 전환</text>
+
+  <line x1="1217" y1="358" x2="1217" y2="373" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- API Key Rotation -->
+  <rect x="1065" y="373" width="305" height="52" rx="6" fill="#1a0e00" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="1217" y="390" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">API 키 로테이션</text>
+  <text x="1217" y="404" text-anchor="middle" fill="#fde68a" font-size="9">getAvailableKeys() → 30초 쿨다운</text>
+  <text x="1217" y="418" text-anchor="middle" fill="#fde68a" font-size="9">실패 → markKeyFailed() → 다음 키</text>
+
+  <line x1="1217" y1="425" x2="1217" y2="440" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Model Waterfall -->
+  <rect x="1065" y="440" width="305" height="62" rx="6" fill="#0f172a" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="1217" y="457" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="bold">4-모델 워터폴</text>
+  <rect x="1075" y="463" width="60" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="1105" y="474" text-anchor="middle" fill="#38bdf8" font-size="8">Gemini</text>
+  <rect x="1143" y="463" width="55" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="1170" y="474" text-anchor="middle" fill="#34d399" font-size="8">GPT-4o</text>
+  <rect x="1206" y="463" width="65" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="1238" y="474" text-anchor="middle" fill="#f97316" font-size="8">Claude</text>
+  <rect x="1279" y="463" width="80" height="16" rx="3" fill="#1a3a5c"/>
+  <text x="1319" y="474" text-anchor="middle" fill="#a78bfa" font-size="8">DeepSeek</text>
+  <text x="1217" y="496" text-anchor="middle" fill="#64748b" font-size="8">앞 모델 실패 → 다음 모델 자동 전환</text>
+
+  <line x1="1217" y1="502" x2="1217" y2="517" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Context Overflow -->
+  <rect x="1065" y="517" width="305" height="52" rx="6" fill="#1a0e0e" stroke="#f87171" stroke-width="1.5"/>
+  <text x="1217" y="534" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="bold">컨텍스트 오버플로우 처리</text>
+  <text x="1217" y="548" text-anchor="middle" fill="#fca5a5" font-size="9">isContextOverflow() → 감지</text>
+  <text x="1217" y="562" text-anchor="middle" fill="#fca5a5" font-size="9">compactHistory() → AI 요약 → 재시도</text>
+
+  <line x1="1217" y1="569" x2="1217" y2="584" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Hook: after_receive -->
+  <rect x="1065" y="584" width="305" height="26" rx="6" fill="#1c1404" stroke="#fbbf24" stroke-width="1"/>
+  <text x="1217" y="602" text-anchor="middle" fill="#fde68a" font-size="10">훅: after_receive 실행</text>
+
+  <line x1="1217" y1="610" x2="1217" y2="625" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- TTS -->
+  <rect x="1065" y="625" width="305" height="40" rx="6" fill="#0f1a2e" stroke="#7c3aed" stroke-width="1"/>
+  <text x="1217" y="641" text-anchor="middle" fill="#c4b5fd" font-size="10" font-weight="bold">TTS 출력 (3-tier)</text>
+  <text x="1217" y="656" text-anchor="middle" fill="#a78bfa" font-size="9">OpenAI TTS → SpeechSynthesis → Google TTS</text>
+
+  <line x1="1217" y1="665" x2="1217" y2="680" stroke="#34d399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Storage routing -->
+  <rect x="1065" y="680" width="305" height="52" rx="6" fill="#0d0a1e" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="1217" y="697" text-anchor="middle" fill="#c4b5fd" font-size="10" font-weight="bold">스토리지 자동 라우팅</text>
+  <text x="1217" y="711" text-anchor="middle" fill="#a78bfa" font-size="9">민감도 x 크기 매트릭스 계산</text>
+  <text x="1217" y="725" text-anchor="middle" fill="#a78bfa" font-size="9">localStorage / IndexedDB / Supabase DB / Storage</text>
+
+  <line x1="1217" y1="732" x2="1217" y2="747" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- Supabase Infrastructure -->
+  <rect x="1065" y="747" width="305" height="80" rx="6" fill="#13003a" stroke="#7c3aed" stroke-width="2"/>
+  <text x="1217" y="764" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="bold">Supabase 인프라</text>
+  <rect x="1075" y="772" width="130" height="20" rx="4" fill="#1e1b4b"/>
+  <text x="1140" y="786" text-anchor="middle" fill="#a78bfa" font-size="9">PostgreSQL DB</text>
+  <rect x="1215" y="772" width="145" height="20" rx="4" fill="#1e1b4b"/>
+  <text x="1287" y="786" text-anchor="middle" fill="#a78bfa" font-size="9">pgvector (의미 검색)</text>
+  <rect x="1075" y="798" width="130" height="20" rx="4" fill="#1e1b4b"/>
+  <text x="1140" y="812" text-anchor="middle" fill="#a78bfa" font-size="9">Storage (파일)</text>
+  <rect x="1215" y="798" width="145" height="20" rx="4" fill="#1e1b4b"/>
+  <text x="1287" y="812" text-anchor="middle" fill="#a78bfa" font-size="9">RLS 보안 정책</text>
+
+  <line x1="1217" y1="827" x2="1217" y2="842" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- DM Security -->
+  <rect x="1065" y="842" width="305" height="52" rx="6" fill="#0f172a" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="1217" y="859" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="bold">DM 보안 정책</text>
+  <text x="1217" y="873" text-anchor="middle" fill="#fca5a5" font-size="9">checkDmPolicy() · 3가지 모드</text>
+  <rect x="1075" y="880" width="80" height="10" rx="2" fill="#450a0a"/>
+  <text x="1115" y="888" text-anchor="middle" fill="#fca5a5" font-size="7">public</text>
+  <rect x="1163" y="880" width="80" height="10" rx="2" fill="#450a0a"/>
+  <text x="1203" y="888" text-anchor="middle" fill="#fca5a5" font-size="7">allowlist</text>
+  <rect x="1251" y="880" width="109" height="10" rx="2" fill="#450a0a"/>
+  <text x="1305" y="888" text-anchor="middle" fill="#fca5a5" font-size="7">pairing 코드</text>
+
+  <line x1="1217" y1="894" x2="1217" y2="909" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowWhite)"/>
+
+  <!-- CPC Control -->
+  <rect x="1065" y="909" width="305" height="66" rx="6" fill="#0c1020" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="1217" y="926" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="bold">CPC 제어 연동 + 리모트 컨트롤</text>
+  <text x="1217" y="940" text-anchor="middle" fill="#7dd3fc" font-size="9">claude-platoons-control.vercel.app</text>
+  <text x="1217" y="954" text-anchor="middle" fill="#7dd3fc" font-size="9">명령: PENDING → ACKED → DONE</text>
+  <text x="1217" y="968" text-anchor="middle" fill="#60a5fa" font-size="9">session_url → 클로드 연락병 리모트 URL 전달</text>
+
+  <line x1="1217" y1="975" x2="1217" y2="990" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowWhite)"/>
+
+  <!-- Channel output -->
+  <rect x="1065" y="990" width="305" height="48" rx="6" fill="#001a2e" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="1217" y="1007" text-anchor="middle" fill="#7dd3fc" font-size="10" font-weight="bold">채널 출력</text>
+  <rect x="1075" y="1015" width="88" height="16" rx="3" fill="#0c2233"/>
+  <text x="1119" y="1026" text-anchor="middle" fill="#38bdf8" font-size="8">WebChat UI</text>
+  <rect x="1171" y="1015" width="88" height="16" rx="3" fill="#0c2233"/>
+  <text x="1215" y="1026" text-anchor="middle" fill="#38bdf8" font-size="8">Telegram</text>
+  <rect x="1267" y="1015" width="93" height="16" rx="3" fill="#0c2233" stroke="#374151" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="1313" y="1026" text-anchor="middle" fill="#64748b" font-size="8">확장...</text>
+
+  <!-- ===== CROSS-LAYER ARROWS ===== -->
+  <!-- app.js → chat.js (client) skill pass -->
+  <path d="M 690 697 Q 710 697 710 697" stroke="#34d399" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)"/>
+
+  <!-- chat.js CLIENT → chat-stream.js API (SSE) -->
+  <path d="M 700 640 Q 660 480 700 360" stroke="#22d3ee" stroke-width="2" fill="none" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
+  <!-- Label for SSE arrow -->
+  <rect x="632" y="477" width="58" height="16" rx="3" fill="#0c2233" opacity="0.9"/>
+  <text x="661" y="488" text-anchor="middle" fill="#67e8f9" font-size="8">SSE</text>
+
+  <!-- chat.js CLIENT → chat.js API (REST fallback) -->
+  <path d="M 700 650 Q 655 520 700 175" stroke="#60a5fa" stroke-width="1.5" fill="none" stroke-dasharray="4,4" marker-end="url(#arrowCyan)"/>
+
+  <!-- app.js → skills.js API (syncSkills) -->
+  <path d="M 690 715 Q 680 460 700 420" stroke="#34d399" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arrowGreen)"/>
+
+  <!-- kb-manager → Supabase infra (right panel) -->
+  <path d="M 685 950 Q 880 950 1065 790" stroke="#8b5cf6" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+
+  <!-- channel-adapter → right panel channel output -->
+  <path d="M 1030 950 Q 1050 980 1065 1000" stroke="#38bdf8" stroke-width="1.5" fill="none" marker-end="url(#arrowCyan)"/>
+
+  <!-- _shared.js → both chat APIs (shared usage) -->
+  <path d="M 685 260 Q 695 260 700 260" stroke="#60a5fa" stroke-width="1.5" fill="none" marker-end="url(#arrowCyan)"/>
+  <path d="M 685 350 Q 695 350 700 350" stroke="#60a5fa" stroke-width="1.5" fill="none" marker-end="url(#arrowCyan)"/>
+  <path d="M 685 415 Q 695 415 700 415" stroke="#60a5fa" stroke-width="1.5" fill="none" marker-end="url(#arrowCyan)"/>
+
+  <!-- Data flow from client to right panel -->
+  <path d="M 1040 620 Q 1050 600 1065 590" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrowOrange)"/>
+
+  <!-- ===== LEGEND ===== -->
+  <rect x="20" y="236" width="310" height="200" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
+  <text x="30" y="256" fill="#94a3b8" font-size="11" font-weight="bold">범례 (Legend)</text>
+
+  <rect x="30" y="264" width="18" height="12" rx="3" fill="#1d4ed8" stroke="#60a5fa" stroke-width="1"/>
+  <text x="56" y="275" fill="#93c5fd" font-size="10">API 레이어 (api/)</text>
+
+  <rect x="30" y="284" width="18" height="12" rx="3" fill="#065f46" stroke="#34d399" stroke-width="1"/>
+  <text x="56" y="295" fill="#6ee7b7" font-size="10">클라이언트 레이어 (js/)</text>
+
+  <rect x="30" y="304" width="18" height="12" rx="3" fill="#4c1d95" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="56" y="315" fill="#c4b5fd" font-size="10">스토리지 / 인프라</text>
+
+  <rect x="30" y="324" width="18" height="12" rx="3" fill="#7f1d1d" stroke="#f87171" stroke-width="1"/>
+  <text x="56" y="335" fill="#fca5a5" font-size="10">테스트 (vitest)</text>
+
+  <line x1="30" y1="350" x2="48" y2="350" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="56" y="354" fill="#fde68a" font-size="10">메인 데이터 흐름</text>
+
+  <line x1="30" y1="368" x2="48" y2="368" stroke="#22d3ee" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#arrowCyan)"/>
+  <text x="56" y="372" fill="#67e8f9" font-size="10">SSE 스트리밍</text>
+
+  <line x1="30" y1="386" x2="48" y2="386" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowCyan)"/>
+  <text x="56" y="390" fill="#93c5fd" font-size="10">REST 폴백</text>
+
+  <line x1="30" y1="404" x2="48" y2="404" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="5,2" marker-end="url(#arrowPurple)"/>
+  <text x="56" y="408" fill="#c4b5fd" font-size="10">스토리지 라우팅</text>
+
+  <line x1="30" y1="422" x2="48" y2="422" stroke="#374151" stroke-width="1" stroke-dasharray="3,3"/>
+  <rect x="26" y="415" width="26" height="14" rx="2" fill="none" stroke="#374151" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="56" y="426" fill="#64748b" font-size="10">향후 확장 예정</text>
+
+  <!-- ===== STATS SUMMARY ===== -->
+  <rect x="20" y="447" width="310" height="130" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
+  <text x="175" y="467" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">개선 요약 (After)</text>
+
+  <text x="30" y="487" fill="#34d399" font-size="10">+ 공유 함수 8개 (_shared.js)</text>
+  <text x="30" y="503" fill="#34d399" font-size="10">+ 단위 테스트 28개 (vitest)</text>
+  <text x="30" y="519" fill="#34d399" font-size="10">+ SSE 실시간 스트리밍</text>
+  <text x="30" y="535" fill="#34d399" font-size="10">+ 4-모델 워터폴 폴백</text>
+  <text x="30" y="551" fill="#34d399" font-size="10">+ API 키 로테이션 + 쿨다운</text>
+  <text x="30" y="567" fill="#34d399" font-size="10">+ 채널 어댑터 · 리모트 컨트롤 연결</text>
+
+  <!-- ===== TECH STACK ===== -->
+  <rect x="20" y="588" width="310" height="120" rx="8" fill="#111827" stroke="#374151" stroke-width="1"/>
+  <text x="175" y="608" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">기술 스택</text>
+  <text x="30" y="628" fill="#93c5fd" font-size="10">Frontend: Vanilla JS · SSE · Web API</text>
+  <text x="30" y="644" fill="#93c5fd" font-size="10">Backend: Vercel Functions (Node.js)</text>
+  <text x="30" y="660" fill="#93c5fd" font-size="10">DB: Supabase (PostgreSQL + pgvector)</text>
+  <text x="30" y="676" fill="#93c5fd" font-size="10">AI: Gemini / GPT-4o / Claude / DeepSeek</text>
+  <text x="30" y="692" fill="#93c5fd" font-size="10">Test: vitest · JSDoc</text>
+
+  <!-- ===== FOOTER ===== -->
+  <rect x="20" y="1082" width="1360" height="22" rx="4" fill="#0d1b3e" opacity="0.7"/>
+  <text x="700" y="1097" text-anchor="middle" fill="#475569" font-size="10">My Chatbot World (MCW) · OpenClaw-inspired Architecture · 2026-02-26 · claude-opus-4-6</text>
+
+  <!-- Decorative dots -->
+  <circle cx="25" cy="1093" r="4" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="1375" cy="1093" r="4" fill="#10b981" opacity="0.5"/>
+
+</svg>

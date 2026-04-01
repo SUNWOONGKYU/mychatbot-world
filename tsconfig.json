@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "_comment": "@task S1BI1 - Next.js 프로젝트 초기화 + Tailwind CSS 설정",
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "참고자료_ai-chatbot-avatar-project",
+    "참고자료_AIRI",
+    "참고자료_OpenClaw",
+    "Dev_Package_archive_20260304",
+    "Dev_Package_archive_v1_20260331",
+    "Brainstorming",
+    "SAL_Grid_Dev_Suite"
+  ]
+}

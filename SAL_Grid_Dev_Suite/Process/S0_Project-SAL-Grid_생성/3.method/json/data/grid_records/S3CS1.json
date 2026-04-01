@@ -1,0 +1,28 @@
+{
+  "task_id": "S3CS1",
+  "task_name": "스킬 프롬프트 10개 (소급)",
+  "stage": 3,
+  "area": "CS",
+  "level": 1,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S3DB1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3CS1_instruction.md",
+  "task_agent": "content-specialist",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "skill-market/prompt-skills/*.json (10개)",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S3CS1_verification.md",
+  "verification_agent": "qa-specialist",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": ""
+}

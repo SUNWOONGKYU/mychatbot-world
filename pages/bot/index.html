@@ -3,10 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>My Chatbot World</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=18.3">
-    <link rel="stylesheet" href="../../css/chat.css?v=18.3">
+    <link rel="stylesheet" href="../../css/styles.css?v=19.1">
+    <link rel="stylesheet" href="../../css/chat.css?v=19.1">
+    <link rel="stylesheet" href="../../css/chat-mobile.css?v=19.2">
 </head>
 
 <body class="chat-body">
@@ -88,18 +89,18 @@
             bots.forEach(function(bot) {
                 if (!bot.personas) return;
                 bot.personas.forEach(function(p) {
-                    // Claude Messenger → Claude 연락병
+                    // → Claude Code (소대장 직접 연결)
                     if (p.name === 'Claude Messenger' || p.name === '클로드 메신저' || p.name === '클로드 연락병' || p.name === 'Claude 연락병') {
-                        p.name = 'Claude 연락병';
-                        p.role = '지휘관의 명령을 CPC를 통해 Claude Code 소대장에게 전달하고, 소대장의 답변을 보고하는 연락병입니다.';
-                        p.greeting = 'Claude 연락병입니다. 소대장에게 전달할 명령을 말씀해주세요. 명령을 접수하면 소대장에게 즉시 전달하고 답변을 받아오겠습니다.';
+                        p.name = 'Claude Code';
+                        p.role = 'Claude Code 소대장과 직접 연결. 메시지를 입력하면 소대장이 직접 처리합니다.';
+                        p.greeting = 'Claude Code 소대장과 직접 연결됩니다. 명령을 입력하면 소대장이 직접 처리합니다.';
                         changed = true;
                     }
-                    // Trader → Trade 연락병
-                    if (p.name === 'Trader' || p.id === 'sunny_helper_trader' || p.id === 'demo_helper_trader') {
-                        p.name = 'Trade 연락병';
-                        p.role = '지휘관의 매매 명령을 CPC를 통해 Trader 소대장에게 전달하고, 보초병(trader-bot)의 상태를 보고하는 연락병입니다. 시장 분석, 매매 전략, 포트폴리오 리뷰, 리스크 관리 명령을 소대장에게 즉시 전달합니다.';
-                        p.greeting = 'Trade 연락병입니다. 소대장에게 전달할 매매 명령을 말씀해주세요. 시장 분석, 매매 전략, 종목 조회, 보초병 상태 확인 등 명령을 접수하면 즉시 전달하고 답변을 받아오겠습니다.';
+                    // → Trader (트레이딩 전용 PC 직접 연결)
+                    if (p.name === 'Trade 연락병' || p.id === 'sunny_helper_trader' || p.id === 'demo_helper_trader') {
+                        p.name = 'Trader';
+                        p.role = '트레이딩 전용 PC의 Claude Code 소대장과 직접 연결. 매매/분석/연구 명령을 소대장이 직접 처리합니다.';
+                        p.greeting = '트레이딩 전용 PC의 소대장과 직접 연결됩니다. 매매 명령을 입력하면 소대장이 직접 처리합니다.';
                         changed = true;
                     }
                 });
@@ -112,13 +113,13 @@
     })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../js/app.js?v=18.3"></script>
-    <script src="../../js/kb-manager.js?v=18.3"></script>
-    <script src="../../js/migration.js?v=18.3"></script>
-    <script src="../../js/channel-adapter.js?v=18.3"></script>
-    <script src="../../js/sunny-demo.js?v=18.3"></script>
-    <script src="../../js/cpc-client.js?v=18.3"></script>
-    <script src="../../js/chat.js?v=18.3"></script>
+    <script src="../../js/app.js?v=19.1"></script>
+    <script src="../../js/kb-manager.js?v=19.1"></script>
+    <script src="../../js/migration.js?v=19.1"></script>
+    <script src="../../js/channel-adapter.js?v=19.1"></script>
+    <script src="../../js/sunny-demo.js?v=19.1"></script>
+    <script src="../../js/cpc-client.js?v=19.1"></script>
+    <script src="../../js/chat.js?v=19.2"></script>
 </body>
 
 </html>

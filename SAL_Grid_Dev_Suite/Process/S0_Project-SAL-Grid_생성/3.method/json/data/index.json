@@ -1,0 +1,15 @@
+{
+  "project_id": "mychatbot-world",
+  "project_name": "My Chatbot World",
+  "created_at": "2026-03-31",
+  "updated_at": "2026-03-31",
+  "method_type": "React",
+  "total_tasks": 62,
+  "description": "AI 챗봇 아바타 웹 프로젝트 — React/Next.js 점진적 전환",
+  "task_ids": [
+    "S1BI1", "S1BI2", "S1BI3", "S1DS1", "S1FE1", "S1DB1", "S1DB2", "S1SC1", "S1DV1", "S1EX1", "S1CS1", "S1DC1",
+    "S2SC1", "S2BI1", "S2BA1", "S2BA2", "S2BA3", "S2BA4", "S2BA5", "S2BA6", "S2FE1", "S2FE2", "S2FE3", "S2FE4", "S2FE5", "S2FE6", "S2FE7", "S2EX1",
+    "S3DB1", "S3SC1", "S3BA1", "S3BA2", "S3BA3", "S3BA4", "S3BA5", "S3BA6", "S3BA7", "S3BA8", "S3FE1", "S3FE2", "S3FE3", "S3FE4", "S3EX1", "S3EX2", "S3CS1", "S3CS2",
+    "S4GA1", "S4BA1", "S4BA2", "S4BA3", "S4BA4", "S4BA5", "S4BA6", "S4FE1", "S4FE2", "S4FE3", "S4TS1", "S4TS2", "S4DC1", "S4DC2", "S4DV1", "S4DS1"
+  ]
+}

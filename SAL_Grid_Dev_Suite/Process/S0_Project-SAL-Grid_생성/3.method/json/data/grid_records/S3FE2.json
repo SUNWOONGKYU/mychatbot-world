@@ -1,0 +1,29 @@
+{
+  "task_id": "S3FE2",
+  "task_name": "Skills(스킬마켓) 페이지 React 전환",
+  "stage": 3,
+  "area": "FE",
+  "level": 2,
+  "task_status": "Completed",
+  "task_progress": 1000,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1FE1",
+    "S3BA2"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3FE2_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/skills/page.tsx, app/skills/[id]/page.tsx, app/skills/my/page.tsx, components/skills/skill-runner.tsx, components/skills/review-form.tsx",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S3FE2_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": ""
+}

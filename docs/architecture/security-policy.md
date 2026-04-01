@@ -1,275 +1,148 @@
-# Security Policy
+# 보안 정책 (Security Policy)
 
-AI Avatar Chat Platform 보안 정책 문서입니다.
-
----
-
-## 🛡️ 보안 원칙
-
-1. **Defense in Depth** - 다층 방어
-2. **Least Privilege** - 최소 권한 원칙
-3. **Fail Secure** - 안전한 실패
-4. **Secure by Default** - 기본적으로 안전하게
+**버전**: v22.3
+**작성일**: 2026-03-31
+**대상**: CPC 시스템 운영자 및 처음 구현하는 개발자
 
 ---
 
-## 🔒 인증 및 권한
+## 개요
 
-### 비밀번호 정책
-
-**요구사항**:
-- 최소 길이: 8자
-- 대문자 1개 이상
-- 소문자 1개 이상
-- 숫자 1개 이상
-- 특수문자 1개 이상 (권장)
-
-**금지 사항**:
-- 연속된 동일 문자 3개 이상
-- 사용자명 포함
-- 일반적인 비밀번호 (top 10,000)
-- 이전 비밀번호 재사용 (최근 5개)
-
-**저장**:
-- bcrypt (rounds=12)
-- 절대 평문 저장 금지
-- 로그에 비밀번호 노출 금지
-
-### 세션 관리
-
-**JWT 토큰**:
-- Access Token: 1시간
-- Refresh Token: 7일
-- SECRET_KEY: 최소 32자
-
-**쿠키 설정**:
-- httpOnly: true
-- secure: true (HTTPS)
-- sameSite: "lax"
-
-### 계정 잠금
-
-**로그인 실패**:
-- 5회 실패 → 15분 잠금
-- 10회 실패 → 1시간 잠금
-- 20회 실패 → 관리자 검토
+이 문서는 CPC 원격 제어 시스템에서 적용되는 보안 체계를 설명합니다.
+소대장(Claude Code)이 원격으로 명령을 자동 실행할 때, 위험한 명령에 대한 사람의 최종 승인을 요구하는 구조입니다.
 
 ---
 
-## 🚦 Rate Limiting
+## 보안 레이어 1: bypassPermissions + PreToolUse Hook
 
-### API 엔드포인트
+### bypassPermissions
+소대장이 원격으로 도구를 실행할 때 터미널에서 y/n 입력 없이 자동 허용하는 모드입니다.
+이 설정이 없으면 원격 운용 중 명령 하나마다 멈춥니다.
 
-| 엔드포인트 | 인증 없음 | 인증 있음 |
-|------------|-----------|-----------|
-| `/api/v1/auth/register` | 3/시간 | - |
-| `/api/v1/auth/login` | 5/15분 | - |
-| `/api/v1/auth/refresh` | 10/시간 | 10/시간 |
-| `/api/v1/chat` | 10/분 | 100/분 |
-| `/api/v1/conversations` | - | 200/분 |
-| `/ws/chat` | - | 20 msg/분 |
+설정 위치: 프로젝트 루트 `.claude/settings.local.json`
 
-### WebSocket
-
-- 연결당 최대 메시지: 20/분
-- 사용자당 최대 연결: 3개
-- 메시지 크기: 최대 10KB
-
----
-
-## 🌐 CORS (Cross-Origin Resource Sharing)
-
-### 개발 환경
-
-```python
-CORS_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-]
+```json
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(*)", "Edit(*)", "Write(*)", "Read(*)",
+      "Glob(*)", "Grep(*)", "Agent(*)",
+      "WebFetch(*)", "WebSearch(*)", "mcp__cpc__*"
+    ]
+  }
+}
 ```
 
-### 프로덕션 환경
+### PreToolUse Hook (dangerous-cmd-approval.py)
+`bypassPermissions`가 모든 명령을 통과시키는 것을 보완하는 안전장치입니다.
+Bash 도구 실행 직전에 시스템 레벨에서 강제 개입합니다. bypassPermissions 설정과 무관하게 동작합니다.
 
-```python
-CORS_ORIGINS = [
-    "https://yourdomain.com",
-    "https://app.yourdomain.com",
-]
+**Hook 위치**: `.claude/hooks/dangerous-cmd-approval.py`
+
+---
+
+## 위험 명령 감지 패턴
+
+아래 패턴이 명령에 포함되면 Hook이 자동으로 가로채어 챗봇에 승인을 요청합니다.
+
+| 카테고리 | 감지 패턴 |
+|----------|----------|
+| 파일 삭제 | `rm`, `del`, `rmdir`, `Remove-Item`, `unlink`, `shred` |
+| 프로세스 종료 | `taskkill`, `shutdown` |
+| Git 위험 작업 | `git push`, `git reset --hard`, `--force`, `git branch -D` |
+| 배포 | `vercel --prod` |
+| DB 파괴적 쿼리 | `DROP TABLE`, `DELETE FROM`, `TRUNCATE` |
+| 패키지 삭제 | `npm uninstall` |
+
+---
+
+## 승인 흐름 (두 가지 경로)
+
+### A. Hook 자동 승인 (시스템 강제)
+
+소대장이 Bash 도구로 위험 패턴 명령을 실행하려 할 때 자동 발동합니다.
+
+```
+소대장 → Bash 도구 실행 시도
+    |
+    Hook 개입 (dangerous-cmd-approval.py)
+    |
+    위험 패턴 검사
+    |
+    [미감지] → 그대로 실행 허용
+    |
+    [감지] → CPC API에 approval_request POST
+              챗봇 화면에 승인/거부 버튼 표시
+              |
+              [승인 클릭] → 명령 실행
+              [거부 클릭] → 명령 차단
+              [120초 무응답] → 자동 거부 (Fail Secure)
 ```
 
-**설정**:
-- Allow Credentials: true
-- Allowed Methods: GET, POST, PUT, DELETE, PATCH
-- Allowed Headers: Content-Type, Authorization
-- Max Age: 3600
+### B. 소대장 자체 판단 승인
 
----
+소대장이 작업 중 사람의 확인이 필요하다고 판단할 때 직접 요청합니다.
 
-## 🔐 데이터 보호
-
-### 민감 정보 암호화
-
-**암호화 필요 항목**:
-- 비밀번호 (bcrypt)
-- API 키 (database encryption)
-- 개인 식별 정보 (PII)
-
-**암호화 불필요**:
-- 공개 데이터 (사용자명, 대화 ID)
-- 로그 (단, 민감 정보 제외)
-
-### 데이터 전송
-
-- **HTTPS 필수** (TLS 1.2+)
-- 민감 데이터는 POST body에 (URL 파라미터 금지)
-- 로그에 민감 정보 노출 금지
-
-### 데이터 저장
-
-- PostgreSQL 데이터 암호화 (at rest)
-- 정기적 백업 (암호화)
-- 90일 이상 비활성 계정 아카이브
-
----
-
-## 🚨 입력 검증
-
-### 서버 측 검증 (필수)
-
-**모든 입력 검증**:
-- 타입 검증 (Pydantic)
-- 길이 제한
-- 형식 검증 (이메일, URL)
-- 화이트리스트 방식
-
-**SQL Injection 방어**:
-- ORM 사용 (SQLAlchemy)
-- Prepared Statements
-- 직접 SQL 금지
-
-**XSS 방어**:
-- HTML 이스케이프
-- Content-Type 헤더 명시
-- CSP (Content Security Policy)
-
-**CSRF 방어**:
-- CSRF 토큰
-- SameSite 쿠키
-- Origin 검증
-
----
-
-## 📝 로깅 및 모니터링
-
-### 보안 이벤트 로깅
-
-**로그 필수 항목**:
-- 로그인 성공/실패
-- 비밀번호 변경
-- 계정 생성/삭제
-- 권한 변경
-- API 오류 (4xx, 5xx)
-
-**로그 금지 항목**:
-- 비밀번호 (평문)
-- 토큰 (전체)
-- 신용카드 번호
-- API 키
-
-### 모니터링
-
-- 비정상적인 로그인 시도
-- Rate limit 초과
-- API 에러 급증
-- 응답 시간 증가
-
----
-
-## 🔍 취약점 관리
-
-### 정기 점검
-
-- **주간**: 의존성 취약점 스캔
-- **월간**: 보안 코드 리뷰
-- **분기**: 침투 테스트
-- **연간**: 외부 보안 감사
-
-### 의존성 관리
-
-```bash
-# 취약점 스캔
-pip-audit
-
-# 업데이트
-pip list --outdated
-pip install -U package_name
+```
+소대장 → request_cpc_approval(platoon_id, 설명 텍스트) MCP 호출
+    |
+    CPC에 approval_request INSERT
+    챗봇 화면에 승인/거부 버튼 표시
+    |
+    소대장 → wait_cpc_approval(platoon_id, approval_id) 대기
+    |
+    [승인] → 작업 계속
+    [거부] → 작업 중단
+    [120초 타임아웃] → 자동 거부 (Fail Secure)
 ```
 
-### 보안 업데이트
+---
 
-- Critical: 24시간 이내 패치
-- High: 7일 이내 패치
-- Medium: 30일 이내 패치
+## Fail Secure 원칙
+
+120초 내에 승인 응답이 없으면 자동으로 거부 처리됩니다.
+사용자가 자리를 비운 상태에서 위험 명령이 무단 실행되는 것을 방지하기 위한 원칙입니다.
 
 ---
 
-## 🚨 사고 대응
+## 보안 레이어 2: Tailscale WireGuard E2E 암호화
 
-### 보안 사고 시나리오
-
-1. **토큰 탈취**
-   - 모든 사용자 세션 무효화
-   - SECRET_KEY 변경
-   - 사용자에게 비밀번호 재설정 요청
-
-2. **데이터베이스 침해**
-   - 즉시 서비스 중단
-   - 백업에서 복원
-   - 사용자 통지
-
-3. **DDoS 공격**
-   - Rate limiting 강화
-   - CDN/WAF 활성화
-   - 트래픽 분석
-
-### 연락처
-
-- **보안 이메일**: security@example.com
-- **긴급 전화**: [추가 예정]
+소대장과 웹챗봇 간 직접 통신(Tailscale 경로)은 WireGuard 프로토콜로 E2E 암호화됩니다.
+- Tailscale 서버도 트래픽 내용을 열람할 수 없습니다.
+- ACL(접근 제어 목록)로 허가된 장치만 메시 네트워크에 참여할 수 있습니다.
+- Funnel을 통한 외부 접근은 HTTPS(TLS)로 보호됩니다.
 
 ---
 
-## 📊 보안 체크리스트
+## 보안 레이어 3: CPC API 접근 제어
 
-### 배포 전
-
-- [ ] 모든 API 키를 환경 변수로
-- [ ] DEBUG=false
-- [ ] HTTPS 설정
-- [ ] CORS 설정 확인
-- [ ] Rate limiting 활성화
-- [ ] 보안 헤더 설정
-- [ ] 로깅 설정 확인
-- [ ] 백업 설정
-
-### 운영 중
-
-- [ ] 주간 의존성 스캔
-- [ ] 월간 로그 검토
-- [ ] 분기 침투 테스트
-- [ ] 연간 보안 감사
+- Supabase RLS(Row Level Security): anon 전체 허용 (현재 설정)
+- Vercel API 라우트: Supabase 경유, 직접 DB 접근 없음
+- 소대 ID를 알아야 명령 전송 가능 (URL 기반 격리)
 
 ---
 
-## 🔗 참고 자료
+## 영구 제거: __SILENT__ 로직 (v22.3)
 
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [OWASP API Security](https://owasp.org/www-project-api-security/)
-- [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
-- [Python Security Best Practices](https://python.readthedocs.io/en/stable/library/security_warnings.html)
+과거 `cpc_daemon.py`(연락병 프로세스)에는 특정 명령에 `__SILENT__` 마킹을 붙여 소대장에게 숨기는 로직이 있었습니다. 이 로직은 다음 문제를 유발했습니다.
+
+- 소대장이 모르는 상태에서 명령이 처리되어 감사(audit) 추적 불가
+- 연락병 프로세스와 소대장 사이의 명령 경합으로 응답 누락 발생
+- 보안 관점에서 AI가 명령을 자의적으로 필터링하는 것은 허용 불가
+
+v22.3부터 `cpc_daemon.py` 자체가 삭제되었으므로 이 로직도 완전히 제거되었습니다.
+모든 명령은 소대장이 직접 수신하여 처리하며, 숨겨지는 명령은 없습니다.
 
 ---
 
-**작성일**: 2026-02-09  
-**버전**: 1.0  
-**검토 주기**: 분기별
+## 요약
+
+| 보안 항목 | 구현 방법 |
+|----------|----------|
+| 자동 실행 허용 | bypassPermissions (원격 운용 필수) |
+| 위험 명령 차단 | PreToolUse Hook (dangerous-cmd-approval.py) |
+| 사람 승인 요청 | CPC approval_request + 챗봇 UI 버튼 |
+| 타임아웃 거부 | 120초 Fail Secure |
+| 통신 암호화 | Tailscale WireGuard E2E |
+| 명령 투명성 | 소대장 직접 처리 (중간 AI 필터링 없음) |

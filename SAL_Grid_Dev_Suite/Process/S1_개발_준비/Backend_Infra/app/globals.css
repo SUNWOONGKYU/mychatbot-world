@@ -1,0 +1,121 @@
+/* @task S1DS1 - 디자인 시스템 구축 (Light/Dark/System 3모드) */
+/* (S1BI1 기반 확장 — 기존 Tailwind 지시어 유지) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   CSS Design Tokens — Light Mode (:root)
+   RGB 포맷 (rgb() 래퍼 없음): Tailwind alpha 채널 연동용
+   e.g. rgb(var(--color-primary) / 0.5)
+   ============================================================ */
+:root {
+  /* ── 폰트 ─────────────────────────────────────────── */
+  --font-geist-sans: 'Geist', system-ui, sans-serif;
+  --font-geist-mono: 'Geist Mono', 'Courier New', monospace;
+
+  /* ── 브랜드 Primary (Indigo 500) ─────────────────── */
+  --color-primary:       99 102 241;   /* #6366f1 */
+  --color-primary-hover: 79  70 229;   /* #4f46e5 (Indigo 600) */
+  --color-primary-light: 238 242 255;  /* #eef2ff (Indigo 50) */
+
+  /* ── 배경 ─────────────────────────────────────────── */
+  --color-bg-base:   255 255 255;  /* #ffffff — 메인 배경 */
+  --color-bg-subtle: 249 250 251;  /* #f9fafb — Gray 50 */
+  --color-bg-muted:  243 244 246;  /* #f3f4f6 — Gray 100 */
+
+  /* ── 서피스 (카드, 패널) ──────────────────────────── */
+  --color-surface:       255 255 255;  /* #ffffff */
+  --color-surface-hover: 249 250 251;  /* #f9fafb */
+
+  /* ── 보더 ─────────────────────────────────────────── */
+  --color-border:       229 231 235;  /* #e5e7eb — Gray 200 */
+  --color-border-strong: 209 213 219; /* #d1d5db — Gray 300 */
+
+  /* ── 텍스트 ───────────────────────────────────────── */
+  --color-text-primary:   17  24  39;  /* #111827 — Gray 900 */
+  --color-text-secondary: 107 114 128; /* #6b7280 — Gray 500 */
+  --color-text-muted:     156 163 175; /* #9ca3af — Gray 400 */
+
+  /* ── 상태 컬러 ────────────────────────────────────── */
+  --color-success: 34 197  94;   /* #22c55e — Green 500 */
+  --color-warning: 234 179   8;  /* #eab308 — Yellow 500 */
+  --color-error:   239  68  68;  /* #ef4444 — Red 500 */
+  --color-info:     59 130 246;  /* #3b82f6 — Blue 500 */
+
+  /* ── 챗봇 특화 ────────────────────────────────────── */
+  --color-chat-user:      99 102 241;  /* primary */
+  --color-chat-bot:      243 244 246;  /* bg-muted */
+  --color-chat-user-text: 255 255 255;
+  --color-chat-bot-text:  17  24  39;
+
+  /* ── 레이아웃 치수 ────────────────────────────────── */
+  --sidebar-width:  260px;
+  --header-height:   60px;
+}
+
+/* ============================================================
+   CSS Design Tokens — Dark Mode (.dark)
+   next-themes attribute="class" → <html class="dark">
+   ============================================================ */
+.dark {
+  /* ── 브랜드 Primary (Indigo 400 — 다크에서 밝게) ──── */
+  --color-primary:       129 140 248;  /* #818cf8 — Indigo 400 */
+  --color-primary-hover: 99  102 241;  /* #6366f1 — Indigo 500 */
+  --color-primary-light:  30  27  75;  /* #1e1b4b — Indigo 950 */
+
+  /* ── 배경 ─────────────────────────────────────────── */
+  --color-bg-base:   15  23  42;   /* #0f172a — Slate 900 */
+  --color-bg-subtle: 30  41  59;   /* #1e293b — Slate 800 */
+  --color-bg-muted:  51  65  85;   /* #334155 — Slate 700 */
+
+  /* ── 서피스 ───────────────────────────────────────── */
+  --color-surface:       30  41  59;  /* #1e293b — Slate 800 */
+  --color-surface-hover: 51  65  85;  /* #334155 — Slate 700 */
+
+  /* ── 보더 ─────────────────────────────────────────── */
+  --color-border:        51  65  85;  /* #334155 — Slate 700 */
+  --color-border-strong: 71  85 105;  /* #475569 — Slate 600 */
+
+  /* ── 텍스트 ───────────────────────────────────────── */
+  --color-text-primary:   248 250 252;  /* #f8fafc — Slate 50 */
+  --color-text-secondary: 148 163 184;  /* #94a3b8 — Slate 400 */
+  --color-text-muted:     100 116 139;  /* #64748b — Slate 500 */
+
+  /* ── 상태 컬러 (다크에서 살짝 밝게) ─────────────── */
+  --color-success:  74 222 128;  /* #4ade80 — Green 400 */
+  --color-warning: 250 204  21;  /* #facc15 — Yellow 400 */
+  --color-error:   248 113 113;  /* #f87171 — Red 400 */
+  --color-info:    96  165 250;  /* #60a5fa — Blue 400 */
+
+  /* ── 챗봇 특화 ────────────────────────────────────── */
+  --color-chat-user:      99  102 241;  /* Indigo 500 (다크에서도 진하게) */
+  --color-chat-bot:       30   41  59;  /* surface */
+  --color-chat-user-text: 255 255 255;
+  --color-chat-bot-text:  248 250 252;
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+body {
+  background-color: rgb(var(--color-bg-base));
+  color: rgb(var(--color-text-primary));
+  font-family: var(--font-geist-sans), 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+  }
+
+  /* 포커스 링 기본값 정리 (접근성 유지) */
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-primary));
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "S3DB1",
+  "task_name": "School/Skills/Jobs 추가 테이블",
+  "stage": 3,
+  "area": "DB",
+  "level": 1,
+  "task_status": "Completed",
+  "task_progress": 1000,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1DB2",
+    "S2BA1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3DB1_instruction.md",
+  "task_agent": "database-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "Process/S3_개발_2차/Database/migrations/20260402_school_tables.sql, Process/S3_개발_2차/Database/migrations/20260402_skills_tables.sql, Process/S3_개발_2차/Database/migrations/20260402_jobs_tables.sql, supabase/migrations/20260402_school_tables.sql, supabase/migrations/20260402_skills_tables.sql, supabase/migrations/20260402_jobs_tables.sql",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S3DB1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": "9개 테이블(learning_sessions, learning_progress, learning_certifications, skill_installations, skill_executions, skill_reviews, job_postings, job_matches, job_settlements) 생성. 전체 RLS 활성화 및 정책 적용. job_matches 원본 SQL 트레일링 쉼표 오류 수정."
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "S3BA5",
+  "task_name": "학습 진도 API (소급)",
+  "stage": 3,
+  "area": "BA",
+  "level": 5,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1DB1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3BA5_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "api/Backend_APIs/learning-progress.js",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S3BA5_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": ""
+}

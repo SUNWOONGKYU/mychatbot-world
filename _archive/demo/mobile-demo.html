@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>AI Avatar Chat - 모바일</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            background: white;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .persona-selector {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: #f7f7f7;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .persona-btn {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .persona-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .avatar-section {
+            padding: 20px 15px;
+            text-align: center;
+            background: #fafafa;
+        }
+        
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .avatar-face {
+            width: 120px;
+            height: 140px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .head {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .hair {
+            width: 110px;
+            height: 60px;
+            background: #2c3e50;
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -5px;
+            left: 5px;
+        }
+        
+        .eyes {
+            position: absolute;
+            width: 100%;
+            top: 45px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .eye {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .pupil {
+            width: 10px;
+            height: 10px;
+            background: #2c3e50;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .nose {
+            width: 6px;
+            height: 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .mouth {
+            width: 40px;
+            height: 20px;
+            position: absolute;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+        }
+        
+        .mouth::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 3px solid #e74c3c;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: all 0.3s;
+        }
+        
+        .neck {
+            width: 40px;
+            height: 25px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .avatar-face.happy .mouth::after {
+            border-color: #27ae60;
+            top: -5px;
+        }
+        
+        .avatar-face.happy .head {
+            animation: bounce 0.5s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .avatar-face.sad .mouth::after {
+            border-color: #3498db;
+            top: 12px;
+            transform: rotate(180deg);
+        }
+        
+        .avatar-face.thinking .pupil {
+            transform: translate(-30%, -50%);
+        }
+        
+        .avatar-face.listening .head {
+            animation: listening 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes listening {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .emotion-label {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .chat-area {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: white;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 14px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        .message.user .message-bubble {
+            background: #667eea;
+            color: white;
+        }
+        
+        .message.bot .message-bubble {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .input-area {
+            padding: 12px;
+            background: #f7f7f7;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .voice-btn {
+            width: 55px;
+            height: 55px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .voice-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .voice-btn.listening {
+            background: #27ae60;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); 
+            }
+            50% { 
+                transform: scale(1.05); 
+                box-shadow: 0 0 0 15px rgba(39, 174, 96, 0); 
+            }
+        }
+        
+        .input-box {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .input-box:focus {
+            border-color: #667eea;
+        }
+        
+        .send-btn {
+            width: 55px;
+            height: 55px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .voice-status {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(39, 174, 96, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            display: none;
+            animation: fadeIn 0.3s;
+            font-size: 15px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .voice-status.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        /* 스크롤바 숨기기 */
+        .persona-selector::-webkit-scrollbar,
+        .chat-area::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .persona-selector,
+        .chat-area {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI 아바타 챗봇</h1>
+            <p>음성 입력 지원 · 모바일 최적화</p>
+        </div>
+        
+        <div class="persona-selector" id="personaSelector">
+            <button class="persona-btn active" data-persona="business">💼 비즈니스</button>
+            <button class="persona-btn" data-persona="customer">🎧 고객서비스</button>
+            <button class="persona-btn" data-persona="education">📚 교육</button>
+            <button class="persona-btn" data-persona="healthcare">⚕️ 헬스케어</button>
+            <button class="persona-btn" data-persona="entertainment">🎭 엔터테인먼트</button>
+            <button class="persona-btn" data-persona="personal">🤖 개인비서</button>
+        </div>
+        
+        <div class="avatar-section">
+            <div class="avatar-container">
+                <div class="avatar-face" id="avatarFace">
+                    <div class="head">
+                        <div class="hair"></div>
+                        <div class="eyes">
+                            <div class="eye"><div class="pupil"></div></div>
+                            <div class="eye"><div class="pupil"></div></div>
+                        </div>
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                    </div>
+                    <div class="neck"></div>
+                </div>
+            </div>
+            <div class="emotion-label" id="emotionLabel">감정: 보통</div>
+        </div>
+        
+        <div class="chat-area" id="chatArea">
+            <div class="message bot">
+                <div class="message-bubble">
+                    안녕하세요! 📱<br>
+                    모바일 최적화된 AI 아바타입니다!<br>
+                    🎤 빨간 버튼을 눌러 음성으로 말해보세요!
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <button class="voice-btn" id="voiceBtn" aria-label="음성 입력">🎤</button>
+            <input type="text" class="input-box" id="messageInput" placeholder="메시지 입력..." />
+            <button class="send-btn" id="sendBtn" aria-label="전송">📤</button>
+        </div>
+    </div>
+    
+    <div class="voice-status" id="voiceStatus">🎤 듣는 중...</div>
+    
+    <script>
+        const personas = {
+            business: { name: '비즈니스 어시스턴트' },
+            customer: { name: '고객 서비스' },
+            education: { name: '교육 튜터' },
+            healthcare: { name: '헬스케어' },
+            entertainment: { name: '엔터테인먼트' },
+            personal: { name: '개인 비서' }
+        };
+        
+        const emotionLabels = {
+            neutral: '보통',
+            happy: '행복함 😊',
+            sad: '슬픔 😢',
+            thinking: '생각중 🤔',
+            surprised: '놀람 😮',
+            listening: '듣는중 👂'
+        };
+        
+        let currentPersona = 'business';
+        let isListening = false;
+        let recognition = null;
+        
+        // Web Speech API 초기화
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('voiceBtn').classList.add('listening');
+                document.getElementById('voiceStatus').classList.add('show');
+                setEmotion('listening');
+            };
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('messageInput').value = transcript;
+                addBotMessage(`🎤 인식: "${transcript}"`);
+            };
+            
+            recognition.onend = () => {
+                isListening = false;
+                document.getElementById('voiceBtn').classList.remove('listening');
+                document.getElementById('voiceStatus').classList.remove('show');
+                setEmotion('neutral');
+            };
+            
+            recognition.onerror = (event) => {
+                addBotMessage(`⚠️ 음성 인식 오류: ${event.error}`);
+                isListening = false;
+                document.getElementById('voiceBtn').classList.remove('listening');
+                document.getElementById('voiceStatus').classList.remove('show');
+                setEmotion('neutral');
+            };
+        }
+        
+        // 음성 버튼
+        document.getElementById('voiceBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (!recognition) {
+                addBotMessage('⚠️ 이 브라우저는 음성 인식을 지원하지 않습니다.');
+                return;
+            }
+            
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+        
+        // 페르소나 선택
+        document.getElementById('personaSelector').addEventListener('click', (e) => {
+            if (e.target.classList.contains('persona-btn')) {
+                document.querySelectorAll('.persona-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                currentPersona = e.target.dataset.persona;
+                const persona = personas[currentPersona];
+                
+                addBotMessage(`${persona.name}로 전환되었습니다!`);
+                setEmotion('happy');
+                setTimeout(() => setEmotion('neutral'), 2000);
+            }
+        });
+        
+        // 메시지 전송
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            analyzeEmotion(message);
+            
+            setTimeout(() => {
+                const response = generateResponse(message);
+                addBotMessage(response);
+            }, 800);
+        }
+        
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function addUserMessage(text) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        function addBotMessage(text) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            messageDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function analyzeEmotion(text) {
+            const lowerText = text.toLowerCase();
+            let emotion = 'neutral';
+            
+            if (lowerText.includes('행복') || lowerText.includes('좋아') || lowerText.includes('감사')) {
+                emotion = 'happy';
+            } else if (lowerText.includes('슬프') || lowerText.includes('안타깝')) {
+                emotion = 'sad';
+            } else if (lowerText.includes('생각') || lowerText.includes('고민')) {
+                emotion = 'thinking';
+            } else if (lowerText.includes('놀라') || lowerText.includes('대박')) {
+                emotion = 'surprised';
+            }
+            
+            setEmotion(emotion);
+            setTimeout(() => setEmotion('neutral'), 2500);
+        }
+        
+        function setEmotion(emotion) {
+            const avatarFace = document.getElementById('avatarFace');
+            avatarFace.className = 'avatar-face ' + emotion;
+            document.getElementById('emotionLabel').textContent = '감정: ' + emotionLabels[emotion];
+        }
+        
+        function generateResponse(message) {
+            const responses = [
+                '네, 도움을 드리겠습니다!',
+                '좋은 질문이네요!',
+                '더 궁금하신 것이 있으신가요?',
+                '알려드리겠습니다!'
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        setTimeout(() => {
+            addBotMessage('💬 텍스트 입력 또는 🎤 음성 입력을 사용해보세요!');
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+# Verification Instruction - S2FE5
+
+---
+
+## 📌 필수 참조 규칙 파일
+
+| 규칙 파일 | 내용 | 참조 시점 |
+|----------|------|----------|
+| `.claude/rules/04_grid-writing-json.md` | Grid 속성 검증 | 결과 기록 시 |
+| `.claude/rules/05_execution-process.md` | 검증 프로세스 | 검증 수행 순서 |
+| `.claude/rules/06_verification.md` | 검증 기준 | **핵심 참조** |
+
+---
+
+## Task ID
+S2FE5
+
+## Task Name
+Birth 페이지 React 전환
+
+## Verification Checklist
+
+### 1. 파일 존재 검증
+- [ ] `Process/S2_개발-1차/Frontend/app/birth/page.tsx` 존재
+- [ ] `Process/S2_개발-1차/Frontend/components/birth/animation.tsx` 존재
+- [ ] 각 파일 `@task S2FE5` 주석 존재
+
+### 2. 기능 검증
+- [ ] botId URL 파라미터로 챗봇 정보 API fetch 호출 (하드코딩 금지)
+- [ ] 챗봇 정보 조회 실패 시 `/home` 리다이렉트 처리
+- [ ] 등장 애니메이션 CSS 구현 확인 (keyframes 또는 Tailwind animate)
+- [ ] 배포 URL 클릭 시 클립보드 복사 로직 존재
+- [ ] QR코드 이미지 `<img src={qrUrl}>` 렌더링
+- [ ] "대화 시작하기" 버튼 → `/bot?botId={id}` 링크
+- [ ] "홈으로" 버튼 → `/home` 링크
+
+### 3. 통합 검증
+- [ ] S1FE1(Next.js 설정)과 App Router 구조 호환
+- [ ] S2BA4/S2BA1에서 반환된 qrUrl/deployUrl 구조와 호환
+- [ ] TypeScript 타입 오류 없음
+
+### 4. 저장 위치 검증
+- [ ] `Process/S2_개발-1차/Frontend/` 에 원본 저장되었는가?
+- [ ] git commit 후 루트 폴더로 자동 복사되었는가?
+
+## Test Commands
+```bash
+# 파일 존재 확인
+ls -la Process/S2_개발-1차/Frontend/app/birth/
+ls -la Process/S2_개발-1차/Frontend/components/birth/
+
+# 타입 검사
+npx tsc --noEmit
+
+# 빌드 확인
+npm run build
+```
+
+## Expected Results
+- 빌드 성공, TypeScript 오류 0개
+- botId로 API 조회 로직 확인
+- 애니메이션 CSS 존재
+
+## Verification Agent
+code-reviewer-core
+
+## Pass Criteria
+- [ ] 모든 체크리스트 항목 통과
+- [ ] 빌드 에러 없음
+- [ ] 통합 테스트 통과
+- [ ] Blocker 없음

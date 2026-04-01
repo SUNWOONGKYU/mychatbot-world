@@ -1,0 +1,296 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1330" viewBox="0 0 900 1330">
+  <defs>
+    <filter id="s-shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#19232F" flood-opacity="0.10"/>
+    </filter>
+    <filter id="s-shadowSm" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#19232F" flood-opacity="0.07"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="1330" fill="#f8fafc"/>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- Section 1: Grid (티어별 — 슈퍼/코어/기본/CPC) -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <g id="section-grid">
+
+    <!-- Title -->
+    <rect x="20" y="4" width="860" height="58" rx="12" fill="#1E64DC" filter="url(#s-shadow)"/>
+    <text x="450" y="30" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">SAL Grid Dev Suite — 22 Skills</text>
+    <text x="450" y="50" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" fill="#FFFFFF" opacity="0.8" text-anchor="middle" letter-spacing="2">슈퍼 2 + 코어 3 + 기본 14 + CPC 3</text>
+
+    <!-- ═══════════════════ 슈퍼 (2) ═══════════════════ -->
+    <rect x="0" y="68" width="900" height="100" fill="rgba(124,58,237,0.06)"/>
+    <rect x="8" y="71" width="80" height="19" rx="3" fill="#7c3aed"/>
+    <text x="48" y="84" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" font-weight="bold" fill="white" text-anchor="middle">슈퍼  2</text>
+
+    <rect x="60" y="96" width="380" height="62" rx="10" fill="#7c3aed" stroke="#a78bfa" stroke-width="2"/>
+    <text x="250" y="114" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">SAL Grid Dev</text>
+    <text x="250" y="130" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#e9d5ff" text-anchor="middle">외부 참조  |  특허 출원</text>
+    <text x="250" y="146" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#ddd6fe" text-anchor="middle">3D 좌표계 개발방법론 — 프로젝트 전 과정 관리</text>
+
+    <rect x="460" y="96" width="380" height="62" rx="10" fill="#7c3aed" stroke="#a78bfa" stroke-width="2"/>
+    <text x="650" y="114" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">Platoon Formation</text>
+    <text x="650" y="130" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="10" fill="#e9d5ff" text-anchor="middle">특허 출원</text>
+    <text x="650" y="146" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#ddd6fe" text-anchor="middle">소대 편제 방식 팀구성</text>
+
+    <!-- ═══════════════════ 코어 (3) ═══════════════════ -->
+    <rect x="0" y="174" width="900" height="80" fill="rgba(192,57,43,0.05)"/>
+    <rect x="8" y="177" width="80" height="19" rx="3" fill="#C0392B"/>
+    <text x="48" y="190" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" font-weight="bold" fill="white" text-anchor="middle">코어  3</text>
+
+    <rect x="50" y="202" width="260" height="46" rx="8" fill="#C0392B" stroke="#e74c3c" stroke-width="1.5"/>
+    <text x="180" y="220" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Review Evaluate</text>
+    <text x="180" y="236" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#fecaca" text-anchor="middle">코어1  |  산출물 검토·평가</text>
+
+    <rect x="320" y="202" width="260" height="46" rx="8" fill="#C0392B" stroke="#e74c3c" stroke-width="1.5"/>
+    <text x="450" y="220" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Slideshow Web</text>
+    <text x="450" y="236" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#fecaca" text-anchor="middle">코어2  |  PPT 슬라이드쇼 웹</text>
+
+    <rect x="590" y="202" width="260" height="46" rx="8" fill="#C0392B" stroke="#e74c3c" stroke-width="1.5"/>
+    <text x="720" y="220" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">YouTube Generate</text>
+    <text x="720" y="236" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#fecaca" text-anchor="middle">코어3  |  영상 콘텐츠 생성</text>
+
+    <!-- ═══════════════════ 기본 (14) ═══════════════════ -->
+    <rect x="0" y="260" width="900" height="238" fill="rgba(39,174,96,0.04)"/>
+    <rect x="8" y="263" width="80" height="19" rx="3" fill="#27AE60"/>
+    <text x="48" y="276" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" font-weight="bold" fill="white" text-anchor="middle">기본  14</text>
+
+    <!-- Row 1 -->
+    <rect x="35" y="288" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="135" y="306" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Deploy Subagent</text>
+    <text x="135" y="322" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">분대원 편성·투입</text>
+
+    <rect x="245" y="288" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="345" y="306" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Deploy Skill</text>
+    <text x="345" y="322" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">스킬 조합 편성</text>
+
+    <rect x="455" y="288" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="555" y="306" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">API Builder</text>
+    <text x="555" y="322" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">REST API 구축</text>
+
+    <rect x="665" y="288" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="765" y="306" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">UI/UX Builder</text>
+    <text x="765" y="322" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">UX 설계 + UI 구현</text>
+
+    <!-- Row 2 -->
+    <rect x="35" y="340" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="135" y="358" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">DB Schema</text>
+    <text x="135" y="374" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">Supabase 스키마·RLS</text>
+
+    <rect x="245" y="340" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="345" y="358" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Create Image</text>
+    <text x="345" y="374" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">이미지·SVG 생성</text>
+
+    <rect x="455" y="340" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="555" y="358" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Doc Generator</text>
+    <text x="555" y="374" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">문서 생성 PDF/DOCX</text>
+
+    <rect x="665" y="340" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="765" y="358" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Find Skills</text>
+    <text x="765" y="374" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">스킬 생태계 탐색</text>
+
+    <!-- Row 3 -->
+    <rect x="35" y="392" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="135" y="410" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Security Audit</text>
+    <text x="135" y="426" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">OWASP 보안 감사</text>
+
+    <rect x="245" y="392" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="345" y="410" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">E2E Test</text>
+    <text x="345" y="426" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">Playwright E2E 테스트</text>
+
+    <rect x="455" y="392" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="555" y="410" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">API Test</text>
+    <text x="555" y="426" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">API 자동화 테스트</text>
+
+    <rect x="665" y="392" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="765" y="410" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Troubleshoot</text>
+    <text x="765" y="426" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">디버깅·문제해결</text>
+
+    <!-- Row 4 -->
+    <rect x="35" y="444" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="135" y="462" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Performance Check</text>
+    <text x="135" y="478" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">성능 측정·최적화</text>
+
+    <rect x="245" y="444" width="200" height="46" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+    <text x="345" y="462" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">CICD Setup</text>
+    <text x="345" y="478" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9" fill="#a7f3d0" text-anchor="middle">CI/CD 파이프라인</text>
+
+    <!-- ═══════════════════ CPC (3) ═══════════════════ -->
+    <rect x="0" y="504" width="900" height="80" fill="rgba(76,29,149,0.05)"/>
+    <rect x="8" y="507" width="80" height="19" rx="3" fill="#4c1d95"/>
+    <text x="48" y="520" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" font-weight="bold" fill="white" text-anchor="middle">CPC  3</text>
+
+    <rect x="50" y="532" width="260" height="46" rx="8" fill="#4c1d95" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="180" y="550" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">CPC Setup</text>
+    <text x="180" y="566" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#ddd6fe" text-anchor="middle">소대 인프라 구축 (1회용)</text>
+
+    <rect x="320" y="532" width="260" height="46" rx="8" fill="#4c1d95" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="450" y="550" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">CPC Add-Project</text>
+    <text x="450" y="566" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#ddd6fe" text-anchor="middle">프로젝트 추가 등록</text>
+
+    <rect x="590" y="532" width="260" height="46" rx="8" fill="#4c1d95" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="720" y="550" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">CPC Engage</text>
+    <text x="720" y="566" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="9.5" fill="#ddd6fe" text-anchor="middle">소대장 인식·Agent 가동</text>
+
+  </g>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- Divider -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="0" y="590" width="900" height="20" fill="rgba(124,58,237,0.15)"/>
+  <text x="450" y="604" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="11" fill="rgba(100,80,180,0.8)" text-anchor="middle">— SAL Grid Dev Suite Skill Catalog —</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- Section 2: Catalog (분야별) -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <g id="section-catalog" transform="translate(0, 614)">
+
+    <!-- Title Bar -->
+    <rect x="20" y="10" width="860" height="58" rx="12" fill="#1E64DC" filter="url(#s-shadow)"/>
+    <text x="450" y="34" text-anchor="middle" fill="#FFFFFF" font-size="22" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">Sunny Skill Package</text>
+    <text x="450" y="52" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.8" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">슈퍼 2 + 코어 3 + 기본 14 + CPC 3 = 22 SKILLS</text>
+
+    <!-- ===== 프로젝트 관리 (1) ===== -->
+    <g filter="url(#s-shadow)">
+      <rect x="20" y="76" width="860" height="72" rx="10" fill="#FFFFFF"/>
+      <rect x="20" y="76" width="6" height="72" rx="3" fill="#C0392B"/>
+      <rect x="20" y="76" width="860" height="24" rx="10" fill="#C0392B"/>
+      <rect x="20" y="88" width="860" height="12" fill="#C0392B"/>
+      <text x="38" y="94" fill="#FFFFFF" font-size="10" font-weight="bold" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">프로젝트 관리 — 1 Skill</text>
+    </g>
+    <rect x="36" y="106" width="836" height="36" rx="6" fill="#FBF0F0" stroke="#C0392B" stroke-width="1.5" filter="url(#s-shadowSm)"/>
+    <text x="52" y="122" fill="#8B2020" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/sal-grid-dev</text>
+    <text x="52" y="136" fill="#7A6060" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">SAL Grid 3D 좌표계 개발방법론 — 프로젝트 전 과정 관리 (외부 참조 | 특허 출원)</text>
+
+    <!-- ===== 팀 편성 (4) ===== -->
+    <g filter="url(#s-shadow)">
+      <rect x="20" y="154" width="860" height="108" rx="10" fill="#FFFFFF"/>
+      <rect x="20" y="154" width="6" height="108" rx="3" fill="#D4A017"/>
+      <rect x="20" y="154" width="860" height="24" rx="10" fill="#D4A017"/>
+      <rect x="20" y="166" width="860" height="12" fill="#D4A017"/>
+      <text x="38" y="172" fill="#FFFFFF" font-size="10" font-weight="bold" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">팀 편성 — 4 Skills</text>
+    </g>
+    <rect x="36" y="184" width="410" height="36" rx="6" fill="#FDF8E8" stroke="#D4A017" stroke-width="1.5" filter="url(#s-shadowSm)"/>
+    <text x="52" y="200" fill="#8B6914" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/platoon-formation</text>
+    <text x="52" y="214" fill="#7A7060" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">소대 편제 방식 팀구성 (특허 출원)</text>
+
+    <rect x="454" y="184" width="418" height="36" rx="6" fill="#FDF8E8" stroke="#D4A017" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="470" y="200" fill="#8B6914" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/deploy-subagent</text>
+    <text x="470" y="214" fill="#7A7060" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">서브에이전트 편성 + 최적 모델 전략</text>
+
+    <rect x="36" y="226" width="275" height="36" rx="6" fill="#FDF8E8" stroke="#D4A017" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="242" fill="#8B6914" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/deploy-skill</text>
+    <text x="52" y="256" fill="#7A7060" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">스킬 조합 편성 / 커뮤니티 검색</text>
+
+    <rect x="319" y="226" width="275" height="36" rx="6" fill="#FDF8E8" stroke="#D4A017" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="335" y="242" fill="#8B6914" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/find-skills</text>
+    <text x="335" y="256" fill="#7A7060" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">스킬 검색 + 설치 (오픈 생태계)</text>
+
+    <!-- ===== 개발 & 인프라 (4) ===== -->
+    <g filter="url(#s-shadow)">
+      <rect x="20" y="268" width="860" height="108" rx="10" fill="#FFFFFF"/>
+      <rect x="20" y="268" width="6" height="108" rx="3" fill="#27AE60"/>
+      <rect x="20" y="268" width="860" height="24" rx="10" fill="#27AE60"/>
+      <rect x="20" y="280" width="860" height="12" fill="#27AE60"/>
+      <text x="38" y="286" fill="#FFFFFF" font-size="10" font-weight="bold" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">개발 &amp; 인프라 — 4 Skills</text>
+    </g>
+    <rect x="36" y="298" width="410" height="36" rx="6" fill="#EEFBF2" stroke="#27AE60" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="314" fill="#1A6B35" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/api-builder</text>
+    <text x="52" y="328" fill="#5A7A60" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">REST API 구축 · CRUD · Zod 검증</text>
+
+    <rect x="454" y="298" width="418" height="36" rx="6" fill="#EEFBF2" stroke="#27AE60" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="470" y="314" fill="#1A6B35" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/ui-ux-builder</text>
+    <text x="470" y="328" fill="#5A7A60" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">UX 설계 + UI 구현 · 접근성</text>
+
+    <rect x="36" y="340" width="410" height="36" rx="6" fill="#FFF8F0" stroke="#92400e" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="356" fill="#7A3A00" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/db-schema</text>
+    <text x="52" y="370" fill="#7A6A50" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">Supabase · RLS · 마이그레이션</text>
+
+    <rect x="454" y="340" width="418" height="36" rx="6" fill="#F0F2F5" stroke="#1f2937" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="470" y="356" fill="#111827" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/cicd-setup</text>
+    <text x="470" y="370" fill="#506070" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">GitHub Actions · 자동 배포 파이프라인</text>
+
+    <!-- ===== 콘텐츠 & 생성 (4) ===== -->
+    <g filter="url(#s-shadow)">
+      <rect x="20" y="382" width="860" height="108" rx="10" fill="#FFFFFF"/>
+      <rect x="20" y="382" width="6" height="108" rx="3" fill="#7c3aed"/>
+      <rect x="20" y="382" width="860" height="24" rx="10" fill="#7c3aed"/>
+      <rect x="20" y="394" width="860" height="12" fill="#7c3aed"/>
+      <text x="38" y="400" fill="#FFFFFF" font-size="10" font-weight="bold" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">콘텐츠 &amp; 생성 — 4 Skills</text>
+    </g>
+    <rect x="36" y="412" width="410" height="36" rx="6" fill="#F3EEF9" stroke="#7c3aed" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="428" fill="#4c1d95" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/slideshow-web</text>
+    <text x="52" y="442" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">PPT 슬라이드쇼 웹페이지 생성</text>
+
+    <rect x="454" y="412" width="418" height="36" rx="6" fill="#F3EEF9" stroke="#7c3aed" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="470" y="428" fill="#4c1d95" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/youtube-generate</text>
+    <text x="470" y="442" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">유튜브 영상 올인원 제작</text>
+
+    <rect x="36" y="454" width="410" height="36" rx="6" fill="#F3EEF9" stroke="#7c3aed" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="470" fill="#4c1d95" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/create-image</text>
+    <text x="52" y="484" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">이미지 생성 (SVG/HTML/Mermaid/Pillow)</text>
+
+    <rect x="454" y="454" width="418" height="36" rx="6" fill="#F3EEF9" stroke="#7c3aed" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="470" y="470" fill="#4c1d95" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/doc-generator</text>
+    <text x="470" y="484" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">문서 생성 (PDF/DOCX/PPTX/XLSX)</text>
+
+    <!-- ===== 품질 & 보안 (6) ===== -->
+    <g filter="url(#s-shadow)">
+      <rect x="20" y="496" width="860" height="108" rx="10" fill="#FFFFFF"/>
+      <rect x="20" y="496" width="6" height="108" rx="3" fill="#1e3a5f"/>
+      <rect x="20" y="496" width="860" height="24" rx="10" fill="#1e3a5f"/>
+      <rect x="20" y="508" width="860" height="12" fill="#1e3a5f"/>
+      <text x="38" y="514" fill="#FFFFFF" font-size="10" font-weight="bold" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">품질 &amp; 보안 — 6 Skills</text>
+    </g>
+    <rect x="36" y="526" width="275" height="36" rx="6" fill="#FBF0F0" stroke="#C0392B" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="542" fill="#8B2020" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/review-evaluate</text>
+    <text x="52" y="556" fill="#7A6060" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">산출물 검토 + 5기준 100점 평가</text>
+
+    <rect x="319" y="526" width="275" height="36" rx="6" fill="#FFF0F0" stroke="#991b1b" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="335" y="542" fill="#7A0A0A" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/security-audit</text>
+    <text x="335" y="556" fill="#7A5050" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">OWASP Top 10, 취약점 분석</text>
+
+    <rect x="602" y="526" width="270" height="36" rx="6" fill="#F5F4F2" stroke="#44403c" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="618" y="542" fill="#2A2420" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/troubleshoot</text>
+    <text x="618" y="556" fill="#706860" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">에러 플레이북 · RCA 분석</text>
+
+    <rect x="36" y="568" width="275" height="36" rx="6" fill="#EEF3FB" stroke="#1e3a5f" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="584" fill="#0A1E3F" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/e2e-test</text>
+    <text x="52" y="598" fill="#506070" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">Playwright E2E 테스트</text>
+
+    <rect x="319" y="568" width="275" height="36" rx="6" fill="#EEF3FB" stroke="#1e3a5f" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="335" y="584" fill="#0A1E3F" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/api-test</text>
+    <text x="335" y="598" fill="#506070" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">Jest/Supertest 부하·보안 테스트</text>
+
+    <rect x="602" y="568" width="270" height="36" rx="6" fill="#FAFAE8" stroke="#3f3f00" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="618" y="584" fill="#2A2A00" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/performance-check</text>
+    <text x="618" y="598" fill="#706A40" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">Lighthouse · Core Web Vitals</text>
+
+    <!-- ===== CPC 인프라 (3) ===== -->
+    <g filter="url(#s-shadow)">
+      <rect x="20" y="610" width="860" height="72" rx="10" fill="#FFFFFF"/>
+      <rect x="20" y="610" width="6" height="72" rx="3" fill="#4c1d95"/>
+      <rect x="20" y="610" width="860" height="24" rx="10" fill="#4c1d95"/>
+      <rect x="20" y="622" width="860" height="12" fill="#4c1d95"/>
+      <text x="38" y="628" fill="#FFFFFF" font-size="10" font-weight="bold" letter-spacing="2" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">CPC 인프라 — 3 Skills</text>
+    </g>
+    <rect x="36" y="640" width="275" height="36" rx="6" fill="#F3EEF9" stroke="#4c1d95" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="52" y="656" fill="#2D1060" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/cpc-setup</text>
+    <text x="52" y="670" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">소대 인프라 구축 (1회용)</text>
+
+    <rect x="319" y="640" width="275" height="36" rx="6" fill="#F3EEF9" stroke="#4c1d95" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="335" y="656" fill="#2D1060" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/cpc-add-project</text>
+    <text x="335" y="670" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">프로젝트 추가 등록</text>
+
+    <rect x="602" y="640" width="270" height="36" rx="6" fill="#F3EEF9" stroke="#4c1d95" stroke-width="1" filter="url(#s-shadowSm)"/>
+    <text x="618" y="656" fill="#2D1060" font-size="12" font-weight="bold" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">/cpc-engage</text>
+    <text x="618" y="670" fill="#705A90" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">소대장 인식 · Agent 가동</text>
+
+    <!-- ===== FOOTER ===== -->
+    <text x="450" y="706" text-anchor="middle" fill="#AABBCC" font-size="10" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">SAL Grid Dev Suite V3.1  |  Built with Claude Code  |  2026</text>
+
+  </g>
+
+</svg>

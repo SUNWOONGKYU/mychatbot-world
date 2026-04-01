@@ -1,0 +1,28 @@
+{
+  "stage": 1,
+  "stage_id": "S1",
+  "stage_name": "개발 준비",
+  "stage_name_en": "Development Setup",
+  "total_tasks": 12,
+  "completed_tasks": 12,
+  "task_ids": ["S1BI1", "S1BI2", "S1BI3", "S1DS1", "S1FE1", "S1DB1", "S1DB2", "S1SC1", "S1DV1", "S1EX1", "S1CS1", "S1DC1"],
+  "verification_status": "AI Verified",
+  "ai_verification_note": "S1 전체 12 Task Completed+Verified. npm install 완료(184 packages), SQL 3개 실행 완료(7 테이블). OAuth 설정은 S2SC1로 분리하여 S1 Blocker 해소.",
+  "ai_verification_date": "2026-04-01",
+  "verification_report_path": "stage-gates/S1GATE_verification_report.md",
+  "stage_gate_status": "Approved",
+  "po_approval_status": "Approved",
+  "po_approval_user": "PO",
+  "po_approval_note": "S1 전체 확인 완료. npm dev 정상 동작, 사이드바 12메뉴 표시, 테마 전환 확인.",
+  "po_approval_date": "2026-04-01",
+  "checklist": {
+    "all_tasks_completed": true,
+    "all_verifications_passed": true,
+    "no_blockers": true,
+    "build_success": false,
+    "test_success": false
+  },
+  "created_at": "2026-03-31",
+  "updated_at": "2026-04-01",
+  "remarks": "npm install 완료, SQL 7테이블 실행 완료, OAuth는 S2SC1로 분리"
+}

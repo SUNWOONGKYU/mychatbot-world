@@ -1,35 +1,17 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
-      "WebFetch(domain:claudefa.st)",
-      "Bash(npx supabase db push:*)",
-      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --screenshot=\"C:/Users/home/Desktop/platoon_formation.png\" --window-size=1100,1380 \"file:///C:/Users/home/Desktop/platoon_formation.svg\")",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(npx vercel:*)",
-      "Bash(ls:*)",
-      "Bash(# Check what subfolders exist in Areas across both projects echo \"\"=== SSAL Works S1 ===\"\" && find \"\"C:/!SSAL_Works_Private/S1_개발_준비/\"\" -type d -mindepth 2 | sed ''s|.*/S1_개발_준비/||'' | sort echo \"\"\"\" && echo \"\"=== SSAL Works S2 ===\"\" && find \"\"C:/!SSAL_Works_Private/S2_개발-1차/\"\" -type d -mindepth 2 | sed ''s|.*/S2_개발-1차/||'' | sort echo \"\"\"\" && echo \"\"=== mychatbot S2 ===\"\" && find \"\"G:/내 드라이브/mychatbot-world/Dev_Package/Process/S2_개발-1차/\"\" -type d -mindepth 2)",
-      "Bash(curl:*)",
-      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --screenshot=\"C:/Users/home/Desktop/platoon_formation_v3.png\" --window-size=1100,1575 \"C:/Users/home/Desktop/platoon_formation_v3.svg\")",
-      "Bash(powershell -Command \"Get-CimInstance Win32_Process | Where-Object { $_.WorkingDirectory -like ''*mychatbot*'' -or $_.WorkingDirectory -like ''*claude-project*'' } | Select-Object ProcessId, Name, WorkingDirectory | Format-Table -AutoSize\")",
-      "Bash(powershell -ExecutionPolicy Bypass -File \"C:/Users/home/debug_cpc.ps1\")",
-      "Bash(powershell -Command \"Stop-ScheduledTask -TaskName ''CPC Monitor'' -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; Start-ScheduledTask -TaskName ''CPC Monitor''; Write-Host ''done''\")",
-      "Bash(python3:*)",
-      "Bash(git log:*)",
-      "Bash(powershell -File \"C:\\Users\\wksun\\cpc-done.ps1\":*)",
-      "Bash(powershell -File C:\\Users\\wksun\\cpc-done.ps1:*)",
-      "Bash(powershell*cpc-done.ps1*)",
-      "Bash(sleep 15:*)",
-      "Bash(tail:*)",
-      "Bash(wmic process:*)",
-      "Bash(\"$APPDATA/npm/claude.cmd\":*)",
-      "Bash(\"$APPDATA_PATH/npm/claude.cmd\":*)",
-      "WebFetch(domain:github.com)",
-      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\":*)",
-      "Bash(python:*)",
-      "Bash(ps:*)",
-      "Bash(taskkill.exe:*)"
+      "Bash(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Agent(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "mcp__cpc__*"
     ]
   },
   "hooks": {
@@ -38,8 +20,21 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/cpc-check.sh",
+            "command": "bash C:/claude-project/.claude/hooks/cpc-check.sh",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 C:/claude-project/.claude/hooks/dangerous-cmd-approval.py",
+            "timeout": 130,
+            "statusMessage": "위험 명령 승인 대기 중..."
           }
         ]
       }

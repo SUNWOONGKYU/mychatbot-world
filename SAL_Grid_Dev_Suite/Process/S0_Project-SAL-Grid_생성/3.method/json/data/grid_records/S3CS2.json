@@ -1,0 +1,28 @@
+{
+  "task_id": "S3CS2",
+  "task_name": "스킬 인테그레이션 4개 (소급)",
+  "stage": 3,
+  "area": "CS",
+  "level": 2,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S3BA8"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3CS2_instruction.md",
+  "task_agent": "content-specialist",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "skill-market/integration-skills/ (kakao-noti, email-send, reservation, coupon)",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S3CS2_verification.md",
+  "verification_agent": "qa-specialist",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": ""
+}

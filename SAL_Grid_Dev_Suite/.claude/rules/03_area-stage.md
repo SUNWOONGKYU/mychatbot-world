@@ -1,0 +1,142 @@
+# 03. Area/Stage 규칙
+
+> 11개 Area와 5개 Stage 매핑
+
+---
+
+## 1. 11개 Area 목록
+
+| # | 코드 | 영문명 | 한글명 | 폴더명 |
+|---|------|--------|--------|--------|
+| 1 | **FE** | Frontend | 프론트엔드 | `Frontend/` |
+| 2 | **BA** | Backend APIs | 백엔드 API | `Backend_APIs/` |
+| 3 | **DB** | Database | 데이터베이스 | `Database/` |
+| 4 | **SC** | Security | 보안/인증/인가 | `Security/` |
+| 5 | **BI** | Backend Infrastructure | 백엔드 기반 | `Backend_Infra/` |
+| 6 | **EX** | External | 외부 연동 | `External/` |
+| 7 | **TS** | Testing | 테스트 | `Testing/` |
+| 8 | **DV** | DevOps | 운영/배포 | `DevOps/` |
+| 9 | **DS** | Design | UI/UX 디자인 | `Design/` |
+| 10 | **DC** | Documentation | 문서화 | `Documentation/` |
+| 11 | **CS** | Content System | 콘텐츠 시스템 | `Content_System/` |
+
+---
+
+## 2. 5개 Stage 목록
+
+| # | 코드 | 영문명 | 한글명 | 주요 내용 | 폴더명 |
+|---|------|--------|--------|----------|--------|
+| 0 | **S0** | Project SAL Grid Setup | Project SAL Grid 생성 | SAL Grid 구조 생성, 방법론 초기화 | `Process/S0_Project-SAL-Grid_생성/` |
+| 1 | **S1** | Development Setup | 개발 준비 | 환경 설정, 인프라 구성 | `Process/S1_개발_준비/` |
+| 2 | **S2** | Core Development | 개발 1차 | 핵심 기능 구현 | `Process/S2_개발-1차/` |
+| 3 | **S3** | Additional Development | 개발 2차 | 추가 기능 구현 | `Process/S3_개발-2차/` |
+| 4 | **S4** | Stabilization | 개발 마무리 | 배포 준비, 안정화 | `Process/S4_개발_마무리/` |
+
+---
+
+## 3. Task ID 구조
+
+**[Stage][Area][번호]**
+
+```
+S1BA1
+│ │ └─ 순서: 1번째 Task
+│ └─── Area: BA (Backend APIs)
+└───── Stage: S1 (개발 1차)
+```
+
+**예시:**
+| Task ID | Stage | Area | 순서 | 의미 |
+|---------|-------|------|------|------|
+| S1SC1 | S1 | SC | 1 | 개발준비 - 보안 - 1번 |
+| S2FE1 | S2 | FE | 1 | 개발1차 - 프론트엔드 - 1번 |
+| S2BA1 | S2 | BA | 1 | 개발1차 - 백엔드API - 1번 |
+| S3EX1 | S3 | EX | 1 | 개발2차 - 외부연동 - 1번 |
+
+### 3.1 SAL ID 의존성 규칙 ⭐
+
+> **SAL ID는 의존성·병렬성·인접성을 인코딩합니다**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. 의존성 방향: 선행 Task ID < 후행 Task ID                  │
+│    → S0DB1 → S1FE1 (O)  Stage 0이 Stage 1보다 먼저          │
+│    → S1FE1 → S0DB1 (X)  역방향 의존성 금지                  │
+│                                                             │
+│ 2. 병렬 실행: 동일 Stage·Area 내 Task는 병렬 가능           │
+│    → S1FE1, S1FE2, S1FE3는 동시 실행 가능                   │
+│                                                             │
+│ 3. 실행 순서: Stage 번호가 작을수록 먼저                     │
+│    → S0 → S1 → S2 → S3 → S4                               │
+│                                                             │
+│ 4. 인접성: 동일 Cell(Stage×Area) 내 Task는 관련 작업        │
+│    → S1FE1, S1FE2는 같은 Cell이므로 유사 기능               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**의존성 예시:**
+| 후행 Task | dependencies | 유효성 | 이유 |
+|-----------|--------------|:------:|------|
+| S1FE1 | S0DB1 | ✅ | Stage 0 < Stage 1 |
+| S2BA1 | S1FE1, S1BA1 | ✅ | Stage 1 < Stage 2 |
+| S1FE1 | S2BA1 | ❌ | Stage 2 > Stage 1 (역방향) |
+| S1FE2 | S1FE1 | ⚠️ | 같은 Stage (허용되나 병렬성 감소) |
+
+**⚠️ 핵심:** SAL ID만 부여하면 의존성 정의 없이 작업 순서와 동시 실행 가능 여부가 자동으로 결정됩니다.
+
+---
+
+## 4. 폴더 경로 예시
+
+| Task ID | 폴더 경로 |
+|---------|----------|
+| S1SC1 | `Process/S1_개발_준비/Security/` |
+| S1DC1 | `Process/S1_개발_준비/Documentation/` |
+| S2FE1 | `Process/S2_개발_1차/Frontend/` |
+| S2BA1 | `Process/S2_개발_1차/Backend_APIs/` |
+| S3EX1 | `Process/S3_개발_2차/External/` |
+
+---
+
+## 5. Area별 Production 저장 여부
+
+| Area | Production 저장 | 이유 |
+|------|:---------------:|------|
+| FE | ✅ | 배포 필요 |
+| BA | ✅ | 배포 필요 |
+| SC | ✅ | 배포 필요 |
+| BI | ✅ | 배포 필요 |
+| EX | ✅ | 배포 필요 |
+| DC | ❌ | 문서 |
+| DS | ❌ | 디자인 |
+| DB | ❌ | DB 직접 실행 |
+| TS | ❌ | 테스트 |
+| DV | ❌ | 설정 |
+| CS | ❌ | DB 저장 |
+
+---
+
+## 6. Area별 담당 Agent
+
+| Area | Task Agent | Verification Agent |
+|------|------------|-------------------|
+| FE | `frontend-developer-core` | `code-reviewer-core` |
+| BA | `api-developer-core`, `backend-developer-core` | `code-reviewer-core` |
+| DB | `database-developer-core` | `database-developer-core` |
+| SC | `security-specialist-core` | `security-specialist-core` |
+| BI | `backend-developer-core` | `code-reviewer-core` |
+| EX | `backend-developer-core` | `code-reviewer-core` |
+| TS | `test-runner-core` | `qa-specialist` |
+| DV | `devops-troubleshooter-core` | `code-reviewer-core` |
+| DS | `ux-ui-designer-core` | `qa-specialist` |
+| DC | `documentation-writer-core` | `code-reviewer-core` |
+| CS | `content-specialist` | `qa-specialist` |
+
+---
+
+## 체크리스트
+
+- [ ] Task ID에서 Stage, Area 정확히 파악했는가?
+- [ ] 해당 Stage 폴더에 저장했는가?
+- [ ] 해당 Area 폴더에 저장했는가?
+- [ ] Production 저장 대상인지 확인했는가?

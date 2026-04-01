@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="1260" viewBox="0 0 1200 1260" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#fafafa"/>
+
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="#333"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="#e53935"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="#1565c0"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="#2e7d32"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="#e65100"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 L2.5,5 Z" fill="#5e35b1"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="38" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="26" font-weight="bold" fill="#222">CPC 명령 흐름 아키텍처 v21.0</text>
+  <text x="600" y="60" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" fill="#666">User(Mobile) -&gt; Web Chatbot -&gt; CPC Cloud -&gt; Claude Code (MCP native) -&gt; result -&gt; chatbot</text>
+
+  <!-- ==================== ROW 1: User → Chatbot → CPC → Claude Code ==================== -->
+  <text x="600" y="90" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#888">[ ROW 1 : 명령 전달 경로 ]</text>
+
+  <!-- User (mobile) -->
+  <rect x="30" y="100" width="160" height="72" rx="36" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="110" y="132" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#1565c0">User (Mobile)</text>
+  <text x="110" y="152" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#555">mychatbot.world</text>
+
+  <!-- Arrow: User → Chatbot -->
+  <line x1="192" y1="136" x2="248" y2="136" stroke="#1565c0" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="220" y="128" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#1565c0">명령 입력</text>
+
+  <!-- Web Chatbot -->
+  <rect x="250" y="96" width="210" height="80" rx="10" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="355" y="124" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold">Web Chatbot</text>
+  <text x="355" y="143" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#555">chat.js + cpc-client.js</text>
+  <text x="355" y="161" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">Claude/Trade 연락병 페르소나</text>
+
+  <!-- Arrow: Chatbot → CPC -->
+  <line x1="462" y1="136" x2="518" y2="136" stroke="#e53935" stroke-width="2" marker-end="url(#arr-red)"/>
+  <text x="490" y="128" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#e53935">POST cmd</text>
+
+  <!-- CPC Cloud -->
+  <rect x="520" y="96" width="200" height="80" rx="10" fill="#ede7f6" stroke="#5e35b1" stroke-width="2"/>
+  <text x="620" y="124" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#5e35b1">CPC Cloud</text>
+  <text x="620" y="143" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#555">Vercel + Supabase</text>
+  <text x="620" y="161" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">cpc_commands (PENDING)</text>
+
+  <!-- Arrow: CPC → Claude Code -->
+  <line x1="722" y1="136" x2="778" y2="136" stroke="#283593" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="750" y="128" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#283593">MCP poll</text>
+
+  <!-- Claude Code -->
+  <rect x="780" y="93" width="390" height="86" rx="10" fill="#e8eaf6" stroke="#283593" stroke-width="2"/>
+  <text x="975" y="118" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="15" font-weight="bold" fill="#283593">Claude Code (소대장)</text>
+  <text x="975" y="138" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#555">개발 PC에서 상시 대기</text>
+  <rect x="795" y="148" width="170" height="22" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="880" y="163" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" font-weight="bold" fill="#2e7d32">bypassPermissions: ON</text>
+  <rect x="975" y="148" width="185" height="22" rx="4" fill="#fce4ec" stroke="#c62828" stroke-width="1"/>
+  <text x="1067" y="163" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" font-weight="bold" fill="#c62828">PreToolUse Hook: 위험 감지</text>
+
+  <!-- ==================== ROW 2: MCP Command Loop ==================== -->
+  <text x="600" y="210" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#888">[ ROW 2 : MCP 명령 루프 ]</text>
+
+  <!-- wait_cpc_command -->
+  <rect x="30" y="220" width="185" height="64" rx="8" fill="#fff8e1" stroke="#f57f17" stroke-width="2"/>
+  <text x="122" y="244" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#f57f17">wait_cpc_command</text>
+  <text x="122" y="262" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">timeout=120s 폴링</text>
+  <text x="122" y="277" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">PENDING 명령 수신 대기</text>
+
+  <!-- Arrow: wait → receive -->
+  <line x1="217" y1="252" x2="263" y2="252" stroke="#f57f17" stroke-width="2" marker-end="url(#arr-orange)"/>
+  <text x="240" y="245" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#f57f17">수신</text>
+
+  <!-- receive / ACK -->
+  <rect x="265" y="220" width="160" height="64" rx="8" fill="#fff8e1" stroke="#f57f17" stroke-width="2"/>
+  <text x="345" y="244" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#f57f17">명령 ACK</text>
+  <text x="345" y="262" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">PENDING → ACKED</text>
+  <text x="345" y="277" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">소대장이 처리 개시</text>
+
+  <!-- Arrow: ACK → process -->
+  <line x1="427" y1="252" x2="473" y2="252" stroke="#f57f17" stroke-width="2" marker-end="url(#arr-orange)"/>
+  <text x="450" y="245" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#f57f17">처리</text>
+
+  <!-- process -->
+  <rect x="475" y="220" width="200" height="64" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="575" y="244" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">명령 처리 (네이티브)</text>
+  <text x="575" y="262" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">코드 수정/분석/배포/검색</text>
+  <text x="575" y="277" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">Claude Code 직접 실행</text>
+
+  <!-- Arrow: process → report -->
+  <line x1="677" y1="252" x2="723" y2="252" stroke="#2e7d32" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="700" y="245" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#2e7d32">보고</text>
+
+  <!-- report -->
+  <rect x="725" y="220" width="185" height="64" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="817" y="244" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">report_cpc_result</text>
+  <text x="817" y="262" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">ACKED → DONE</text>
+  <text x="817" y="277" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">result → 챗봇 표시</text>
+
+  <!-- Arrow: report → loop (curved back) -->
+  <path d="M 912,252 Q 980,252 980,195 Q 980,140 122,190 Q 50,195 50,230" fill="none" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr-orange)"/>
+  <text x="550" y="208" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#f57f17">loop (다음 명령 대기)</text>
+
+  <!-- ==================== ROW 3: Hook Approval System ==================== -->
+  <text x="600" y="318" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#888">[ ROW 3 : PreToolUse Hook — 위험 명령 승인 흐름 ]</text>
+
+  <!-- Hook trigger -->
+  <rect x="30" y="328" width="220" height="80" rx="8" fill="#fce4ec" stroke="#c62828" stroke-width="2"/>
+  <text x="140" y="352" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#c62828">PreToolUse Hook</text>
+  <text x="140" y="370" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">dangerous-cmd-approval.py</text>
+  <text x="140" y="386" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">rm / del / rmdir 감지</text>
+  <text x="140" y="401" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">git push / git reset --hard</text>
+
+  <!-- Arrow: Hook → Approval Request -->
+  <line x1="252" y1="368" x2="308" y2="368" stroke="#c62828" stroke-width="2" marker-end="url(#arr-red)"/>
+  <text x="280" y="360" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#c62828">위험 감지</text>
+
+  <!-- Approval Request box -->
+  <rect x="310" y="328" width="230" height="80" rx="8" fill="#fce4ec" stroke="#c62828" stroke-width="2"/>
+  <text x="425" y="352" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#c62828">request_cpc_approval</text>
+  <text x="425" y="370" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">MCP 도구 호출</text>
+  <text x="425" y="386" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">CPC에 승인 요청 INSERT</text>
+  <text x="425" y="401" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">챗봇에 승인/거부 버튼 표시</text>
+
+  <!-- Arrow: to Chatbot (bidirectional) -->
+  <line x1="542" y1="358" x2="608" y2="358" stroke="#c62828" stroke-width="2" marker-end="url(#arr-red)"/>
+  <line x1="608" y1="378" x2="542" y2="378" stroke="#2e7d32" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="575" y="348" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#c62828">승인 요청</text>
+  <text x="575" y="395" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#2e7d32">승인/거부 응답</text>
+
+  <!-- Chatbot Approval UI -->
+  <rect x="610" y="328" width="210" height="80" rx="8" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="715" y="352" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold">챗봇 승인 UI</text>
+  <text x="715" y="370" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">사용자에게 위험 명령 표시</text>
+  <rect x="625" y="377" width="80" height="22" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+  <text x="665" y="392" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#2e7d32">승인 (YES)</text>
+  <rect x="715" y="377" width="95" height="22" rx="4" fill="#fce4ec" stroke="#c62828" stroke-width="1"/>
+  <text x="762" y="392" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" font-weight="bold" fill="#c62828">거부 (NO)</text>
+
+  <!-- Arrow: Chatbot UI → wait_cpc_approval -->
+  <line x1="822" y1="368" x2="878" y2="368" stroke="#2e7d32" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- wait_cpc_approval -->
+  <rect x="880" y="328" width="185" height="80" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="972" y="352" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">wait_cpc_approval</text>
+  <text x="972" y="370" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">MCP 도구 — 폴링 대기</text>
+  <text x="972" y="386" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">120초 타임아웃</text>
+  <text x="972" y="401" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#c62828">timeout → 자동 거부 (fail-secure)</text>
+
+  <!-- ==================== ROW 4: Permission Settings + MCP Server ==================== -->
+  <text x="600" y="440" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#888">[ ROW 4 : 권한 설정 + MCP 서버 ]</text>
+
+  <!-- bypassPermissions box -->
+  <rect x="30" y="450" width="320" height="105" rx="8" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="190" y="474" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#2e7d32">bypassPermissions 설정</text>
+  <text x="190" y="493" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">settings.local.json</text>
+  <text x="190" y="511" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">defaultMode: bypassPermissions</text>
+  <text x="190" y="529" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">모든 도구 y/n 프롬프트 없이 자동 허용</text>
+  <text x="190" y="546" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">원격 운용 시 터미널 차단 없음</text>
+
+  <!-- Arrow: bypass → hook (trade-off) -->
+  <line x1="352" y1="502" x2="418" y2="502" stroke="#333" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="385" y="494" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">보완</text>
+
+  <!-- Hook box -->
+  <rect x="420" y="450" width="320" height="105" rx="8" fill="#fce4ec" stroke="#c62828" stroke-width="2"/>
+  <text x="580" y="474" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#c62828">PreToolUse Hook 감지 패턴</text>
+  <text x="580" y="493" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">.claude/hooks/dangerous-cmd-approval.py</text>
+  <text x="450" y="511" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">rm / del / rmdir / taskkill</text>
+  <text x="450" y="527" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">git push / git reset --hard</text>
+  <text x="450" y="543" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">vercel --prod / DROP TABLE / DELETE FROM</text>
+  <text x="450" y="559" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">npm uninstall</text>
+
+  <!-- MCP Server box -->
+  <rect x="760" y="450" width="400" height="105" rx="8" fill="#ede7f6" stroke="#5e35b1" stroke-width="2"/>
+  <text x="960" y="474" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#5e35b1">MCP Server — 5개 도구</text>
+  <text x="960" y="493" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#555">cpc-agent-server/cpc_mcp_server.py</text>
+  <text x="775" y="511" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">1. wait_cpc_command (폴링, timeout=120)</text>
+  <text x="775" y="527" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">2. report_cpc_result (결과 보고)</text>
+  <text x="775" y="543" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">3. send_cpc_message (챗봇 메시지 발송)</text>
+  <text x="775" y="559" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#5e35b1" font-weight="bold">4. request_cpc_approval (신규 — 승인 요청)</text>
+  <text x="775" y="575" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#5e35b1" font-weight="bold">5. wait_cpc_approval (신규 — 승인 대기)</text>
+
+  <!-- ==================== ROW 5: cpc-engage + Platoon ==================== -->
+  <text x="600" y="590" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#888">[ ROW 5 : 소대 편제 + 세션 시작 ]</text>
+
+  <!-- cpc-engage -->
+  <rect x="30" y="600" width="300" height="95" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="180" y="624" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#1565c0">/cpc-engage (세션 시작)</text>
+  <text x="180" y="643" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">~/.claude/skills/cpc-engage/SKILL.md</text>
+  <text x="180" y="661" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">소대장 역할 인식 + RUNNING 상태 업데이트</text>
+  <text x="180" y="677" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">wait_cpc_command 폴링 루프 진입</text>
+  <text x="180" y="692" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">디렉토리 자동 감지 → 소대 키 결정</text>
+
+  <!-- Platoon Composition -->
+  <rect x="360" y="600" width="490" height="95" rx="8" fill="#fff8e1" stroke="#f57f17" stroke-width="2"/>
+  <text x="605" y="624" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#f57f17">소대 편제 (39명)</text>
+  <text x="375" y="643" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">HQ(2): 소대장(Opus) + 연락병(Chatbot)</text>
+  <text x="375" y="659" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">3 Squads x 11명 = 33명 (Alpha/Bravo/Charlie 분대)</text>
+  <text x="375" y="675" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#333">용병 4명 (Codex / Gemini / Grok / Perplexity)</text>
+  <text x="375" y="691" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">프로젝트: mychatbot-world → mychatbot-1/2/3</text>
+
+  <!-- Remote Control note -->
+  <rect x="880" y="600" width="280" height="95" rx="8" fill="#e8eaf6" stroke="#283593" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="1020" y="624" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#283593">리모트 컨트롤</text>
+  <text x="1020" y="643" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">/remote-control → URL 생성</text>
+  <text x="1020" y="659" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">PATCH /api/platoons/{id}/status</text>
+  <text x="1020" y="675" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">session_url CPC 저장</text>
+  <text x="1020" y="691" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#888">bypassPermissions → 원격 무중단 운용</text>
+
+  <!-- ==================== APPROVAL FLOW DETAIL ==================== -->
+  <text x="600" y="728" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="12" font-weight="bold" fill="#888">[ 승인 흐름 2가지 ]</text>
+
+  <!-- Flow A: Hook (system) -->
+  <rect x="30" y="738" width="560" height="76" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+  <text x="310" y="760" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#e65100">승인 흐름 A: Hook 자동 감지 (시스템 강제)</text>
+  <text x="45" y="778" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">Claude Code 도구 호출 직전 → Hook 개입 → 위험 패턴 감지 →</text>
+  <text x="45" y="795" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">request_cpc_approval + wait_cpc_approval → 승인 시 실행 / 거부 또는 타임아웃 시 차단</text>
+
+  <!-- Flow B: Platoon (manual) -->
+  <rect x="610" y="738" width="550" height="76" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="885" y="760" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">승인 흐름 B: 소대장 판단 (수동 요청)</text>
+  <text x="625" y="778" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">소대장이 작업 중 사용자 확인 필요 시 →</text>
+  <text x="625" y="795" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">request_cpc_approval 직접 호출 → 챗봇에 질문 표시 → 응답 수신 후 진행</text>
+
+  <!-- ==================== VERSION HISTORY ==================== -->
+  <rect x="30" y="840" width="1140" height="110" rx="8" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
+  <text x="600" y="866" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="16" font-weight="bold" fill="#333">버전 히스토리</text>
+
+  <!-- v19 -->
+  <rect x="50" y="878" width="330" height="60" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1"/>
+  <text x="215" y="898" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#c62828">v19.0 (inject pipeline)</text>
+  <text x="215" y="915" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">Agent Server + inject_watcher.py</text>
+  <text x="215" y="930" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">server.py / cc_inject.py / cpc_respond.py</text>
+
+  <!-- Arrow v19→v20 -->
+  <line x1="382" y1="908" x2="418" y2="908" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- v20 -->
+  <rect x="420" y="878" width="330" height="60" rx="6" fill="#fff8e1" stroke="#f57f17" stroke-width="1"/>
+  <text x="585" y="898" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#f57f17">v20.0 (MCP native)</text>
+  <text x="585" y="915" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">inject pipeline 완전 삭제</text>
+  <text x="585" y="930" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">MCP 3개: wait / report / send_cpc_message</text>
+
+  <!-- Arrow v20→v21 -->
+  <line x1="752" y1="908" x2="788" y2="908" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- v21 -->
+  <rect x="790" y="878" width="360" height="60" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="970" y="898" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="13" font-weight="bold" fill="#2e7d32">v21.0 (bypassPermissions + Hook)</text>
+  <text x="970" y="915" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">bypassPermissions: 원격 무중단 운용</text>
+  <text x="970" y="930" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="10" fill="#555">MCP 5개 + PreToolUse Hook 위험 명령 승인</text>
+
+  <!-- ==================== LEGEND ==================== -->
+  <rect x="30" y="970" width="1140" height="70" rx="8" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
+  <text x="600" y="993" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="14" font-weight="bold" fill="#333">범례</text>
+  <line x1="55" y1="1015" x2="95" y2="1015" stroke="#1565c0" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="105" y="1019" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">사용자 / 리모트 흐름</text>
+  <line x1="290" y1="1015" x2="330" y2="1015" stroke="#e53935" stroke-width="2" marker-end="url(#arr-red)"/>
+  <text x="340" y="1019" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">위험 명령 / 승인 요청</text>
+  <line x1="530" y1="1015" x2="570" y2="1015" stroke="#2e7d32" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="580" y="1019" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">결과 반환 / 승인 완료</text>
+  <line x1="770" y1="1015" x2="810" y2="1015" stroke="#f57f17" stroke-width="2" marker-end="url(#arr-orange)"/>
+  <text x="820" y="1019" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">MCP 루프 (wait → report)</text>
+  <line x1="1010" y1="1015" x2="1050" y2="1015" stroke="#5e35b1" stroke-width="2" marker-end="url(#arr-purple)"/>
+  <text x="1060" y="1019" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#333">MCP 서버 도구</text>
+
+  <!-- Footer -->
+  <text x="600" y="1055" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#999">v21.0 — bypassPermissions + PreToolUse Hook (dangerous-cmd-approval.py) + MCP 5 tools</text>
+  <text x="600" y="1072" text-anchor="middle" font-family="Malgun Gothic, sans-serif" font-size="11" fill="#999">Agent Server (server.py, inject_watcher.py, cc_inject.py, cpc_respond.py) 완전 삭제 (v20.0)</text>
+</svg>
