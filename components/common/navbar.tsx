@@ -6,12 +6,13 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 
-// 4대 메뉴 (Birth/Skills/Jobs/Community)
+// 5대 메뉴 (Birth/Skills/Jobs/Community/My Page)
 const NAV_ITEMS = [
-  { label: 'Birth',     labelKo: '탄생',     href: '/create',    icon: '🐣' },
-  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills',    icon: '🔧' },
-  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs',      icon: '💼' },
-  { label: 'Community', labelKo: '봇카페',    href: '/community', icon: '🤝' },
+  { label: 'Birth',     labelKo: '탄생',       href: '/create',    icon: '🐣' },
+  { label: 'Skills',    labelKo: '스킬장터',    href: '/skills',    icon: '🔧' },
+  { label: 'Jobs',      labelKo: '구봇구직',    href: '/jobs',      icon: '💼' },
+  { label: 'Community', labelKo: '봇카페',      href: '/community', icon: '🤝' },
+  { label: 'My Page',   labelKo: '마이페이지',  href: '/mypage',    icon: '👤' },
 ] as const;
 
 // 마케팅 페이지 목록 — 이 경로는 별도 레이아웃 사용
