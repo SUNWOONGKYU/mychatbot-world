@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 
 // 4대 메뉴 (Birth/Skills/Jobs/Community)
 const NAV_ITEMS = [
-  { label: 'Birth',     labelKo: '탄생',     href: '/birth',     icon: '🐣' },
+  { label: 'Birth',     labelKo: '탄생',     href: '/create',    icon: '🐣' },
   { label: 'Skills',    labelKo: '스킬장터',  href: '/skills',    icon: '🔧' },
   { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs',      icon: '💼' },
   { label: 'Community', labelKo: '봇카페',    href: '/community', icon: '🤝' },
