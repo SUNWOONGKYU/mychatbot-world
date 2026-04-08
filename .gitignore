@@ -23,6 +23,13 @@ nul
 # Archives
 Dev_Package_archive_*/
 
+# Reference materials (local only, not for git)
+_reference/
+
+# Temp files (반성문 2번: 즉시 치우기)
+*.cpuprofile
+test-results/
+
 # Python cache
 __pycache__/
 cpc-agent-server/__pycache__/
