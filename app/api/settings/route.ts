@@ -150,7 +150,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
       .eq('owner_id', session.user.id)
@@ -261,7 +261,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', chatbot_id)
       .eq('owner_id', session.user.id)
@@ -358,7 +358,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', body.chatbot_id)
       .eq('owner_id', session.user.id)
@@ -459,7 +459,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
       .eq('owner_id', session.user.id)

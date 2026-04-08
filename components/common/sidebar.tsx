@@ -11,19 +11,44 @@ interface NavItem {
   icon: string;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { label: '대시보드',    href: '/dashboard',      icon: '◻' },
-  { label: '내 봇',      href: '/bots',            icon: '🤖' },
-  { label: '봇 만들기',  href: '/bots/new',        icon: '＋' },
-  { label: '대화 기록',  href: '/conversations',   icon: '💬' },
-  { label: '지식베이스', href: '/knowledge',       icon: '📚' },
-  { label: '페르소나',   href: '/personas',        icon: '🎭' },
-  { label: '템플릿',     href: '/templates',       icon: '📋' },
-  { label: '연동',       href: '/integrations',    icon: '🔗' },
-  { label: '분석',       href: '/analytics',       icon: '📊' },
-  { label: '크레딧',     href: '/credits',         icon: '💳' },
-  { label: '설정',       href: '/settings',        icon: '⚙' },
-  { label: '도움말',     href: '/help',            icon: '❓' },
+interface NavSection {
+  title?: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
+  {
+    title: '내 챗봇',
+    items: [
+      { label: '홈',          href: '/home',             icon: '🏠' },
+      { label: '봇 만들기',   href: '/create',           icon: '＋' },
+      { label: '마이페이지',  href: '/mypage',           icon: '👤' },
+    ],
+  },
+  {
+    title: '서비스',
+    items: [
+      { label: '스킬 마켓',   href: '/skills',           icon: '🧩' },
+      { label: '마켓플레이스', href: '/marketplace',      icon: '🛒' },
+      { label: '커뮤니티',    href: '/community',         icon: '💬' },
+      { label: '구인구직',    href: '/jobs',              icon: '💼' },
+      { label: '학습',        href: '/learning',          icon: '📖' },
+    ],
+  },
+  {
+    title: '비즈니스',
+    items: [
+      { label: '비즈니스',    href: '/business',          icon: '📊' },
+      { label: '상속',        href: '/mypage/inheritance', icon: '🔗' },
+    ],
+  },
+  {
+    title: '관리',
+    items: [
+      { label: '설정',        href: '/settings',          icon: '⚙' },
+      { label: '게스트 모드',  href: '/guest',            icon: '👋' },
+    ],
+  },
 ];
 
 interface SidebarProps {
@@ -55,33 +80,42 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2">
-        <ul className="space-y-0.5">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={onLinkClick}
-                  className={clsx(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-lg',
-                    'text-sm transition-colors duration-150',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                    isActive
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
-                  )}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <span className="text-base w-5 text-center leading-none" aria-hidden="true">
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        {NAV_SECTIONS.map((section, idx) => (
+          <div key={idx} className={clsx(idx > 0 && 'mt-4 pt-3 border-t border-border')}>
+            {section.title && (
+              <p className="px-3 mb-1 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+                {section.title}
+              </p>
+            )}
+            <ul className="space-y-0.5">
+              {section.items.map((item) => {
+                const isActive = pathname ? (pathname === item.href || pathname.startsWith(item.href + '/')) : false;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={onLinkClick}
+                      className={clsx(
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg',
+                        'text-sm transition-colors duration-150',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                        isActive
+                          ? 'bg-primary/10 text-primary font-medium'
+                          : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                      )}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      <span className="text-base w-5 text-center leading-none" aria-hidden="true">
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
     </aside>
   );

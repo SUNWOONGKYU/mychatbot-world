@@ -3,17 +3,18 @@
  * @description POST /api/chat — 비스트리밍 대화 API
  *
  * 요청: { botId, message, emotionLevel, conversationId? }
- * 응답: { reply, conversationId, messageId, modelId, modelName, emotionTier }
+ * 응답: { reply, conversationId, messageId, modelId, modelName, emotionTier, ragSource }
  *
  * 처리 순서:
  * 1. Supabase Auth 세션 확인
  * 2. personas 테이블에서 페르소나 로딩 (캐싱 적용)
  * 3. emotionLevel 기반 AI 모델 선택 (S2BI1 ai-router)
  * 4. conversationId 없으면 새 conversation 레코드 생성
- * 5. RAG: 메시지 임베딩 생성 → KB 벡터 검색 → 시스템 프롬프트에 삽입
+ * 5. Wiki-First RAG: 위키 검색 → 히트 시 위키 컨텍스트 사용, 미히트 시 kb_embeddings 폴백 (S5BI1)
  * 6. OpenRouter API 호출 (비스트리밍) + 컨텍스트 오버플로 자동 압축
  * 7. messages 테이블에 user/assistant 메시지 저장
- * 8. JSON 응답 반환
+ * 8. 비동기 wiki accumulate 호출 (복리 축적, S5BI1)
+ * 9. JSON 응답 반환
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -58,6 +59,8 @@ interface ChatResponseBody {
   modelName: string;
   /** 감성 티어 */
   emotionTier: string;
+  /** RAG 소스 (wiki | chunk | none) — S5BI1 */
+  ragSource?: 'wiki' | 'chunk' | 'none';
 }
 
 // ============================
@@ -228,6 +231,68 @@ async function generateQueryEmbedding(text: string): Promise<number[] | null> {
 }
 
 // ============================
+// Wiki-First RAG (S5BI1)
+// ============================
+
+/**
+ * Wiki-First 검색: match_wiki_pages RPC로 위키 우선 검색
+ * 히트 시 wiki content 반환, 미히트 시 null
+ */
+async function searchWiki(
+  botId: string,
+  queryEmbedding: number[]
+): Promise<{ content: string; titles: string[] } | null> {
+  try {
+    const supabase = getSupabaseServer();
+    const { data, error } = await (supabase as any).rpc('match_wiki_pages', {
+      p_bot_id: botId,
+      query_embedding: queryEmbedding,
+      match_threshold: 0.75,
+      match_count: 3,
+    });
+
+    if (error || !data || data.length === 0) return null;
+
+    const titles: string[] = data.map((r: any) => r.title as string);
+    const content = data
+      .map((r: any) => `[위키: ${r.title}]\n${r.content}`)
+      .join('\n\n');
+
+    // view_count 비동기 업데이트 (실패해도 무시)
+    const ids: string[] = data.map((r: any) => r.id as string);
+    void supabase
+      .from('wiki_pages')
+      .update({ view_count: (supabase as any).rpc('view_count + 1') })
+      .in('id', ids)
+      .then(() => {});
+
+    return { content, titles };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 답변 후 위키 accumulate 비동기 호출 (복리 축적)
+ * 실패해도 메인 응답에 영향 없음
+ */
+function triggerWikiAccumulate(
+  botId: string,
+  question: string,
+  answer: string,
+  appUrl: string
+): void {
+  const url = `${appUrl}/api/wiki/accumulate`;
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bot_id: botId, question, answer }),
+  }).catch((e) => {
+    console.warn('[chat/route] wiki accumulate failed:', (e as Error).message);
+  });
+}
+
+// ============================
 // Context Overflow 감지 + 압축
 // ============================
 
@@ -341,22 +406,36 @@ async function chatCompletionWithFallback(
 
   for (const model of modelsToTry) {
     try {
-      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
-          'X-Title': process.env.NEXT_PUBLIC_APP_NAME ?? 'MyChatbot',
-        },
-        body: JSON.stringify({
-          model,
-          messages: currentMessages,
-          temperature: 0.8,
-          max_tokens: 500,
-          stream: false,
-        }),
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      let resp: Response;
+      try {
+        resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
+            'X-Title': process.env.NEXT_PUBLIC_APP_NAME ?? 'MyChatbot',
+          },
+          body: JSON.stringify({
+            model,
+            messages: currentMessages,
+            temperature: 0.8,
+            max_tokens: 500,
+            stream: false,
+          }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+      } catch (e) {
+        clearTimeout(timeoutId);
+        if (e instanceof Error && e.name === 'AbortError') {
+          console.warn(`[chat/route] ${model} timeout (30s)`);
+          return NextResponse.json({ error: 'AI 응답 시간이 초과되었습니다.' }, { status: 504 }) as never;
+        }
+        throw e;
+      }
 
       // 컨텍스트 오버플로 → 히스토리 압축 후 동일 모델 재시도
       if (!resp.ok && !contextCompacted && (await isContextOverflow(resp))) {
@@ -373,23 +452,37 @@ async function chatCompletionWithFallback(
           contextCompacted = true;
 
           // 압축 후 동일 모델 재시도
-          const retryResp = await fetch(
-            'https://openrouter.ai/api/v1/chat/completions',
-            {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                model,
-                messages: currentMessages,
-                temperature: 0.8,
-                max_tokens: 500,
-                stream: false,
-              }),
+          const retryController = new AbortController();
+          const retryTimeoutId = setTimeout(() => retryController.abort(), 30000);
+          let retryResp: Response;
+          try {
+            retryResp = await fetch(
+              'https://openrouter.ai/api/v1/chat/completions',
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${apiKey}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  model,
+                  messages: currentMessages,
+                  temperature: 0.8,
+                  max_tokens: 500,
+                  stream: false,
+                }),
+                signal: retryController.signal,
+              }
+            );
+            clearTimeout(retryTimeoutId);
+          } catch (e) {
+            clearTimeout(retryTimeoutId);
+            if (e instanceof Error && e.name === 'AbortError') {
+              console.warn(`[chat/route] ${model} retry timeout (30s)`);
+              return NextResponse.json({ error: 'AI 응답 시간이 초과되었습니다.' }, { status: 504 }) as never;
             }
-          );
+            throw e;
+          }
           if (retryResp.ok) {
             const retryData = (await retryResp.json()) as {
               choices?: Array<{ message?: { content?: string } }>;
@@ -481,7 +574,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const routerResult = selectModel({ emotionSlider: emotionLevel, costTier });
     const { selectedModel, emotionTier } = routerResult;
 
-    // 5. conversationId 확인 / 신규 생성 + 대화 히스토리 로드 (병렬)
+    // 5. conversationId 확인 / 신규 생성 + 임베딩 생성 (병렬)
     let conversationId = inputConversationId ?? '';
     const [resolvedConversationId, queryEmbedding] = await Promise.all([
       conversationId
@@ -492,25 +585,50 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     ]);
     conversationId = resolvedConversationId;
 
-    // 6. 페르소나 로딩 — KB 임베딩이 있으면 RAG 검색 포함
-    // queryEmbedding이 있으면 persona-loader가 match_kb_documents RPC로 관련 청크를 삽입
-    const personaCtx = await loadPersona(botId, queryEmbedding ?? undefined);
+    // 6. Wiki-First RAG (S5BI1): 위키 검색 우선, 미히트 시 kb_embeddings 폴백
+    let wikiCtx: { content: string; titles: string[] } | null = null;
+    let ragSource: 'wiki' | 'chunk' | 'none' = 'none';
 
-    // 7. 대화 히스토리 로드
+    if (queryEmbedding) {
+      wikiCtx = await searchWiki(botId, queryEmbedding);
+      if (wikiCtx) {
+        ragSource = 'wiki';
+      }
+    }
+
+    // 7. 페르소나 로딩
+    // 위키 히트: kb_embeddings 스킵 (queryEmbedding 미전달)
+    // 위키 미히트: queryEmbedding 전달 → persona-loader가 match_kb_documents 청크 검색
+    const personaCtx = await loadPersona(
+      botId,
+      wikiCtx ? undefined : (queryEmbedding ?? undefined)
+    );
+    if (!wikiCtx && queryEmbedding) ragSource = 'chunk';
+
+    // 8. 대화 히스토리 로드
     const history = await loadConversationHistory(conversationId);
 
-    // 8. 메시지 배열 조합 (system + history + current user message)
-    //    personaCtx.systemPrompt에 이미 KB RAG 컨텍스트가 포함되어 있음
-    const messages: OpenRouterMessage[] = [
+    // 9. 메시지 배열 조합 (system + wiki context (if any) + history + current user message)
+    const systemMessages: OpenRouterMessage[] = [
       { role: 'system', content: personaCtx.systemPrompt },
+    ];
+    if (wikiCtx) {
+      systemMessages.push({
+        role: 'system',
+        content: `[지식베이스 — 위키]\n다음 위키 정보를 참고하여 답변하세요:\n\n${wikiCtx.content}`,
+      });
+    }
+
+    const messages: OpenRouterMessage[] = [
+      ...systemMessages,
       ...history,
       { role: 'user', content: message },
     ];
 
-    // 9. user 메시지 DB 저장
+    // 10. user 메시지 DB 저장
     await saveMessage(conversationId, 'user', message);
 
-    // 10. OpenRouter API 호출 (비스트리밍) + 컨텍스트 오버플로 자동 압축 + 폴백
+    // 11. OpenRouter API 호출 (비스트리밍) + 컨텍스트 오버플로 자동 압축 + 폴백
     const { reply, usedModel } = await chatCompletionWithFallback(
       selectedModel.id,
       messages,
@@ -518,10 +636,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       personaCtx.systemPrompt
     );
 
-    // 11. assistant 메시지 DB 저장
+    // 12. assistant 메시지 DB 저장
     const messageId = await saveMessage(conversationId, 'assistant', reply);
 
-    // 12. JSON 응답 반환
+    // 13. Wiki accumulate 비동기 호출 (복리 축적, 실패해도 무시)
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    triggerWikiAccumulate(botId, message, reply, appUrl);
+
+    // 14. JSON 응답 반환
     const responseBody: ChatResponseBody = {
       reply,
       conversationId,
@@ -529,6 +652,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       modelId: usedModel,          // 실제 사용된 모델 (폴백 시 달라질 수 있음)
       modelName: selectedModel.name, // 라우터가 의도한 모델명 (표시용)
       emotionTier,
+      ragSource,
     };
 
     return NextResponse.json(responseBody, { status: 200 });

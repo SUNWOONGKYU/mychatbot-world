@@ -8,6 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 import { selectModel } from '@/lib/ai-router';
 import {
@@ -66,6 +67,26 @@ const DEFAULT_MAX_TOKENS = 2048;
  * - 바디: AIChatResponse
  */
 export async function POST(request: NextRequest): Promise<Response> {
+  // ── 0. 인증 ──────────────────────────────────────────────────────
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader) {
+    return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+  if (!token) {
+    return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+  }
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const { data: userData, error: authError } = await supabase.auth.getUser(token);
+  if (authError || !userData?.user) {
+    return NextResponse.json({ error: '유효하지 않거나 만료된 토큰입니다.' }, { status: 401 });
+  }
+
   // ── 1. 요청 파싱 ────────────────────────────────────────────────
   let body: AIChatRequestBody;
 

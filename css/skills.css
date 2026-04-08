@@ -1,18 +1,21 @@
 /* ============================================
-   Skills Page — Emerald Accent #10b981
-   @task S3F12 (확장: 마켓플레이스 + 상세 + 마이스킬)
+   Skills Page — S5 디자인 시스템 (퍼플 Primary + 앰버 Accent)
+   @task S3F12 → S5FE4 리디자인
    ============================================ */
 
 :root {
-  --page-accent: #10b981;
-  --page-accent-rgb: 16, 185, 129;
-  --sk-accent: #10b981;
-  --sk-accent-dim: rgba(16, 185, 129, 0.12);
-  --sk-accent-border: rgba(16, 185, 129, 0.3);
-  --sk-glass: rgba(255,255,255,0.04);
-  --sk-glass-border: rgba(255,255,255,0.08);
-  --sk-text-dim: rgba(255,255,255,0.5);
-  --sk-radius: 1rem;
+  /* S5 디자인 토큰 참조 — globals.css 변수 활용 */
+  --sk-accent:        rgb(var(--color-primary));       /* 퍼플 #5E4BFF (다크) / #7B6EFF (라이트) */
+  --sk-accent-dim:    rgb(var(--color-primary) / 0.12);
+  --sk-accent-border: rgb(var(--color-primary) / 0.3);
+  --sk-glass:         rgb(var(--bg-surface));
+  --sk-glass-border:  rgb(var(--border));
+  --sk-text-dim:      rgb(var(--text-muted));
+  --sk-radius:        var(--radius-xl);                /* 16px */
+
+  /* 가격 액센트 — 앰버 */
+  --sk-price-free:    rgb(var(--color-success));
+  --sk-price-paid:    rgb(var(--color-accent));
 }
 
 /* ── Navbar: 마이스킬 배지 ── */
@@ -42,7 +45,7 @@
 .sk-section-title {
   font-size: 1.4rem;
   font-weight: 800;
-  color: white;
+  color: rgb(var(--text-primary));
   margin-bottom: 0.5rem;
 }
 
@@ -101,11 +104,11 @@
 ══════════════════════════════════════════ */
 .sk-filter-bar {
   padding: 1rem 0;
-  border-top: 1px solid var(--sk-glass-border);
-  border-bottom: 1px solid var(--sk-glass-border);
+  border-top: 1px solid rgb(var(--border));
+  border-bottom: 1px solid rgb(var(--border));
   position: sticky;
   top: 60px;
-  background: rgba(15, 12, 41, 0.95);
+  background: rgb(var(--bg-base) / 0.95);
   backdrop-filter: blur(20px);
   z-index: 100;
 }
@@ -121,26 +124,26 @@
   display: inline-flex;
   align-items: center;
   padding: 0.4rem 1rem;
-  background: var(--sk-glass);
-  border: 1px solid var(--sk-glass-border);
-  border-radius: 999px;
+  background: rgb(var(--bg-surface));
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--radius-full);
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.65);
+  color: rgb(var(--text-secondary));
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
   white-space: nowrap;
 }
 
 .sk-chip:hover {
   background: var(--sk-accent-dim);
   border-color: var(--sk-accent-border);
-  color: #34d399;
+  color: rgb(var(--color-primary));
 }
 
 .sk-chip--active {
   background: var(--sk-accent-dim);
   border-color: var(--sk-accent);
-  color: #34d399;
+  color: rgb(var(--color-primary));
   font-weight: 600;
 }
 
@@ -191,8 +194,9 @@
 .sk-search-input::placeholder { color: var(--sk-text-dim); }
 
 .sk-search-input:focus {
-  border-color: var(--sk-accent);
-  background: rgba(16, 185, 129, 0.05);
+  border-color: rgb(var(--border-primary));
+  box-shadow: 0 0 0 3px rgb(var(--color-primary) / 0.12);
+  background: rgb(var(--color-primary) / 0.05);
 }
 
 /* 오른쪽 도구 */
@@ -295,9 +299,9 @@
   padding: 0.4rem 0.875rem;
   background: var(--sk-accent-dim);
   border: 1px solid var(--sk-accent-border);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   font-size: 0.85rem;
-  color: #34d399;
+  color: rgb(var(--color-primary));
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
@@ -305,8 +309,8 @@
 }
 
 .sk-my-btn:hover {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: var(--sk-accent);
+  background: rgb(var(--color-primary) / 0.2);
+  border-color: rgb(var(--color-primary));
 }
 
 /* 결과 카운트 */
@@ -345,10 +349,9 @@
 }
 
 .sk-card:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(255,255,255,0.15);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  border-color: rgb(var(--color-primary));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .sk-card-link {
@@ -376,16 +379,16 @@
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.2rem 0.6rem;
-  background: var(--sk-accent-dim);
-  color: #34d399;
-  border-radius: 999px;
+  background: rgb(var(--color-primary) / 0.12);
+  color: rgb(var(--color-primary));
+  border-radius: var(--radius-full);
   white-space: nowrap;
 }
 
 .sk-name {
   font-size: 1rem;
   font-weight: 700;
-  color: white;
+  color: rgb(var(--text-primary));
   margin: 0;
   line-height: 1.3;
 }
@@ -406,7 +409,7 @@
 }
 
 .sk-stars {
-  color: #fbbf24;
+  color: rgb(var(--color-accent));
   font-size: 0.75rem;
   letter-spacing: 0.05em;
 }
@@ -428,8 +431,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1.25rem;
-  border-top: 1px solid var(--sk-glass-border);
-  background: rgba(0,0,0,0.1);
+  border-top: 1px solid rgb(var(--border-subtle));
+  background: rgb(var(--bg-surface-raised));
 }
 
 .sk-price {
@@ -437,8 +440,8 @@
   font-weight: 700;
 }
 
-.sk-price.free { color: #34d399; }
-.sk-price.paid { color: #fbbf24; }
+.sk-price.free { color: rgb(var(--color-success)); }
+.sk-price.paid { color: rgb(var(--color-accent)); }
 
 .sk-btn {
   padding: 0.35rem 0.875rem;
@@ -451,25 +454,26 @@
 }
 
 .sk-btn--install {
-  background: var(--sk-accent);
-  color: white;
+  background: rgb(var(--color-primary));
+  color: rgb(var(--text-on-primary));
 }
 
 .sk-btn--install:hover {
-  filter: brightness(1.15);
+  background: rgb(var(--color-primary-hover));
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .sk-btn--remove {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.5);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgb(var(--bg-muted));
+  color: rgb(var(--text-muted));
+  border: 1px solid rgb(var(--border));
 }
 
 .sk-btn--remove:hover {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.3);
-  color: #f87171;
+  background: rgb(var(--color-error) / 0.12);
+  border-color: rgb(var(--color-error) / 0.3);
+  color: rgb(var(--color-error));
 }
 
 /* ══════════════════════════════════════════
@@ -488,7 +492,7 @@
 .sk-empty-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: white;
+  color: rgb(var(--text-primary));
   margin-bottom: 0.5rem;
 }
 
@@ -502,18 +506,22 @@
   display: inline-flex;
   align-items: center;
   padding: 0.6rem 1.5rem;
-  background: var(--sk-accent);
-  color: white;
+  background: rgb(var(--color-primary));
+  color: rgb(var(--text-on-primary));
   border: none;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-lg);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: filter 0.2s;
+  transition: all var(--transition-base);
 }
 
-.sk-empty-btn:hover { filter: brightness(1.15); }
+.sk-empty-btn:hover {
+  background: rgb(var(--color-primary-hover));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
 
 /* ══════════════════════════════════════════
    PURCHASE MODAL
@@ -531,14 +539,14 @@
 }
 
 .sk-modal {
-  background: #1a1730;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 1.25rem;
+  background: rgb(var(--bg-surface));
+  border: 1.5px solid rgb(var(--border));
+  border-radius: var(--radius-2xl);
   padding: 2rem;
   max-width: 400px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-xl);
 }
 
 .sk-modal-icon {
@@ -549,7 +557,7 @@
 .sk-modal-title {
   font-size: 1.2rem;
   font-weight: 800;
-  color: white;
+  color: rgb(var(--text-primary));
   margin-bottom: 0.5rem;
 }
 
@@ -563,7 +571,7 @@
 .sk-modal-price {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--sk-accent);
+  color: rgb(var(--color-accent));
   margin-bottom: 0.75rem;
 }
 
@@ -590,22 +598,26 @@
 }
 
 .sk-modal-btn--cancel {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgb(var(--bg-muted));
+  color: rgb(var(--text-secondary));
+  border: 1px solid rgb(var(--border));
 }
 
 .sk-modal-btn--cancel:hover {
-  background: rgba(255,255,255,0.12);
-  color: white;
+  background: rgb(var(--bg-surface-hover));
+  color: rgb(var(--text-primary));
 }
 
 .sk-modal-btn--confirm {
-  background: var(--sk-accent);
-  color: white;
+  background: rgb(var(--color-primary));
+  color: rgb(var(--text-on-primary));
+  border: none;
 }
 
-.sk-modal-btn--confirm:hover { filter: brightness(1.15); }
+.sk-modal-btn--confirm:hover {
+  background: rgb(var(--color-primary-hover));
+  box-shadow: var(--shadow-md);
+}
 
 /* ══════════════════════════════════════════
    TOAST
@@ -615,17 +627,17 @@
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid var(--sk-accent-border);
-  color: #34d399;
+  background: rgb(var(--color-success) / 0.15);
+  border: 1px solid rgb(var(--color-success) / 0.3);
+  color: rgb(var(--color-success));
   padding: 0.75rem 1.5rem;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: 0.875rem;
   font-weight: 600;
   z-index: 9998;
   white-space: nowrap;
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 /* ══════════════════════════════════════════
@@ -1144,4 +1156,44 @@
     padding: 0.3rem 0.75rem;
     font-size: 0.8rem;
   }
+}
+
+/* ── 유료 스킬 잠금 (추후 출시) ── */
+.sk-card--locked {
+  opacity: 0.65;
+  cursor: default;
+  position: relative;
+}
+
+.sk-card--locked .sk-card-link {
+  cursor: default;
+  display: block;
+}
+
+.sk-coming-soon {
+  margin-left: auto;
+  background: rgba(234,179,8,0.15);
+  color: #eab308;
+  border: 1px solid rgba(234,179,8,0.3);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.sk-price.paid {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.78rem;
+}
+
+.sk-btn--coming {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: not-allowed;
 }

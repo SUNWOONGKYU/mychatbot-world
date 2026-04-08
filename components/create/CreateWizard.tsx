@@ -1,0 +1,297 @@
+/**
+ * CreateWizard — Vanilla 원본 8단계 챗봇 생성 위저드 충실 전환
+ *
+ * Step 1: 기본정보
+ * Step 2: 대표 페르소나
+ * Step 3: 인터뷰 (음성/텍스트)
+ * Step 4: AI 분석 → 결과
+ * Step 5: 목소리 선택 + 생성하기
+ * Step 6: 아바타 설정
+ * Step 7: 테마 선택
+ * Step 8: 배포
+ */
+'use client';
+
+import { useState, useCallback, useRef, useEffect } from 'react';
+import Step1BasicInfo from './steps/Step1BasicInfo';
+import Step2Persona from './steps/Step2Persona';
+import Step3Interview from './steps/Step3Interview';
+import Step4Analysis from './steps/Step4Analysis';
+import Step5Voice from './steps/Step5Voice';
+import Step6Avatar from './steps/Step6Avatar';
+import Step7Theme from './steps/Step7Theme';
+import Step8Deploy from './steps/Step8Deploy';
+
+// ── 타입 ──────────────────────────────────────────────────────────────────────
+
+export interface PersonaData {
+  name: string;
+  userTitle: string;
+  role: string;
+  iqEq: number;
+  model: 'logic' | 'emotion' | 'fast' | 'creative';
+}
+
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+export interface WizardData {
+  // Step 1
+  botName: string;
+  botDesc: string;
+  botUsername: string;
+  // Step 2
+  persona: PersonaData;
+  // Step 3
+  interviewText: string;
+  // Step 4 (AI 결과)
+  greeting: string;
+  faqs: FaqItem[];
+  // Step 5
+  voice: string;
+  // Step 6
+  avatarEmoji: string;
+  avatarImageData: string | null;
+  // Step 7
+  themeMode: 'dark' | 'light';
+  themeColor: string;
+  // Step 8
+  deployChannels: string[];
+  botId: string | null;
+  deployUrl: string | null;
+  qrSvg: string | null;
+}
+
+const INITIAL_DATA: WizardData = {
+  botName: '',
+  botDesc: '',
+  botUsername: '',
+  persona: {
+    name: '',
+    userTitle: '고객님',
+    role: '',
+    iqEq: 50,
+    model: 'logic',
+  },
+  interviewText: '',
+  greeting: '',
+  faqs: [],
+  voice: 'fable',
+  avatarEmoji: 'robot',
+  avatarImageData: null,
+  themeMode: 'dark',
+  themeColor: 'purple',
+  deployChannels: ['web'],
+  botId: null,
+  deployUrl: null,
+  qrSvg: null,
+};
+
+const TOTAL_STEPS = 8;
+
+const STEP_LABELS = ['기본정보', '페르소나', '인터뷰', '분석', '생성', '아바타', '테마', '배포'];
+
+interface Props {
+  onComplete: (botId: string) => void;
+}
+
+// ── 진행률 바 ──────────────────────────────────────────────────────────────────
+
+function ProgressBar({ currentStep }: { currentStep: number }) {
+  const pct = Math.round((currentStep / TOTAL_STEPS) * 100);
+  return (
+    <div style={{ marginBottom: '2.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        {STEP_LABELS.map((label, i) => {
+          const stepNum = i + 1;
+          const isActive = stepNum === currentStep;
+          const isDone = stepNum < currentStep;
+          return (
+            <div
+              key={stepNum}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                fontSize: '0.6rem',
+                color: isActive
+                  ? 'rgb(var(--text-primary))'
+                  : isDone
+                  ? 'rgb(var(--text-secondary))'
+                  : 'rgb(var(--text-muted))',
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  background: isActive
+                    ? 'rgb(var(--color-primary))'
+                    : isDone
+                    ? 'rgb(var(--color-success))'
+                    : 'rgb(var(--bg-muted))',
+                  fontWeight: 700,
+                  fontSize: '0.6rem',
+                  flexShrink: 0,
+                  color: 'white',
+                }}
+              >
+                {stepNum}
+              </span>
+              <span style={{ display: window?.innerWidth <= 480 ? 'none' : 'inline' }}>{label}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ height: '4px', background: 'rgb(var(--bg-muted))', borderRadius: '2px', overflow: 'hidden' }}>
+        <div
+          style={{
+            height: '100%',
+            background: 'var(--gradient-primary)',
+            borderRadius: '2px',
+            width: `${pct}%`,
+            transition: 'width 0.5s ease',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── 메인 위저드 ────────────────────────────────────────────────────────────────
+
+export default function CreateWizard({ onComplete }: Props) {
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState<WizardData>(INITIAL_DATA);
+
+  // sessionStorage 초안 복원
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('mcw_create_draft_v2');
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {
+        sessionStorage.removeItem('mcw_create_draft_v2');
+        return;
+      }
+      if (draft.step > 1) {
+        if (confirm('이전에 작성 중이던 챗봇이 있습니다. 이어서 작성하시겠습니까?')) {
+          setData(draft.data || INITIAL_DATA);
+          setStep(draft.step || 1);
+        } else {
+          sessionStorage.removeItem('mcw_create_draft_v2');
+        }
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  const saveDraft = useCallback((nextStep: number, nextData: WizardData) => {
+    try {
+      sessionStorage.setItem('mcw_create_draft_v2', JSON.stringify({
+        step: nextStep,
+        data: nextData,
+        savedAt: Date.now(),
+      }));
+    } catch { /* ignore */ }
+  }, []);
+
+  const clearDraft = useCallback(() => {
+    sessionStorage.removeItem('mcw_create_draft_v2');
+  }, []);
+
+  const update = useCallback((patch: Partial<WizardData>) => {
+    setData(prev => ({ ...prev, ...patch }));
+  }, []);
+
+  const goTo = useCallback((nextStep: number, updatedData?: Partial<WizardData>) => {
+    const merged = updatedData ? { ...data, ...updatedData } : data;
+    setData(merged);
+    setStep(nextStep);
+    saveDraft(nextStep, merged);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [data, saveDraft]);
+
+  const handleFinish = useCallback((finalData: Partial<WizardData>) => {
+    const merged = { ...data, ...finalData };
+    setData(merged);
+    clearDraft();
+    if (merged.botId) {
+      onComplete(merged.botId);
+    }
+  }, [data, clearDraft, onComplete]);
+
+  return (
+    <div>
+      <ProgressBar currentStep={step} />
+
+      <div style={{ animation: 'fadeIn 0.5s ease' }}>
+        {step === 1 && (
+          <Step1BasicInfo
+            data={data}
+            onNext={(patch) => goTo(2, patch)}
+          />
+        )}
+        {step === 2 && (
+          <Step2Persona
+            data={data}
+            onNext={(patch) => goTo(3, patch)}
+            onBack={() => goTo(1)}
+          />
+        )}
+        {step === 3 && (
+          <Step3Interview
+            data={data}
+            onNext={(patch) => goTo(4, patch)}
+            onBack={() => goTo(2)}
+          />
+        )}
+        {step === 4 && (
+          <Step4Analysis
+            data={data}
+            onNext={(patch) => goTo(5, patch)}
+          />
+        )}
+        {step === 5 && (
+          <Step5Voice
+            data={data}
+            onNext={(patch) => goTo(6, patch)}
+            onBack={() => goTo(4)}
+          />
+        )}
+        {step === 6 && (
+          <Step6Avatar
+            data={data}
+            onNext={(patch) => goTo(7, patch)}
+            onBack={() => goTo(5)}
+          />
+        )}
+        {step === 7 && (
+          <Step7Theme
+            data={data}
+            onNext={(patch) => goTo(8, patch)}
+            onBack={() => goTo(6)}
+          />
+        )}
+        {step === 8 && (
+          <Step8Deploy
+            data={data}
+            onFinish={handleFinish}
+          />
+        )}
+      </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+}

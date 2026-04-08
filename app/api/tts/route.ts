@@ -1,5 +1,5 @@
 /**
- * @task S2EX1
+ * @task S2EX1 / S4SC3
  * @description POST /api/tts — TTS 오디오 합성 API
  *
  * 요청: POST { text, voice?, language?, speed? }
@@ -9,16 +9,57 @@
  * 캐시 미스 시: 응답 헤더 X-Cache: MISS
  *
  * 제약:
+ *   - 인증된 사용자만 호출 가능 (Supabase auth 필수, S4SC3)
  *   - 텍스트 최대 500자 (초과 시 400)
  *   - OPENAI_API_KEY 필수
  *   - ELEVENLABS_API_KEY 있으면 ElevenLabs 우선 사용
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 import { synthesize, buildCacheKey } from '@/lib/tts-client';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
+
+// ============================
+// Supabase 인증 헬퍼 (S4SC3)
+// ============================
+
+function getSupabaseServer() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  return createClient(url, key);
+}
+
+/**
+ * Authorization 헤더 또는 쿠키에서 사용자 ID 추출
+ * 인증 실패 시 null 반환
+ */
+async function getUserId(req: NextRequest): Promise<string | null> {
+  try {
+    const supabase = getSupabaseServer();
+    const authHeader = req.headers.get('Authorization');
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const { data, error } = await supabase.auth.getUser(token);
+      if (!error && data.user) return data.user.id;
+    }
+
+    const accessToken = req.cookies.get('sb-access-token')?.value;
+    if (accessToken) {
+      const { data, error } = await supabase.auth.getUser(accessToken);
+      if (!error && data.user) return data.user.id;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 // ============================
 // 상수
@@ -89,6 +130,12 @@ function isCacheHit(text: string, voice: string, language: string): boolean {
  * - 500: API 오류
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // 0. 인증 확인 (S4SC3)
+  const userId = await getUserId(req);
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   // 1. 요청 파싱
   let body: {
     text?: unknown;

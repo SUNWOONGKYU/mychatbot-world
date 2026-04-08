@@ -161,7 +161,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
       .eq('owner_id', session.user.id)
@@ -224,7 +224,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       file.name.replace(/\.[^.]+$/, ''); // 확장자 제거
 
     const { data: kbItem, error: insertError } = await supabase
-      .from('kb_items')
+      .from('mcw_kb_items')
       .insert({
         chatbot_id: chatbotId,
         title: kbTitle,

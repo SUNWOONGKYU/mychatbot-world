@@ -5,7 +5,7 @@
     "description": "My Chatbot World - AI 챗봇 생성 플랫폼",
     "dependencies": {
         "@supabase/supabase-js": "^2.39.0",
-        "@types/qrcode": "^1.5.6",
+        "@supabase/ssr": "^0.5.2",
         "@xsai/generate-text": "latest",
         "@xsai/providers": "latest",
         "clsx": "^2.1.1",
@@ -19,6 +19,7 @@
     },
     "devDependencies": {
         "@types/node": "^22.0.0",
+        "@types/qrcode": "^1.5.6",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "autoprefixer": "^10.4.20",

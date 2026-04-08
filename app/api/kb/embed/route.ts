@@ -128,8 +128,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // KB 항목 조회 + 소유권 확인
     const { data: kbItem, error: findError } = await supabase
-      .from('kb_items')
-      .select('id, content, title, is_embedded, chatbots!inner(owner_id)')
+      .from('mcw_kb_items')
+      .select('id, bot_id, content, title, is_embedded, mcw_bots!inner(owner_id)')
       .eq('id', body.kb_item_id)
       .single();
 
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // 소유권 검증
-    const chatbot = kbItem.chatbots as unknown as { owner_id: string };
+    const chatbot = kbItem.mcw_bots as unknown as { owner_id: string };
     if (chatbot.owner_id !== session.user.id) {
       return NextResponse.json(
         { success: false, error: '접근 권한이 없습니다.', data: null },
@@ -261,7 +261,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // KB 항목 임베딩 상태 업데이트
     const { error: updateError } = await supabase
-      .from('kb_items')
+      .from('mcw_kb_items')
       .update({
         is_embedded: true,
         chunk_count: chunks.length,
@@ -274,6 +274,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       // 임베딩은 저장됐으므로 경고만 처리
     }
 
+    // Wiki Ingest 자동 트리거 (S5BI2): 임베딩 성공 후 비동기 호출
+    // 실패해도 임베딩 결과에 영향 없음
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    fetch(`${appUrl}/api/wiki/ingest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bot_id: kbItem.bot_id,
+        kb_item_id: body.kb_item_id,
+      }),
+    }).catch((e: Error) => {
+      console.warn('[KB EMBED] Wiki ingest trigger failed:', e.message);
+    });
+
     return NextResponse.json({
       success: true,
       error: null,
@@ -283,6 +298,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         total_tokens_used: totalTokensUsed,
         model: EMBEDDING_MODEL,
         dimension: EMBEDDING_DIMENSION,
+        wiki_ingest_triggered: true,
       },
     });
   } catch (err) {

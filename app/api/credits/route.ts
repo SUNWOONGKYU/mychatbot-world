@@ -29,7 +29,6 @@ type AllowedAmount = typeof ALLOWED_AMOUNTS[number];
 interface UserCreditRow {
   user_id: string;
   balance: number;
-  currency: string;
   updated_at: string;
 }
 
@@ -38,9 +37,7 @@ interface PaymentRow {
   user_id: string;
   amount: number;
   status: string;
-  bank_name: string;
-  account_number: string;
-  account_holder: string;
+  paid_at: string | null;
   created_at: string;
 }
 
@@ -84,8 +81,8 @@ export async function GET(req: NextRequest) {
 
     // user_credits 테이블에서 잔액 조회 (없으면 0)
     const { data, error } = await (supabase as any)
-      .from('user_credits')
-      .select('balance, currency, updated_at')
+      .from('mcw_credits')
+      .select('balance, updated_at')
       .eq('user_id', userId)
       .maybeSingle();
 
@@ -97,7 +94,7 @@ export async function GET(req: NextRequest) {
     const row = data as UserCreditRow | null;
     return NextResponse.json({
       balance: row?.balance ?? 0,
-      currency: row?.currency ?? 'KRW',
+      currency: 'KRW',
       updatedAt: row?.updated_at ?? null,
     });
   } catch (err) {
@@ -164,13 +161,15 @@ export async function POST(req: NextRequest) {
       .from('mcw_payments')
       .insert({
         user_id: userId,
+        provider: 'bank_transfer',
         amount,
+        credit_amount: amount,
         status: 'pending',
         payment_type: 'bank_transfer',
+        payment_method: 'bank_transfer',
         bank_name: bankName,
         account_number: accountNumber,
         account_holder: accountHolder,
-        description: `크레딧 ${amount.toLocaleString()}원 무통장 입금 요청`,
       })
       .select('id, amount, status, created_at')
       .single();

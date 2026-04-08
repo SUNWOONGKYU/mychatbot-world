@@ -1,10 +1,13 @@
 /**
- * @task S2FE4 - Landing 페이지 React 전환
+ * @task S5FE3 - 랜딩 페이지 리디자인
  * @component LandingFooter
- * @description 랜딩 페이지 푸터 — 링크 + 저작권 + SNS
+ * @description 랜딩 푸터 — 사이트맵 + 저작권 + 다크/라이트 토글
+ *              P4 와이어프레임 FOOTER 기준
  */
+'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface FooterLink {
   label: string;
@@ -22,9 +25,18 @@ const FOOTER_GROUPS: FooterGroup[] = [
     title: '서비스',
     links: [
       { label: '챗봇 만들기', href: '/create' },
+      { label: '스킬스토어', href: '/skills' },
       { label: '요금제', href: '#pricing' },
       { label: '데모 체험', href: '#demo' },
-      { label: '템플릿', href: '/templates' },
+    ],
+  },
+  {
+    title: '커뮤니티',
+    links: [
+      { label: '포럼', href: '/community' },
+      { label: '크리에이터 후기', href: '/community/reviews' },
+      { label: '챗봇 마켓', href: '/market' },
+      { label: '이벤트', href: '/events' },
     ],
   },
   {
@@ -47,38 +59,64 @@ const FOOTER_GROUPS: FooterGroup[] = [
   },
 ];
 
-/**
- * LandingFooter
- * - 4열 레이아웃 (로고+소개 / 서비스 / 회사 / 지원)
- * - 모바일: 2열 → 1열
- */
 export function LandingFooter() {
+  const [isDark, setIsDark] = useState(true);
   const currentYear = new Date().getFullYear();
 
+  useEffect(() => {
+    const html = document.documentElement;
+    const currentTheme = html.classList.contains('dark') || !html.classList.contains('light');
+    setIsDark(currentTheme);
+  }, []);
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    if (isDark) {
+      html.classList.remove('dark');
+      html.classList.add('light');
+    } else {
+      html.classList.remove('light');
+      html.classList.add('dark');
+    }
+    setIsDark(!isDark);
+  }
+
   return (
-    <footer className="border-t border-border bg-bg-subtle">
+    <footer
+      className="border-t"
+      style={{
+        background: 'rgb(var(--bg-muted))',
+        borderColor: 'rgb(var(--border))',
+      }}
+    >
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
           {/* 브랜드 컬럼 */}
-          <div className="sm:col-span-2 lg:col-span-1">
+          <div className="sm:col-span-2 lg:col-span-2">
             <Link
               href="/"
-              className="inline-block text-xl font-bold text-primary"
+              className="inline-block text-2xl font-extrabold tracking-tight"
+              style={{ color: 'rgb(var(--color-primary))' }}
               aria-label="My Chatbot World 홈"
             >
               MCW
             </Link>
-            <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-              코딩 없이 5분 만에 나만의 AI 챗봇을 만드는 플랫폼.
-              비즈니스 성장을 AI로 가속하세요.
+            <p
+              className="mt-3 text-sm leading-relaxed"
+              style={{ color: 'rgb(var(--text-secondary))' }}
+            >
+              AI 챗봇 라이프사이클 플랫폼.
+              <br />
+              5분 만에 나만의 챗봇을 만들고, 스킬로 강화하고, 수익으로 완성하세요.
             </p>
 
             {/* SNS 링크 */}
-            <div className="mt-5 flex gap-3">
+            <div className="mt-6 flex gap-2">
               {[
-                { label: '트위터', href: 'https://twitter.com', icon: 'X' },
-                { label: '인스타그램', href: 'https://instagram.com', icon: 'IG' },
-                { label: '유튜브', href: 'https://youtube.com', icon: 'YT' },
+                { label: 'X (트위터)', href: 'https://twitter.com', abbr: 'X' },
+                { label: '인스타그램', href: 'https://instagram.com', abbr: 'IG' },
+                { label: '유튜브', href: 'https://youtube.com', abbr: 'YT' },
+                { label: '카카오', href: 'https://kakao.com', abbr: 'KK' },
               ].map((sns) => (
                 <a
                   key={sns.label}
@@ -86,9 +124,22 @@ export function LandingFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={sns.label}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-xs font-bold text-text-secondary transition-colors hover:border-primary hover:text-primary"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border text-xs font-bold transition-all hover:scale-110"
+                  style={{
+                    background: 'rgb(var(--bg-surface))',
+                    borderColor: 'rgb(var(--border))',
+                    color: 'rgb(var(--text-secondary))',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgb(var(--color-primary))';
+                    (e.currentTarget as HTMLAnchorElement).style.color = 'rgb(var(--color-primary))';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgb(var(--border))';
+                    (e.currentTarget as HTMLAnchorElement).style.color = 'rgb(var(--text-secondary))';
+                  }}
                 >
-                  {sns.icon}
+                  {sns.abbr}
                 </a>
               ))}
             </div>
@@ -97,7 +148,10 @@ export function LandingFooter() {
           {/* 링크 그룹 */}
           {FOOTER_GROUPS.map((group) => (
             <div key={group.title}>
-              <h3 className="text-sm font-semibold text-text-primary">
+              <h3
+                className="text-xs font-bold uppercase tracking-widest"
+                style={{ color: 'rgb(var(--text-primary))' }}
+              >
                 {group.title}
               </h3>
               <ul className="mt-4 space-y-2.5">
@@ -108,15 +162,31 @@ export function LandingFooter() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-text-secondary transition-colors hover:text-primary"
+                        className="text-sm transition-colors"
+                        style={{ color: 'rgb(var(--text-secondary))' }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLAnchorElement).style.color = 'rgb(var(--color-primary))';
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLAnchorElement).style.color = 'rgb(var(--text-secondary))';
+                        }}
                       >
                         {link.label}
-                        <span className="ml-1 text-xs" aria-hidden="true">↗</span>
+                        <span className="ml-1 text-xs opacity-60" aria-hidden="true">
+                          ↗
+                        </span>
                       </a>
                     ) : (
                       <Link
                         href={link.href}
-                        className="text-sm text-text-secondary transition-colors hover:text-primary"
+                        className="text-sm transition-colors"
+                        style={{ color: 'rgb(var(--text-secondary))' }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLAnchorElement).style.color = 'rgb(var(--color-primary))';
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLAnchorElement).style.color = 'rgb(var(--text-secondary))';
+                        }}
                       >
                         {link.label}
                       </Link>
@@ -129,14 +199,77 @@ export function LandingFooter() {
         </div>
 
         {/* 하단 바 */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
-          <p className="text-sm text-text-muted">
+        <div
+          className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row"
+          style={{ borderColor: 'rgb(var(--border))' }}
+        >
+          <p
+            className="text-sm"
+            style={{ color: 'rgb(var(--text-muted))' }}
+          >
             &copy; {currentYear} My Chatbot World. All rights reserved.
           </p>
-          <div className="flex items-center gap-1 text-xs text-text-muted">
-            <span>Made with</span>
-            <span className="text-error">♥</span>
-            <span>in Korea</span>
+
+          <div className="flex items-center gap-4">
+            <span
+              className="text-xs"
+              style={{ color: 'rgb(var(--text-muted))' }}
+            >
+              Made with{' '}
+              <span style={{ color: 'rgb(var(--color-error))' }}>♥</span>{' '}
+              in Korea
+            </span>
+
+            {/* 다크/라이트 토글 */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all hover:border-primary"
+              style={{
+                background: 'rgb(var(--bg-surface))',
+                borderColor: 'rgb(var(--border))',
+                color: 'rgb(var(--text-secondary))',
+              }}
+              aria-label={isDark ? '라이트 모드로 전환' : '다크 모드로 전환'}
+            >
+              {isDark ? (
+                <>
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                  라이트 모드
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
+                  </svg>
+                  다크 모드
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>

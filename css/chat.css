@@ -13,8 +13,8 @@ html.chat-page {
     background: #0f0f1a;
     height: 100vh;
     height: 100dvh; /* 모바일 주소창 고려 */
-    max-height: 100vh;
-    max-height: 100dvh;
+    height: var(--chat-vh, 100dvh); /* JS에서 키보드 높이 반영 시 오버라이드 */
+    max-height: none;
     display: flex;
     flex-direction: column;
     overflow: hidden;

@@ -1,5 +1,5 @@
 /**
- * @task S2EX1
+ * @task S2EX1 / S4SC3
  * @description POST /api/stt — STT 음성 인식 API
  *
  * 요청: multipart/form-data
@@ -9,14 +9,55 @@
  * 응답: { text, confidence, language }
  *
  * 제약:
+ *   - 인증된 사용자만 호출 가능 (Supabase auth 필수, S4SC3)
  *   - 파일 최대 크기: 25MB (OpenAI Whisper 제한)
  *   - 지원 형식: audio/webm, audio/wav, audio/mpeg, audio/ogg
  *   - OPENAI_API_KEY 필수
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 import { transcribe } from '@/lib/stt-client';
 import type { TranscriptionResult } from '@/lib/stt-client';
+
+// ============================
+// Supabase 인증 헬퍼 (S4SC3)
+// ============================
+
+function getSupabaseServer() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  return createClient(url, key);
+}
+
+/**
+ * Authorization 헤더 또는 쿠키에서 사용자 ID 추출
+ * 인증 실패 시 null 반환
+ */
+async function getUserId(req: NextRequest): Promise<string | null> {
+  try {
+    const supabase = getSupabaseServer();
+    const authHeader = req.headers.get('Authorization');
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const { data, error } = await supabase.auth.getUser(token);
+      if (!error && data.user) return data.user.id;
+    }
+
+    const accessToken = req.cookies.get('sb-access-token')?.value;
+    if (accessToken) {
+      const { data, error } = await supabase.auth.getUser(accessToken);
+      if (!error && data.user) return data.user.id;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 // ============================
 // 상수
@@ -94,6 +135,12 @@ function normalizeMimeType(mimeType: string, fileName: string): string {
  * - 500: Whisper API 오류
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // 0. 인증 확인 (S4SC3)
+  const userId = await getUserId(req);
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   // 1. Content-Type 확인
   const contentType = req.headers.get('content-type') ?? '';
   if (!contentType.includes('multipart/form-data')) {

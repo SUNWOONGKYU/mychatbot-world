@@ -21,15 +21,24 @@ import { NextRequest, NextResponse } from 'next/server';
 // ── API 과금 유틸리티 ─────────────────────────────────────────────────────
 
 /**
- * AI API 토큰 단가 (1,000 토큰당 KRW, 마진 적용 전)
- * 실제 서비스 비용 기준 — 정기적으로 업데이트 필요
+ * AI API 토큰 단가 (1,000 output 토큰당 KRW, 마진 적용 전)
+ * ai-router.ts MODEL_CATALOG의 outputCostPer1K 기준, 환율 769원 적용
+ * 키: OpenRouter 모델 ID (provider/model-name 형식)
+ * 정기적으로 업데이트 필요 — ai-router.ts MODEL_CATALOG와 항상 일치시킬 것
  */
 const API_COST_PER_1K_TOKENS: Record<string, number> = {
-  'gpt-4o': 3.846,          // $0.005 / 1K tokens → KRW (환율 769)
-  'gpt-4o-mini': 0.1154,    // $0.00015 / 1K tokens → KRW
-  'claude-3-5-sonnet': 2.307, // $0.003 / 1K tokens → KRW
-  'claude-3-haiku': 0.1923,  // $0.00025 / 1K tokens → KRW
-  'default': 1.0,            // fallback
+  // concise tier
+  'anthropic/claude-haiku-4-5': 3.076,   // $0.004 / 1K out tokens → KRW
+  'anthropic/claude-3-5-haiku': 3.076,   // $0.004 / 1K out tokens → KRW
+  'openai/gpt-3.5-turbo': 1.154,         // $0.0015 / 1K out tokens → KRW
+  // balanced tier
+  'anthropic/claude-sonnet-4-5': 11.535, // $0.015 / 1K out tokens → KRW
+  'anthropic/claude-3-7-sonnet': 11.535, // $0.015 / 1K out tokens → KRW
+  'openai/gpt-4o-mini': 0.461,           // $0.0006 / 1K out tokens → KRW
+  // expressive tier
+  'anthropic/claude-opus-4-5': 57.675,   // $0.075 / 1K out tokens → KRW
+  'openai/gpt-4o': 11.535,              // $0.015 / 1K out tokens → KRW
+  'default': 1.0,                        // fallback
 };
 
 const MARGIN_RATE = 1.3; // 30% 마진
@@ -38,12 +47,12 @@ const MARGIN_RATE = 1.3; // 30% 마진
  * AI API 사용료를 계산합니다 (마진 30% 적용).
  * 1 크레딧 = 1원 기준.
  *
- * @param provider - AI 모델명 (예: 'gpt-4o', 'claude-3-5-sonnet')
+ * @param provider - AI 모델 ID (예: 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5')
  * @param tokens - 사용된 토큰 수
  * @returns 차감할 크레딧 수 (원 단위, 소수점 올림)
  *
  * @example
- * calculateApiCost('gpt-4o', 1000) // => 5 (3.846 * 1.3 ≈ 4.999 → 5)
+ * calculateApiCost('openai/gpt-4o', 1000) // => 15 (11.535 * 1.3 ≈ 14.995 → 15)
  */
 function calculateApiCost(provider: string, tokens: number): number {
   if (tokens <= 0) return 0;
@@ -224,21 +233,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const bankName = process.env.PAYMENT_BANK_NAME ?? '국민은행';
-    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER ?? '123-456-789';
-    const accountHolder = process.env.PAYMENT_ACCOUNT_HOLDER ?? 'MCW';
+    const bankName = process.env.PAYMENT_BANK_NAME;
+    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER;
+    const accountHolder = process.env.PAYMENT_ACCOUNT_HOLDER;
+    if (!bankName || !accountNumber || !accountHolder) {
+      return NextResponse.json(
+        { error: '결제 계좌 정보가 설정되지 않았습니다. 관리자에게 문의하세요.' },
+        { status: 503 },
+      );
+    }
 
     const { data: payment, error: insertError } = await (supabase as any)
       .from('mcw_payments')
       .insert({
         user_id: userId,
+        provider: 'bank_transfer',
         amount,
+        credit_amount: amount,
         status: 'pending',
         payment_type: 'bank_transfer',
+        payment_method: 'bank_transfer',
         bank_name: bankName,
         account_number: accountNumber,
         account_holder: accountHolder,
-        description: `크레딧 ${amount.toLocaleString()}원 무통장 입금 요청`,
       })
       .select('id, amount, status, created_at')
       .single();

@@ -15,7 +15,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────
 
-type TransactionType = 'charge' | 'deduct' | 'refund';
+type TransactionType = 'purchase' | 'use' | 'refund' | 'bonus' | 'admin';
 
 interface CreditTransaction {
   id: string;
@@ -23,8 +23,9 @@ interface CreditTransaction {
   type: TransactionType;
   amount: number;
   balance_after: number;
-  description: string;
+  description: string | null;
   reference_id: string | null;
+  reference_type: string | null;
   created_at: string;
 }
 
@@ -83,7 +84,7 @@ export async function GET(req: NextRequest) {
     const typeFilter = searchParams.get('type') as TransactionType | null;
 
     // 타입 필터 유효성 검사
-    const validTypes: TransactionType[] = ['charge', 'deduct', 'refund'];
+    const validTypes: TransactionType[] = ['purchase', 'use', 'refund', 'bonus', 'admin'];
     if (typeFilter && !validTypes.includes(typeFilter)) {
       return NextResponse.json(
         { error: `Invalid type. Allowed: ${validTypes.join(', ')}` },
@@ -95,7 +96,7 @@ export async function GET(req: NextRequest) {
 
     // 기본 쿼리 빌더
     let query = supabase
-      .from('credit_transactions')
+      .from('mcw_credit_transactions')
       .select('*', { count: 'exact' })
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
@@ -127,6 +128,7 @@ export async function GET(req: NextRequest) {
       balanceAfter: tx.balance_after,
       description: tx.description,
       referenceId: tx.reference_id,
+      referenceType: tx.reference_type,
       createdAt: tx.created_at,
     }));
 

@@ -2,14 +2,12 @@
  * @task S4FE3
  * @description Marketplace 페이지 — 목록, 상세, 업로드
  * Route: /marketplace
- * API: GET /api/Backend_APIs/marketplace?action=skills&page=N&limit=12&category=X&search=Y
+ * API: GET /api/skills?q=X&category=X
+ *      POST /api/skills/install — 스킬 설치
  */
 'use client';
 
-
-
-
-import { Suspense, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -18,15 +16,18 @@ import clsx from 'clsx';
 
 export interface MarketplaceSkill {
   id: string;
-  skill_name: string;
+  skill_name?: string;
   name?: string;
   description: string;
   category: string;
   price: number;
   install_count: number;
+  avg_rating?: number | null;
   rating?: number;
+  review_count?: number;
   rating_count?: number;
   is_free?: boolean;
+  isFree?: boolean;
   tags?: string[];
   thumbnail_url?: string | null;
   created_at?: string;
@@ -67,7 +68,6 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 const PAGE_LIMIT = 12;
-const API_BASE = '/api/Backend_APIs/marketplace';
 
 // ── 서브 컴포넌트 ──────────────────────────────────────────────────
 
@@ -94,6 +94,79 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
   );
 }
 
+function InstallButton({ skillId, isFree }: { skillId: string; isFree: boolean }) {
+  const router = useRouter();
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+
+  async function handleInstall(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const authToken =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('sb-hlpovizxnrnspobddxmq-auth-token')
+        : null;
+
+    if (!authToken) {
+      router.push(`/login?redirect=/marketplace`);
+      return;
+    }
+
+    setStatus('loading');
+    try {
+      const parsed = JSON.parse(authToken);
+      const token = parsed?.access_token ?? parsed?.session?.access_token ?? null;
+
+      const res = await fetch('/api/skills/install', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ skill_id: skillId }),
+      });
+
+      if (res.status === 409) {
+        setStatus('done');
+        return;
+      }
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error ?? `HTTP ${res.status}`);
+      }
+      setStatus('done');
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 2000);
+    }
+  }
+
+  return (
+    <button
+      onClick={handleInstall}
+      disabled={status === 'loading' || status === 'done'}
+      className={clsx(
+        'inline-flex items-center gap-1 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors flex-shrink-0',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+        'disabled:cursor-not-allowed whitespace-nowrap',
+        status === 'done'
+          ? 'bg-success/15 text-success border border-success/30'
+          : status === 'error'
+          ? 'bg-error/15 text-error border border-error/30'
+          : 'bg-primary text-white hover:bg-primary-hover disabled:opacity-60',
+      )}
+    >
+      {status === 'loading'
+        ? '설치 중...'
+        : status === 'done'
+        ? '✓ 설치됨'
+        : status === 'error'
+        ? '오류'
+        : '설치'}
+    </button>
+  );
+}
+
 function PriceBadge({ price }: { price: number }) {
   const isFree = !price || price === 0;
   return (
@@ -111,50 +184,57 @@ function PriceBadge({ price }: { price: number }) {
 }
 
 function SkillCard({ skill }: { skill: MarketplaceSkill }) {
-  const title = skill.skill_name || skill.name || '이름 없음';
+  const title = skill.name || skill.skill_name || '이름 없음';
   const categoryLabel = CATEGORY_LABELS[skill.category] ?? skill.category ?? '기타';
   const installCount = (skill.install_count ?? 0).toLocaleString();
-  const rating = skill.rating ?? 0;
-  const ratingCount = skill.rating_count ?? 0;
+  const rating = skill.avg_rating ?? skill.rating ?? 0;
+  const ratingCount = skill.review_count ?? skill.rating_count ?? 0;
+  const isFree = skill.isFree ?? skill.is_free ?? (!skill.price || skill.price === 0);
 
   return (
     <Link
       href={`/marketplace/${encodeURIComponent(skill.id)}`}
       className={clsx(
-        'flex flex-col gap-3 p-5 rounded-xl',
-        'bg-surface border border-border',
-        'hover:border-primary/40 hover:shadow-lg hover:-translate-y-0.5',
-        'transition-all duration-200 cursor-pointer',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+        'flex flex-col gap-3.5 p-6 rounded-xl',
+        'bg-surface-2 border border-border',
+        'hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]',
+        'transition-all duration-200 cursor-pointer text-inherit no-underline',
       )}
     >
       {/* 상단: 아이콘 + 가격 뱃지 */}
       <div className="flex items-start justify-between gap-3">
-        <div className="w-11 h-11 rounded-lg bg-primary/15 flex items-center justify-center text-2xl flex-shrink-0">
+        <div className="w-11 h-11 rounded-lg bg-primary/15 flex items-center justify-center text-[1.375rem] flex-shrink-0">
           🤖
         </div>
         <PriceBadge price={skill.price} />
       </div>
 
       {/* 이름 */}
-      <p className="text-base font-bold text-text-primary leading-tight line-clamp-2">{title}</p>
+      <p className="text-[1.0625rem] font-bold text-text-primary leading-tight line-clamp-2">
+        {title}
+      </p>
 
       {/* 설명 */}
-      <p className="text-sm text-text-secondary leading-relaxed line-clamp-2 flex-1">
+      <p className="text-sm text-text-secondary leading-[1.55] line-clamp-2 flex-1">
         {skill.description || '설명 없음'}
       </p>
 
-      {/* 하단: 카테고리 + 별점/설치수 */}
-      <div className="flex items-center justify-between gap-2 mt-auto">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="px-2 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary/80 truncate">
+      {/* 하단: 카테고리·설치수(왼쪽) + 설치버튼(오른쪽) */}
+      <div className="flex items-center justify-between mt-auto gap-2">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="px-2 py-[0.2rem] rounded text-[0.7375rem] font-semibold bg-primary/12 text-primary/80 flex-shrink-0">
             {categoryLabel}
           </span>
-          <span className="text-xs text-text-muted flex-shrink-0">
+          <span className="text-xs text-text-muted flex items-center gap-1 flex-shrink-0">
             ↓ {installCount}
           </span>
+          {rating > 0 && (
+            <span className="hidden sm:flex">
+              <StarRating rating={rating} count={ratingCount} />
+            </span>
+          )}
         </div>
-        {rating > 0 && <StarRating rating={rating} count={ratingCount} />}
+        <InstallButton skillId={skill.id} isFree={isFree} />
       </div>
     </Link>
   );
@@ -298,29 +378,38 @@ export default function MarketplacePageInner() {
     router.replace(`/marketplace?${params.toString()}`, { scroll: false });
   }, [debouncedQuery, category, sort, currentPage, router]);
 
-  // API 페치
+  // API 페치 — /api/skills 사용
   const fetchSkills = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({
-        action: 'skills',
-        page: String(currentPage),
-        limit: String(PAGE_LIMIT),
-        sort,
-      });
-      if (debouncedQuery) params.set('search', debouncedQuery);
+      const params = new URLSearchParams();
+      if (debouncedQuery) params.set('q', debouncedQuery);
       if (category) params.set('category', category);
 
-      const res = await fetch(`${API_BASE}?${params.toString()}`);
+      const res = await fetch(`/api/skills?${params.toString()}`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.error ?? `HTTP ${res.status}`);
       }
       const data = await res.json();
-      const skillsArr = data?.data?.skills ?? data?.data ?? data?.skills ?? [];
-      const totalCount = data?.data?.total ?? data?.total ?? skillsArr.length;
-      setSkills(skillsArr);
+      const skillsArr: MarketplaceSkill[] = data?.skills ?? [];
+
+      // 클라이언트 정렬
+      const sorted = [...skillsArr].sort((a, b) => {
+        if (sort === 'popular') return (b.install_count ?? 0) - (a.install_count ?? 0);
+        if (sort === 'newest') return new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime();
+        if (sort === 'price_asc') return (a.price ?? 0) - (b.price ?? 0);
+        if (sort === 'price_desc') return (b.price ?? 0) - (a.price ?? 0);
+        return 0;
+      });
+
+      // 클라이언트 페이지네이션
+      const totalCount = sorted.length;
+      const start = (currentPage - 1) * PAGE_LIMIT;
+      const paged = sorted.slice(start, start + PAGE_LIMIT);
+
+      setSkills(paged);
       setTotal(totalCount);
     } catch (err) {
       setError(err instanceof Error ? err.message : '마켓플레이스를 불러오지 못했습니다.');
@@ -370,10 +459,11 @@ export default function MarketplacePageInner() {
         </Link>
       </div>
 
-      {/* 검색 + 정렬 */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">
+      {/* 필터 바: 검색 + 카테고리 + 정렬 */}
+      <div className="flex items-center gap-3.5 flex-wrap">
+        {/* 검색 */}
+        <div className="relative flex-1 min-w-[200px]">
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
             🔍
           </span>
           <input
@@ -381,15 +471,36 @@ export default function MarketplacePageInner() {
             placeholder="스킬 검색..."
             value={searchQuery}
             onChange={(e: any) => setSearchQuery(e.target.value)}
+            autoComplete="off"
             className={clsx(
-              'w-full pl-9 pr-4 py-2.5 rounded-lg text-sm',
-              'border border-border bg-surface text-text-primary',
+              'w-full pl-9 pr-4 py-2.5 rounded-lg text-[0.9375rem]',
+              'border border-border bg-surface-2 text-text-primary',
               'placeholder:text-text-muted',
-              'focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
+              'focus:outline-none focus:border-primary',
               'transition-colors',
             )}
           />
         </div>
+
+        {/* 카테고리 select */}
+        <select
+          value={category}
+          onChange={(e: any) => handleCategoryChange(e.target.value)}
+          className={clsx(
+            'px-4 py-2.5 rounded-lg text-[0.9375rem] min-w-[150px]',
+            'border border-border bg-surface-2 text-text-primary',
+            'focus:outline-none focus:border-primary',
+            'transition-colors cursor-pointer',
+          )}
+        >
+          {CATEGORIES.map((cat: any) => (
+            <option key={cat.id} value={cat.id} className="bg-surface-2 text-text-primary">
+              {cat.id === '' ? '전체 카테고리' : cat.label}
+            </option>
+          ))}
+        </select>
+
+        {/* 정렬 select */}
         <select
           value={sort}
           onChange={(e: any) => {
@@ -397,54 +508,36 @@ export default function MarketplacePageInner() {
             setCurrentPage(1);
           }}
           className={clsx(
-            'px-3 py-2.5 rounded-lg text-sm',
-            'border border-border bg-surface text-text-primary',
-            'focus:outline-none focus:ring-2 focus:ring-primary',
+            'px-4 py-2.5 rounded-lg text-[0.9375rem] min-w-[130px]',
+            'border border-border bg-surface-2 text-text-primary',
+            'focus:outline-none focus:border-primary',
+            'transition-colors cursor-pointer',
           )}
         >
           {SORT_OPTIONS.map((opt: any) => (
-            <option key={opt.value} value={opt.value}>
+            <option key={opt.value} value={opt.value} className="bg-surface-2 text-text-primary">
               {opt.label}
             </option>
           ))}
         </select>
       </div>
 
-      {/* 카테고리 필터 탭 */}
-      <div className="flex gap-2 flex-wrap">
-        {CATEGORIES.map((cat: any) => (
-          <button
-            key={cat.id}
-            onClick={() => handleCategoryChange(cat.id)}
-            className={clsx(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              category === cat.id
-                ? 'bg-primary text-white'
-                : 'border border-border text-text-secondary hover:border-primary/40 hover:text-text-primary',
-            )}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
       {/* 결과 수 */}
-      {!loading && !error && (
-        <p className="text-sm text-text-secondary">
-          {total > 0
-            ? `총 ${total.toLocaleString()}개의 스킬`
-            : '검색 결과가 없습니다.'}
+      {!loading && !error && total > 0 && (
+        <p className="text-[0.8125rem] text-text-muted">
+          총 {total.toLocaleString()}개의 스킬
         </p>
       )}
 
       {/* 에러 */}
       {error && (
-        <div className="rounded-lg bg-error/10 border border-error/20 p-4 text-sm text-error">
-          {error}
+        <div className="rounded-xl bg-error/8 border border-error/25 p-8 text-center">
+          <div className="text-4xl mb-4">⚠️</div>
+          <p className="text-lg font-bold text-[#fca5a5] mb-2">스킬을 불러올 수 없습니다</p>
+          <p className="text-sm text-text-secondary mb-6">{error}</p>
           <button
             onClick={fetchSkills}
-            className="ml-3 underline hover:no-underline"
+            className="px-6 py-2.5 bg-error text-white rounded-lg text-sm font-semibold hover:opacity-85 transition-opacity"
           >
             다시 시도
           </button>
@@ -452,18 +545,18 @@ export default function MarketplacePageInner() {
       )}
 
       {/* 스킬 카드 그리드 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
         {loading
-          ? Array.from({ length: 8 }).map((_: any, i: any) => <SkillCardSkeleton key={i} />)
+          ? Array.from({ length: 6 }).map((_: any, i: any) => <SkillCardSkeleton key={i} />)
           : skills.map((skill) => <SkillCard key={skill.id} skill={skill} />)}
       </div>
 
       {/* 빈 상태 */}
       {!loading && !error && skills.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <span className="text-5xl mb-4">🛒</span>
-          <h3 className="text-lg font-semibold text-text-primary mb-1">스킬이 없습니다</h3>
-          <p className="text-sm text-text-secondary">
+        <div className="text-center py-16">
+          <div className="text-5xl mb-4 opacity-50">🛒</div>
+          <h3 className="text-lg font-bold text-text-secondary mb-2">스킬이 없습니다</h3>
+          <p className="text-sm text-text-muted mb-4">
             검색 조건을 변경하거나 직접 스킬을 업로드해보세요.
           </p>
           <button
@@ -472,7 +565,7 @@ export default function MarketplacePageInner() {
               setCategory('');
               setCurrentPage(1);
             }}
-            className="mt-4 text-sm text-primary hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             필터 초기화
           </button>

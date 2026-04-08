@@ -244,7 +244,9 @@ export async function transcribe(
   const formData = new FormData();
 
   // Buffer → Blob (Node.js 18+ / Edge Runtime 호환)
-  const blob = new Blob([audioBuffer], { type: mimeType });
+  // Buffer.buffer는 SharedArrayBuffer일 수 있으므로 ArrayBuffer로 복사하여 BlobPart 호환 보장
+  const arrayBuffer: ArrayBuffer = audioBuffer.buffer.slice(audioBuffer.byteOffset, audioBuffer.byteOffset + audioBuffer.byteLength) as ArrayBuffer;
+  const blob = new Blob([arrayBuffer], { type: mimeType });
   formData.append('file', blob, `audio.${ext}`);
   formData.append('model', 'whisper-1');
   formData.append('response_format', responseFormat);

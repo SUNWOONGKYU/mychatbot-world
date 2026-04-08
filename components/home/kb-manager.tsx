@@ -1,18 +1,19 @@
 /**
- * @task S2FE3
+ * @task S2FE3, S5F2
  * @description KB 관리 컴포넌트
  *
  * - 선택된 챗봇의 KB 문서 목록 조회 (GET /api/kb?chatbot_id={id})
  * - 새 문서 추가 (POST /api/kb → POST /api/kb/embed)
  * - 문서 삭제 (DELETE /api/kb?id={id})
  * - 임베딩 중 로딩 스피너
+ * - 위키 생성 버튼 (S5F2): POST /api/wiki/ingest 트리거
  */
 
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
-import type { Bot } from '@/app/home/page';
+import type { Bot } from '@/types/bot';
 
 // ── 타입 정의 ─────────────────────────────────────────────────
 
@@ -70,6 +71,8 @@ interface KbRowProps {
 function KbRow({ item, onDelete }: KbRowProps) {
   const [deleting, setDeleting] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [ingesting, setIngesting] = useState(false);
+  const [ingestMsg, setIngestMsg] = useState<string | null>(null);
 
   const handleDelete = async () => {
     if (!confirm(`"${item.title}" 문서를 삭제하시겠습니까?`)) return;
@@ -85,6 +88,29 @@ function KbRow({ item, onDelete }: KbRowProps) {
       alert(err instanceof Error ? err.message : '문서 삭제에 실패했습니다.');
     } finally {
       setDeleting(false);
+    }
+  };
+
+  // S5F2: 위키 생성 버튼 핸들러
+  const handleWikiIngest = async () => {
+    setIngesting(true);
+    setIngestMsg(null);
+    try {
+      const res = await fetch('/api/wiki/ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bot_id: item.chatbot_id,
+          kb_item_id: item.id,
+        }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error ?? '위키 생성 실패');
+      setIngestMsg(`위키 생성 완료: ${json.data?.wiki_pages_created ?? 1}개 페이지`);
+    } catch (err) {
+      setIngestMsg(err instanceof Error ? err.message : '위키 생성 실패');
+    } finally {
+      setIngesting(false);
     }
   };
 
@@ -146,18 +172,41 @@ function KbRow({ item, onDelete }: KbRowProps) {
             <span className="text-xs text-text-muted">
               {new Date(item.created_at).toLocaleString('ko-KR')}
             </span>
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className={clsx(
-                'px-3 py-1 rounded-lg text-xs font-medium',
-                'bg-error/10 text-error hover:bg-error/20 transition-colors',
-                'disabled:opacity-50 disabled:cursor-not-allowed',
-              )}
-            >
-              {deleting ? '삭제 중…' : '삭제'}
-            </button>
+            <div className="flex items-center gap-2">
+              {/* S5F2: 위키 생성 버튼 */}
+              <button
+                onClick={handleWikiIngest}
+                disabled={ingesting || !item.is_embedded}
+                title={!item.is_embedded ? '임베딩 완료 후 사용 가능' : '이 문서로 위키 페이지 생성'}
+                className={clsx(
+                  'px-3 py-1 rounded-lg text-xs font-medium',
+                  'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                )}
+              >
+                {ingesting ? '위키 생성 중…' : '위키 생성'}
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className={clsx(
+                  'px-3 py-1 rounded-lg text-xs font-medium',
+                  'bg-error/10 text-error hover:bg-error/20 transition-colors',
+                  'disabled:opacity-50 disabled:cursor-not-allowed',
+                )}
+              >
+                {deleting ? '삭제 중…' : '삭제'}
+              </button>
+            </div>
           </div>
+          {ingestMsg && (
+            <p className={clsx(
+              'mt-2 text-xs',
+              ingestMsg.includes('실패') ? 'text-error' : 'text-emerald-600',
+            )}>
+              {ingestMsg}
+            </p>
+          )}
         </div>
       )}
     </div>

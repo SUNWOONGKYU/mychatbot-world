@@ -1,150 +1,229 @@
 /**
- * @task S2FE4 - Landing 페이지 React 전환
+ * @task S5FE3 - 랜딩 페이지 리디자인
  * @component ChatbotTypes
- * @description MCW 6대 챗봇 유형 소개 섹션
- *              대리형×2, 수익형, 부업형, 실행형, 생활도우미
+ * @description 챗봇 유형 섹션 — 카테고리 카드 + hover 인터랙션
+ *              P4 와이어프레임 SECTION 2 기준
  */
+'use client';
 
-interface ChatbotType {
+import { useState } from 'react';
+
+interface ChatbotCategory {
   id: string;
   icon: string;
-  category: string;
   title: string;
   description: string;
-  useCases: string[];
-  /** 카드 강조 여부 (베스트셀러 등) */
-  featured?: boolean;
+  tags: string[];
+  gradient: string;
 }
 
-const CHATBOT_TYPES: ChatbotType[] = [
+const CHATBOT_CATEGORIES: ChatbotCategory[] = [
   {
-    id: 'proxy-customer',
-    icon: '🎧',
-    category: '대리형',
-    title: '고객 상담 대리봇',
-    description: '24시간 고객 응대를 자동화. FAQ, 주문 조회, 불만 처리까지 사람 없이 운영합니다.',
-    useCases: ['쇼핑몰 CS', '예약 안내', '자주 묻는 질문'],
-    featured: true,
+    id: 'medical',
+    icon: '⚕',
+    title: '의료 상담봇',
+    description: '증상 안내, 병원 예약, 복약 알림까지 24시간 의료 도우미',
+    tags: ['증상 분석', '병원 찾기', '복약 관리'],
+    gradient: 'linear-gradient(135deg, rgb(59 130 246 / 0.15), rgb(96 165 250 / 0.05))',
   },
   {
-    id: 'proxy-sales',
+    id: 'legal',
+    icon: '⚖',
+    title: '법률 도우미봇',
+    description: '계약서 검토, 법률 상식, 분쟁 초기 가이드 제공',
+    tags: ['계약 검토', '법률 상식', '권리 안내'],
+    gradient: 'linear-gradient(135deg, rgb(139 92 246 / 0.15), rgb(167 139 250 / 0.05))',
+  },
+  {
+    id: 'shopping',
     icon: '🛍',
-    category: '대리형',
-    title: '쇼핑 어시스턴트봇',
-    description: '상품 추천, 재고 확인, 결제 안내를 자동화해 전환율을 높입니다.',
-    useCases: ['상품 추천', '장바구니 도우미', '리뷰 수집'],
+    title: '쇼핑 어시스턴트',
+    description: '상품 추천, 주문 조회, CS 자동 응대로 전환율 3배 향상',
+    tags: ['상품 추천', '주문 추적', 'CS 자동화'],
+    gradient: 'linear-gradient(135deg, rgb(236 72 153 / 0.15), rgb(251 113 133 / 0.05))',
+  },
+  {
+    id: 'education',
+    icon: '📚',
+    title: '교육 튜터봇',
+    description: '1:1 맞춤 학습, 퀴즈 생성, 진도 관리까지 AI 과외 선생님',
+    tags: ['맞춤 학습', '퀴즈 생성', '진도 관리'],
+    gradient: 'linear-gradient(135deg, rgb(16 185 129 / 0.15), rgb(52 211 153 / 0.05))',
   },
   {
     id: 'revenue',
     icon: '💰',
-    category: '수익형',
-    title: '유료 콘텐츠봇',
-    description: '구독형 AI 서비스로 직접 수익을 창출. 멤버십 전용 기능으로 수익 모델을 만듭니다.',
-    useCases: ['AI 코칭', '프리미엄 조언', '구독 서비스'],
-    featured: true,
-  },
-  {
-    id: 'side-hustle',
-    icon: '📱',
-    category: '부업형',
-    title: 'SNS 마케팅봇',
-    description: '콘텐츠 기획, 카피 작성, 해시태그 추천을 자동화해 SNS 운영을 돕습니다.',
-    useCases: ['인스타 카피', '블로그 초안', '광고 문구'],
-  },
-  {
-    id: 'action',
-    icon: '⚡',
-    category: '실행형',
-    title: '업무 자동화봇',
-    description: '반복 업무를 자동으로 처리. 보고서 작성, 데이터 정리, 일정 관리까지.',
-    useCases: ['보고서 자동화', '데이터 요약', '일정 조율'],
-  },
-  {
-    id: 'lifestyle',
-    icon: '🏠',
-    category: '생활도우미',
-    title: '개인 비서봇',
-    description: '식단 관리, 운동 루틴, 학습 계획 등 일상을 AI가 함께 관리합니다.',
-    useCases: ['건강 관리', '학습 플래너', '여행 계획'],
+    title: '수익형 컨설팅봇',
+    description: '프리미엄 AI 서비스를 구독 형태로 직접 수익 창출',
+    tags: ['구독 수익', 'AI 코칭', '프리미엄'],
+    gradient: 'linear-gradient(135deg, rgb(245 158 11 / 0.15), rgb(251 191 36 / 0.05))',
   },
 ];
 
-/**
- * ChatbotTypes
- * - 6대 챗봇 유형을 3열 그리드로 표시
- * - featured 카드는 primary 테두리 강조
- */
 export function ChatbotTypes() {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
   return (
-    <section id="chatbot-types" className="bg-bg-subtle py-20 sm:py-28">
+    <section
+      id="chatbot-types"
+      className="py-20 sm:py-28"
+      style={{ background: 'rgb(var(--bg-subtle))' }}
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        {/* 섹션 헤더 */}
+        {/* 헤더 */}
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-            6대 챗봇 유형
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
-            내 목적에 딱 맞는 챗봇
+          <span
+            className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
+            style={{
+              background: 'rgb(var(--color-primary) / 0.1)',
+              color: 'rgb(var(--color-primary))',
+            }}
+          >
+            챗봇 유형
+          </span>
+          <h2
+            className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
+            style={{ color: 'rgb(var(--text-primary))' }}
+          >
+            나의 챗봇을 선택하세요
           </h2>
-          <p className="mt-4 text-lg text-text-secondary">
-            비즈니스 유형에 따라 최적화된 챗봇 템플릿을 선택하세요.
-            모두 코딩 없이 5분 내 완성됩니다.
+          <p
+            className="mt-4 text-lg"
+            style={{ color: 'rgb(var(--text-secondary))' }}
+          >
+            목적에 맞는 챗봇 유형을 선택하면 5분 인터뷰로 바로 생성됩니다.
           </p>
         </div>
 
         {/* 카드 그리드 */}
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {CHATBOT_TYPES.map((type) => (
-            <li key={type.id}>
-              <article
-                className={[
-                  'relative flex h-full flex-col rounded-2xl border bg-surface p-6 shadow-sm transition-shadow hover:shadow-md',
-                  type.featured
-                    ? 'border-primary/40 ring-1 ring-primary/20'
-                    : 'border-border',
-                ].join(' ')}
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {CHATBOT_CATEGORIES.map((cat) => {
+            const isHovered = hoveredId === cat.id;
+            return (
+              <a
+                key={cat.id}
+                href="/create"
+                onMouseEnter={() => setHoveredId(cat.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                className="group relative flex flex-col rounded-2xl border p-5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2"
+                style={{
+                  background: isHovered ? cat.gradient : 'rgb(var(--bg-surface))',
+                  borderColor: isHovered
+                    ? 'rgb(var(--color-primary) / 0.5)'
+                    : 'rgb(var(--border))',
+                  transform: isHovered ? 'translateY(-4px)' : 'none',
+                  boxShadow: isHovered
+                    ? '0 12px 32px rgb(var(--primary-500) / 0.15)'
+                    : 'none',
+                  outlineColor: 'rgb(var(--color-primary))',
+                }}
               >
-                {type.featured && (
-                  <span className="absolute right-4 top-4 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                    인기
-                  </span>
-                )}
-
                 {/* 아이콘 */}
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
-                  {type.icon}
+                <div
+                  className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl text-2xl transition-all duration-300"
+                  style={{
+                    background: isHovered
+                      ? 'rgb(var(--color-primary) / 0.15)'
+                      : 'rgb(var(--bg-muted))',
+                  }}
+                >
+                  {cat.icon}
                 </div>
 
-                {/* 카테고리 배지 */}
-                <span className="mb-1 text-xs font-medium text-primary">
-                  {type.category}
-                </span>
-
                 {/* 제목 */}
-                <h3 className="text-lg font-semibold text-text-primary">
-                  {type.title}
+                <h3
+                  className="text-sm font-bold transition-colors"
+                  style={{
+                    color: isHovered
+                      ? 'rgb(var(--color-primary))'
+                      : 'rgb(var(--text-primary))',
+                  }}
+                >
+                  {cat.title}
                 </h3>
 
                 {/* 설명 */}
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-text-secondary">
-                  {type.description}
+                <p
+                  className="mt-2 flex-1 text-xs leading-relaxed"
+                  style={{ color: 'rgb(var(--text-secondary))' }}
+                >
+                  {cat.description}
                 </p>
 
-                {/* 활용 사례 태그 */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {type.useCases.map((uc) => (
+                {/* 태그 */}
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {cat.tags.map((tag) => (
                     <span
-                      key={uc}
-                      className="rounded-md bg-bg-muted px-2.5 py-1 text-xs text-text-secondary"
+                      key={tag}
+                      className="rounded-md px-2 py-0.5 text-xs"
+                      style={{
+                        background: 'rgb(var(--bg-muted))',
+                        color: 'rgb(var(--text-muted))',
+                      }}
                     >
-                      {uc}
+                      {tag}
                     </span>
                   ))}
                 </div>
-              </article>
-            </li>
-          ))}
-        </ul>
+
+                {/* 화살표 */}
+                <div
+                  className="mt-4 flex items-center gap-1 text-xs font-semibold transition-all duration-300"
+                  style={{
+                    color: 'rgb(var(--color-primary))',
+                    opacity: isHovered ? 1 : 0,
+                    transform: isHovered ? 'translateX(0)' : 'translateX(-8px)',
+                  }}
+                >
+                  <span>체험하기</span>
+                  <svg
+                    className="h-3 w-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        {/* 더보기 링크 */}
+        <div className="mt-10 text-center">
+          <a
+            href="/create"
+            className="inline-flex items-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold transition-all hover:shadow-md"
+            style={{
+              borderColor: 'rgb(var(--color-primary) / 0.4)',
+              color: 'rgb(var(--color-primary))',
+              background: 'rgb(var(--color-primary) / 0.05)',
+            }}
+          >
+            더 많은 챗봇 유형 보기
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </a>
+        </div>
       </div>
     </section>
   );

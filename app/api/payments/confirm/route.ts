@@ -32,7 +32,7 @@ interface PaymentRow {
 interface UserCreditRow {
   user_id: string;
   balance: number;
-  currency: string;
+  total_purchased: number;
   updated_at: string;
 }
 
@@ -151,8 +151,8 @@ export async function PATCH(req: NextRequest) {
     // 3. user_credits.balance += amount (upsert)
     //    기존 잔액 조회 후 합산
     const { data: creditData, error: creditFetchError } = await (supabase as any)
-      .from('user_credits')
-      .select('balance')
+      .from('mcw_credits')
+      .select('balance, total_purchased')
       .eq('user_id', userId)
       .maybeSingle();
 
@@ -166,12 +166,12 @@ export async function PATCH(req: NextRequest) {
     const now = new Date().toISOString();
 
     const { error: upsertError } = await (supabase as any)
-      .from('user_credits')
+      .from('mcw_credits')
       .upsert(
         {
           user_id: userId,
           balance: newBalance,
-          currency: 'KRW',
+          total_purchased: (creditData?.total_purchased ?? 0) + amount,
           updated_at: now,
         },
         { onConflict: 'user_id' },
@@ -187,13 +187,14 @@ export async function PATCH(req: NextRequest) {
     }
 
     // 4. credit_transactions에 'charge' 이력 기록
-    const { error: txError } = await (supabase as any).from('credit_transactions').insert({
+    const { error: txError } = await (supabase as any).from('mcw_credit_transactions').insert({
       user_id: userId,
-      type: 'charge',
+      type: 'purchase',
       amount,
       balance_after: newBalance,
       description: `무통장 입금 확인 (결제ID: ${paymentId})`,
       reference_id: paymentId,
+      reference_type: 'payment',
       created_at: now,
     });
 

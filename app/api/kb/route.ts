@@ -84,7 +84,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id, owner_id')
       .eq('id', chatbotId)
       .eq('owner_id', session.user.id)
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // KB 목록 조회
     const { data: items, error: listError, count } = await supabase
-      .from('kb_items')
+      .from('mcw_kb_items')
       .select('*', { count: 'exact' })
       .eq('chatbot_id', chatbotId)
       .order('created_at', { ascending: false })
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', body.chatbot_id)
       .eq('owner_id', session.user.id)
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // KB 항목 삽입
     const { data: newItem, error: insertError } = await supabase
-      .from('kb_items')
+      .from('mcw_kb_items')
       .insert({
         chatbot_id: body.chatbot_id,
         title: body.title.trim(),
@@ -277,10 +277,10 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // KB 항목 소유권 확인 (chatbots 조인)
+    // KB 항목 소유권 확인 (mcw_bots 조인)
     const { data: kbItem, error: findError } = await supabase
-      .from('kb_items')
-      .select('id, chatbot_id, file_path, chatbots!inner(owner_id)')
+      .from('mcw_kb_items')
+      .select('id, chatbot_id, file_path, mcw_bots!inner(owner_id)')
       .eq('id', kbId)
       .single();
 
@@ -292,7 +292,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     }
 
     // 소유권 검증
-    const chatbot = kbItem.chatbots as unknown as { owner_id: string };
+    const chatbot = kbItem.mcw_bots as unknown as { owner_id: string };
     if (chatbot.owner_id !== session.user.id) {
       return NextResponse.json(
         { success: false, error: '삭제 권한이 없습니다.', data: null },
@@ -325,7 +325,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     // KB 항목 삭제
     const { error: deleteError } = await supabase
-      .from('kb_items')
+      .from('mcw_kb_items')
       .delete()
       .eq('id', kbId);
 

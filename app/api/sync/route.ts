@@ -94,7 +94,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
       .eq('owner_id', session.user.id)
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // KB 통계 조회
     const { data: kbStats, error: kbError } = await supabase
-      .from('kb_items')
+      .from('mcw_kb_items')
       .select('is_embedded')
       .eq('chatbot_id', chatbotId);
 
@@ -230,7 +230,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // 챗봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
-      .from('chatbots')
+      .from('mcw_bots')
       .select('id')
       .eq('id', body.chatbot_id)
       .eq('owner_id', session.user.id)
@@ -271,7 +271,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (scope === 'all' || scope === 'kb') {
       // 미임베딩 KB 항목 조회
       const { data: pendingKbs, error: pendingError } = await supabase
-        .from('kb_items')
+        .from('mcw_kb_items')
         .select('id, title')
         .eq('chatbot_id', body.chatbot_id)
         .eq('is_embedded', false);

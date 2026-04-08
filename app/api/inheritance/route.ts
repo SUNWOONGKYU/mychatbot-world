@@ -135,7 +135,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   const { data: personas, error: personasError } = await (supabase as any)
-    .from('chatbots')
+    .from('mcw_bots')
     .select('id, name')
     .eq('owner_id', userId)
     .eq('is_deleted', false)

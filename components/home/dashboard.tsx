@@ -17,7 +17,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
-import type { Bot } from '@/app/home/page';
+import type { Bot } from '@/types/bot';
 
 // ── 타입 정의 ─────────────────────────────────────────────────
 

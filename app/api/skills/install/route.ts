@@ -80,14 +80,9 @@ async function loadSkillDef(skillId: string): Promise<SkillDef | null> {
 // ============================
 
 /**
- * 유료 스킬 결제 처리
- * - gross_amount: 스킬 가격 (원)
- * - commission_rate: 20%
- * - commission_amount: gross × 0.20
- * - net_amount: gross × 0.80 (개발자 수익)
- *
- * 현재 구현: payment_token 유효성 검증 후 결제 완료 처리
- * 향후 PG 연동 시 이 함수를 교체
+ * 유료 스킬 결제 처리 — 크레딧 차감 방식
+ * - 사용자 크레딧 잔액에서 스킬 가격 차감
+ * - 잔액 부족 시 크레딧 충전 안내
  */
 async function processSkillPayment(
   supabase: ReturnType<typeof getSupabaseServer>,
@@ -97,31 +92,52 @@ async function processSkillPayment(
   grossAmount: number,
   paymentToken?: string
 ): Promise<{ success: boolean; error?: string }> {
-  // 결제 토큰 검증 (실제 PG 연동 전 placeholder)
-  if (!paymentToken || paymentToken.length < 8) {
-    return { success: false, error: '유효하지 않은 결제 토큰입니다.' };
+  // 크레딧 잔액 조회
+  const { data: creditData, error: creditError } = await supabase
+    .from('mcw_credits')
+    .select('id, balance')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (creditError) {
+    console.error('[processSkillPayment] credit query error:', creditError);
+    return { success: false, error: '크레딧 조회에 실패했습니다.' };
   }
 
-  const commissionRate = 20.0;
-  const commissionAmount = Math.round(grossAmount * 0.2);
-  const netAmount = grossAmount - commissionAmount;
+  const currentBalance = Number(creditData?.balance ?? 0);
 
-  // job_settlements와 동일한 20% 수수료 구조 활용
-  const { error } = await supabase.from('job_settlements').insert({
-    employer_id: userId,
-    freelancer_id: null, // 스킬 판매자 (추후 연동)
-    gross_amount: grossAmount,
-    commission_rate: commissionRate,
-    commission_amount: commissionAmount,
-    net_amount: netAmount,
-    status: 'completed',
-    // skill 관련 메타데이터는 description 컬럼에 기록 (없으면 remarks)
+  if (currentBalance < grossAmount) {
+    return {
+      success: false,
+      error: `크레딧이 부족합니다. 필요: ${grossAmount.toLocaleString()}원, 잔액: ${currentBalance.toLocaleString()}원. 마이페이지에서 크레딧을 충전해주세요.`
+    };
+  }
+
+  // 크레딧 차감 (RPC로 atomic update)
+  const newBalance = currentBalance - grossAmount;
+  const { error: updateError } = await supabase
+    .from('mcw_credits')
+    .update({
+      balance: newBalance,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', userId);
+
+  if (updateError) {
+    console.error('[processSkillPayment] credit deduct error:', updateError);
+    return { success: false, error: '크레딧 차감에 실패했습니다.' };
+  }
+
+  // 거래 내역 기록
+  await supabase.from('mcw_credit_transactions').insert({
+    user_id: userId,
+    type: 'use',
+    amount: -grossAmount,
+    balance_after: newBalance,
+    description: `스킬 구매: ${skillName}`,
+    reference_type: 'skill',
+    metadata: { skill_id: skillId, skill_name: skillName, price: grossAmount },
   });
-
-  if (error) {
-    console.error('[processSkillPayment] settlement error:', error);
-    return { success: false, error: '결제 기록 저장에 실패했습니다.' };
-  }
 
   return { success: true };
 }

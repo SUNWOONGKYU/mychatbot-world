@@ -1,10 +1,6 @@
 {
-    "version": 2,
-    "buildCommand": "echo 'No build step needed'",
-    "outputDirectory": ".",
-    "rewrites": [
-        { "source": "/bot/:username", "destination": "/pages/bot/index.html" }
-    ],
+    "framework": "nextjs",
+    "rewrites": [],
     "headers": [
         {
             "source": "/pages/(.*).html",
@@ -29,7 +25,7 @@
         {
             "source": "/api/(.*)",
             "headers": [
-                { "key": "Access-Control-Allow-Origin", "value": "*" },
+                { "key": "Access-Control-Allow-Origin", "value": "https://mychatbot.world" },
                 { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PATCH, DELETE, OPTIONS" },
                 { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
             ]
