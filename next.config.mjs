@@ -8,7 +8,7 @@ const withBundleAnalyzer =
 
 const nextConfig = {
   // .next 캐시를 로컬 디스크에 저장 (Google Drive 파일 쓰기 충돌 방지)
-  distDir: '.next',
+  distDir: process.env.NODE_ENV === 'development' ? 'C:/mcw-next-cache' : '.next',
 
   // App Router만 사용 (기존 pages/ 는 Vanilla JS)
   pageExtensions: ['tsx', 'ts'],
@@ -37,7 +37,7 @@ const nextConfig = {
     optimizeCss: false,
   },
   // SSG 비활성화 — 모든 페이지를 SSR로 처리 (useSearchParams 호환)
-  output: 'standalone',
+  // output: 'standalone', // Vercel은 자체 빌드 — standalone 불필요
 
   // ── 필수 환경 변수 명시 ───────────────────────────────────────
   env: {

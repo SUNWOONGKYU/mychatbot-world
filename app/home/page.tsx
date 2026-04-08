@@ -1,225 +1,150 @@
-/**
- * @task S2FE3
- * @description Home 대시보드 페이지 — 챗봇 목록 / KB 관리 / 사용량 / 설정 탭 구조
- *
- * Route: /home
- * - 미로그인 시 "/" 리다이렉트
- * - S2BA3 API (/api/bots, /api/kb, /api/settings) 연동
- */
-
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+/**
+ * Home Dashboard — Vanilla → React 충실 전환
+ * Tabs: 회원정보 | 챗봇관리 | 유료스킬 | 수익활동 | 크레딧&결제 | 보안설정
+ */
+
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import clsx from 'clsx';
-import { createClient } from '@supabase/supabase-js';
-import { Dashboard } from '@/components/home/dashboard';
-import { KbManager } from '@/components/home/kb-manager';
-import { SettingsPanel } from '@/components/home/settings-panel';
+import supabase from '@/lib/supabase';
+export type { Bot } from '@/types/bot';
 
-// ── 타입 정의 ────────────────────────────────────────────────
+// ── 서브 탭 컴포넌트 ─────────────────────────────────────────
+import { ProfileTab }       from '@/components/home/ProfileTab';
+import { BotsTab }          from '@/components/home/BotsTab';
+import { PremiumSkillsTab } from '@/components/home/PremiumSkillsTab';
+import { RevenueTab }       from '@/components/home/RevenueTab';
+import { CreditsTab }       from '@/components/home/CreditsTab';
+import { SecurityTab }      from '@/components/home/SecurityTab';
 
-/** 챗봇 항목 */
-export interface Bot {
-  id: string;
-  user_id: string;
-  name: string;
-  description: string | null;
-  deploy_url: string | null;
-  qr_svg: string | null;
-  created_at: string;
-  updated_at: string;
-  conversation_count?: number;
-}
+// ── 타입 ────────────────────────────────────────────────────
+type TabId = 'profile' | 'bots' | 'premium-skills' | 'revenue' | 'credits' | 'security';
 
-/** 대시보드 탭 */
-type TabId = 'bots' | 'kb' | 'usage' | 'settings';
+interface NavItem { id: TabId; icon: string; label: string; }
 
-interface Tab {
-  id: TabId;
-  label: string;
-  icon: string;
-}
-
-// ── 상수 ─────────────────────────────────────────────────────
-
-const TABS: Tab[] = [
-  { id: 'bots',     label: '챗봇 목록', icon: '🤖' },
-  { id: 'kb',       label: 'KB 관리',   icon: '📚' },
-  { id: 'usage',    label: '사용량',    icon: '📊' },
-  { id: 'settings', label: '설정',      icon: '⚙️' },
+const NAV_ITEMS: NavItem[] = [
+  { id: 'profile',        icon: '👤', label: '회원 정보 관리'   },
+  { id: 'bots',           icon: '🤖', label: '챗봇 및 운영 관리' },
+  { id: 'premium-skills', icon: '💎', label: '유료 스킬 설정'   },
+  { id: 'revenue',        icon: '💰', label: '수익활동 관리'    },
+  { id: 'credits',        icon: '🪙', label: '크레딧 & 결제'   },
+  { id: 'security',       icon: '🔒', label: '계정 보안 설정'   },
 ];
 
-// ── 컴포넌트 ─────────────────────────────────────────────────
-
-/**
- * Home 대시보드 페이지
- * 로그인된 사용자만 접근 가능, 4개 탭으로 구성
- */
-export default function HomeDashboardPage() {
+// ── 메인 페이지 ─────────────────────────────────────────────
+export default function HomePageDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabId>('bots');
-  const [selectedBotId, setSelectedBotId] = useState<string | null>(null);
-  const [bots, setBots] = useState<Bot[]>([]);
-  const [loadingBots, setLoadingBots] = useState(true);
-  const [botsError, setBotsError] = useState<string | null>(null);
-
-  // ── 인증 확인 ─────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<TabId>('profile');
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
-        router.replace('/');
+        router.replace('/login');
+      } else {
+        setUser(session.user);
       }
+      setLoading(false);
     });
   }, [router]);
 
-  // ── 챗봇 목록 로딩 ────────────────────────────────────────
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'rgb(var(--bg-base))',
+        alignItems: 'center', justifyContent: 'center', color: 'rgb(var(--text-muted))' }}>
+        로딩 중...
+      </div>
+    );
+  }
 
-  const fetchBots = useCallback(async () => {
-    setLoadingBots(true);
-    setBotsError(null);
-    try {
-      const res = await fetch('/api/bots');
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body?.error ?? `HTTP ${res.status}`);
-      }
-      const data = await res.json();
-      // API 응답 구조: { success, data: { bots: [...] } } 또는 { bots: [...] }
-      const botList: Bot[] = data?.data?.bots ?? data?.bots ?? data ?? [];
-      setBots(botList);
-      // 첫 번째 봇을 기본 선택
-      if (botList.length > 0 && !selectedBotId) {
-        setSelectedBotId(botList[0].id);
-      }
-    } catch (err) {
-      setBotsError(err instanceof Error ? err.message : '챗봇 목록을 불러오지 못했습니다.');
-    } finally {
-      setLoadingBots(false);
-    }
-  }, [selectedBotId]);
-
-  useEffect(() => {
-    fetchBots();
-  }, [fetchBots]);
-
-  // ── 핸들러 ────────────────────────────────────────────────
-
-  /** 탭 전환 핸들러 */
-  const handleTabChange = (tabId: TabId) => {
-    setActiveTab(tabId);
-  };
-
-  /** 봇 삭제 후 목록 갱신 */
-  const handleBotDeleted = (deletedId: string) => {
-    setBots((prev) => prev.filter((b: any) => b.id !== deletedId));
-    if (selectedBotId === deletedId) {
-      setSelectedBotId(null);
-    }
-  };
-
-  // ── 렌더 ──────────────────────────────────────────────────
+  if (!user) return null;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-
-      {/* 페이지 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-text-primary">대시보드</h2>
-          <p className="text-sm text-text-secondary mt-0.5">
-            내 챗봇을 관리하고 사용량을 확인하세요.
-          </p>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'rgb(var(--bg-base))' }}>
+      {/* Sidebar */}
+      <aside style={{
+        width: 260, background: 'rgb(var(--bg-surface))',
+        borderRight: '1px solid rgb(var(--border-subtle))',
+        padding: '2rem 1.5rem', position: 'fixed', height: '100vh',
+        display: 'flex', flexDirection: 'column', zIndex: 10,
+      }}>
+        <div style={{
+          marginBottom: '3rem', fontSize: '1.25rem', fontWeight: 800,
+          color: '#818cf8', display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          🤖 <span>마이 페이지</span>
         </div>
 
-        {/* 새 챗봇 만들기 */}
-        <button
-          onClick={() => router.push('/create')}
-          className={clsx(
-            'flex items-center gap-2 px-4 py-2 rounded-lg',
-            'bg-primary text-white text-sm font-medium',
-            'hover:bg-primary-hover transition-colors',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-          )}
-        >
-          <span>＋</span>
-          <span>새 챗봇 만들기</span>
-        </button>
-      </div>
+        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: 0, margin: 0 }}>
+          {NAV_ITEMS.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => setActiveTab(item.id)}
+                style={{
+                  width: '100%', padding: '12px 16px',
+                  color: activeTab === item.id ? 'white' : 'rgb(var(--text-secondary))',
+                  borderRadius: 10, cursor: 'pointer', fontWeight: 500,
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  background: activeTab === item.id ? '#6366f1' : 'transparent',
+                  border: 'none', textAlign: 'left', fontSize: '0.9rem',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== item.id) {
+                    (e.currentTarget as HTMLElement).style.background = 'rgb(var(--border-subtle))';
+                    (e.currentTarget as HTMLElement).style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== item.id) {
+                    (e.currentTarget as HTMLElement).style.background = 'transparent';
+                    (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary))';
+                  }
+                }}
+              >
+                {item.icon} {item.label}
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      {/* 탭 바 */}
-      <div className="flex gap-1 border-b border-border">
-        {TABS.map((tab: any) => (
-          <button
-            key={tab.id}
-            onClick={() => handleTabChange(tab.id)}
-            className={clsx(
-              'flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium',
-              'border-b-2 -mb-px transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              activeTab === tab.id
-                ? 'border-primary text-primary'
-                : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-strong',
-            )}
-            aria-selected={activeTab === tab.id}
-            role="tab"
-          >
-            <span aria-hidden="true">{tab.icon}</span>
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
+        <div style={{ marginTop: 'auto' }}>
+          <a href="/" style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '12px 16px', color: 'rgb(var(--text-muted))',
+            fontSize: '0.8rem', textDecoration: 'none', borderRadius: 10,
+          }}>🏠 메인 화면으로 이동</a>
+          <LogoutButton />
+        </div>
+      </aside>
 
-      {/* 탭 콘텐츠 */}
-      <div role="tabpanel">
-        {activeTab === 'bots' && (
-          <Dashboard
-            bots={bots}
-            loading={loadingBots}
-            error={botsError}
-            selectedBotId={selectedBotId}
-            onSelectBot={setSelectedBotId}
-            onBotDeleted={handleBotDeleted}
-            onRefresh={fetchBots}
-          />
-        )}
-
-        {activeTab === 'kb' && (
-          <KbManager
-            botId={selectedBotId}
-            bots={bots}
-            onSelectBot={setSelectedBotId}
-          />
-        )}
-
-        {activeTab === 'usage' && (
-          /* 사용량 탭은 Dashboard 컴포넌트의 usage 섹션 재사용 */
-          <Dashboard
-            bots={bots}
-            loading={loadingBots}
-            error={botsError}
-            selectedBotId={selectedBotId}
-            onSelectBot={setSelectedBotId}
-            onBotDeleted={handleBotDeleted}
-            onRefresh={fetchBots}
-            defaultSection="usage"
-          />
-        )}
-
-        {activeTab === 'settings' && (
-          <SettingsPanel
-            botId={selectedBotId}
-            bots={bots}
-            onSelectBot={setSelectedBotId}
-          />
-        )}
-      </div>
+      {/* Main Content */}
+      <main style={{ flex: 1, marginLeft: 260, padding: '3rem 4rem', minWidth: 0 }}>
+        {activeTab === 'profile'        && <ProfileTab user={user} />}
+        {activeTab === 'bots'           && <BotsTab user={user} />}
+        {activeTab === 'premium-skills' && <PremiumSkillsTab />}
+        {activeTab === 'revenue'        && <RevenueTab />}
+        {activeTab === 'credits'        && <CreditsTab user={user} />}
+        {activeTab === 'security'       && <SecurityTab />}
+      </main>
     </div>
+  );
+}
+
+function LogoutButton() {
+  const router = useRouter();
+  const handleLogout = async () => {
+    if (!confirm('로그아웃 하시겠습니까?')) return;
+    await supabase.auth.signOut();
+    router.replace('/login');
+  };
+  return (
+    <button onClick={handleLogout} style={{
+      width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+      padding: '12px 16px', color: 'rgb(var(--text-secondary))', fontSize: '0.9rem',
+      background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10,
+    }}>🔌 로그아웃</button>
   );
 }

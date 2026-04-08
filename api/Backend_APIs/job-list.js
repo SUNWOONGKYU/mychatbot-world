@@ -4,22 +4,19 @@
  * GET /api/Backend_APIs/job-list
  *
  * 구봇구직 챗봇 목록/검색 API
- * - bot_jobs 테이블에서 목록 조회
- * - 필터: job_type (hire/seek), category, status
+ * - job_postings 테이블에서 목록 조회
+ * - 필터: status
  * - 검색: title, description 텍스트 검색 (ilike)
- * - 정렬: created_at, salary_range
+ * - 정렬: created_at, budget_min, budget_max, title
  * - 페이지네이션: offset, limit (기본 20개)
  */
 import { createClient } from '@supabase/supabase-js';
 
 /** 허용된 정렬 컬럼 화이트리스트 (SQL 인젝션 방지) */
-const ALLOWED_ORDER_BY = ['created_at', 'salary_min', 'salary_max', 'title'];
-
-/** 허용된 job_type 값 */
-const ALLOWED_JOB_TYPES = ['hire', 'seek'];
+const ALLOWED_ORDER_BY = ['created_at', 'budget_min', 'budget_max', 'title'];
 
 /** 허용된 status 값 */
-const ALLOWED_STATUSES = ['open', 'closed', 'paused'];
+const ALLOWED_STATUSES = ['open', 'closed', 'filled'];
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', (req.headers.origin && ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'].includes(req.headers.origin)) ? req.headers.origin : 'https://mychatbot.world');
@@ -42,8 +39,6 @@ export default async function handler(req, res) {
   }
 
   const {
-    job_type,
-    category,
     status,
     search,
     order_by = 'created_at',
@@ -53,10 +48,6 @@ export default async function handler(req, res) {
   } = req.query;
 
   // 파라미터 유효성 검증
-  if (job_type && !ALLOWED_JOB_TYPES.includes(job_type)) {
-    return res.status(400).json({ error: `Invalid job_type. Allowed: ${ALLOWED_JOB_TYPES.join(', ')}` });
-  }
-
   if (status && !ALLOWED_STATUSES.includes(status)) {
     return res.status(400).json({ error: `Invalid status. Allowed: ${ALLOWED_STATUSES.join(', ')}` });
   }
@@ -72,32 +63,21 @@ export default async function handler(req, res) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     let query = supabase
-      .from('bot_jobs')
+      .from('job_postings')
       .select(`
         id,
+        employer_id,
         title,
         description,
-        job_type,
-        category,
-        status,
-        salary_min,
-        salary_max,
-        salary_unit,
         required_skills,
-        owner_bot_id,
+        budget_min,
+        budget_max,
+        status,
         created_at,
         updated_at
       `, { count: 'exact' });
 
     // 필터 적용
-    if (job_type) {
-      query = query.eq('job_type', job_type);
-    }
-
-    if (category) {
-      query = query.eq('category', category);
-    }
-
     if (status) {
       query = query.eq('status', status);
     } else {

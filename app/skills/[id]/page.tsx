@@ -1,521 +1,366 @@
 /**
- * @task S3FE2
- * @description 스킬 상세 페이지 — 설명/평점/리뷰 목록/설치·실행 버튼
+ * @task S3F12
+ * @description 스킬 상세 페이지 — Vanilla detail.html 완전 이식
+ * - 헤더 카드: 이모지 아이콘, 이름, 카테고리, 설명, 별점, 설치수
+ * - 가격 + 설치/제거 버튼
+ * - 상세 정보: 시스템 프롬프트 미리보기 (설치 후 공개)
+ * - 정보 표 (카테고리, 버전, 설치수, 평점)
+ * - 리뷰 탭
  * Route: /skills/[id]
- * API:
- *   GET  /api/skills/[id]
- *   POST /api/skills/install   { skill_id }
- *   DELETE /api/skills/install { skill_id }
  */
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import clsx from 'clsx';
-import { SkillRunner } from '@/components/skills/skill-runner';
-import { ReviewForm } from '@/components/skills/review-form';
+import { SKILLS, buildStars, type SkillItem } from '@/lib/skills-data';
+import { useSkillsStore } from '@/lib/use-skills-store';
 
-// ── 타입 ────────────────────────────────────────────────────────
-
-interface SkillDetail {
-  id: string;
-  name: string;
-  description: string;
-  long_description: string;
-  author: string;
-  author_id: string;
-  category: string;
-  price: number;
-  currency: string;
-  rating: number;
-  rating_count: number;
-  install_count: number;
-  is_free: boolean;
-  tags: string[];
-  thumbnail_url: string | null;
-  version: string;
-  parameters: SkillParameter[];
-  is_installed: boolean;
-  created_at: string;
-  updated_at: string;
+// ── Toast (로컬) ──────────────────────────────────────────────────
+function useToast() {
+  const [msg, setMsg] = useState('');
+  const [vis, setVis] = useState(false);
+  const show = useCallback((m: string) => {
+    setMsg(m); setVis(true);
+    setTimeout(() => setVis(false), 3000);
+  }, []);
+  return { vis, msg, show };
 }
 
-interface SkillParameter {
-  name: string;
-  label: string;
-  type: 'text' | 'number' | 'select' | 'textarea';
-  required: boolean;
-  placeholder?: string;
-  options?: string[];
-  default_value?: string;
-}
+// ── 더미 리뷰 ────────────────────────────────────────────────────
+const DUMMY_REVIEWS = [
+  { id: '1', userName: '김민준', rating: 5, comment: '정말 유용합니다! 챗봇 운영이 훨씬 편해졌어요.', date: '2025-12-01' },
+  { id: '2', userName: '이서연', rating: 4, comment: '설치가 간단하고 동작이 잘 됩니다. 추천해요.', date: '2025-11-28' },
+  { id: '3', userName: '박지현', rating: 5, comment: '고객 응대 품질이 확실히 올라갔습니다.', date: '2025-11-15' },
+];
 
-interface Review {
-  id: string;
-  user_name: string;
-  rating: number;
-  comment: string;
-  created_at: string;
-}
-
-type ActiveTab = 'overview' | 'reviews' | 'run';
-
-// ── 서브 컴포넌트 ────────────────────────────────────────────────
-
-function StarRating({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md' | 'lg' }) {
-  const starSize = size === 'lg' ? 'text-xl' : size === 'sm' ? 'text-xs' : 'text-sm';
+// ── 별점 컴포넌트 ─────────────────────────────────────────────────
+function StarDisplay({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md' | 'lg' }) {
+  const sz = size === 'lg' ? '1.25rem' : size === 'sm' ? '0.75rem' : '0.875rem';
   return (
-    <div className="flex items-center gap-0.5">
-      {Array.from({ length: 5 }, (_: any, i: any) => (
-        <span
-          key={i}
-          className={clsx(starSize, i < Math.round(rating) ? 'text-warning' : 'text-bg-muted')}
-        >
-          ★
-        </span>
+    <span style={{ display: 'inline-flex', gap: '1px' }}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <span key={i} style={{ fontSize: sz, color: i < Math.round(rating) ? '#fbbf24' : 'rgb(var(--text-muted))' }}>★</span>
       ))}
-    </div>
+    </span>
   );
 }
 
-function ReviewCard({ review }: { review: Review }) {
+// ── 리뷰 카드 ─────────────────────────────────────────────────────
+function ReviewCard({ review }: { review: typeof DUMMY_REVIEWS[0] }) {
   return (
-    <div className="border border-border rounded-lg p-4 space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-bold">
-            {review.user_name.charAt(0).toUpperCase()}
+    <div style={{
+      border: '1px solid rgb(var(--border))',
+      borderRadius: '0.75rem',
+      padding: '1rem',
+      background: 'rgb(var(--bg-surface-hover) / 0.3)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{
+            width: '2rem', height: '2rem', borderRadius: '50%',
+            background: 'rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', color: '#34d399', fontWeight: 700, fontSize: '0.875rem',
+          }}>
+            {review.userName[0]}
           </div>
-          <span className="text-sm font-medium text-text-primary">{review.user_name}</span>
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'white' }}>{review.userName}</span>
         </div>
-        <StarRating rating={review.rating} size="sm" />
+        <StarDisplay rating={review.rating} size="sm" />
       </div>
-      <p className="text-sm text-text-secondary leading-relaxed">{review.comment}</p>
-      <p className="text-xs text-text-muted">
-        {new Date(review.created_at).toLocaleDateString('ko-KR')}
+      <p style={{ fontSize: '0.875rem', color: 'rgb(var(--text-secondary))', lineHeight: 1.6 }}>{review.comment}</p>
+      <p style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: '0.5rem' }}>
+        {new Date(review.date).toLocaleDateString('ko-KR')}
       </p>
     </div>
   );
 }
 
-// ── 메인 페이지 ────────────────────────────────────────────────
-
-export default function SkillDetailPage() {
-  const params = useParams<{ id: string }>();
-  const router = useRouter();
-  const skillId = params.id;
-
-  const [skill, setSkill] = useState<SkillDetail | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
-  const [installing, setInstalling] = useState(false);
-  const [installError, setInstallError] = useState<string | null>(null);
-  const [showReviewForm, setShowReviewForm] = useState(false);
-
-  // 스킬 상세 로딩
-  const fetchSkill = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/skills/${skillId}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body?.error ?? `HTTP ${res.status}`);
-      }
-      const data = await res.json();
-      setSkill(data?.skill ?? data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '스킬 정보를 불러오지 못했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  }, [skillId]);
-
-  // 리뷰 로딩
-  const fetchReviews = useCallback(async () => {
-    setReviewsLoading(true);
-    try {
-      const res = await fetch(`/api/skills/${skillId}/reviews`);
-      if (res.ok) {
-        const data = await res.json();
-        setReviews(data?.reviews ?? data ?? []);
-      }
-    } catch {
-      // 리뷰 로딩 실패는 조용히 처리
-    } finally {
-      setReviewsLoading(false);
-    }
-  }, [skillId]);
-
+// ── 구매 확인 모달 ────────────────────────────────────────────────
+function PurchaseModal({ skill, onConfirm, onCancel }: { skill: SkillItem; onConfirm: () => void; onCancel: () => void }) {
   useEffect(() => {
-    fetchSkill();
-    fetchReviews();
-  }, [fetchSkill, fetchReviews]);
-
-  // 설치 핸들러
-  const handleInstall = async () => {
-    if (!skill) return;
-    setInstalling(true);
-    setInstallError(null);
-    try {
-      const res = await fetch('/api/skills/install', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ skill_id: skill.id }),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        // 결제 필요한 경우 결제 플로우로 이동
-        if (res.status === 402) {
-          router.push(`/payment?skill_id=${skill.id}&price=${skill.price}`);
-          return;
-        }
-        throw new Error(body?.error ?? `HTTP ${res.status}`);
-      }
-      setSkill((prev) => prev ? { ...prev, is_installed: true } : prev);
-    } catch (err) {
-      setInstallError(err instanceof Error ? err.message : '설치에 실패했습니다.');
-    } finally {
-      setInstalling(false);
-    }
-  };
-
-  // 제거 핸들러
-  const handleUninstall = async () => {
-    if (!skill || !confirm('이 스킬을 제거하시겠습니까?')) return;
-    setInstalling(true);
-    setInstallError(null);
-    try {
-      const res = await fetch('/api/skills/install', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ skill_id: skill.id }),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body?.error ?? `HTTP ${res.status}`);
-      }
-      setSkill((prev) => prev ? { ...prev, is_installed: false } : prev);
-    } catch (err) {
-      setInstallError(err instanceof Error ? err.message : '제거에 실패했습니다.');
-    } finally {
-      setInstalling(false);
-    }
-  };
-
-  const TABS: { id: ActiveTab; label: string }[] = [
-    { id: 'overview', label: '개요' },
-    { id: 'reviews', label: `리뷰 (${reviews.length})` },
-    ...(skill?.is_installed ? [{ id: 'run' as ActiveTab, label: '실행' }] : []),
-  ];
-
-  // ── 로딩 상태 ──────────────────────────────────────────────
-
-  if (loading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
-        <div className="h-6 bg-bg-muted rounded w-1/4" />
-        <div className="h-8 bg-bg-muted rounded w-2/3" />
-        <div className="h-4 bg-bg-muted rounded w-full" />
-        <div className="h-4 bg-bg-muted rounded w-3/4" />
-      </div>
-    );
-  }
-
-  if (error || !skill) {
-    return (
-      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center py-24 text-center">
-        <span className="text-5xl mb-4">⚠️</span>
-        <h2 className="text-lg font-semibold text-text-primary mb-1">스킬을 불러오지 못했습니다</h2>
-        <p className="text-sm text-text-secondary mb-4">{error}</p>
-        <button
-          onClick={fetchSkill}
-          className="px-4 py-2 rounded-lg bg-primary text-white text-sm hover:bg-primary-hover transition-colors"
-        >
-          다시 시도
-        </button>
-      </div>
-    );
-  }
-
-  // ── 메인 렌더 ─────────────────────────────────────────────
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
+    document.addEventListener('keydown', h);
+    return () => document.removeEventListener('keydown', h);
+  }, [onCancel]);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-
-      {/* 브레드크럼 */}
-      <nav className="flex items-center gap-2 text-sm text-text-muted">
-        <Link href="/skills" className="hover:text-primary transition-colors">
-          스킬 마켓
-        </Link>
-        <span>/</span>
-        <span className="text-text-secondary">{skill.category}</span>
-        <span>/</span>
-        <span className="text-text-primary truncate">{skill.name}</span>
-      </nav>
-
-      {/* 스킬 헤더 카드 */}
-      <div className="rounded-xl border border-border bg-surface p-6">
-        <div className="flex flex-col sm:flex-row gap-6">
-          {/* 아이콘 */}
-          <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-            {skill.thumbnail_url ? (
-              <img
-                src={skill.thumbnail_url}
-                alt={skill.name}
-                className="w-full h-full rounded-2xl object-cover"
-              />
-            ) : (
-              <span className="text-3xl">⚡</span>
-            )}
-          </div>
-
-          {/* 메타 */}
-          <div className="flex-1 space-y-2">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-xl font-bold text-text-primary">{skill.name}</h1>
-                <p className="text-sm text-text-secondary mt-0.5">by {skill.author}</p>
-              </div>
-              <span
-                className={clsx(
-                  'text-xs font-medium px-2 py-1 rounded-full shrink-0',
-                  'bg-primary/10 text-primary',
-                )}
-              >
-                {skill.category}
-              </span>
-            </div>
-
-            <p className="text-sm text-text-secondary leading-relaxed">{skill.description}</p>
-
-            {/* 통계 */}
-            <div className="flex flex-wrap items-center gap-4 text-sm">
-              <div className="flex items-center gap-1.5">
-                <StarRating rating={skill.rating} size="sm" />
-                <span className="text-text-secondary">
-                  {skill.rating.toFixed(1)} ({skill.rating_count.toLocaleString()}개 리뷰)
-                </span>
-              </div>
-              <span className="text-text-muted">
-                설치 {skill.install_count.toLocaleString()}회
-              </span>
-              <span className="text-text-muted">v{skill.version}</span>
-            </div>
-
-            {/* 태그 */}
-            {skill.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {skill.tags.map((tag: any) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2 py-0.5 rounded-full border border-border text-text-muted"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* 액션 영역 */}
-        <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-border">
-          <div>
-            <span className="text-2xl font-bold text-text-primary">
-              {skill.is_free ? (
-                <span className="text-success">무료</span>
-              ) : (
-                `${skill.price.toLocaleString()} ${skill.currency}`
-              )}
-            </span>
-            {!skill.is_free && (
-              <p className="text-xs text-text-muted mt-0.5">1회 구매 후 영구 사용</p>
-            )}
-          </div>
-
-          <div className="flex gap-3">
-            {skill.is_installed ? (
-              <>
-                <button
-                  onClick={() => setActiveTab('run')}
-                  className={clsx(
-                    'px-5 py-2.5 rounded-lg text-sm font-medium',
-                    'bg-primary text-white',
-                    'hover:bg-primary-hover transition-colors',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                  )}
-                >
-                  실행하기
-                </button>
-                <button
-                  onClick={handleUninstall}
-                  disabled={installing}
-                  className={clsx(
-                    'px-4 py-2.5 rounded-lg text-sm font-medium',
-                    'border border-border text-text-secondary',
-                    'hover:bg-surface-hover transition-colors',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                    'disabled:opacity-50 disabled:cursor-not-allowed',
-                  )}
-                >
-                  {installing ? '처리 중...' : '제거'}
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={handleInstall}
-                disabled={installing}
-                className={clsx(
-                  'px-6 py-2.5 rounded-lg text-sm font-semibold',
-                  'bg-primary text-white',
-                  'hover:bg-primary-hover transition-colors',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                  'disabled:opacity-50 disabled:cursor-not-allowed',
-                )}
-              >
-                {installing ? '설치 중...' : skill.is_free ? '설치하기' : '구매 및 설치'}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {installError && (
-          <p className="mt-2 text-sm text-error">{installError}</p>
-        )}
-      </div>
-
-      {/* 탭 */}
-      <div className="border-b border-border">
-        <div className="flex gap-1">
-          {TABS.map((tab: any) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={clsx(
-                'px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                activeTab === tab.id
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-strong',
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
+    <div
+      role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+      onClick={e => { if (e.target === e.currentTarget) onCancel(); }}
+      className="sk-modal-overlay"
+    >
+      <div className="sk-modal">
+        <div className="sk-modal-icon">{skill.icon}</div>
+        <h3 className="sk-modal-title" id="modalTitle">스킬 구매</h3>
+        <p className="sk-modal-name">{skill.name}</p>
+        <p className="sk-modal-price">₩{(skill.price ?? 0).toLocaleString()}</p>
+        <p className="sk-modal-note">실제 포인트 차감 없이 체험합니다.</p>
+        <div className="sk-modal-actions">
+          <button className="sk-modal-btn sk-modal-btn--cancel" onClick={onCancel}>취소</button>
+          <button className="sk-modal-btn sk-modal-btn--confirm" onClick={onConfirm} autoFocus>구매 체험</button>
         </div>
       </div>
-
-      {/* 탭 콘텐츠 */}
-      {activeTab === 'overview' && (
-        <div className="prose prose-sm max-w-none text-text-primary">
-          <div className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="text-base font-semibold text-text-primary mb-3">상세 설명</h2>
-            <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">
-              {skill.long_description || skill.description}
-            </p>
-          </div>
-
-          {skill.parameters.length > 0 && (
-            <div className="rounded-xl border border-border bg-surface p-6 mt-4">
-              <h2 className="text-base font-semibold text-text-primary mb-3">입력 파라미터</h2>
-              <div className="space-y-2">
-                {skill.parameters.map((param) => (
-                  <div
-                    key={param.name}
-                    className="flex items-start gap-3 text-sm py-2 border-b border-border last:border-0"
-                  >
-                    <code className="text-primary bg-primary/5 px-1.5 py-0.5 rounded text-xs">
-                      {param.name}
-                    </code>
-                    <div>
-                      <span className="text-text-primary font-medium">{param.label}</span>
-                      {param.required && (
-                        <span className="ml-1.5 text-xs text-error">필수</span>
-                      )}
-                      {param.placeholder && (
-                        <p className="text-text-muted text-xs mt-0.5">{param.placeholder}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'reviews' && (
-        <div className="space-y-4">
-          {/* 평점 요약 */}
-          <div className="rounded-xl border border-border bg-surface p-5 flex items-center gap-8">
-            <div className="text-center">
-              <p className="text-4xl font-bold text-text-primary">{skill.rating.toFixed(1)}</p>
-              <StarRating rating={skill.rating} size="lg" />
-              <p className="text-xs text-text-muted mt-1">
-                {skill.rating_count.toLocaleString()}개 리뷰
-              </p>
-            </div>
-          </div>
-
-          {/* 리뷰 작성 버튼 */}
-          {skill.is_installed && (
-            <button
-              onClick={() => setShowReviewForm(!showReviewForm)}
-              className={clsx(
-                'w-full py-3 rounded-lg text-sm font-medium border-2 border-dashed',
-                'border-border text-text-secondary',
-                'hover:border-primary/40 hover:text-primary transition-colors',
-              )}
-            >
-              {showReviewForm ? '리뷰 작성 취소' : '+ 리뷰 작성하기'}
-            </button>
-          )}
-
-          {showReviewForm && (
-            <ReviewForm
-              skillId={skill.id}
-              onSuccess={() => {
-                setShowReviewForm(false);
-                fetchReviews();
-              }}
-            />
-          )}
-
-          {/* 리뷰 목록 */}
-          {reviewsLoading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i: any) => (
-                <div key={i} className="border border-border rounded-lg p-4 animate-pulse space-y-2">
-                  <div className="h-4 bg-bg-muted rounded w-1/4" />
-                  <div className="h-3 bg-bg-muted rounded w-full" />
-                  <div className="h-3 bg-bg-muted rounded w-2/3" />
-                </div>
-              ))}
-            </div>
-          ) : reviews.length === 0 ? (
-            <div className="text-center py-12 text-text-muted">
-              <p className="text-3xl mb-2">💬</p>
-              <p className="text-sm">아직 리뷰가 없습니다.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {reviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'run' && skill.is_installed && (
-        <SkillRunner skillId={skill.id} skillName={skill.name} parameters={skill.parameters} />
-      )}
     </div>
+  );
+}
+
+// ── 메인 ─────────────────────────────────────────────────────────
+export default function SkillDetailPage() {
+  const params = useParams<{ id: string }>();
+  const skillId = params?.id ?? '';
+
+  const { isInstalled, install, remove } = useSkillsStore();
+  const { vis: toastVis, msg: toastMsg, show: showToast } = useToast();
+
+  const [skill, setSkill] = useState<SkillItem | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'reviews'>('overview');
+  const [showPurchase, setShowPurchase] = useState(false);
+
+  useEffect(() => {
+    const found = SKILLS.find(s => s.id === skillId) ?? null;
+    setSkill(found);
+  }, [skillId]);
+
+  const installed = skill ? isInstalled(skill.id) : false;
+
+  const handleInstall = useCallback(() => {
+    if (!skill) return;
+    if (!skill.isFree) { setShowPurchase(true); return; }
+    install(skill.id);
+    showToast(`"${skill.name}" 스킬을 설치했습니다!`);
+  }, [skill, install, showToast]);
+
+  const handleRemove = useCallback(() => {
+    if (!skill) return;
+    remove(skill.id);
+    showToast(`"${skill.name}" 스킬을 제거했습니다.`);
+  }, [skill, remove, showToast]);
+
+  const handlePurchaseConfirm = useCallback(() => {
+    if (!skill) return;
+    install(skill.id);
+    showToast(`"${skill.name}" 구매 완료! 스킬이 설치되었습니다.`);
+    setShowPurchase(false);
+  }, [skill, install, showToast]);
+
+  // 로딩 / 없음
+  if (!skill) {
+    return (
+      <main style={{ padding: '5rem 0 4rem' }}>
+        <div className="container">
+          <div className="sk-detail-skeleton">
+            <div className="sk-skeleton-header" />
+            <div className="sk-skeleton-body" />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const stars = buildStars(skill.rating);
+  const reviews = DUMMY_REVIEWS.slice(0, 3);
+
+  return (
+    <>
+      {/* 뒤로가기 */}
+      <div className="sk-back-bar">
+        <div className="container">
+          <Link href="/skills" className="sk-back-link">
+            ← 스킬 마켓으로
+          </Link>
+        </div>
+      </div>
+
+      <main className="sk-detail-main">
+        <div className="container">
+          <div className="sk-detail-content">
+
+            {/* ── 헤더 카드 ── */}
+            <div style={{ background: 'rgb(var(--bg-surface-hover) / 0.5)', border: '1px solid rgb(var(--border))', borderRadius: '1rem', padding: '1.5rem' }}>
+              <div className="sk-detail-header">
+                {/* 아이콘 */}
+                <div className="sk-detail-icon">{skill.icon}</div>
+
+                {/* 정보 */}
+                <div className="sk-detail-header-info">
+                  <span className="sk-detail-cat">{skill.category}</span>
+                  <h1 className="sk-detail-title">{skill.name}</h1>
+                  <p className="sk-detail-desc">{skill.description}</p>
+                  <div className="sk-detail-meta">
+                    <span className="sk-stars">{stars}</span>
+                    <span className="sk-rating-num">{skill.rating.toFixed(1)}</span>
+                    <span className="sk-detail-sep">·</span>
+                    <span>{skill.installs.toLocaleString()}회 설치</span>
+                  </div>
+                </div>
+
+                {/* 액션 */}
+                <div className="sk-detail-action">
+                  <span className={`sk-detail-price${skill.isFree ? ' free' : ' paid'}`}>
+                    {skill.isFree ? '무료' : `₩${(skill.price ?? 0).toLocaleString()}`}
+                  </span>
+                  {installed ? (
+                    <button
+                      className="sk-detail-btn sk-detail-btn--remove"
+                      onClick={handleRemove}
+                    >
+                      제거하기
+                    </button>
+                  ) : (
+                    <button
+                      className="sk-detail-btn sk-detail-btn--install"
+                      onClick={handleInstall}
+                    >
+                      {skill.isFree ? '설치하기' : '구매 및 설치'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ── 탭 ── */}
+            <div style={{ borderBottom: '1px solid rgb(var(--border))', display: 'flex', gap: '0.25rem' }}>
+              {(['overview', 'reviews'] as const).map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    padding: '0.625rem 1rem',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: `2px solid ${activeTab === tab ? '#10b981' : 'transparent'}`,
+                    marginBottom: '-1px',
+                    color: activeTab === tab ? '#34d399' : 'rgb(var(--text-muted))',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {tab === 'overview' ? '개요' : `리뷰 (${reviews.length})`}
+                </button>
+              ))}
+            </div>
+
+            {/* ── 개요 탭 ── */}
+            {activeTab === 'overview' && (
+              <div className="sk-detail-section">
+                <h2 className="sk-detail-section-title">스킬 소개</h2>
+                <p style={{ fontSize: '0.9rem', color: 'rgb(var(--text-secondary))', lineHeight: 1.7 }}>
+                  {skill.description}
+                </p>
+
+                {/* 시스템 프롬프트 (설치 후 공개) */}
+                <h2 className="sk-detail-section-title" style={{ marginTop: '1rem' }}>시스템 프롬프트 미리보기</h2>
+                <p className="sk-detail-prompt-note">
+                  {installed ? '설치된 스킬의 프롬프트입니다.' : '설치 후 전체 프롬프트가 공개됩니다.'}
+                </p>
+                {installed ? (
+                  <blockquote className="sk-detail-prompt">
+                    {skill.systemPrompt}
+                  </blockquote>
+                ) : (
+                  <div style={{
+                    padding: '1rem 1.25rem',
+                    background: 'rgba(0,0,0,0.2)',
+                    borderLeft: '3px solid rgba(16,185,129,0.3)',
+                    borderRadius: '0.25rem 0.75rem 0.75rem 0.25rem',
+                    filter: 'blur(3px)',
+                    userSelect: 'none',
+                    fontSize: '0.875rem',
+                    color: 'rgb(var(--text-secondary))',
+                    lineHeight: 1.7,
+                    fontStyle: 'italic',
+                  }}>
+                    {skill.systemPrompt.slice(0, 60)}...
+                  </div>
+                )}
+
+                {/* 정보 표 */}
+                <h2 className="sk-detail-section-title" style={{ marginTop: '1rem' }}>상세 정보</h2>
+                <dl className="sk-detail-dl">
+                  <div className="sk-detail-dl-row">
+                    <dt>카테고리</dt>
+                    <dd>{skill.category}</dd>
+                  </div>
+                  <div className="sk-detail-dl-row">
+                    <dt>버전</dt>
+                    <dd>v1.0.0</dd>
+                  </div>
+                  <div className="sk-detail-dl-row">
+                    <dt>설치수</dt>
+                    <dd>{skill.installs.toLocaleString()}회</dd>
+                  </div>
+                  <div className="sk-detail-dl-row">
+                    <dt>평점</dt>
+                    <dd>{skill.rating.toFixed(1)} / 5.0</dd>
+                  </div>
+                  <div className="sk-detail-dl-row">
+                    <dt>가격</dt>
+                    <dd>{skill.isFree ? '무료' : `₩${(skill.price ?? 0).toLocaleString()}`}</dd>
+                  </div>
+                  <div className="sk-detail-dl-row">
+                    <dt>상태</dt>
+                    <dd style={{ color: installed ? '#34d399' : 'rgb(var(--text-secondary))' }}>
+                      {installed ? '설치됨' : '미설치'}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            )}
+
+            {/* ── 리뷰 탭 ── */}
+            {activeTab === 'reviews' && (
+              <div className="sk-detail-section">
+                {/* 평점 요약 */}
+                <div style={{
+                  padding: '1.25rem',
+                  background: 'rgb(var(--bg-surface-hover) / 0.3)',
+                  border: '1px solid rgb(var(--border))',
+                  borderRadius: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2rem',
+                  marginBottom: '1rem',
+                }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', lineHeight: 1 }}>
+                      {skill.rating.toFixed(1)}
+                    </p>
+                    <StarDisplay rating={skill.rating} size="lg" />
+                    <p style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: '0.25rem' }}>
+                      {reviews.length}개 리뷰
+                    </p>
+                  </div>
+                </div>
+
+                {/* 리뷰 목록 */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {reviews.map(r => <ReviewCard key={r.id} review={r} />)}
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      </main>
+
+      {/* 구매 모달 */}
+      {showPurchase && (
+        <PurchaseModal
+          skill={skill}
+          onConfirm={handlePurchaseConfirm}
+          onCancel={() => setShowPurchase(false)}
+        />
+      )}
+
+      {/* Toast */}
+      {toastVis && (
+        <div className="sk-toast" role="alert" aria-live="assertive">
+          {toastMsg}
+        </div>
+      )}
+    </>
   );
 }

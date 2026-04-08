@@ -16,8 +16,9 @@ const CHUNK_SIZE = 500;      // 토큰 기준 청크 크기
 const CHUNK_OVERLAP = 50;    // 청크 오버랩
 
 export default async function handler(req, res) {
-  // TODO(S4): CORS Access-Control-Allow-Origin을 프로덕션 도메인으로 제한 (현재 '*')
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const allowedOrigins = ['https://mychatbot.world', 'http://localhost:3000', 'http://localhost:5173'];
+  const origin = req.headers.origin;
+  res.setHeader('Access-Control-Allow-Origin', (origin && allowedOrigins.includes(origin)) ? origin : 'https://mychatbot.world');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 

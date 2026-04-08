@@ -79,7 +79,7 @@ async function authenticateAndVerifyBot(supabase, token, botId) {
 
   // 봇 존재 여부 + 소유권 확인
   const { data: botData, error: botError } = await supabase
-    .from('bots')
+    .from('mcw_bots')
     .select('id, user_id')
     .eq('id', botId)
     .single();

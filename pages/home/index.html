@@ -310,6 +310,60 @@
         .credit-history-amount { font-weight: 700; font-size: 0.9rem; }
         .credit-plus { color: #22c55e; }
         .credit-minus { color: #f87171; }
+
+        /* ─── 무통장 입금 모달 ─── */
+        .bank-modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 9000;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        .bank-modal-overlay.active { display: flex; }
+        .bank-modal {
+            background: #1a1a24; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 2rem; width: 90%; max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .bank-modal-title {
+            font-size: 1.3rem; font-weight: 800; color: white; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .bank-info-box {
+            background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.25);
+            border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+        }
+        .bank-info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; font-size: 0.9rem;
+        }
+        .bank-info-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .bank-info-label { color: rgba(255,255,255,0.45); }
+        .bank-info-value { font-weight: 700; color: white; }
+        .bank-amount-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;
+        }
+        .bank-amount-card {
+            background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 0.9rem 1rem; text-align: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .bank-amount-card:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.05); }
+        .bank-amount-card.selected { border-color: var(--primary-500, #6366f1); background: rgba(99,102,241,0.12); }
+        .bank-amount-card .amount-won { font-size: 1.1rem; font-weight: 800; color: var(--primary-400, #818cf8); }
+        .bank-amount-card .amount-credit { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 3px; }
+        .bank-depositor-input {
+            width: 100%; box-sizing: border-box;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px; padding: 0.75rem 1rem; color: white; font-size: 0.95rem;
+            margin-bottom: 1.25rem; outline: none;
+        }
+        .bank-depositor-input:focus { border-color: rgba(99,102,241,0.5); }
+        .bank-depositor-input::placeholder { color: rgba(255,255,255,0.3); }
+        .bank-modal-actions { display: flex; gap: 0.75rem; }
+        .bank-modal-actions .btn { flex: 1; }
+        .bank-notice {
+            font-size: 0.78rem; color: rgba(255,255,255,0.35);
+            margin-top: 1rem; line-height: 1.6;
+        }
     </style>
 </head>
 
@@ -640,30 +694,33 @@
                     <div class="section-header">
                         <h2 style="font-size: 1.25rem;">크레딧 충전</h2>
                     </div>
+                    <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:1rem;">
+                        무통장 입금 방식으로 충전합니다. 입금 확인 후 크레딧이 지급됩니다.
+                    </div>
                     <div class="credit-package-grid">
-                        <div class="credit-package-card" onclick="selectCreditPackage(this, 100, 1000)">
-                            <div class="credit-package-amount">1,000 크레딧</div>
-                            <div class="credit-package-price">₩1,000</div>
-                            <div class="credit-package-note">기본팩</div>
-                        </div>
-                        <div class="credit-package-card popular" onclick="selectCreditPackage(this, 500, 5500)">
-                            <div class="credit-package-badge">인기</div>
-                            <div class="credit-package-amount">5,500 크레딧</div>
+                        <div class="credit-package-card" onclick="selectCreditPackage(this, 5000, 5000)">
+                            <div class="credit-package-amount">5,000 크레딧</div>
                             <div class="credit-package-price">₩5,000</div>
-                            <div class="credit-package-note">+500 보너스</div>
+                            <div class="credit-package-note">1원 = 1크레딧</div>
                         </div>
-                        <div class="credit-package-card" onclick="selectCreditPackage(this, 1100, 12000)">
-                            <div class="credit-package-amount">12,000 크레딧</div>
+                        <div class="credit-package-card popular" onclick="selectCreditPackage(this, 10000, 10000)">
+                            <div class="credit-package-badge">인기</div>
+                            <div class="credit-package-amount">10,000 크레딧</div>
                             <div class="credit-package-price">₩10,000</div>
-                            <div class="credit-package-note">+2,000 보너스</div>
+                            <div class="credit-package-note">1원 = 1크레딧</div>
                         </div>
-                        <div class="credit-package-card" onclick="selectCreditPackage(this, 3000, 35000)">
-                            <div class="credit-package-amount">35,000 크레딧</div>
+                        <div class="credit-package-card" onclick="selectCreditPackage(this, 30000, 30000)">
+                            <div class="credit-package-amount">30,000 크레딧</div>
                             <div class="credit-package-price">₩30,000</div>
-                            <div class="credit-package-note">+5,000 보너스</div>
+                            <div class="credit-package-note">1원 = 1크레딧</div>
+                        </div>
+                        <div class="credit-package-card" onclick="selectCreditPackage(this, 50000, 50000)">
+                            <div class="credit-package-amount">50,000 크레딧</div>
+                            <div class="credit-package-price">₩50,000</div>
+                            <div class="credit-package-note">1원 = 1크레딧</div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" style="margin-top:1.5rem;width:100%;" id="chargeBtn" onclick="requestCreditCharge()" disabled>
+                    <button class="btn btn-primary" style="margin-top:1.5rem;width:100%;" id="chargeBtn" onclick="openBankTransferModal()" disabled>
                         패키지를 선택하세요
                     </button>
                 </div>
@@ -861,32 +918,95 @@
             }
         }
 
-        function requestCreditCharge() {
+        // ─── 무통장 입금 모달 ───
+        let _bankModalAmount = null;
+
+        function openBankTransferModal() {
             if (!_selectedPackage) return;
-            // MVP: 실제 결제 연동 전 임시 시뮬레이션
-            if (!confirm('₩' + _selectedPackage.price.toLocaleString() + ' 결제 후 ' + _selectedPackage.credits.toLocaleString() + ' 크레딧을 충전하시겠습니까?\n\n(현재 테스트 모드: 실제 결제가 이루어지지 않습니다)')) return;
+            _bankModalAmount = _selectedPackage.price;
 
-            const current = parseInt(localStorage.getItem('mcw_credits') || '0');
-            const newTotal = current + _selectedPackage.credits;
-            localStorage.setItem('mcw_credits', String(newTotal));
-
-            // 충전 내역 저장
-            const history = JSON.parse(localStorage.getItem('mcw_credit_history') || '[]');
-            history.unshift({
-                type: 'charge',
-                amount: _selectedPackage.credits,
-                price: _selectedPackage.price,
-                note: '크레딧 충전',
-                timestamp: new Date().toISOString()
+            // 모달 내 금액 카드 초기화 및 선택 표시
+            document.querySelectorAll('.bank-amount-card').forEach(card => {
+                card.classList.remove('selected');
+                if (parseInt(card.dataset.amount) === _bankModalAmount) {
+                    card.classList.add('selected');
+                }
             });
-            localStorage.setItem('mcw_credit_history', JSON.stringify(history.slice(0, 50)));
 
-            MCW.showToast(_selectedPackage.credits.toLocaleString() + ' 크레딧이 충전되었습니다.');
-            initCreditsTab();
-            _selectedPackage = null;
-            document.getElementById('chargeBtn').textContent = '패키지를 선택하세요';
-            document.getElementById('chargeBtn').disabled = true;
-            document.querySelectorAll('.credit-package-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('depositorNameInput').value = '';
+            document.getElementById('bankModal').classList.add('active');
+        }
+
+        function closeBankModal() {
+            document.getElementById('bankModal').classList.remove('active');
+        }
+
+        function selectBankAmount(el, amount) {
+            document.querySelectorAll('.bank-amount-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            _bankModalAmount = amount;
+        }
+
+        async function submitBankTransfer() {
+            const depositorName = document.getElementById('depositorNameInput').value.trim();
+            if (!_bankModalAmount) {
+                MCW.showToast('입금 금액을 선택해주세요.');
+                return;
+            }
+            if (!depositorName) {
+                MCW.showToast('입금자명을 입력해주세요.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('bankSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '신청 중...';
+
+            try {
+                // 인증 토큰 획득
+                const session = await MCW.supabase.auth.getSession();
+                const token = session?.data?.session?.access_token;
+                if (!token) {
+                    MCW.showToast('로그인이 필요합니다.');
+                    return;
+                }
+
+                const res = await fetch('/api/Backend_APIs/credit-charge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token,
+                    },
+                    body: JSON.stringify({
+                        amount: _bankModalAmount,
+                        depositor_name: depositorName,
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    MCW.showToast(data.error || '입금 신청에 실패했습니다.');
+                    return;
+                }
+
+                // 성공 — 모달 닫고 안내
+                closeBankModal();
+                _selectedPackage = null;
+                _bankModalAmount = null;
+                document.getElementById('chargeBtn').textContent = '패키지를 선택하세요';
+                document.getElementById('chargeBtn').disabled = true;
+                document.querySelectorAll('.credit-package-card').forEach(c => c.classList.remove('selected'));
+
+                MCW.showToast('입금 신청이 완료되었습니다. 입금 확인 후 크레딧이 충전됩니다.');
+
+            } catch (e) {
+                console.error('[submitBankTransfer]', e);
+                MCW.showToast('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '입금 완료 신청';
+            }
         }
 
         function renderCreditHistory() {
@@ -941,14 +1061,25 @@
             }
         }
 
+        // openTool은 home.js의 HomePage.openTool(botId, personaId, tool)로 처리됨
+        // 탭 직접 이동용 단축 함수 (외부에서 단순 호출 시 사용)
         function openTool(tool) {
-            const tools = {
-                logs: '대화 로그 모니터링을 준비 중입니다.',
-                data: '지식 베이스 데이터 주입 시스템을 준비 중입니다.',
-                skills: '스킬 투입 및 관리 센터를 준비 중입니다.',
-                settings: '챗봇 고급 설정을 준비 중입니다.'
+            const routes = {
+                logs:     '../home/usage.html',
+                data:     '../bot/faq.html',
+                skills:   '../skills/my.html',
+                settings: null
             };
-            alert(tools[tool] || '기능 준비 중');
+            if (tool === 'settings') {
+                switchTab('bots');
+                return;
+            }
+            const url = routes[tool];
+            if (url) {
+                window.location.href = url;
+            } else {
+                MCW.showToast('기능 준비 중입니다.');
+            }
         }
 
         async function logout() {
@@ -958,6 +1089,71 @@
             }
         }
     </script>
+
+    <!-- 무통장 입금 모달 -->
+    <div id="bankModal" class="bank-modal-overlay" onclick="if(event.target===this)closeBankModal()">
+        <div class="bank-modal">
+            <div class="bank-modal-title">
+                🏦 무통장 입금 안내
+            </div>
+
+            <!-- 계좌 정보 -->
+            <div class="bank-info-box">
+                <div class="bank-info-row">
+                    <span class="bank-info-label">은행</span>
+                    <span class="bank-info-value">하나은행</span>
+                </div>
+                <div class="bank-info-row">
+                    <span class="bank-info-label">계좌번호</span>
+                    <span class="bank-info-value">287-910921-40507</span>
+                </div>
+                <div class="bank-info-row">
+                    <span class="bank-info-label">예금주</span>
+                    <span class="bank-info-value">파인더월드</span>
+                </div>
+            </div>
+
+            <!-- 금액 선택 -->
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-bottom:0.6rem;">입금 금액 선택</div>
+            <div class="bank-amount-grid">
+                <div class="bank-amount-card" data-amount="5000" onclick="selectBankAmount(this, 5000)">
+                    <div class="amount-won">₩5,000</div>
+                    <div class="amount-credit">5,000 크레딧</div>
+                </div>
+                <div class="bank-amount-card" data-amount="10000" onclick="selectBankAmount(this, 10000)">
+                    <div class="amount-won">₩10,000</div>
+                    <div class="amount-credit">10,000 크레딧</div>
+                </div>
+                <div class="bank-amount-card" data-amount="30000" onclick="selectBankAmount(this, 30000)">
+                    <div class="amount-won">₩30,000</div>
+                    <div class="amount-credit">30,000 크레딧</div>
+                </div>
+                <div class="bank-amount-card" data-amount="50000" onclick="selectBankAmount(this, 50000)">
+                    <div class="amount-won">₩50,000</div>
+                    <div class="amount-credit">50,000 크레딧</div>
+                </div>
+            </div>
+
+            <!-- 입금자명 -->
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;">입금자명</div>
+            <input type="text" id="depositorNameInput" class="bank-depositor-input"
+                   placeholder="실제 입금자 이름을 입력하세요" maxlength="20" />
+
+            <!-- 버튼 -->
+            <div class="bank-modal-actions">
+                <button class="btn" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);"
+                        onclick="closeBankModal()">취소</button>
+                <button id="bankSubmitBtn" class="btn btn-primary" onclick="submitBankTransfer()">
+                    입금 완료 신청
+                </button>
+            </div>
+
+            <div class="bank-notice">
+                입금 후 영업일 기준 1~2시간 내 확인 후 크레딧이 충전됩니다.<br>
+                문의: support@mychatbot.world
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

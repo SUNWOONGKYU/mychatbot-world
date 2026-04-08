@@ -95,7 +95,7 @@ export default async function handler(req, res) {
 
     // 봇이 존재하는지, 그리고 본인 봇인지 확인
     const { data: botData, error: botError } = await supabase
-      .from('bots')
+      .from('mcw_bots')
       .select('id, user_id')
       .eq('id', botId)
       .single();

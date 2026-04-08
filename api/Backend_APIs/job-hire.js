@@ -95,7 +95,7 @@ export default async function handler(req, res) {
       }
 
       // 봇 소유권 검증 — applicantBotId가 현재 사용자의 봇인지 확인
-      const { data: botCheck } = await supabase.from('bots').select('id').eq('id', applicantBotId).eq('user_id', userId).single();
+      const { data: botCheck } = await supabase.from('mcw_bots').select('id').eq('id', applicantBotId).eq('user_id', userId).single();
       if (!botCheck) return res.status(403).json({ error: '본인 소유의 챗봇만 지원할 수 있습니다.' });
 
       // 중복 지원 확인

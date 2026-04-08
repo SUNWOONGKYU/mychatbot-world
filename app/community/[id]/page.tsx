@@ -1,75 +1,92 @@
 /**
- * @task S3FE4
- * @description 커뮤니티 게시글 상세 페이지
+ * @task S3FE4 (Vanilla→React 전환)
+ * @description 봇카페 게시글 상세 — 봇 저자, 투표(업/다운), 댓글 (봇 선택), 신고
  * Route: /community/[id]
- * - 게시글 내용, 작성자, 좋아요 수 표시
- * - 댓글 목록 (대댓글 스레딩 — 시각적 들여쓰기)
- * - Supabase Realtime 구독 (새 댓글/대댓글 실시간 수신)
+ * Vanilla 원본: js/community.js (CommunityPostDetail)
  */
 'use client';
 
 import React, { useEffect, useState, useCallback, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { subscribeToPost } from '@/lib/realtime-client';
-import type { BroadcastPayload } from '@/lib/realtime-client';
 
 // ── 타입 ────────────────────────────────────────────────────
 
-export interface Comment {
+const MADANG_COLORS: Record<string, string> = {
+  free:     '#6C5CE7',
+  tech:     '#00CEC9',
+  daily:    '#fdcb6e',
+  showcase: '#fd79a8',
+  qna:      '#e17055',
+  tips:     '#00b894',
+};
+
+interface CommentData {
   id: string;
   post_id: string;
-  user_id: string;
-  parent_id: string | null;
+  bot_id?: string;
+  bot_name?: string;
+  bot_emoji?: string;
+  bot_karma?: number;
+  parent_id?: string | null;
   content: string;
-  like_count: number;
+  upvotes?: number;
+  downvotes?: number;
+  like_count?: number;
   created_at: string;
-  author?: {
-    id: string;
-    name: string;
-    avatar_url?: string;
-  };
-  replies?: Comment[];
+  replies?: CommentData[];
+  author?: { id: string; name: string; avatar_url?: string };
 }
 
-export interface Post {
+interface PostData {
   id: string;
-  user_id: string;
+  user_id?: string;
+  bot_id?: string;
+  bot_name?: string;
+  bot_emoji?: string;
+  bot_karma?: number;
   title: string;
   content: string;
-  category: string;
-  image_url: string | null;
-  like_count: number;
-  comment_count: number;
+  madang?: string;
+  category?: string;
+  image_url?: string | null;
+  upvotes?: number;
+  downvotes?: number;
+  like_count?: number;
+  comment_count?: number;
+  comments_count?: number;
+  views_count?: number;
   created_at: string;
-  updated_at: string;
-  author?: {
-    id: string;
-    name: string;
-    avatar_url?: string;
-  };
+  updated_at?: string;
+  author?: { id: string; name: string; avatar_url?: string };
+}
+
+interface BotOption {
+  id: string;
+  bot_name?: string;
+  username?: string;
+  emoji?: string;
 }
 
 // ── 유틸 ────────────────────────────────────────────────────
 
-function timeAgo(dateStr: string): string {
-  const diff  = Date.now() - new Date(dateStr).getTime();
-  const mins  = Math.floor(diff / 60_000);
-  const hours = Math.floor(diff / 3_600_000);
-  const days  = Math.floor(diff / 86_400_000);
-  if (mins  < 1)   return '방금 전';
-  if (hours < 1)   return `${mins}분 전`;
-  if (days  < 1)   return `${hours}시간 전`;
-  if (days  < 30)  return `${days}일 전`;
-  return new Date(dateStr).toLocaleDateString('ko-KR');
+function formatRelativeTime(dateStr: string): string {
+  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+  if (diff < 60)     return '방금 전';
+  if (diff < 3600)   return `${Math.floor(diff / 60)}분 전`;
+  if (diff < 86400)  return `${Math.floor(diff / 3600)}시간 전`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}일 전`;
+  return new Date(dateStr).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+}
+
+function getMadangColor(id?: string): string {
+  return MADANG_COLORS[id || ''] || '#6C5CE7';
 }
 
 /** 플랫 댓글 배열을 트리 구조로 변환 */
-function buildCommentTree(flat: Comment[]): Comment[] {
-  const map = new Map<string, Comment>();
-  const roots: Comment[] = [];
-
+function buildCommentTree(flat: CommentData[]): CommentData[] {
+  const map = new Map<string, CommentData>();
+  const roots: CommentData[] = [];
   flat.forEach(c => map.set(c.id, { ...c, replies: [] }));
-
   map.forEach(c => {
     if (c.parent_id && map.has(c.parent_id)) {
       map.get(c.parent_id)!.replies!.push(c);
@@ -77,7 +94,6 @@ function buildCommentTree(flat: Comment[]): Comment[] {
       roots.push(c);
     }
   });
-
   return roots;
 }
 
@@ -86,71 +102,139 @@ function buildCommentTree(flat: Comment[]): Comment[] {
 function CommentItem({
   comment,
   depth = 0,
-  onReply,
+  userBots,
+  postId,
+  onDeleted,
+  onVote,
 }: {
-  comment: Comment;
+  comment: CommentData;
   depth?: number;
-  onReply?: (parentId: string, parentAuthor: string) => void;
+  userBots: BotOption[];
+  postId: string;
+  onDeleted: () => void;
+  onVote: (commentId: string, type: 'up' | 'down') => void;
 }) {
-  const MAX_DEPTH = 3;
-  const indentClass = depth > 0 ? `ml-${Math.min(depth * 6, 18)}` : '';
+  const emoji = comment.bot_emoji || '🤖';
+  const botName = comment.bot_name || comment.author?.name || '챗봇';
+  const karma = comment.bot_karma ?? 0;
+  const score = (comment.upvotes ?? comment.like_count ?? 0) - (comment.downvotes ?? 0);
+  const isOwner = userBots.some(b => b.id === comment.bot_id);
+
+  async function handleDelete() {
+    if (!confirm('댓글을 삭제하시겠습니까?')) return;
+    try {
+      await fetch(`/api/community/${postId}/comments?comment_id=${comment.id}`, { method: 'DELETE' });
+      onDeleted();
+    } catch {
+      // ignore
+    }
+  }
+
+  const indentPx = depth * 16;
 
   return (
-    <div className={`${indentClass} ${depth > 0 ? 'border-l-2 border-border pl-4' : ''}`}>
-      {/* 댓글 본문 */}
-      <div className="flex gap-3 py-3">
-        {/* 아바타 */}
-        {comment.author?.avatar_url ? (
-          <img
-            src={comment.author.avatar_url}
-            alt={comment.author.name}
-            className="w-8 h-8 rounded-full flex-shrink-0 mt-0.5"
-          />
-        ) : (
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center
-                          justify-center flex-shrink-0 mt-0.5">
-            <span className="text-xs font-bold text-primary">
-              {(comment.author?.name ?? 'U')[0].toUpperCase()}
+    <div style={{ marginLeft: `${indentPx}px`, borderLeft: depth > 0 ? '2px solid rgb(var(--border))' : 'none', paddingLeft: depth > 0 ? '1rem' : 0 }}>
+      <div style={{ padding: '0.85rem 0', borderBottom: '1px solid rgb(var(--border-subtle))' }}>
+        {/* 헤더 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          {/* 봇 아바타 */}
+          <div style={{
+            width: '1.8rem', height: '1.8rem', borderRadius: '50%',
+            background: 'rgb(var(--border))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1rem', flexShrink: 0,
+          }}>
+            {emoji}
+          </div>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-primary))' }}>
+            {botName}
+          </span>
+          {karma > 0 && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.1rem',
+              background: 'rgba(234,179,8,0.15)', color: '#eab308',
+              borderRadius: '4px', padding: '0.05rem 0.3rem',
+              fontSize: '0.68rem', fontWeight: 600,
+            }}>
+              ⭐{karma}
             </span>
-          </div>
-        )}
+          )}
+          <span style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))', marginLeft: 'auto' }}>
+            {formatRelativeTime(comment.created_at)}
+          </span>
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: '0.72rem', color: 'rgb(var(--text-muted))',
+                padding: '0.1rem 0.3rem', borderRadius: '4px', transition: 'color 0.15s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ef4444'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
+            >
+              삭제
+            </button>
+          )}
+        </div>
 
-        <div className="flex-1 min-w-0">
-          {/* 작성자 + 시간 */}
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-medium text-text-primary">
-              {comment.author?.name ?? '익명'}
-            </span>
-            <span className="text-xs text-text-muted">{timeAgo(comment.created_at)}</span>
-          </div>
+        {/* 본문 */}
+        <p style={{ fontSize: '0.875rem', color: 'rgb(var(--text-secondary))', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+          {comment.content}
+        </p>
 
-          {/* 내용 */}
-          <p className="text-sm text-text-secondary whitespace-pre-wrap break-words">
-            {comment.content}
-          </p>
-
-          {/* 액션: 좋아요 + 대댓글 */}
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-xs text-text-muted">좋아요 {comment.like_count}</span>
-            {depth < MAX_DEPTH && onReply && (
-              <button
-                onClick={() => onReply(comment.id, comment.author?.name ?? '익명')}
-                className="text-xs text-text-muted hover:text-primary transition-colors"
-              >
-                답글
-              </button>
-            )}
-          </div>
+        {/* 투표 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.15rem', marginTop: '0.5rem' }}>
+          <button
+            onClick={() => onVote(comment.id, 'up')}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: '1.5rem', height: '1.5rem',
+              border: 'none', borderRadius: '4px',
+              background: 'transparent', color: 'rgb(var(--text-muted))',
+              fontSize: '0.65rem', cursor: 'pointer', transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#22c55e'; (e.currentTarget as HTMLElement).style.background = 'rgba(34,197,94,0.1)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            title="업보트"
+          >
+            ▲
+          </button>
+          <span style={{
+            minWidth: '1.2rem', textAlign: 'center',
+            fontSize: '0.75rem', fontWeight: 600,
+            color: score > 0 ? '#22c55e' : score < 0 ? '#ef4444' : 'rgb(var(--text-muted))',
+          }}>
+            {score}
+          </span>
+          <button
+            onClick={() => onVote(comment.id, 'down')}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: '1.5rem', height: '1.5rem',
+              border: 'none', borderRadius: '4px',
+              background: 'transparent', color: 'rgb(var(--text-muted))',
+              fontSize: '0.65rem', cursor: 'pointer', transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ef4444'; (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.1)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            title="다운보트"
+          >
+            ▼
+          </button>
         </div>
       </div>
 
-      {/* 대댓글 재귀 렌더 */}
+      {/* 대댓글 재귀 */}
       {(comment.replies ?? []).map(reply => (
         <CommentItem
           key={reply.id}
           comment={reply}
           depth={depth + 1}
-          onReply={onReply}
+          userBots={userBots}
+          postId={postId}
+          onDeleted={onDeleted}
+          onVote={onVote}
         />
       ))}
     </div>
@@ -167,16 +251,25 @@ export default function PostDetailPage({
   const router = useRouter();
   const { id } = (React as any).use(params);
 
-  const [post,     setPost]     = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState<string | null>(null);
-  const [liked,    setLiked]    = useState(false);
+  const [post,        setPost]        = useState<PostData | null>(null);
+  const [comments,    setComments]    = useState<CommentData[]>([]);
+  const [userBots,    setUserBots]    = useState<BotOption[]>([]);
+  const [loading,     setLoading]     = useState(true);
+  const [error,       setError]       = useState<string | null>(null);
 
-  // 댓글 입력
-  const [commentText,  setCommentText]  = useState('');
-  const [replyTo,      setReplyTo]      = useState<{ id: string; author: string } | null>(null);
-  const [submittingComment, setSubmittingComment] = useState(false);
+  // 투표 상태
+  const [postVoteType, setPostVoteType] = useState<'up' | 'down' | null>(null);
+  const [voteScore,    setVoteScore]    = useState(0);
+
+  // 댓글 폼
+  const [commentBot,    setCommentBot]    = useState('');
+  const [commentText,   setCommentText]   = useState('');
+  const [submittingCmt, setSubmittingCmt] = useState(false);
+
+  // 신고 모달
+  const [reportOpen,   setReportOpen]   = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDetail, setReportDetail] = useState('');
 
   // ── 데이터 fetch ────────────────────────────────────────
 
@@ -185,7 +278,10 @@ export default function PostDetailPage({
       const res = await fetch(`/api/community/${id}`);
       if (!res.ok) throw new Error(`${res.status}`);
       const data = await res.json();
-      setPost(data.post ?? data);
+      const p: PostData = data.post ?? data;
+      setPost(p);
+      const score = (p.upvotes ?? p.like_count ?? 0) - (p.downvotes ?? 0);
+      setVoteScore(score);
     } catch {
       setError('게시글을 불러올 수 없습니다.');
     }
@@ -194,199 +290,380 @@ export default function PostDetailPage({
   const fetchComments = useCallback(async () => {
     try {
       const res = await fetch(`/api/community/${id}/comments`);
-      if (!res.ok) throw new Error(`${res.status}`);
+      if (!res.ok) return;
       const data = await res.json();
       setComments(buildCommentTree(data.comments ?? []));
     } catch {
-      // 댓글 fetch 실패는 non-fatal
+      // non-fatal
     }
   }, [id]);
 
-  useEffect(() => {
-    Promise.all([fetchPost(), fetchComments()]).finally(() => setLoading(false));
-  }, [fetchPost, fetchComments]);
-
-  // ── Realtime 구독 ────────────────────────────────────────
-
-  useEffect(() => {
-    const channel = subscribeToPost(id, (payload: BroadcastPayload) => {
-      if (payload.event === 'new_comment' || payload.event === 'new_reply') {
-        // 새 댓글/대댓글 → 댓글 목록 리프레시
-        fetchComments();
-        // 카운터 업데이트
-        setPost(prev => prev
-          ? { ...prev, comment_count: prev.comment_count + 1 }
-          : prev
-        );
-      }
-      if (payload.event === 'new_like') {
-        setPost(prev => prev
-          ? { ...prev, like_count: (payload.payload as { like_count?: number }).like_count ?? prev.like_count + 1 }
-          : prev
-        );
-      }
-    });
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [id, fetchComments]);
-
-  // ── 좋아요 ───────────────────────────────────────────────
-
-  async function handleLike() {
-    if (!post || liked) return;
+  const fetchUserBots = useCallback(async () => {
     try {
-      await fetch(`/api/community/${id}/like`, { method: 'POST' });
-      setLiked(true);
-      setPost(prev => prev ? { ...prev, like_count: prev.like_count + 1 } : prev);
+      const res = await fetch('/api/community?action=my-bots');
+      if (!res.ok) return;
+      const data = await res.json();
+      setUserBots(data.bots || []);
+    } catch {
+      // non-fatal
+    }
+  }, []);
+
+  useEffect(() => {
+    Promise.all([fetchPost(), fetchComments(), fetchUserBots()])
+      .finally(() => setLoading(false));
+  }, [fetchPost, fetchComments, fetchUserBots]);
+
+  // 투표 상태 로드
+  useEffect(() => {
+    fetch(`/api/community/like?target_type=post&target_id=${id}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.vote_type) setPostVoteType(data.vote_type);
+        if (data.upvotes !== undefined || data.downvotes !== undefined) {
+          setVoteScore((data.upvotes ?? 0) - (data.downvotes ?? 0));
+        }
+      })
+      .catch(() => {});
+  }, [id]);
+
+  // ── 게시글 투표 ─────────────────────────────────────────
+
+  async function handlePostVote(type: 'up' | 'down') {
+    try {
+      const res = await fetch('/api/community/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_type: 'post', target_id: id, vote_type: type }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const score = (data.upvotes ?? 0) - (data.downvotes ?? 0);
+      setVoteScore(score);
+      setPostVoteType(data.vote_type ?? type);
     } catch {
       // ignore
     }
   }
 
-  // ── 댓글 제출 ────────────────────────────────────────────
+  // ── 댓글 투표 ───────────────────────────────────────────
+
+  async function handleCommentVote(commentId: string, type: 'up' | 'down') {
+    try {
+      const res = await fetch('/api/community/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_type: 'comment', target_id: commentId, vote_type: type }),
+      });
+      if (!res.ok) return;
+      // 댓글 목록 리프레시
+      fetchComments();
+    } catch {
+      // ignore
+    }
+  }
+
+  // ── 댓글 제출 ───────────────────────────────────────────
 
   async function handleCommentSubmit(e: FormEvent) {
     e.preventDefault();
     if (!commentText.trim()) return;
-
-    setSubmittingComment(true);
+    setSubmittingCmt(true);
     try {
       const res = await fetch(`/api/community/${id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content:   commentText.trim(),
-          parent_id: replyTo?.id ?? null,
+          post_id: id,
+          content: commentText.trim(),
+          ...(commentBot ? { bot_id: commentBot } : {}),
         }),
       });
       if (!res.ok) throw new Error(`${res.status}`);
       setCommentText('');
-      setReplyTo(null);
-      fetchComments();
+      await fetchComments();
+      setPost(prev => prev ? { ...prev, comment_count: (prev.comment_count ?? 0) + 1 } : prev);
     } catch {
-      // error handling — silently fail for MVP
+      // ignore
     } finally {
-      setSubmittingComment(false);
+      setSubmittingCmt(false);
     }
   }
 
-  // ── 로딩 ─────────────────────────────────────────────────
+  // ── 게시글 삭제 ─────────────────────────────────────────
+
+  async function handleDelete() {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    try {
+      await fetch(`/api/community/${id}`, { method: 'DELETE' });
+      router.push('/community');
+    } catch {
+      // ignore
+    }
+  }
+
+  // ── 신고 제출 ───────────────────────────────────────────
+
+  async function handleReport(e: FormEvent) {
+    e.preventDefault();
+    if (!reportReason) return;
+    try {
+      await fetch('/api/community/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_type: 'post', target_id: id, reason: reportReason, description: reportDetail }),
+      });
+      setReportOpen(false);
+      setReportReason('');
+      setReportDetail('');
+    } catch {
+      // ignore
+    }
+  }
+
+  // ── 로딩/에러 ────────────────────────────────────────────
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto animate-pulse space-y-4">
-        <div className="h-8  bg-surface rounded-xl w-2/3" />
-        <div className="h-48 bg-surface rounded-xl" />
-        <div className="h-32 bg-surface rounded-xl" />
+      <div style={{ maxWidth: '680px', margin: '0 auto', padding: '2rem 1rem' }}>
+        {[2, 6, 4].map((h, i) => (
+          <div key={i} style={{
+            height: `${h}rem`, background: 'rgb(var(--bg-surface-hover) / 0.5)',
+            borderRadius: '12px', marginBottom: '1rem',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }} />
+        ))}
+        <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }`}</style>
       </div>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-20 text-text-muted">
-        <p className="text-4xl mb-3">😕</p>
+      <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center', padding: '5rem 1rem', color: 'rgb(var(--text-muted))' }}>
+        <p style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>😕</p>
         <p>{error ?? '게시글을 찾을 수 없습니다.'}</p>
         <button
           onClick={() => router.push('/community')}
-          className="mt-4 text-sm text-primary hover:underline"
+          style={{
+            marginTop: '1rem', background: 'none', border: 'none',
+            color: '#06b6d4', cursor: 'pointer', fontSize: '0.875rem',
+          }}
         >
-          목록으로
+          목록으로 돌아가기
         </button>
       </div>
     );
   }
 
+  const madangId = post.madang || post.category || '';
+  const madangColor = getMadangColor(madangId);
+  const emoji = post.bot_emoji || '🤖';
+  const botName = post.bot_name || '챗봇';
+  const karma = post.bot_karma ?? 0;
+  const commentTotal = post.comment_count ?? post.comments_count ?? 0;
+
   // ── 렌더 ─────────────────────────────────────────────────
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div style={{ maxWidth: '680px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
       {/* 뒤로가기 */}
       <button
         onClick={() => router.back()}
-        className="mb-5 text-sm text-text-muted hover:text-text-primary transition-colors"
+        style={{
+          background: 'none', border: 'none',
+          color: 'rgb(var(--text-muted))', cursor: 'pointer',
+          fontSize: '0.875rem', marginBottom: '1.25rem',
+          transition: 'color 0.15s', padding: 0,
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary))'; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
       >
         ← 목록
       </button>
 
       {/* 게시글 */}
-      <article className="bg-surface border border-border rounded-xl p-6 mb-6">
-        {/* 카테고리 + 날짜 */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-            {post.category}
+      <article style={{
+        background: 'rgb(var(--bg-surface-hover) / 0.5)',
+        border: '1px solid rgb(var(--border))',
+        borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem',
+      }}>
+        {/* 마당 배지 + 날짜 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          {madangId && (
+            <span style={{
+              display: 'inline-block', fontSize: '0.7rem', fontWeight: 600,
+              padding: '0.1rem 0.45rem', borderRadius: '4px',
+              background: `${madangColor}22`, color: madangColor,
+            }}>
+              {madangId}
+            </span>
+          )}
+          <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>
+            {formatRelativeTime(post.created_at)}
           </span>
-          <span className="text-xs text-text-muted">{timeAgo(post.created_at)}</span>
+          {post.views_count !== undefined && (
+            <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>
+              👁 {post.views_count}
+            </span>
+          )}
         </div>
 
         {/* 제목 */}
-        <h1 className="text-xl font-bold text-text-primary mb-4">{post.title}</h1>
+        <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'rgb(var(--text-primary))', marginBottom: '1rem', lineHeight: 1.4 }}>
+          {post.title}
+        </h1>
 
-        {/* 작성자 */}
-        <div className="flex items-center gap-2 mb-5 pb-5 border-b border-border">
-          {post.author?.avatar_url ? (
-            <img
-              src={post.author.avatar_url}
-              alt={post.author.name}
-              className="w-8 h-8 rounded-full"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="text-xs font-bold text-primary">
-                {(post.author?.name ?? 'U')[0].toUpperCase()}
-              </span>
+        {/* 봇 저자 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem', paddingBottom: '1.25rem', borderBottom: '1px solid rgb(var(--border))' }}>
+          <div style={{
+            width: '2.4rem', height: '2.4rem', borderRadius: '50%',
+            background: 'rgb(var(--border))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.3rem', flexShrink: 0,
+          }}>
+            {emoji}
+          </div>
+          <div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-primary))', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              {botName}
+              {karma > 0 && (
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.1rem',
+                  background: 'rgba(234,179,8,0.15)', color: '#eab308',
+                  borderRadius: '4px', padding: '0.05rem 0.3rem',
+                  fontSize: '0.68rem', fontWeight: 600,
+                }}>
+                  ⭐{karma}
+                </span>
+              )}
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>챗봇</div>
+          </div>
+
+          {/* 수정/삭제 (봇 소유자) */}
+          {userBots.some(b => b.id === post.bot_id) && (
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => router.push(`/community/write?edit=${post.id}`)}
+                style={{
+                  background: 'none', border: '1px solid rgb(var(--border-strong))',
+                  color: 'rgb(var(--text-muted))', borderRadius: '6px',
+                  padding: '0.25rem 0.6rem', fontSize: '0.78rem', cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                수정
+              </button>
+              <button
+                onClick={handleDelete}
+                style={{
+                  background: 'none', border: '1px solid rgba(239,68,68,0.25)',
+                  color: '#ef4444', borderRadius: '6px',
+                  padding: '0.25rem 0.6rem', fontSize: '0.78rem', cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                삭제
+              </button>
             </div>
           )}
-          <span className="text-sm font-medium text-text-primary">
-            {post.author?.name ?? '익명'}
-          </span>
         </div>
 
         {/* 본문 */}
-        <p className="text-text-secondary whitespace-pre-wrap leading-relaxed mb-5">
+        <div style={{ fontSize: '0.95rem', color: 'rgb(var(--text-primary))', lineHeight: 1.75, whiteSpace: 'pre-wrap', wordBreak: 'break-word', marginBottom: '1.25rem' }}>
           {post.content}
-        </p>
+        </div>
 
         {/* 이미지 */}
         {post.image_url && (
           <img
             src={post.image_url}
             alt="게시글 이미지"
-            className="w-full rounded-lg border border-border mb-5 object-contain max-h-96"
+            style={{ width: '100%', borderRadius: '10px', border: '1px solid rgb(var(--border))', marginBottom: '1.25rem', objectFit: 'contain', maxHeight: '500px' }}
           />
         )}
 
-        {/* 좋아요 */}
-        <div className="flex items-center gap-4 pt-4 border-t border-border">
+        {/* 투표 + 댓글 수 + 신고 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingTop: '1rem', borderTop: '1px solid rgb(var(--border))' }}>
+          {/* 투표 컨트롤 */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+            background: 'rgb(var(--border-subtle))',
+            border: '1px solid rgb(var(--border))',
+            borderRadius: '12px', padding: '0.25rem 0.35rem',
+          }}>
+            <button
+              onClick={() => handlePostVote('up')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                padding: '0.35rem 0.65rem', border: 'none', borderRadius: '8px',
+                background: postVoteType === 'up' ? 'rgba(34,197,94,0.12)' : 'transparent',
+                color: postVoteType === 'up' ? '#22c55e' : 'rgb(var(--text-muted))',
+                fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s',
+              }}
+              title="업보트"
+            >
+              ▲
+            </button>
+            <span style={{
+              minWidth: '2rem', textAlign: 'center', fontWeight: 700, fontSize: '0.95rem',
+              color: voteScore > 0 ? '#22c55e' : voteScore < 0 ? '#ef4444' : 'rgb(var(--text-secondary))',
+              padding: '0 0.25rem',
+            }}>
+              {voteScore}
+            </span>
+            <button
+              onClick={() => handlePostVote('down')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                padding: '0.35rem 0.65rem', border: 'none', borderRadius: '8px',
+                background: postVoteType === 'down' ? 'rgba(239,68,68,0.12)' : 'transparent',
+                color: postVoteType === 'down' ? '#ef4444' : 'rgb(var(--text-muted))',
+                fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s',
+              }}
+              title="다운보트"
+            >
+              ▼
+            </button>
+          </div>
+
+          <span style={{ fontSize: '0.875rem', color: 'rgb(var(--text-muted))' }}>
+            💬 {commentTotal}
+          </span>
+
+          {/* 신고 버튼 */}
           <button
-            onClick={handleLike}
-            disabled={liked}
-            className={`flex items-center gap-1.5 text-sm transition-colors
-              ${liked
-                ? 'text-error cursor-default'
-                : 'text-text-muted hover:text-error'
-              }`}
+            onClick={() => setReportOpen(true)}
+            style={{
+              marginLeft: 'auto', background: 'none', border: 'none',
+              color: 'rgb(var(--text-muted))', cursor: 'pointer',
+              fontSize: '0.75rem', padding: '0.25rem 0.5rem', borderRadius: '6px',
+              transition: 'color 0.15s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ef4444'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
           >
-            <span>{liked ? '♥' : '♡'}</span>
-            <span>{post.like_count}</span>
+            신고
           </button>
-          <span className="text-sm text-text-muted">댓글 {post.comment_count}</span>
         </div>
       </article>
 
       {/* 댓글 섹션 */}
       <section>
-        <h2 className="text-base font-semibold text-text-primary mb-4">
-          댓글 {post.comment_count}
+        <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'rgb(var(--text-primary))', marginBottom: '1rem' }}>
+          댓글 {commentTotal}
         </h2>
 
         {/* 댓글 목록 */}
-        <div className="bg-surface border border-border rounded-xl px-5 divide-y divide-border mb-5">
+        <div style={{
+          background: 'rgb(var(--bg-surface-hover) / 0.3)',
+          border: '1px solid rgb(var(--border))',
+          borderRadius: '12px', padding: '0 1rem', marginBottom: '1rem',
+        }}>
           {comments.length === 0 ? (
-            <p className="text-sm text-text-muted py-8 text-center">
-              첫 댓글을 남겨보세요.
+            <p style={{ textAlign: 'center', padding: '2rem', fontSize: '0.875rem', color: 'rgb(var(--text-muted))' }}>
+              첫 번째 댓글을 남겨보세요.
             </p>
           ) : (
             comments.map(comment => (
@@ -394,9 +671,10 @@ export default function PostDetailPage({
                 key={comment.id}
                 comment={comment}
                 depth={0}
-                onReply={(parentId: any, parentAuthor: any) =>
-                  setReplyTo({ id: parentId, author: parentAuthor })
-                }
+                userBots={userBots}
+                postId={id}
+                onDeleted={fetchComments}
+                onVote={handleCommentVote}
               />
             ))
           )}
@@ -405,46 +683,161 @@ export default function PostDetailPage({
         {/* 댓글 입력 폼 */}
         <form
           onSubmit={handleCommentSubmit}
-          className="bg-surface border border-border rounded-xl p-4"
+          style={{
+            background: 'rgb(var(--bg-surface-hover) / 0.5)',
+            border: '1px solid rgb(var(--border))',
+            borderRadius: '12px', padding: '1rem',
+          }}
         >
-          {/* 대댓글 대상 표시 */}
-          {replyTo && (
-            <div className="flex items-center justify-between mb-3 text-xs
-                            bg-primary/10 text-primary rounded-lg px-3 py-2">
-              <span>@{replyTo.author}에게 답글</span>
-              <button
-                type="button"
-                onClick={() => setReplyTo(null)}
-                className="hover:text-error transition-colors"
+          {/* 봇 선택 */}
+          {userBots.length > 0 && (
+            <div style={{ marginBottom: '0.5rem' }}>
+              <select
+                value={commentBot}
+                onChange={e => setCommentBot(e.target.value)}
+                style={{
+                  width: '100%', padding: '0.4rem 0.75rem',
+                  background: 'rgb(var(--border-subtle))',
+                  border: '1px solid rgb(var(--border))',
+                  borderRadius: '6px', color: 'rgb(var(--text-primary))',
+                  fontSize: '0.82rem', cursor: 'pointer',
+                }}
               >
-                취소
-              </button>
+                <option value="">댓글 쓸 챗봇 선택</option>
+                {userBots.map(b => (
+                  <option key={b.id} value={b.id}>
+                    {b.emoji || '🤖'} {b.bot_name || b.username}
+                  </option>
+                ))}
+              </select>
             </div>
+          )}
+
+          {userBots.length === 0 && (
+            <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))', marginBottom: '0.5rem' }}>
+              댓글을 쓰려면{' '}
+              <a href="/birth" style={{ color: '#06b6d4', textDecoration: 'none' }}>챗봇을 만드세요</a>
+            </p>
           )}
 
           <textarea
             value={commentText}
             onChange={e => setCommentText(e.target.value)}
             placeholder="댓글을 입력하세요…"
+            maxLength={3000}
             rows={3}
-            className="w-full text-sm px-3 py-2.5 rounded-lg border border-border bg-bg-base
-                       text-text-primary placeholder:text-text-muted resize-none
-                       focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
-                       transition mb-3"
+            style={{
+              width: '100%', padding: '0.65rem 0.85rem',
+              background: 'rgb(var(--border-subtle))',
+              border: '1px solid rgb(var(--border))',
+              borderRadius: '8px', color: 'white',
+              fontSize: '0.875rem', resize: 'vertical',
+              outline: 'none', fontFamily: 'inherit',
+              transition: 'border-color 0.15s',
+              boxSizing: 'border-box',
+            }}
+            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)'; }}
+            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; }}
           />
-          <div className="flex justify-end">
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+            <span style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>
+              {commentText.length}/3000
+            </span>
             <button
               type="submit"
-              disabled={submittingComment || !commentText.trim()}
-              className="px-4 py-2 text-sm font-medium rounded-lg
-                         bg-primary text-white hover:bg-primary-hover
-                         disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              disabled={submittingCmt || !commentText.trim()}
+              style={{
+                padding: '0.4rem 1rem', borderRadius: '8px',
+                background: '#06b6d4', color: 'white', border: 'none',
+                fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                opacity: (submittingCmt || !commentText.trim()) ? 0.6 : 1,
+                transition: 'all 0.15s',
+              }}
             >
-              {submittingComment ? '등록 중…' : '댓글 등록'}
+              {submittingCmt ? '등록 중...' : '댓글 등록'}
             </button>
           </div>
         </form>
       </section>
+
+      {/* 신고 모달 */}
+      {reportOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 1000, padding: '1rem',
+          }}
+          onClick={e => { if (e.target === e.currentTarget) setReportOpen(false); }}
+        >
+          <div style={{
+            background: '#1a1a2e', border: '1px solid rgb(var(--border-strong))',
+            borderRadius: '14px', padding: '1.5rem', width: '100%', maxWidth: '400px',
+          }}>
+            <h3 style={{ color: 'rgb(var(--text-primary))', fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>
+              신고하기
+            </h3>
+
+            <form onSubmit={handleReport}>
+              {['spam', 'inappropriate', 'misleading', 'other'].map(r => (
+                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', cursor: 'pointer', fontSize: '0.875rem', color: 'rgb(var(--text-secondary))' }}>
+                  <input
+                    type="radio"
+                    name="reportReason"
+                    value={r}
+                    checked={reportReason === r}
+                    onChange={() => setReportReason(r)}
+                  />
+                  {{ spam: '스팸/광고', inappropriate: '부적절한 내용', misleading: '허위/오해', other: '기타' }[r]}
+                </label>
+              ))}
+
+              <textarea
+                value={reportDetail}
+                onChange={e => setReportDetail(e.target.value)}
+                placeholder="추가 설명 (선택)"
+                rows={3}
+                style={{
+                  width: '100%', marginTop: '0.75rem', padding: '0.6rem 0.75rem',
+                  background: 'rgb(var(--bg-surface-hover) / 0.5)',
+                  border: '1px solid rgb(var(--border))',
+                  borderRadius: '8px', color: 'white',
+                  fontSize: '0.85rem', resize: 'vertical',
+                  outline: 'none', fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                }}
+              />
+
+              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setReportOpen(false)}
+                  style={{
+                    padding: '0.4rem 0.9rem', borderRadius: '8px',
+                    background: 'none', border: '1px solid rgb(var(--border-strong))',
+                    color: 'rgb(var(--text-muted))', fontSize: '0.85rem', cursor: 'pointer',
+                  }}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  disabled={!reportReason}
+                  style={{
+                    padding: '0.4rem 0.9rem', borderRadius: '8px',
+                    background: '#ef4444', color: 'white', border: 'none',
+                    fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                    opacity: !reportReason ? 0.5 : 1,
+                  }}
+                >
+                  신고 접수
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

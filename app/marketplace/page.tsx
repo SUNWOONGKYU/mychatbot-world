@@ -1,10 +1,9 @@
-import { Suspense } from 'react';
-import MarketplacePageInner from './page-client';
+/**
+ * /marketplace — /skills로 통합 (S5 결정)
+ * 4대 메뉴의 Skills가 공식 경로
+ */
+import { redirect } from 'next/navigation';
 
 export default function MarketplacePage() {
-  return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><p>Loading...</p></div>}>
-      <MarketplacePageInner />
-    </Suspense>
-  );
+  redirect('/skills');
 }

@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
   // Supabase?먯꽌 ?쒖꽦?붾맂 紐⑤뱺 遊?議고쉶 (泥?踰덉㎏ ?붿껌 ??
   const { data: bots } = await supabase
-    .from('chatbots')
+    .from('mcw_bots')
     .select('id, bot_token, bot_username')
     .eq('is_active', true);
 
