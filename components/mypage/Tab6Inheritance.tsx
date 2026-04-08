@@ -14,7 +14,7 @@ interface Persona {
   name: string;
 }
 
-type ExcludeKey = 'chat_logs' | 'kb' | 'paid_skills' | 'credits' | 'revenue_settings';
+type ExcludeKey = 'chat_logs' | 'kb' | 'paid_skills' | 'credits' | 'revenue_settings' | 'specific_personas';
 
 interface PersonaInheritance {
   persona_id: string;
@@ -24,11 +24,12 @@ interface PersonaInheritance {
 }
 
 const EXCLUDE_OPTIONS: { key: ExcludeKey; label: string }[] = [
-  { key: 'chat_logs',       label: '대화 로그' },
-  { key: 'kb',              label: 'KB 지식베이스' },
-  { key: 'paid_skills',     label: '유료 스킬' },
-  { key: 'credits',         label: '크레딧' },
+  { key: 'chat_logs',        label: '대화 로그' },
+  { key: 'kb',               label: 'KB 지식베이스' },
+  { key: 'paid_skills',      label: '유료 스킬' },
+  { key: 'credits',          label: '크레딧' },
   { key: 'revenue_settings', label: '수익 설정' },
+  { key: 'specific_personas', label: '특정 페르소나 제외' },
 ];
 
 const MOCK_PERSONAS: Persona[] = [
@@ -38,11 +39,12 @@ const MOCK_PERSONAS: Persona[] = [
 ];
 
 const DEFAULT_EXCLUDE: Record<ExcludeKey, boolean> = {
-  chat_logs:       false,
-  kb:              false,
-  paid_skills:     false,
-  credits:         false,
+  chat_logs:        false,
+  kb:               false,
+  paid_skills:      false,
+  credits:          false,
   revenue_settings: false,
+  specific_personas: false,
 };
 
 function StatusBadge({ status }: { status: PersonaInheritance['status'] }) {

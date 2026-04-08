@@ -13,6 +13,7 @@ interface Notice {
   target: string;
   is_pinned: boolean;
   is_published: boolean;
+  scheduled_at?: string;
   created_at: string;
   updated_at?: string;
 }
@@ -32,6 +33,7 @@ const emptyForm = (): Omit<Notice, 'id' | 'created_at' | 'updated_at'> => ({
   target: '전체',
   is_pinned: false,
   is_published: true,
+  scheduled_at: undefined,
 });
 
 export default function SectionNotices({ adminKey }: SectionNoticesProps) {
@@ -183,6 +185,7 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
       target: notice.target,
       is_pinned: notice.is_pinned,
       is_published: notice.is_published,
+      scheduled_at: notice.scheduled_at,
     });
     setShowModal(true);
   };
@@ -359,7 +362,7 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '1.25rem', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', gap: '1.25rem', marginBottom: '1rem' }}>
               <label
                 style={{
                   display: 'flex',
@@ -398,6 +401,25 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
                 />
                 즉시 공개
               </label>
+            </div>
+
+            <div className="admin-field" style={{ marginBottom: '1.25rem' }}>
+              <label>예약 발행일시</label>
+              <input
+                type="datetime-local"
+                className="admin-input"
+                style={{ width: '100%' }}
+                value={form.scheduled_at ? form.scheduled_at.slice(0, 16) : ''}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    scheduled_at: e.target.value ? new Date(e.target.value).toISOString() : undefined,
+                  }))
+                }
+              />
+              <span style={{ fontSize: '0.75rem', color: 'var(--admin-muted)', marginTop: '0.25rem', display: 'block' }}>
+                비워두면 즉시 공개 여부에 따라 처리됩니다
+              </span>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
