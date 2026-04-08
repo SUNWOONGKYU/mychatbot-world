@@ -21,7 +21,7 @@ const TRUST_STATS = [
 
 export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
   const primaryHref = isLoggedIn ? '/home' : '/create';
-  const primaryLabel = isLoggedIn ? '내 챗봇 관리하기' : '무료로 시작하기';
+  const primaryLabel = isLoggedIn ? '내 챗봇 관리하기' : '5분 인터뷰로 챗봇 생성하기';
 
   return (
     <section
@@ -66,10 +66,12 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               <span className="font-medium">AI 챗봇 라이프사이클 플랫폼</span>
             </div>
 
-            {/* 메인 헤드라인 */}
+            {/* 메인 헤드라인 — 원본 바닐라 카피 */}
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-              나만의 AI 챗봇으로{' '}
+              당신의{' '}
+              <span className="text-white font-black">AI</span> 챗봇이{' '}
               <br className="hidden sm:block" />
+              이 세상에{' '}
               <span
                 style={{
                   background:
@@ -79,20 +81,19 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                   backgroundClip: 'text',
                 }}
               >
-                수익을 만드세요
+                태어납니다
               </span>
             </h1>
 
-            {/* 서브카피 */}
+            {/* 서브카피 — 원본 바닐라 카피 */}
             <p className="mt-6 text-lg leading-8 text-white/70 sm:text-xl">
-              5분 인터뷰로 탄생.{' '}
-              <span className="text-white/90 font-medium">스킬로 성장.</span>{' '}
-              <span
-                style={{ color: 'rgb(var(--amber-300))' }}
-                className="font-semibold"
-              >
-                수익으로 완성.
-              </span>
+              인터뷰 5분이면 끝.{' '}
+              <br className="hidden sm:block" />
+              <span className="text-white/90 font-medium">나머지는 AI가 다 만들어 드립니다.</span>{' '}
+              <br />
+              소상공인부터 전문직, 정치인까지{' '}
+              <br className="hidden sm:block" />
+              어떤 직업이든 OK.
             </p>
 
             {/* CTA 버튼 */}
@@ -126,7 +127,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                 href="#demo"
                 className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                데모 체험하기
+                지금 무료로 체험하기
               </a>
             </div>
 
