@@ -15,11 +15,11 @@ const NAV_ITEMS = [
   { label: 'My Page',   labelKo: '마이페이지',  href: '/mypage',    icon: '👤' },
 ] as const;
 
-// 마케팅 페이지 목록 — 이 경로는 별도 레이아웃 사용
-const MARKETING_PATHS = ['/', '/pricing', '/store', '/blog', '/about', '/login', '/signup', '/guest'];
+// Navbar 숨김 경로 — 로그인/회원가입/게스트/어드민은 별도 레이아웃
+const HIDDEN_PATHS = ['/pricing', '/store', '/blog', '/about', '/login', '/signup', '/guest'];
 
-function isMarketingPath(pathname: string): boolean {
-  return MARKETING_PATHS.some((p) => pathname === p || pathname.startsWith('/blog/'));
+function isHiddenPath(pathname: string): boolean {
+  return HIDDEN_PATHS.some((p) => pathname === p || pathname.startsWith('/blog/'));
 }
 
 function isAdminPath(pathname: string): boolean {
@@ -32,7 +32,7 @@ function isAdminPath(pathname: string): boolean {
  * 구조: [MCW 로고] [4대 메뉴: Birth/Skills/Jobs/Community] [알림벨] [프로필→/mypage] [로그인/무료시작]
  * - 스크롤 시 배경 블러 처리
  * - 활성 메뉴 pathname 기반 하이라이트 (퍼플)
- * - 랜딩(/) · 마케팅 · 로그인 · 어드민 페이지는 Navbar 숨김
+ * - 로그인 · 회원가입 · 게스트 · 어드민 페이지는 Navbar 숨김 (랜딩은 표시)
  * - CSS 변수 기반 다크/라이트 동시 지원
  */
 export function Navbar() {
@@ -46,9 +46,9 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 마케팅 / 어드민 페이지는 Navbar 미표시
+  // 로그인/회원가입/게스트/어드민은 Navbar 미표시
   if (!pathname) return null;
-  if (isMarketingPath(pathname) || isAdminPath(pathname)) return null;
+  if (isHiddenPath(pathname) || isAdminPath(pathname)) return null;
 
   return (
     <header
