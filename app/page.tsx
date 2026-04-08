@@ -21,7 +21,7 @@ import { DemoSection }    from '@/components/landing/demo-section';
 import { PricingSection } from '@/components/landing/pricing';
 import { LandingFooter }  from '@/components/landing/footer';
 import { RevenueSection } from '@/components/landing/revenue-section';
-import { MarketingGNB }   from '@/components/landing/marketing-gnb';
+// MarketingGNB 제거 — layout.tsx의 Navbar가 5대 메뉴 담당
 
 export default function LandingPage() {
   const isLoggedIn = false;
@@ -35,9 +35,6 @@ export default function LandingPage() {
       >
         본문으로 건너뛰기
       </a>
-
-      {/* SECTION 0: 마케팅 전용 GNB */}
-      <MarketingGNB isLoggedIn={isLoggedIn} />
 
       <main id="main-content">
         {/* SECTION 1: Hero */}

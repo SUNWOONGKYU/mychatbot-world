@@ -25,36 +25,24 @@ const FOOTER_GROUPS: FooterGroup[] = [
     title: '서비스',
     links: [
       { label: '챗봇 만들기', href: '/create' },
-      { label: '스킬스토어', href: '/skills' },
-      { label: '요금제', href: '#pricing' },
-      { label: '데모 체험', href: '#demo' },
+      { label: '스킬장터', href: '/skills' },
+      { label: '구봇구직', href: '/jobs' },
+      { label: '게스트 체험', href: '/guest' },
     ],
   },
   {
     title: '커뮤니티',
     links: [
-      { label: '포럼', href: '/community' },
-      { label: '크리에이터 후기', href: '/community/reviews' },
-      { label: '챗봇 마켓', href: '/market' },
-      { label: '이벤트', href: '/events' },
+      { label: '봇카페', href: '/community' },
+      { label: '갤러리', href: '/community/gallery' },
     ],
   },
   {
-    title: '회사',
+    title: '계정',
     links: [
-      { label: '소개', href: '/about' },
-      { label: '블로그', href: '/blog' },
-      { label: '채용', href: '/careers' },
-      { label: '문의', href: '/contact' },
-    ],
-  },
-  {
-    title: '지원',
-    links: [
-      { label: '도움말 센터', href: '/help' },
-      { label: '개발자 API', href: '/api-docs', external: true },
-      { label: '개인정보처리방침', href: '/privacy' },
-      { label: '이용약관', href: '/terms' },
+      { label: '마이페이지', href: '/mypage' },
+      { label: '로그인', href: '/login' },
+      { label: '회원가입', href: '/signup' },
     ],
   },
 ];
