@@ -34,16 +34,22 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "C:/mcw-next-cache/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
+    "_archive",
+    "_reference",
+    "cpc-channel-server",
     "참고자료_ai-chatbot-avatar-project",
     "참고자료_AIRI",
     "참고자료_OpenClaw",
     "Dev_Package_archive_20260304",
     "Dev_Package_archive_v1_20260331",
     "Brainstorming",
-    "SAL_Grid_Dev_Suite"
+    "SAL_Grid_Dev_Suite",
+    "playwright.config.ts",
+    "tests"
   ]
 }
