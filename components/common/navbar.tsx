@@ -71,9 +71,10 @@ export function Navbar() {
         <span className="text-xl font-extrabold tracking-tight text-primary">MCW</span>
       </Link>
 
-      {/* 중앙 4대 메뉴 — 데스크탑(md 이상)에서만 표시 */}
+      {/* 5대 메뉴 — 데스크탑(md 이상)에서 표시 */}
       <nav
-        className="hidden md:flex items-center gap-1"
+        className="items-center gap-1"
+        style={{ display: 'flex' }}
         aria-label="주 메뉴"
       >
         {NAV_ITEMS.map((item) => {
