@@ -17,7 +17,6 @@
 
 import Link from 'next/link';
 import { HeroSection } from '@/components/landing/hero';
-import { PricingSection } from '@/components/landing/pricing';
 import { LandingFooter } from '@/components/landing/footer';
 
 /* ── 10가지 대표 직업 ────────────────────────────── */
@@ -252,10 +251,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ SECTION 8: Pricing ═══ */}
-        <PricingSection />
-
-        {/* ═══ SECTION 9: 하단 CTA ═══ */}
+        {/* ═══ SECTION 8: 하단 CTA ═══ */}
         <section className="py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, rgb(var(--primary-900)), rgb(30 27 75))' }}>
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">당신의 AI 챗봇을 생성하세요</h2>
