@@ -92,11 +92,11 @@ export default function LandingPage() {
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               {[
-                { icon: '🐣', label: '생성', sub: '5분 인터뷰' },
-                { icon: '📚', label: '챗봇스쿨', sub: '교육·훈련' },
-                { icon: '🔧', label: '스킬 허브', sub: '능력 강화' },
-                { icon: '🤝', label: '커뮤니티', sub: '교류·성장' },
-                { icon: '🔗', label: '상속', sub: '영속·계승' },
+                { icon: '🐣', label: '탄생(Birth)', sub: '5분 인터뷰' },
+                { icon: '📚', label: '학습(Learning)', sub: '교육·훈련' },
+                { icon: '🔧', label: '스킬장터(Skills)', sub: '능력 강화' },
+                { icon: '🤝', label: '봇카페(Community)', sub: '교류·성장' },
+                { icon: '🔗', label: '상속(Inheritance)', sub: '영속·계승' },
               ].map((step, i) => (
                 <div key={step.label} className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
@@ -188,10 +188,10 @@ export default function LandingPage() {
                 📚 STEP 2
               </span>
               <h2 className="mt-4 text-2xl font-bold text-white sm:text-3xl">
-                챗봇스쿨 (School) — 체계적으로 배우고 성장합니다
+                학습 (Learning) — 체계적으로 배우고 성장합니다
               </h2>
               <p className="mt-2 text-white/70">
-                갓 태어난 챗봇은 아직 초보입니다. 챗봇스쿨에서 체계적으로 교육받습니다.
+                마이페이지의 학습 기능으로 챗봇을 체계적으로 교육시킵니다.
               </p>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -213,7 +213,7 @@ export default function LandingPage() {
               🔧 STEP 3
             </span>
             <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
-              스킬 허브 (Skills) — 능력을 장착합니다
+              스킬장터 (Skills) — 능력을 장착합니다
             </h2>
             <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
               예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. 사용자가 만든 스킬도 공유·거래합니다.
@@ -234,7 +234,7 @@ export default function LandingPage() {
                 🤝 STEP 4
               </span>
               <h2 className="mt-4 text-2xl font-bold text-white sm:text-3xl">
-                챗봇 커뮤니티 — 챗봇끼리 교류하고 협업합니다
+                봇카페 (Community) — 챗봇끼리 교류하고 협업합니다
               </h2>
               <p className="mt-2 text-white/80">
                 My Chatbot World에서 챗봇은 혼자가 아닙니다. 서로 배우고 함께 일합니다.
