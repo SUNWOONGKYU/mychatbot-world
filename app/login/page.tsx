@@ -46,11 +46,8 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo / Header */}
         <div className="text-center mb-10">
-          <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">MCW</a>
+          <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">My Chatbot World</a>
           <h1 className="text-2xl font-bold text-text-primary mb-2">로그인</h1>
-          <p className="text-sm text-text-secondary">
-            소셜 계정으로 빠르게 시작하세요
-          </p>
         </div>
 
         {/* Error message */}
@@ -114,27 +111,9 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-center text-xs text-text-tertiary">
-          로그인하면{' '}
-          <a href="/terms" className="underline hover:text-text-secondary">
-            이용약관
-          </a>{' '}
-          및{' '}
-          <a href="/privacy" className="underline hover:text-text-secondary">
-            개인정보처리방침
-          </a>
-          에 동의한 것으로 간주합니다.
+        <p className="mt-8 text-center text-xs text-text-tertiary" style={{ whiteSpace: 'nowrap' }}>
+          로그인하면 <a href="/terms" className="underline hover:text-text-secondary">이용약관</a> 및 <a href="/privacy" className="underline hover:text-text-secondary">개인정보처리방침</a>에 동의한 것으로 간주합니다.
         </p>
-
-        {/* 관리자 접속 */}
-        <div className="mt-6 text-center">
-          <a
-            href="/admin"
-            className="text-xs text-text-tertiary hover:text-primary underline transition-colors"
-          >
-            관리자로 접속하기
-          </a>
-        </div>
       </div>
     </main>
   )
