@@ -110,7 +110,7 @@ function ProfileHeader({
   profile: UserProfile;
   credits: CreditInfo | null;
 }) {
-  const initials = profile.full_name?.trim()?.[0]?.toUpperCase() ?? profile.email[0].toUpperCase();
+  const initials = profile.full_name?.trim()?.[0]?.toUpperCase() ?? (profile.email ?? 'U')[0].toUpperCase();
   return (
     <div
       className="rounded-[var(--radius-xl)] border border-[rgb(var(--border))] bg-[rgb(var(--bg-subtle))] px-5 py-4 mb-5"
@@ -254,8 +254,8 @@ export default function MyPageClient() {
         ]);
 
         if (profileRes.status === 'fulfilled' && profileRes.value.ok) {
-          const data = await profileRes.value.json();
-          setProfile(data);
+          const json = await profileRes.value.json();
+          setProfile(json.data ?? json);
         } else {
           setError('프로필 정보를 불러오지 못했습니다.');
         }
