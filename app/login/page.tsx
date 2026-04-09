@@ -84,7 +84,7 @@ export default function LoginPage() {
             ) : (
               <GoogleIcon />
             )}
-            {loadingGoogle ? '로그인 중...' : 'Google로 계속하기'}
+            {loadingGoogle ? '로그인 중...' : 'Google로 로그인'}
           </button>
 
           {/* Kakao Login */}
@@ -109,7 +109,7 @@ export default function LoginPage() {
             ) : (
               <KakaoIcon />
             )}
-            {loadingKakao ? '로그인 중...' : '카카오로 계속하기'}
+            {loadingKakao ? '로그인 중...' : '카카오로 로그인'}
           </button>
         </div>
 

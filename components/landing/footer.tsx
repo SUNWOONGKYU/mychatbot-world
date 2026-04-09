@@ -15,7 +15,7 @@ export function LandingFooter() {
         paddingBottom: '44px',
       }}
     >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 flex flex-col items-center justify-center gap-4 text-center">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 flex flex-col items-center justify-center gap-4 text-center">
         {/* 법적 링크 */}
         <div className="flex items-center gap-8">
           <Link
@@ -51,8 +51,8 @@ export function LandingFooter() {
           특허출원번호: 10-2026-0038658 | 멀티 페르소나와 감성·비용 조건 기반 멀티 AI 자동 라우팅을 구비한 AI 챗봇의 생성·학습·성장·수익활동·피상속으로 이어지는 라이프사이클 지원 시스템 및 방법
         </p>
 
-        {/* 관리자 — 거의 안 보이게 */}
-        <Link href="/admin" style={{ fontSize: '9px', color: 'rgb(255 255 255 / 0.15)', marginTop: '8px' }}>
+        {/* 관리자 — 우측 하단 끝 */}
+        <Link href="/admin" className="absolute right-0 bottom-0" style={{ fontSize: '9px', color: 'rgb(255 255 255 / 0.15)' }}>
           Admin
         </Link>
       </div>
