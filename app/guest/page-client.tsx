@@ -46,31 +46,29 @@ interface Category {
   desc: string;
 }
 
-const CATEGORIES: Category[] = [
-  { id: 'lawyer',      templateId: 'guest_lawyer',      icon: '⚖️',  name: '변호사',  desc: '법률 상담 AI 챗봇' },
-  { id: 'restaurant',  templateId: 'guest_restaurant',  icon: '🍽️', name: '음식점',  desc: '메뉴·예약 안내 AI' },
-  { id: 'realestate',  templateId: 'guest_realestate',  icon: '🏠',  name: '부동산',  desc: '매물·임대 상담 AI' },
-  { id: 'hospital',    templateId: 'guest_hospital',    icon: '🏥',  name: '병원',    desc: '진료·예약 안내 AI' },
-  { id: 'academy',     templateId: 'guest_academy',     icon: '🎓',  name: '학원',    desc: '수강·수업 안내 AI' },
-  { id: 'salon',       templateId: 'guest_salon',       icon: '✂️',  name: '미용실',  desc: '예약·스타일 상담 AI' },
-  { id: 'cafe',        templateId: 'guest_cafe',        icon: '☕',  name: '카페',    desc: '메뉴·운영 안내 AI' },
-  { id: 'gym',         templateId: 'guest_gym',         icon: '🏋️', name: '헬스장',  desc: '회원권·트레이닝 AI' },
-  { id: 'studio',      templateId: 'guest_studio',      icon: '📸',  name: '스튜디오', desc: '촬영·예약 상담 AI' },
-  { id: 'retail',      templateId: 'guest_retail',      icon: '🛍️', name: '소매점',  desc: '상품·구매 안내 AI' },
+// 아바타형 — 나를 대신하는 챗봇 (5개)
+const AVATAR_CATS: Category[] = [
+  { id: 'restaurant',  templateId: 'guest_restaurant',  icon: '🍽️', name: '음식점',   desc: '메뉴·예약 안내' },
+  { id: 'hospital',    templateId: 'guest_hospital',    icon: '🏥',  name: '병원',     desc: '진료·예약 안내' },
+  { id: 'lawyer',      templateId: 'guest_lawyer',      icon: '⚖️',  name: '변호사',   desc: '법률 상담' },
+  { id: 'realestate',  templateId: 'guest_realestate',  icon: '🏠',  name: '부동산',   desc: '매물·임대 상담' },
+  { id: 'academy',     templateId: 'guest_academy',     icon: '🎓',  name: '학원',     desc: '수강·수업 안내' },
 ];
 
-const CATEGORY_NAMES: Record<string, string> = {
-  lawyer:     '변호사 AI 챗봇',
-  restaurant: '음식점 AI 챗봇',
-  realestate: '부동산 AI 챗봇',
-  hospital:   '병원 AI 챗봇',
-  academy:    '학원 AI 챗봇',
-  salon:      '미용실 AI 챗봇',
-  cafe:       '카페 AI 챗봇',
-  gym:        '헬스장 AI 챗봇',
-  studio:     '스튜디오 AI 챗봇',
-  retail:     '소매점 AI 챗봇',
-};
+// 도우미형 — 나를 도와주는 챗봇 (5개)
+const HELPER_CATS: Category[] = [
+  { id: 'work',        templateId: 'guest_work',        icon: '📋',  name: '업무비서',  desc: '문서·보고서 작성' },
+  { id: 'study',       templateId: 'guest_study',       icon: '📚',  name: '공부도우미', desc: '학습·과제 지원' },
+  { id: 'health',      templateId: 'guest_health',      icon: '💊',  name: '건강상담',  desc: '건강·생활 안내' },
+  { id: 'finance',     templateId: 'guest_finance',     icon: '💰',  name: '금융안내',  desc: '보험·세금·투자' },
+  { id: 'life',        templateId: 'guest_life',        icon: '🌏',  name: '생활길잡이', desc: '민원·취업·일상' },
+];
+
+const CATEGORIES: Category[] = [...AVATAR_CATS, ...HELPER_CATS];
+
+const CATEGORY_NAMES: Record<string, string> = Object.fromEntries(
+  CATEGORIES.map((c) => [c.id, `${c.name} AI 챗봇`])
+);
 
 /* ─────────────────────────────────────────────────────────────
    localStorage 유틸 (SSR 안전)
@@ -523,27 +521,29 @@ export default function GuestPageInner() {
 
         {/* ── 안내 배너 ─────────────────────────────────────────── */}
         <div className="guest-banner">
-          <span className="guest-badge">무료 체험</span>
           <h1>
-            회원가입 없이<br />AI 챗봇 체험
+            AI 챗봇 체험
           </h1>
           <p className="guest-banner-desc">
-            직업 카테고리를 선택하면<br />바로 AI 챗봇과 대화할 수 있습니다
-          </p>
-          <p className="guest-banner-meta">
-            최대 {MAX_MESSAGES}개 메시지 · 개인정보 불필요 · 즉시 시작
+            카테고리를 선택하면 바로 AI 챗봇과 대화할 수 있습니다
           </p>
         </div>
 
         {/* ── 메인 콘텐츠 ───────────────────────────────────────── */}
         <main className="guest-main">
-          <p className="guest-section-label">
-            어떤 분야의 AI 챗봇을 체험하시겠습니까?
-          </p>
-
-          {/* 카테고리 그리드 */}
+          {/* 아바타형 — 나를 대신하는 챗봇 */}
+          <p className="guest-section-label">아바타형 — 나를 대신하는 챗봇</p>
           <CategoryGrid
-            categories={CATEGORIES}
+            categories={AVATAR_CATS}
+            selectedId={selectedId}
+            loadingId={loadingId}
+            onSelect={handleSelectCategory}
+          />
+
+          {/* 도우미형 — 나를 도와주는 챗봇 */}
+          <p className="guest-section-label" style={{ marginTop: '2rem' }}>도우미형 — 나를 도와주는 챗봇</p>
+          <CategoryGrid
+            categories={HELPER_CATS}
             selectedId={selectedId}
             loadingId={loadingId}
             onSelect={handleSelectCategory}
