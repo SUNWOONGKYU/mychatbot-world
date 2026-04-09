@@ -115,12 +115,12 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                   />
                 </svg>
               </Link>
-              <a
-                href="#demo"
+              <Link
+                href="/guest"
                 className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                지금 무료로 체험하기
-              </a>
+                ⚡ 지금 무료로 체험하기
+              </Link>
             </div>
 
           </div>

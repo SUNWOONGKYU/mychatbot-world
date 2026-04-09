@@ -96,6 +96,7 @@ export default function LandingPage() {
                 { icon: '📚', label: '챗봇스쿨', sub: '교육·훈련' },
                 { icon: '🔧', label: '스킬 허브', sub: '능력 강화' },
                 { icon: '🤝', label: '커뮤니티', sub: '교류·성장' },
+                { icon: '🔗', label: '상속', sub: '영속·계승' },
               ].map((step, i) => (
                 <div key={step.label} className="flex items-center gap-4">
                   <div className="flex flex-col items-center">
@@ -103,7 +104,7 @@ export default function LandingPage() {
                     <h4 className="mt-1 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{step.label}</h4>
                     <p className="text-xs" style={{ color: 'rgb(var(--text-muted))' }}>{step.sub}</p>
                   </div>
-                  {i < 3 && <span className="text-xl font-bold" style={{ color: 'rgb(var(--text-muted))' }}>→</span>}
+                  {i < 4 && <span className="text-xl font-bold" style={{ color: 'rgb(var(--text-muted))' }}>→</span>}
                 </div>
               ))}
             </div>
@@ -251,7 +252,40 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ SECTION 8: 하단 CTA ═══ */}
+        {/* ═══ SECTION 8: STEP 5 — 상속 ═══ */}
+        <section className="py-16 sm:py-20" style={{ background: 'rgb(var(--bg-base))' }}>
+          <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+            <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest" style={{ background: 'rgb(var(--amber-500) / 0.1)', color: 'rgb(var(--amber-500))' }}>
+              🔗 STEP 5
+            </span>
+            <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
+              상속 (Inheritance) — 챗봇은 영원합니다
+            </h2>
+            <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
+              내 챗봇의 페르소나, 지식, 스킬을 다음 세대에게 물려줄 수 있습니다.<br />
+              대화 로그, KB, 유료 스킬 등 항목별로 선택하여 상속합니다.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3 max-w-2xl mx-auto">
+              <div className="rounded-xl p-4" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
+                <span className="text-2xl">👤</span>
+                <h4 className="mt-1 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>피상속인 지정</h4>
+                <p className="text-xs" style={{ color: 'rgb(var(--text-muted))' }}>누구에게 물려줄지 선택</p>
+              </div>
+              <div className="rounded-xl p-4" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
+                <span className="text-2xl">📋</span>
+                <h4 className="mt-1 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>항목별 선택</h4>
+                <p className="text-xs" style={{ color: 'rgb(var(--text-muted))' }}>대화·KB·스킬·크레딧 개별 지정</p>
+              </div>
+              <div className="rounded-xl p-4" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
+                <span className="text-2xl">✅</span>
+                <h4 className="mt-1 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>동의 요청</h4>
+                <p className="text-xs" style={{ color: 'rgb(var(--text-muted))' }}>피상속인의 수락 후 완료</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ SECTION 9: 하단 CTA ═══ */}
         <section className="py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, rgb(var(--primary-900)), rgb(30 27 75))' }}>
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">당신의 AI 챗봇을 생성하세요</h2>
