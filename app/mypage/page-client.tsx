@@ -305,12 +305,8 @@ export default function MyPageClient() {
         {/* 탭 네비게이션 (미리보기) */}
         <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* 빈 상태 안내 */}
-        <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
-          <span className="text-5xl opacity-30">👤</span>
-          <p className="text-lg font-semibold text-[rgb(var(--text-secondary))]">로그인이 필요합니다</p>
-          <p className="text-sm text-[rgb(var(--text-muted))]">로그인하면 이 탭의 데이터를 확인할 수 있습니다.</p>
-        </div>
+        {/* 탭 콘텐츠 미리보기 (빈 상태) */}
+        <div className="py-8" />
       </div>
     );
   }
