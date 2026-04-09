@@ -93,7 +93,7 @@ export default function LandingPage() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               {[
                 { icon: '🐣', label: '탄생(Birth)', sub: '5분 인터뷰' },
-                { icon: '📚', label: '학습(Learning)', sub: '교육·훈련' },
+                { icon: '📚', label: '학습(Learning)', sub: '지식 습득' },
                 { icon: '🔧', label: '스킬장터(Skills)', sub: '능력 강화' },
                 { icon: '🤝', label: '봇카페(Community)', sub: '교류·성장' },
                 { icon: '🔗', label: '상속(Inheritance)', sub: '영속·계승' },
