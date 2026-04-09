@@ -19,14 +19,16 @@ import Link from 'next/link';
 import { HeroSection } from '@/components/landing/hero';
 import { LandingFooter } from '@/components/landing/footer';
 
-/* ── 6가지 챗봇 유형 (소개글 기준) ───────────────── */
-const CHATBOT_TYPES = [
-  { icon: '🏪', title: '소상공인 대리형', desc: '카페·식당·학원·병원·미용실 — 24시간 자동 상담·예약·문의 응대' },
-  { icon: '🏛️', title: '정치인 대리형', desc: '국회의원·지자체장·지방의원 — 유권자 소통·공약·민원 응대' },
-  { icon: '💼', title: '전문직 수익형', desc: '세무사·변호사·의사·코치 — 1차 상담 자동화 + 유료 상담 연결' },
-  { icon: '🎨', title: '일반인 부업형', desc: '취미·재능·사이드 프로젝트 — 소액 유료 답변·디지털 굿즈 판매' },
-  { icon: '🤖', title: '전문 실행형 도우미', desc: '업무 자동화·투자 자동매매·AI 원격 실행 — 시키면 대신 해주는 챗봇' },
-  { icon: '🌏', title: '생활 도우미', desc: 'AI 소외 국민을 위한 무료·저비용 생활 도우미 — 누구나 부담 없이' },
+/* ── 6가지 챗봇 유형 (소개글 기준 — 아바타형 + 도우미형) ── */
+const AVATAR_TYPES = [
+  { icon: '🏪', title: '소상공인 대리형', desc: '카페·식당·학원·병원·미용실 — 추가 직원 없이 24시간 상담·예약·문의를 자동 응대하는 "대리 직원" 챗봇' },
+  { icon: '🏛️', title: '정치인 대리형', desc: '국회의원·지자체장·지방의원 — 유권자 질문·민원·공약·일정을 24시간 친절하게 답변하는 소통 창구 챗봇' },
+  { icon: '💼', title: '전문직 수익형', desc: '세무사·변호사·의사·코치·강사 — 반복 기초 상담은 챗봇이 처리하고, 유료 상담·강의·프로젝트로 자연스럽게 연결' },
+  { icon: '🎨', title: '일반인 부업형', desc: '취미·재능·사이드 프로젝트 — 자수·요리·게임 노하우를 챗봇에 담아 소액 유료 답변·디지털 굿즈 판매로 부업화' },
+];
+const HELPER_TYPES = [
+  { icon: '🤖', title: '전문 실행형 도우미', desc: '"시키면 대신 해주는" 챗봇 — 업무 자동화(문서·보고서), 투자 자동매매, AI 원격 실행(폰에서 PC의 AI 도구 제어)' },
+  { icon: '🌏', title: '생활 도우미', desc: '"물어보면 알려주는" 챗봇 — 요약·번역·글쓰기부터 취업·민원·건강·법률까지. 무료·저비용으로 누구나 부담 없이 AI 활용' },
 ];
 
 /* ── 5단계 생성 프로세스 ──────────────────────────── */
@@ -127,18 +129,37 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* 6가지 챗봇 유형 */}
-            <div className="mt-14 text-center">
-              <h3 className="text-xl font-bold" style={{ color: 'rgb(var(--text-primary))' }}>6가지 챗봇 유형</h3>
-              <p className="mt-1 text-sm" style={{ color: 'rgb(var(--text-secondary))' }}>필요한 유형만 골라 만들 수 있습니다</p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                {CHATBOT_TYPES.map((t) => (
-                  <div key={t.title} className="rounded-xl p-5 text-left" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
-                    <span className="text-2xl">{t.icon}</span>
-                    <h4 className="mt-2 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{t.title}</h4>
-                    <p className="mt-1 text-xs leading-relaxed" style={{ color: 'rgb(var(--text-muted))' }}>{t.desc}</p>
-                  </div>
-                ))}
+            {/* 6가지 챗봇 유형 — 아바타형 + 도우미형 */}
+            <div className="mt-14">
+              <h3 className="text-xl font-bold text-center" style={{ color: 'rgb(var(--text-primary))' }}>6가지 챗봇 유형</h3>
+              <p className="mt-1 text-sm text-center" style={{ color: 'rgb(var(--text-secondary))' }}>필요한 유형만 골라 만들 수 있습니다</p>
+
+              {/* 아바타형 — 나를 대신하는 챗봇 */}
+              <div className="mt-8">
+                <h4 className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'rgb(var(--color-primary))' }}>아바타형 — 나를 대신하는 챗봇</h4>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {AVATAR_TYPES.map((t) => (
+                    <div key={t.title} className="rounded-xl p-5 text-left" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
+                      <span className="text-2xl">{t.icon}</span>
+                      <h4 className="mt-2 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{t.title}</h4>
+                      <p className="mt-1 text-xs leading-relaxed" style={{ color: 'rgb(var(--text-muted))' }}>{t.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 도우미형 — 나를 도와주는 챗봇 */}
+              <div className="mt-6">
+                <h4 className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'rgb(var(--amber-500))' }}>도우미형 — 나를 도와주는 챗봇</h4>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {HELPER_TYPES.map((t) => (
+                    <div key={t.title} className="rounded-xl p-5 text-left" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
+                      <span className="text-2xl">{t.icon}</span>
+                      <h4 className="mt-2 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{t.title}</h4>
+                      <p className="mt-1 text-xs leading-relaxed" style={{ color: 'rgb(var(--text-muted))' }}>{t.desc}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
