@@ -13,10 +13,10 @@ interface HeroSectionProps {
 }
 
 const TRUST_STATS = [
-  { value: '10,000+', label: '챗봇 생성' },
+  { value: '500+', label: '챗봇 생성' },
   { value: '4.8', label: '평균 평점', prefix: '★' },
-  { value: '3.2억', label: '월 대화 수' },
-  { value: '98%', label: '만족도' },
+  { value: '50만+', label: '월 대화 수' },
+  { value: '95%', label: '만족도' },
 ];
 
 export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
@@ -147,6 +147,11 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               </svg>
               회원가입 불필요 · 데모 바로 체험 · 신용카드 불필요
             </p>
+
+            {/* 멀티 LLM 지원 */}
+            <p className="mt-3 text-xs text-white/40">
+              GPT-4o · Claude · Gemini · Mistral · LLaMA 지원
+            </p>
           </div>
 
           {/* 우: 챗봇 데모 미리보기 */}
@@ -194,7 +199,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                       color: 'rgb(var(--amber-400))',
                     }}
                   >
-                    월 ₩240,000 수익 중
+                    월 ₩45,000 수익 중
                   </div>
                 </div>
 
@@ -254,7 +259,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                       className="text-xl font-bold"
                       style={{ color: 'rgb(var(--amber-400))' }}
                     >
-                      ₩1,234,000
+                      ₩152,000
                     </p>
                   </div>
                   <div className="text-right">
@@ -280,7 +285,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                 className="text-lg font-bold"
                 style={{ color: 'rgb(var(--amber-400))' }}
               >
-                ₩28,410,000
+                ₩3,240,000
               </p>
               <p className="text-xs text-white/40">이번 달 합계</p>
             </div>

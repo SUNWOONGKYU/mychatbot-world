@@ -10,21 +10,21 @@ import Link from 'next/link';
 
 const REVENUE_STATS = [
   {
-    value: '₩28,410,000',
+    value: '₩3,240,000',
     label: '이번 달 크리에이터 스킬 판매 수익',
     sub: '전체 크리에이터 합산',
     highlight: true,
   },
   {
-    value: '₩87만',
+    value: '₩15만',
     label: '크리에이터 평균 월 수익',
-    sub: '상위 20% 기준 ₩340만',
+    sub: '상위 20% 기준 ₩60만',
     highlight: false,
   },
   {
-    value: '2,847명',
+    value: '120명+',
     label: '수익 중인 크리에이터',
-    sub: '지난 달 대비 +312명',
+    sub: '지난 달 대비 +18명',
     highlight: false,
   },
 ];
@@ -115,6 +115,67 @@ export function RevenueSection() {
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* 수익화 흐름도 */}
+            <div
+              className="mt-8 rounded-2xl border p-5"
+              style={{
+                background: 'rgb(var(--bg-surface))',
+                borderColor: 'rgb(var(--border))',
+              }}
+            >
+              <p
+                className="mb-4 text-xs font-bold uppercase tracking-widest"
+                style={{ color: 'rgb(var(--text-muted))' }}
+              >
+                어떻게 수익을 만드나요?
+              </p>
+              <ol className="space-y-3">
+                {[
+                  {
+                    num: '1',
+                    title: '스킬 판매',
+                    desc: '스킬장터에서 스킬 등록 → 다른 사용자가 구매',
+                    color: 'rgb(var(--color-primary))',
+                  },
+                  {
+                    num: '2',
+                    title: '챗봇 임대',
+                    desc: '구봇구직에서 내 챗봇 등록 → 고용주가 사용료 지불',
+                    color: 'rgb(var(--color-accent))',
+                  },
+                  {
+                    num: '3',
+                    title: '프리미엄 상담',
+                    desc: '챗봇 대화당 과금 설정 → 전문 상담 자동화',
+                    color: 'rgb(var(--color-success))',
+                  },
+                ].map((item) => (
+                  <li key={item.num} className="flex items-start gap-3">
+                    <span
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                      style={{ background: item.color }}
+                    >
+                      {item.num}
+                    </span>
+                    <div>
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ color: 'rgb(var(--text-primary))' }}
+                      >
+                        {item.title}
+                      </span>
+                      <span
+                        className="ml-1.5 text-xs"
+                        style={{ color: 'rgb(var(--text-muted))' }}
+                      >
+                        {item.desc}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -210,7 +271,7 @@ export function RevenueSection() {
                       className="text-4xl font-extrabold"
                       style={{ color: 'rgb(var(--color-accent))' }}
                     >
-                      ₩1,234,000
+                      ₩152,000
                     </p>
                     <div className="text-right">
                       <p
@@ -278,13 +339,13 @@ export function RevenueSection() {
                     className="mt-1 text-2xl font-extrabold"
                     style={{ color: 'rgb(var(--color-accent))' }}
                   >
-                    ₩10,840,000
+                    ₩890,000
                   </p>
                   <p
                     className="mt-1 text-xs"
                     style={{ color: 'rgb(var(--text-muted))' }}
                   >
-                    목표 ₩12,000,000 달성률 90.3%
+                    목표 ₩1,200,000 달성률 74.2%
                   </p>
                   <div
                     className="mt-2 h-1.5 w-full overflow-hidden rounded-full"
@@ -293,7 +354,7 @@ export function RevenueSection() {
                     <div
                       className="h-full rounded-full"
                       style={{
-                        width: '90.3%',
+                        width: '74.2%',
                         background: 'linear-gradient(90deg, rgb(var(--amber-500)), rgb(var(--amber-400)))',
                       }}
                     />

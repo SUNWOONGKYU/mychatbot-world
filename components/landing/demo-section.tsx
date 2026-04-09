@@ -22,7 +22,7 @@ const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   },
   {
     trigger: '수익',
-    response: '수익형 챗봇은 구독 서비스, 프리미엄 상담, 스킬 판매 등 다양한 방식으로 수익을 만들 수 있어요. 실제 크리에이터들이 월 평균 ₩87만원을 벌고 있습니다!',
+    response: '수익형 챗봇은 구독 서비스, 프리미엄 상담, 스킬 판매 등 다양한 방식으로 수익을 만들 수 있어요. 초기 크리에이터들이 월 평균 ₩15만원부터 수익을 만들고 있습니다!',
   },
   {
     trigger: '스킬',
@@ -358,9 +358,9 @@ export function DemoSection() {
                 </p>
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   {[
-                    { value: '₩87만', label: '평균 월 수익' },
+                    { value: '₩15만', label: '평균 월 수익' },
                     { value: '3.2시간', label: '월 관리 시간' },
-                    { value: '2,847명', label: '수익 중인 크리에이터' },
+                    { value: '120명+', label: '수익 중인 크리에이터' },
                     { value: '4.8점', label: '사용자 만족도' },
                   ].map((stat) => (
                     <div
