@@ -121,16 +121,6 @@ export function Navbar() {
 
       {/* 우측 액션 영역 */}
       <div className="flex items-center gap-2">
-        {/* 테마 토글 */}
-        <button
-          type="button"
-          aria-label="테마 전환"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
-        >
-          {theme === 'dark' ? '☀' : '☽'}
-        </button>
-
         {/* 알림 벨 아이콘 */}
         <button
           type="button"
@@ -192,6 +182,16 @@ export function Navbar() {
         >
           회원가입
         </Link>
+
+        {/* 테마 토글 (회원가입 다음) */}
+        <button
+          type="button"
+          aria-label="테마 전환"
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+        >
+          {theme === 'dark' ? '☀' : '☽'}
+        </button>
       </div>
     </header>
   );
