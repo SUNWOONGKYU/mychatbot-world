@@ -247,7 +247,7 @@ export default function MyPageClient() {
     (async () => {
       try {
         const [profileRes, botsRes, skillsRes, creditsRes] = await Promise.allSettled([
-          fetch('/api/auth/me', { headers: authHeaders() }),
+          fetch('/api/profile', { headers: authHeaders() }),
           fetch('/api/bots', { headers: authHeaders() }),
           fetch('/api/skills/my', { headers: authHeaders() }),
           fetch('/api/credits', { headers: authHeaders() }),
