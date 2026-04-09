@@ -41,11 +41,6 @@ export function LandingFooter() {
           </Link>
         </div>
 
-        {/* 회사 정보 */}
-        <div className="flex flex-col items-center gap-1" style={{ fontSize: '11px', color: 'rgb(255 255 255 / 0.75)' }}>
-          <p>파인더월드 | 대표자: 선웅규 | 이메일: wksun999@hanmail.net</p>
-          <p>사업자등록번호: 354-33-01641 | 서울특별시 강남구 테헤란로63길 9</p>
-        </div>
       </div>
     </footer>
   );
