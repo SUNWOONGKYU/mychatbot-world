@@ -64,13 +64,13 @@ export function Navbar() {
           : 'bg-surface border-border',
       )}
     >
-      {/* 로고 */}
+      {/* 로고 — 바닐라 원본 */}
       <Link
-        href="/dashboard"
+        href="/"
         className="flex items-center shrink-0 select-none"
-        aria-label="MCW 대시보드로 이동"
+        aria-label="메인 화면으로 이동"
       >
-        <span className="text-xl font-extrabold tracking-tight text-primary">MCW</span>
+        <span className="text-lg font-extrabold tracking-tight text-primary">My Chatbot World</span>
       </Link>
 
       {/* 5대 메뉴 — 데스크탑(md 이상)에서 표시 */}
