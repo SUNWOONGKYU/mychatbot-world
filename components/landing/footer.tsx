@@ -41,6 +41,10 @@ export function LandingFooter() {
           </Link>
         </div>
 
+        {/* 저작권 */}
+        <p style={{ fontSize: '11px', color: 'rgb(255 255 255 / 0.6)', margin: 0 }}>
+          © 2026 My Chatbot World. All rights reserved.
+        </p>
       </div>
     </footer>
   );
