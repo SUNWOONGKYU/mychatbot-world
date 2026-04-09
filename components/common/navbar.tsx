@@ -144,20 +144,33 @@ export function Navbar() {
           <UserIcon />
         </Link>
 
-        {/* 로그인/무료시작 CTA — 비로그인 상태 (간단 처리, 실제 auth 연동 시 교체) */}
+        {/* 로그인 버튼 */}
+        <Link
+          href="/login"
+          className={clsx(
+            'flex items-center',
+            'px-4 py-2 rounded-lg text-sm font-medium',
+            'border border-border text-text-primary',
+            'hover:bg-surface-hover',
+            'transition-all duration-200',
+          )}
+        >
+          로그인
+        </Link>
+
+        {/* 회원가입 CTA */}
         <Link
           href="/signup"
           className={clsx(
-            'hidden sm:flex items-center gap-1.5',
+            'flex items-center',
             'px-4 py-2 rounded-lg text-sm font-semibold',
             'bg-primary text-white',
             'hover:bg-primary/90 hover:-translate-y-px hover:shadow-md',
             'active:translate-y-0 active:shadow-none',
             'transition-all duration-200',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
           )}
         >
-          무료로 시작하기
+          회원가입
         </Link>
       </div>
     </header>
