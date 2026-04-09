@@ -20,7 +20,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import Tab1Profile from '@/components/mypage/Tab1Profile';
 import Tab2BotManage from '@/components/mypage/Tab2BotManage';
@@ -226,10 +225,10 @@ function LoadingSkeleton() {
 // ── 메인 컴포넌트 ────────────────────────────────────────────────────────
 
 export default function MyPageClient() {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>('profile');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [bots, setBots] = useState<BotItem[]>([]);
@@ -239,9 +238,11 @@ export default function MyPageClient() {
   useEffect(() => {
     const token = getToken();
     if (!token) {
-      router.replace('/login?redirect=/mypage');
+      setIsLoggedIn(false);
+      setLoading(false);
       return;
     }
+    setIsLoggedIn(true);
 
     (async () => {
       try {
@@ -279,9 +280,40 @@ export default function MyPageClient() {
         setLoading(false);
       }
     })();
-  }, [router]);
+  }, []);
 
   if (loading) return <LoadingSkeleton />;
+
+  if (!isLoggedIn) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* 비로그인 안내 배너 */}
+        <div className="mb-6 flex items-center gap-3 rounded-[var(--radius-xl)] border border-[rgb(var(--color-primary)/0.3)] bg-[rgb(var(--color-primary-muted))] px-5 py-4">
+          <span className="text-2xl">🔒</span>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-[rgb(var(--text-primary))]">로그인하면 실제 데이터가 표시됩니다</p>
+            <p className="text-sm text-[rgb(var(--text-muted))] mt-0.5">지금은 미리보기 모드입니다. 로그인 후 내 챗봇, 스킬, 크레딧을 관리하세요.</p>
+          </div>
+          <a
+            href="/login?redirect=/mypage"
+            className="shrink-0 px-4 py-2 rounded-[var(--radius-md)] bg-[rgb(var(--color-primary))] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
+            로그인
+          </a>
+        </div>
+
+        {/* 탭 네비게이션 (미리보기) */}
+        <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+        {/* 빈 상태 안내 */}
+        <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
+          <span className="text-5xl opacity-30">👤</span>
+          <p className="text-lg font-semibold text-[rgb(var(--text-secondary))]">로그인이 필요합니다</p>
+          <p className="text-sm text-[rgb(var(--text-muted))]">로그인하면 이 탭의 데이터를 확인할 수 있습니다.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error && !profile) {
     return (

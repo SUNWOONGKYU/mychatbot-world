@@ -435,14 +435,16 @@ function Pagination({
   );
 }
 
-function DemoBanner({ label }: { label: string }) {
+function EmptyState({ label, icon }: { label: string; icon: string }) {
   return (
-    <div
-      role="status"
-      className="flex items-center gap-2 px-4 py-2.5 mb-4 rounded-lg text-sm text-amber-400 border border-amber-500/35 bg-amber-500/10"
-    >
-      <span aria-hidden="true">⚠️</span>
-      <span>{label} — 서버에 연결할 수 없어 샘플 데이터를 표시 중입니다. (실제 데이터가 아닙니다)</span>
+    <div className="text-center py-16" role="status">
+      <div className="text-5xl mb-4">{icon}</div>
+      <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>
+        아직 등록된 {label}가 없습니다
+      </h3>
+      <p style={{ color: 'rgb(var(--text-secondary))' }}>
+        곧 업데이트될 예정입니다.
+      </p>
     </div>
   );
 }
@@ -839,32 +841,33 @@ export default function JobsPage() {
             </div>
           </div>
 
-          {/* 데모 배너 */}
-          {botDemo && <DemoBanner label="구봇 목록" />}
-
           {/* 그리드 */}
           {botLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" aria-hidden="true">
               {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : bots.length === 0 ? (
-            <div className="text-center py-16" role="status">
-              <div className="text-5xl mb-4">🤖</div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>챗봇을 찾을 수 없습니다</h3>
-              <p className="mb-4" style={{ color: 'rgb(var(--text-secondary))' }}>다른 카테고리나 검색어를 시도해보세요.</p>
-              <button
-                onClick={() => handleCategoryChange('all')}
-                className="px-5 py-2 font-semibold transition-all"
-                style={{
-                  borderRadius: 'var(--radius-lg)',
-                  background: 'rgb(var(--color-primary) / 0.15)',
-                  color: 'rgb(var(--color-primary))',
-                  border: '1px solid rgb(var(--color-primary) / 0.3)',
-                }}
-              >
-                전체 보기
-              </button>
-            </div>
+            botDemo ? (
+              <EmptyState label="챗봇" icon="🤖" />
+            ) : (
+              <div className="text-center py-16" role="status">
+                <div className="text-5xl mb-4">🤖</div>
+                <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>챗봇을 찾을 수 없습니다</h3>
+                <p className="mb-4" style={{ color: 'rgb(var(--text-secondary))' }}>다른 카테고리나 검색어를 시도해보세요.</p>
+                <button
+                  onClick={() => handleCategoryChange('all')}
+                  className="px-5 py-2 font-semibold transition-all"
+                  style={{
+                    borderRadius: 'var(--radius-lg)',
+                    background: 'rgb(var(--color-primary) / 0.15)',
+                    color: 'rgb(var(--color-primary))',
+                    border: '1px solid rgb(var(--color-primary) / 0.3)',
+                  }}
+                >
+                  전체 보기
+                </button>
+              </div>
+            )
           ) : (
             <div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
@@ -914,26 +917,27 @@ export default function JobsPage() {
             </div>
           </div>
 
-          {/* 데모 배너 */}
-          {jobDemo && <DemoBanner label="일감 목록" />}
-
           {/* 그리드 */}
           {jobLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" aria-hidden="true">
               {Array.from({ length: 3 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : jobs.length === 0 ? (
-            <div className="text-center py-16" role="status">
-              <div className="text-5xl mb-4">💼</div>
-              <h3 className="text-xl font-bold text-white mb-2">일감을 찾을 수 없습니다</h3>
-              <p className="text-white/50 mb-4">다른 카테고리나 검색어를 시도해보세요.</p>
-              <button
-                onClick={() => handleCategoryChange('all')}
-                className="px-5 py-2 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 font-semibold hover:bg-blue-500/25 transition-colors"
-              >
-                전체 보기
-              </button>
-            </div>
+            jobDemo ? (
+              <EmptyState label="공고" icon="💼" />
+            ) : (
+              <div className="text-center py-16" role="status">
+                <div className="text-5xl mb-4">💼</div>
+                <h3 className="text-xl font-bold text-white mb-2">일감을 찾을 수 없습니다</h3>
+                <p className="text-white/50 mb-4">다른 카테고리나 검색어를 시도해보세요.</p>
+                <button
+                  onClick={() => handleCategoryChange('all')}
+                  className="px-5 py-2 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 font-semibold hover:bg-blue-500/25 transition-colors"
+                >
+                  전체 보기
+                </button>
+              </div>
+            )
           ) : (
             <div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"

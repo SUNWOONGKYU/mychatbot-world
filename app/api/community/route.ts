@@ -8,6 +8,8 @@
  * Vanilla API 참조: api/Backend_APIs/community-post.js
  */
 
+export const dynamic = 'force-dynamic';
+
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 

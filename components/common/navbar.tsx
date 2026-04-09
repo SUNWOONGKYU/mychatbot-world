@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 
 // 5대 메뉴 (Birth/Skills/Jobs/Community/My Page)
 const NAV_ITEMS = [
@@ -38,6 +39,7 @@ function isAdminPath(pathname: string): boolean {
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   // 스크롤 이벤트 — hooks는 조건부 return 이전에 위치해야 함
   useEffect(() => {
@@ -111,6 +113,16 @@ export function Navbar() {
 
       {/* 우측 액션 영역 */}
       <div className="flex items-center gap-2">
+        {/* 테마 토글 */}
+        <button
+          type="button"
+          aria-label="테마 전환"
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+        >
+          {theme === 'dark' ? '☀' : '☽'}
+        </button>
+
         {/* 알림 벨 아이콘 */}
         <button
           type="button"
