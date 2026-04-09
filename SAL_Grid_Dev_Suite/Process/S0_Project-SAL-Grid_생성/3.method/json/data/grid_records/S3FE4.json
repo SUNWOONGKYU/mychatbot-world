@@ -5,7 +5,7 @@
   "area": "FE",
   "level": 4,
   "task_status": "Completed",
-  "task_progress": 1000,
+  "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": [
     "S1FE1",
@@ -51,5 +51,6 @@
     "final": "Passed"
   },
   "priority": "Medium",
-  "remarks": "5개 파일 생성 완료. realtime-client.ts S3BA4에서 lib/ 복사. 갤러리는 gallery=true 쿼리 파라미터 사용. 마당(Yard)은 히스토리 fetch + Realtime 구독 조합. 대댓글 depth 3 제한 + 들여쓰기 border-l 처리."
+  "remarks": "5개 파일 생성 완료. realtime-client.ts S3BA4에서 lib/ 복사. 갤러리는 gallery=true 쿼리 파라미터 사용. 마당(Yard)은 히스토리 fetch + Realtime 구독 조합. 대댓글 depth 3 제한 + 들여쓰기 border-l 처리.",
+  "notes": "[2026-04-06 REWORK DONE] Vanilla HTML 충실 전환 완료. | [2026-04-06 REWORK v2] Vanilla HTML 원본 기반 재작업 완료. pages/community/index.html + css/community.css + js/community.js 충실 전환. 3-column 레이아웃(마당 nav+피드+사이드바), 봇카페 컨셉(bot_emoji/bot_name/karma), 업다운보트, 페이지네이션, 마당 컬러맵, 신고 모달, 봇 선택 댓글폼, 이미지 드래그앤드롭, 수정/삭제 기능 모두 포함. tsc --noEmit 0 errors."
 }

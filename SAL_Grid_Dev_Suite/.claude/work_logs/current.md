@@ -1,3 +1,40 @@
+# Work Log - 2026-04-07 (최신)
+
+---
+
+## S5 Task 재구성 — PO 확정 사항 반영 (2026-04-07)
+
+### 작업 상태: 완료
+
+### 변경 내용
+- 4대 메뉴 확정 (Learning 폐지 → 마이페이지 챗봇학습 탭 통합)
+- 마이페이지 8탭 PO 확정 반영
+- 관리자 대시보드 8섹션 신규 추가
+
+### Task 변경 매핑
+| 기존 | 새 Task명 | 변경 유형 |
+|------|----------|----------|
+| S5FE1 (디자인 시스템) | 다크/라이트 동시 지원 명시 | 수정 |
+| S5FE2 (네비게이션) | 4대 메뉴로 수정 | 수정 |
+| S5FE4 (Birth 리디자인) | 4대 메뉴 페이지 전체 통합 | 수정 |
+| S5FE6 (대시보드+마이페이지) | 마이페이지 탭1~4 | 재구성 |
+| S5FE7 (마켓플레이스+비즈니스) | 관리자 대시보드 섹션1~4 | 재구성 |
+| S5FE8 (빌드+QA) | 관리자 대시보드 섹션5~8 | 재구성 |
+| S5FE9 (5대 메뉴) | 게스트 모드 리디자인 | 재구성 |
+| S5FE10 — 신규 | 빌드+배포+QA | 신규 추가 |
+
+### 업데이트된 파일 (5개 위치)
+1. `TASK_PLAN.md` — S5 섹션 재작성, 총 72→74개, v3.0→v3.1
+2. `task-instructions/S5FE1~FE9_instruction.md` — 6개 수정
+3. `task-instructions/S5FE10_instruction.md` — 1개 신규 생성
+4. `verification-instructions/S5FE6~FE9_verification.md` — 4개 수정
+5. `verification-instructions/S5FE10_verification.md` — 1개 신규 생성
+6. `grid_records/S5FE1~FE9.json` — 6개 수정
+7. `grid_records/S5FE10.json` — 1개 신규 생성
+8. `index.json` — S5FE10 추가, total_tasks 102→103
+
+---
+
 # Work Log - 2026-03-31
 
 > SAL Grid Dev Suite V3.4 소급 설치 — S0 완료, SAL Grid PO 승인 대기
@@ -104,6 +141,48 @@
 
 #### Stage 폴더 저장
 - `SAL_Grid_Dev_Suite/Process/S4_개발_마무리/Design/docs/qa/` (DS Area — 자동복사 제외)
+
+---
+
+---
+
+## S5 디자인 혁신 Stage Task 추가 (2026-04-07)
+
+### 작업 상태: 완료
+
+### 추가된 Task (12개)
+
+| Task ID | Task Name | Area | 시나리오 |
+|---------|-----------|------|---------|
+| S5DS1 | 네비게이션 구조 설계 | DS | B (소급 완료) |
+| S5DS2 | 컬러 시스템 + 디자인 토큰 정의 | DS | B (소급 완료) |
+| S5DS3 | 핵심 컴포넌트 디자인 스펙 | DS | B (소급 완료) |
+| S5DS4 | 페이지별 와이어프레임 레이아웃 | DS | B (소급 완료) |
+| S5FE1 | 디자인 시스템 구현 (globals.css + tailwind.config) | FE | A (신규 Pending) |
+| S5FE2 | 네비게이션 컴포넌트 재구축 (상단바 + 모바일 탭바) | FE | A (신규 Pending) |
+| S5FE3 | 랜딩 페이지 리디자인 | FE | A (신규 Pending) |
+| S5FE4 | 챗봇 만들기 + Birth 리디자인 | FE | A (신규 Pending) |
+| S5FE9 | 5대 메뉴 페이지 리디자인 (learning/skills/jobs/community) | FE | A (신규 Pending) |
+| S5FE6 | 대시보드 + 마이페이지 리디자인 | FE | A (신규 Pending) |
+| S5FE7 | 마켓플레이스 + 비즈니스 리디자인 | FE | A (신규 Pending) |
+| S5FE8 | 빌드 + 배포 + 크로스브라우저 QA | FE | A (신규 Pending) |
+
+> 주의: S5FE5는 기존 Task(Wiki-e-RAG)가 이미 존재하여 충돌. "5대 메뉴 리디자인" Task는 S5FE9로 재번호 부여.
+
+### 업데이트된 파일 (5개 위치)
+1. `TASK_PLAN.md` — S5 Stage 섹션 추가, 총 Task 수 60 → 72, Stage/Area 표 업데이트, v3.0, 변경이력 추가
+2. `task-instructions/` — S5DS1~4, S5FE1~4, S5FE6~9 (12개) 생성
+3. `verification-instructions/` — S5DS1~4, S5FE1~4, S5FE6~9 (12개) 생성
+4. `index.json` — total_tasks 90 → 102, task_ids에 12개 추가
+5. `grid_records/` — S5DS1~4(Completed), S5FE1~4/S5FE6~9(Pending) 12개 JSON 생성
+
+### 의존성 검증 결과
+- S5DS1, S5DS2: S4FE3 → S5 (4 < 5 ✅)
+- S5DS3: S5DS1, S5DS2 (동일 Stage 내 의존, ✅)
+- S5DS4: S5DS1~S5DS3 (동일 Stage 내 의존, ✅)
+- S5FE1~S5FE4, S5FE6~S5FE9: S5DS4, S5FE1, S5FE2 (동일 Stage 내 의존, ✅)
+- S5FE8: S5FE3, S5FE4, S5FE9, S5FE6, S5FE7 (동일 Stage 내 최후 의존, ✅)
+- 순환 의존성 없음 ✅
 
 ---
 

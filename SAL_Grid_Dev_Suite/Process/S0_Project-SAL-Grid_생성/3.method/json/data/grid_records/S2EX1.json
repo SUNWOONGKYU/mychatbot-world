@@ -7,7 +7,10 @@
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
-  "dependencies": ["S1EX1", "S2BA2"],
+  "dependencies": [
+    "S1EX1",
+    "S2BA2"
+  ],
   "task_instruction": "sal-grid/task-instructions/S2EX1_instruction.md",
   "task_agent": "backend-developer-core",
   "tools": "",
@@ -34,7 +37,12 @@
     "cross_task_connection": "PASS - lib/tts-client.ts, lib/stt-client.ts 표준 export로 타 컴포넌트 연동 가능",
     "data_flow": "PASS - TTS: text→Buffer(MP3), STT: Buffer→{text,confidence,language}"
   },
-  "blockers": {"count": 1, "items": ["OPENAI_API_KEY 환경변수 설정 필요 (PO 액션)"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "OPENAI_API_KEY 환경변수 설정 필요 (PO 액션)"
+    ]
+  },
   "comprehensive_verification": {
     "task_instruction": "PASS - 5개 명세 항목 모두 구현 완료",
     "test": "PASS 3/4 (manual_test PENDING - PO 액션)",
@@ -44,5 +52,6 @@
     "final": "Passed"
   },
   "fix_instructions": "",
-  "notes": ""
+  "notes": "",
+  "remarks": ""
 }

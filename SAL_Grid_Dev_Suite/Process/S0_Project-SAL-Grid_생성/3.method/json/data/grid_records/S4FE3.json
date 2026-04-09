@@ -15,8 +15,8 @@
   "task_agent": "frontend-developer-core",
   "tools": "",
   "execution_type": "AI-Only",
-  "generated_files": "app/marketplace/page.tsx, app/marketplace/[id]/page.tsx, app/marketplace/[id]/detail-client.tsx, app/marketplace/upload/page.tsx",
-  "modification_history": "",
+  "generated_files": "app/marketplace/page.tsx, app/marketplace/page-client.tsx, app/marketplace/[id]/page.tsx, app/marketplace/[id]/detail-client.tsx, app/marketplace/upload/page.tsx",
+  "modification_history": "2026-04-02: API endpoint /api/Backend_APIs/marketplace → /api/skills 변경, 설치 버튼(InstallButton) 컴포넌트 추가, 클라이언트 정렬/페이지네이션 적용",
   "verification_instruction": "sal-grid/verification-instructions/S4FE3_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {},
@@ -35,5 +35,6 @@
   },
   "comprehensive_verification": {},
   "priority": "Medium",
-  "remarks": "S4FE3 구현 완료. page.tsx(목록), [id]/page.tsx(SSR 상세), [id]/detail-client.tsx(클라이언트), upload/page.tsx(업로드+미리보기). TypeScript 오류 0. Stage 폴더 + 루트 앱 폴더 이중 저장 완료."
+  "remarks": "S4FE3 구현 완료 + 수정(2026-04-02). page.tsx(목록), page-client.tsx(목록 클라이언트), [id]/page.tsx(SSR 상세), [id]/detail-client.tsx(클라이언트), upload/page.tsx(업로드+미리보기). API: /api/Backend_APIs/marketplace → /api/skills 수정 완료. 설치 버튼(InstallButton) 추가. TypeScript 오류 0.",
+  "notes": "[2026-04-06 REWORK DONE] Vanilla HTML 충실 전환 완료. | [2026-04-06 REWORK] Vanilla HTML 원본 기반 재작업. 이전: 빈 껍데기 생성. 이번: pages/xxx/index.html + css + js 충실 전환. | "
 }

@@ -51,5 +51,6 @@
     "final": "Passed"
   },
   "priority": "High",
-  "remarks": "Edge Runtime 제약 준수: Node.js fs/path 미사용. 분산 환경 Rate Limit은 S4에서 Redis 고도화 예정. ALLOWED_ORIGINS 환경변수로 CORS 관리 가능."
+  "remarks": "Edge Runtime 제약 준수: Node.js fs/path 미사용. 분산 환경 Rate Limit은 S4에서 Redis 고도화 예정. ALLOWED_ORIGINS 환경변수로 CORS 관리 가능.",
+  "notes": ""
 }

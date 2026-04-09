@@ -1,10 +1,10 @@
 # My Chatbot World — Task Plan
 
 > **작성일**: 2026-03-31
-> **수정일**: 2026-03-31
-> **버전**: v2.0
+> **수정일**: 2026-04-08
+> **버전**: v3.3
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 60개
+> **총 Task 수**: 77개 (v3.3 Critical 유지보수성 이슈 2건 추가)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -16,31 +16,32 @@
 | Stage | 한글명 | Task 수 | 완료율 |
 |-------|--------|---------|--------|
 | S1 | 개발 준비 | 12 | ~50% (소급 6개 완료) |
-| S2 | 핵심 기능 | 15 | ~40% (소급 3개 완료) |
-| S3 | 확장 기능 | 18 | ~50% (소급 8개 완료) |
+| S2 | 핵심 기능 | 16 | ~40% (소급 3개 완료) |
+| S3 | 확장 기능 | 19 | ~50% (소급 8개 완료) |
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
-| **합계** | | **60** | **~40%** |
+| S5 | 디자인 혁신 | 15 | ~27% (소급 DS 4개 완료) |
+| **합계** | | **77** | **~39%** |
 
 ---
 
 ## Area별 분포 (N×11 Matrix)
 
-| Area | S1 | S2 | S3 | S4 | 합계 |
-|------|:--:|:--:|:--:|:--:|:----:|
-| FE (Frontend) | 1 | 7 | 4 | 3 | 15 |
-| BA (Backend APIs) | 0 | 6 | 8 | 6 | 20 |
-| DB (Database) | 2 | 0 | 1 | 0 | 3 |
-| SC (Security) | 1 | 0 | 1 | 0 | 2 |
-| BI (Backend Infra) | 3 | 1 | 0 | 0 | 4 |
-| EX (External) | 1 | 1 | 2 | 0 | 4 |
-| TS (Testing) | 0 | 0 | 0 | 2 | 2 |
-| DV (DevOps) | 1 | 0 | 0 | 1 | 2 |
-| DS (Design) | 1 | 0 | 0 | 1 | 2 |
-| DC (Documentation) | 1 | 0 | 0 | 2 | 3 |
-| CS (Content System) | 1 | 0 | 2 | 0 | 3 |
-| **합계** | **12** | **15** | **18** | **15** | **60** |
+| Area | S1 | S2 | S3 | S4 | S5 | 합계 |
+|------|:--:|:--:|:--:|:--:|:--:|:----:|
+| FE (Frontend) | 1 | 8 | 4 | 3 | 11 | 27 |
+| BA (Backend APIs) | 0 | 6 | 9 | 6 | 0 | 21 |
+| DB (Database) | 2 | 0 | 1 | 0 | 0 | 3 |
+| SC (Security) | 1 | 0 | 1 | 0 | 0 | 2 |
+| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 4 |
+| EX (External) | 1 | 1 | 2 | 0 | 0 | 4 |
+| TS (Testing) | 0 | 0 | 0 | 2 | 0 | 2 |
+| DV (DevOps) | 1 | 0 | 0 | 1 | 0 | 2 |
+| DS (Design) | 1 | 0 | 0 | 1 | 4 | 6 |
+| DC (Documentation) | 1 | 0 | 0 | 2 | 0 | 3 |
+| CS (Content System) | 1 | 0 | 2 | 0 | 0 | 3 |
+| **합계** | **12** | **16** | **19** | **15** | **15** | **77** |
 
-> 참고: S2는 S2FE4~FE7을 포함하면 15개, S4는 DS1+DV1 합산으로 15개. 위 표는 실제 task 분류 기준.
+> 참고: S2는 S2FE4~FE7을 포함하면 15개, S4는 DS1+DV1 합산으로 15개. S5는 DS 4개(기획 완료 소급) + FE 10개(신규, v3.1 재구성). 위 표는 실제 task 분류 기준.
 
 ---
 
@@ -86,6 +87,7 @@
 | S2FE6 | Guest 모드 React 전환 | FE | S1FE1, S2BA5 | `frontend-developer-core` | Pending |
 | S2FE7 | FAQ 관리 페이지 React 전환 | FE | S1FE1, S2BA1 | `frontend-developer-core` | Pending |
 | S2EX1 | TTS/STT 연동 강화 | EX | S1EX1, S2BA2 | `backend-developer-core` | Pending |
+| S2MT3 | 전역 error.tsx / not-found.tsx / loading.tsx 생성 (소급) | FE | S1BI1 | `frontend-developer-core` | Completed |
 
 ---
 
@@ -113,30 +115,70 @@
 | S3EX2 | CPC 원격 실행 연동 (소급) | EX | S1BI2 | `backend-developer-core` | Completed |
 | S3CS1 | 스킬 프롬프트 10개 (소급) | CS | S3DB1 | `content-specialist` | Completed |
 | S3CS2 | 스킬 인테그레이션 4개 (소급) | CS | S3BA8 | `content-specialist` | Completed |
+| S3PF3 | OpenRouter fetch AbortController 30초 timeout 추가 (소급) | BA | S2BA2 | `backend-developer-core` | Completed |
 
 ---
 
-## S4 — 개발 마무리 (15 Tasks)
+## S4 — 개발 마무리 (21 Tasks)
 
-> 목표: Business 대시보드, 결제, 피상속, 테스트, 문서, 배포 완성
+> 목표: Business 대시보드, 결제, 피상속, 테스트, 문서, 배포 완성 + 버그픽스/보안
 
 | Task ID | Task명 | Area | Dependencies | Agent | Status |
 |---------|--------|------|-------------|-------|--------|
-| S4BA1 | 수익 API (매출·정산 조회) | BA | S3BA3, S3SC1 | `api-developer-core` | Pending |
+| S4BA1 | 수익 API (매출·정산 조회) | BA | S3BA3, S3SC1 | `api-developer-core` | Completed |
 | S4BA2 | 결제 시스템 (결제수단 관리, 크레딧) | BA | S1DB2, S3SC1 | `api-developer-core` | Pending |
-| S4BA3 | 피상속 API (피상속인 지정, 동의, 전환) | BA | S1DB2, S3SC1 | `api-developer-core` | Pending |
+| S4BA3 | 피상속 API (피상속인 지정, 동의, 전환) | BA | S1DB2, S3SC1 | `api-developer-core` | Completed |
 | S4BA4 | Marketplace API (소급) | BA | S1DB1, S3SC1 | `api-developer-core` | Completed |
 | S4BA5 | 피상속 API 기본 (소급) | BA | S1DB1 | `api-developer-core` | Completed |
 | S4BA6 | 수익 API 기본 (소급) | BA | S1DB1, S3BA3 | `api-developer-core` | Completed |
-| S4FE1 | Business(수익 대시보드) 페이지 React 전환 | FE | S1FE1, S4BA1 | `frontend-developer-core` | Pending |
+| S4FE1 | Business(수익 대시보드) 페이지 React 전환 | FE | S1FE1, S4BA1 | `frontend-developer-core` | Completed |
 | S4FE2 | MyPage 페이지 React 전환 | FE | S1FE1, S4BA3 | `frontend-developer-core` | Pending |
-| S4FE3 | Marketplace 페이지 React 전환 | FE | S1FE1, S4BA4 | `frontend-developer-core` | Pending |
+| S4FE3 | Marketplace 페이지 React 전환 | FE | S1FE1, S4BA4 | `frontend-developer-core` | Completed |
 | S4TS1 | E2E 테스트 (Playwright) | TS | S4FE1, S4FE2, S4FE3 | `test-runner-core` | Pending |
 | S4TS2 | API 단위 테스트 확장 | TS | S4BA1, S4BA2, S4BA3 | `test-runner-core` | Pending |
 | S4DC1 | 사용자 가이드 작성 | DC | S4FE1, S4FE2, S4FE3 | `documentation-writer-core` | Pending |
 | S4DC2 | API 문서 완성 | DC | S4BA1, S4BA2, S4BA3 | `documentation-writer-core` | Pending |
 | S4DV1 | 프로덕션 배포 최적화 (성능, SEO, PWA) | DV | S4TS1, S4TS2 | `devops-troubleshooter-core` | Pending |
 | S4DS1 | 반응형 QA + 접근성 검수 | DS | S4FE1, S4FE2, S4FE3 | `ux-ui-designer-core` | Pending |
+| S4SC1 | API 키 하드코딩 제거 + secrets.js 정리 | SC | — | `security-specialist-core` | Completed |
+| S4SC2 | mcw_chat_logs RLS 보안 강화 | SC | — | `security-specialist-core` | Completed |
+| S4SC3 | STT/TTS API 인증 추가 + CORS 도메인 제한 | SC | — | `security-specialist-core` | Completed |
+| S4DB2 | 테이블명 불일치 통일 (mcw_ prefix) | DB | — | `database-developer-core` | Completed |
+| S4DB3 | 커뮤니티 테이블 5개 마이그레이션 추가 | DB | — | `database-developer-core` | Completed |
+| S4FE4 | faq.html CSS/JS 경로 수정 | FE | — | `frontend-developer-core` | Completed |
+
+---
+
+## S5 — 디자인 혁신 (15 Tasks)
+
+> 목표: 전면 리디자인 — 다크/라이트 동시 지원, 퍼플+앰버 브랜드, 4대 메뉴 체계, 마이페이지 8탭, 관리자 대시보드 8섹션
+> **확정 사항 (PO 승인 2026-04-07)**: 5대 메뉴→4대 메뉴 (Learning 폐지), 마이페이지 8탭, 관리자 대시보드 8섹션
+
+### S5 DS (Design) — 기획 (소급 완료 4개)
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S5DS1 | 네비게이션 구조 설계 | DS | S4FE3 | `ux-ui-designer-core` | Completed |
+| S5DS2 | 컬러 시스템 + 디자인 토큰 정의 | DS | S4FE3 | `ux-ui-designer-core` | Completed |
+| S5DS3 | 핵심 컴포넌트 디자인 스펙 | DS | S5DS1, S5DS2 | `ux-ui-designer-core` | Completed |
+| S5DS4 | 페이지별 와이어프레임 레이아웃 | DS | S5DS1, S5DS2, S5DS3 | `ux-ui-designer-core` | Completed |
+
+### S5 FE (Frontend) — 실행 (신규 11개)
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S5FE1 | 디자인 시스템 구현 (globals.css + tailwind.config — 다크/라이트 동시 지원) | FE | S5DS2, S5DS3 | `frontend-developer-core` | Pending |
+| S5FE2 | 네비게이션 재구축 (상단바 4대 메뉴 + 모바일 탭바) | FE | S5DS1, S5FE1 | `frontend-developer-core` | Pending |
+| S5FE3 | 랜딩 페이지 리디자인 | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
+| S5FE4 | 4대 메뉴 페이지 리디자인 (Birth/Skills/Jobs/Community + 채팅UI) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
+| S5FE6 | 마이페이지 리디자인 — 탭1~4 (프로필/챗봇관리/챗봇학습/스킬관리) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
+| S5FE7 | 관리자 대시보드 구현 — 섹션1~4 (개요/공지/회원/결제) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
+| S5FE8 | 관리자 대시보드 구현 — 섹션5~8 (챗봇/스킬/구봇구직/커뮤니티) | FE | S5DS4, S5FE1, S5FE2, S5FE7 | `frontend-developer-core` | Pending |
+| S5FE9 | 게스트 모드 리디자인 | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
+| S5FE10 | 빌드 + 배포 + 크로스브라우저 QA | FE | S5FE3, S5FE4, S5FE6, S5FE7, S5FE8, S5FE9 | `devops-troubleshooter-core` | Pending |
+| S5FE12 | 디자인 Quick Win 6개 적용 (CSS 변수 튜닝 — 보더/그림자/타이포/글로우/OpenType) | FE | S5FE1 | `frontend-developer-core` | Completed |
+
+> **참고**: 마이페이지 탭5~8 (운영관리/상속/크레딧/보안)은 별도 Task(미등록)로 추후 추가 예정. S5FE6은 탭1~4만 담당.
 
 ---
 
@@ -252,3 +294,6 @@ S4 (개발 마무리)
 |------|------|----------|
 | v1.0 | 2026-03-31 | 최초 생성 (템플릿 초기화) |
 | v2.0 | 2026-03-31 | MCW 프로젝트 분석 기반 전체 Task Plan 작성 — 60개 Task, 4 Stages, 소급 21개 |
+| v3.0 | 2026-04-07 | S5 디자인 혁신 Stage 추가 — 12개 Task (DS 4개 소급완료 + FE 8개 신규) |
+| v3.1 | 2026-04-07 | S5 FE Task 재구성 — PO 확정 사항 반영 (4대 메뉴, 마이페이지 8탭, 관리자 대시보드 8섹션). FE 8개→10개. S5FE4(4대 메뉴 통합), S5FE6(마이페이지 탭1~4), S5FE7(관리자 섹션1~4), S5FE8(관리자 섹션5~8), S5FE9(게스트 모드), S5FE10(빌드+QA) 신규. 총 72개→74개. |
+| v3.2 | 2026-04-08 | S5FE12 추가 — 디자인 Quick Win 6개 (CSS 변수 튜닝: 보더 반투명, 그림자 다층화, letter-spacing 스케일, 퍼플 글로우 확장, OpenType). 벤치마크 분석(Vercel/Linear/Stripe/Notion/Supabase) 기반. 총 74개→75개. |

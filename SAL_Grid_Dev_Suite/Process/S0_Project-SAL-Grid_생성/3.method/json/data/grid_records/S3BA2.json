@@ -51,5 +51,6 @@
     "final": "Passed"
   },
   "priority": "High",
-  "remarks": "20% 수수료는 job_settlements 테이블 재활용. 결제 PG 미연동으로 payment_token placeholder 처리. S3DB1 완료 후 실제 E2E 테스트 권장."
+  "remarks": "20% 수수료는 job_settlements 테이블 재활용. 결제 PG 미연동으로 payment_token placeholder 처리. S3DB1 완료 후 실제 E2E 테스트 권장.",
+  "notes": ""
 }

@@ -52,5 +52,6 @@
   },
   "priority": "Medium",
   "ai_verification_note": "5개 파일 생성 완료. TypeScript strict 모드 준수, 하드코딩 없음. Realtime broadcast는 서버 사이드에서도 발송 가능하나 FE에서 구독 필요. increment_comment_count RPC는 S1DB1 DB Task에서 PostgreSQL 함수로 생성 필요.",
-  "remarks": "lib/supabase/server.ts 추가 생성 (라우트 핸들러용 createClient 팩토리). 마당 메시지 만료 cron job은 S4에서 고도화 예정."
+  "remarks": "lib/supabase/server.ts 추가 생성 (라우트 핸들러용 createClient 팩토리). 마당 메시지 만료 cron job은 S4에서 고도화 예정.",
+  "notes": ""
 }

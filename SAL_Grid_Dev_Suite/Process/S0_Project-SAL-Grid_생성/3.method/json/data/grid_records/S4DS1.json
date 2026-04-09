@@ -53,5 +53,6 @@
   },
   "ai_verification_note": "반응형 보고서에 6개 뷰포트 기준으로 3개 페이지 매트릭스 완성. 발견 이슈: Major 1건(모바일 내비게이션 미노출), Minor 1건(Business 탭 overflow). 접근성 보고서에 WCAG 2.1 AA 전체 체크리스트 완성, Critical 1건(aria-live), Major 2건, Minor 3건 발굴. Critical 이슈는 즉시 조치 계획 포함. Design Area이므로 Production 자동복사 대상 아님.",
   "priority": "Medium",
-  "remarks": "S4DS1 완료 2026-03-31. 실기기 검증은 별도 수행 권장."
+  "remarks": "S4DS1 완료 2026-03-31. 실기기 검증은 별도 수행 권장.",
+  "notes": ""
 }

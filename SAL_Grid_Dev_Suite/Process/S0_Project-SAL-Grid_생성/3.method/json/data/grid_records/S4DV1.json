@@ -16,7 +16,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "next.config.mjs, app/manifest.ts, public/sw.js, components/seo/meta.tsx, lib/sw-register.ts, app/business/layout.tsx, app/marketplace/layout.tsx, app/mypage/layout.tsx, app/layout.tsx (SEO 업데이트)",
-  "modification_history": "2026-03-31: S4DV1 작업 완료 — Next.js 최적화, PWA 매니페스트, Service Worker, SEO 컴포넌트 구현",
+  "modification_history": "2026-03-31: S4DV1 작업 완료 — Next.js 최적화, PWA 매니페스트, Service Worker, SEO 컴포넌트 구현 | 2026-04-09: 루트 api/ → _archive/api_vanilla 이동(Vercel route 충돌 해소) + Vanilla index.html → _archive 이동",
   "verification_instruction": "sal-grid/verification-instructions/S4DV1_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {
@@ -52,5 +52,6 @@
   },
   "ai_verification_note": "모든 산출물 파일이 생성되었고 구조/내용 검증 통과. next.config.mjs에 보안헤더(X-Frame-Options, X-Content-Type-Options, Referrer-Policy), gzip 압축, CSS최적화, 이미지 최적화, 번들 분석기 설정 완료. PWA manifest에 icon/display/categories 포함. SW에 Cache First + Network First 이중 전략 구현. SEO 컴포넌트 Open Graph + Twitter Card 완비. 3개 주요 페이지에 SEO layout 적용. DV Area이므로 Production 자동복사 대상 아님.",
   "priority": "High",
-  "remarks": "S4DV1 완료 2026-03-31. 실제 Lighthouse 점수는 Vercel 배포 후 측정 필요."
+  "remarks": "S4DV1 완료 2026-03-31. 실제 Lighthouse 점수는 Vercel 배포 후 측정 필요.",
+  "notes": ""
 }

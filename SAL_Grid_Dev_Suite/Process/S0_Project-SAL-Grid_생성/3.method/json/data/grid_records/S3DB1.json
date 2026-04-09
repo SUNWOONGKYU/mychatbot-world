@@ -25,5 +25,6 @@
   "blockers": {},
   "comprehensive_verification": {},
   "priority": "High",
-  "remarks": "9개 테이블(learning_sessions, learning_progress, learning_certifications, skill_installations, skill_executions, skill_reviews, job_postings, job_matches, job_settlements) 생성. 전체 RLS 활성화 및 정책 적용. job_matches 원본 SQL 트레일링 쉼표 오류 수정."
+  "remarks": "9개 테이블(learning_sessions, learning_progress, learning_certifications, skill_installations, skill_executions, skill_reviews, job_postings, job_matches, job_settlements) 생성. 전체 RLS 활성화 및 정책 적용. job_matches 원본 SQL 트레일링 쉼표 오류 수정.",
+  "notes": ""
 }

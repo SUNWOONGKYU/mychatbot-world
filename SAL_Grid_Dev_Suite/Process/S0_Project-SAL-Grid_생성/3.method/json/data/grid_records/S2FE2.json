@@ -7,7 +7,10 @@
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
-  "dependencies": ["S1FE1", "S2BA2"],
+  "dependencies": [
+    "S1FE1",
+    "S2BA2"
+  ],
   "task_instruction": "sal-grid/task-instructions/S2FE2_instruction.md",
   "task_agent": "frontend-developer-core",
   "tools": "",
@@ -34,7 +37,10 @@
     "cross_task_connection": "PASS - S2BI1 ai-router emotionTier 경계값(33/66) 그대로 EmotionSlider 배지에 반영",
     "data_flow": "PASS - botId → persona 로딩 → ChatWindow → SSE fetch → 메시지 렌더링 흐름 정상"
   },
-  "blockers": {"count": 0, "items": []},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
   "comprehensive_verification": {
     "task_instruction": "PASS - 모든 명세 구현 (botId 동적 라우팅, 메시지 버블, 감성슬라이더, TTS/STT, 스트리밍, localStorage)",
     "test": "PASS 3/4 통과 (manual_test PENDING)",
@@ -44,5 +50,6 @@
     "final": "Passed"
   },
   "fix_instructions": "",
-  "notes": "STT/TTS API(/api/stt, /api/tts) 미완성 — UI 토글 구현됨, API 연동은 S2EX1 완료 후 자동 연결됨"
+  "notes": "[2026-04-06 REWORK DONE] Vanilla HTML 충실 전환 완료. | [2026-04-06 REWORK] Vanilla HTML 원본 기반 재작업. 이전: 빈 껍데기 생성. 이번: pages/xxx/index.html + css + js 충실 전환. | STT/TTS API(/api/stt, /api/tts) 미완성 — UI 토글 구현됨, API 연동은 S2EX1 완료 후 자동 연결됨",
+  "remarks": ""
 }

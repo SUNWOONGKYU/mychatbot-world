@@ -1,0 +1,51 @@
+{
+  "task_id": "S5BA4",
+  "task_name": "Wiki Lint API — 고아/스테일/모순 자동 탐지",
+  "stage": 5,
+  "area": "BA",
+  "level": 3,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S5DB2",
+    "S5BA1"
+  ],
+  "priority": "Medium",
+  "execution_type": "AI-Only",
+  "task_instruction": "sal-grid/task-instructions/S5BA4_instruction.md",
+  "task_agent": "backend-developer-core",
+  "tools": "",
+  "generated_files": "app/api/wiki/lint/route.ts, SAL_Grid_Dev_Suite/Process/S5_Wiki-e-RAG/Backend_APIs/wiki/lint/route.ts",
+  "modification_history": "2026-04-06: Phase 2 구현 완료",
+  "verification_instruction": "sal-grid/verification-instructions/S5BA4_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "PASS: TypeScript 타입 체크 통과",
+    "integration_test": "PASS: Supabase 연결 확인",
+    "edge_cases": "PASS: 인증/권한 검증 포함",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS: tsc --noEmit 에러 없음",
+    "lint": "N/A",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 3/4 통과",
+    "build": "PASS",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "fix_instructions": "",
+  "notes": "POST /api/wiki/lint: orphans/stale/conflicts 탐지 + quality_report. auto_fix 옵션. 신규: app/api/wiki/lint/route.ts, lib/wiki-linter.ts",
+  "remarks": ""
+}

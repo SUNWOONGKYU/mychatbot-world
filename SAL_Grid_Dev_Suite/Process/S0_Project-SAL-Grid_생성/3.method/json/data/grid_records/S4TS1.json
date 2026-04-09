@@ -52,5 +52,6 @@
     "final": "Passed (환경 변수 설정 후 실행 가능)"
   },
   "priority": "High",
-  "remarks": "로그인 방식이 Google/Kakao OAuth 전용이므로, E2E 테스트용 이메일+비밀번호 계정을 Supabase Dashboard에서 별도 생성 필요. TEST_BOT_ID 환경 변수로 채팅 테스트 대상 봇 ID 지정 가능. smoke.spec.ts는 instruction에 없던 추가 파일(3개 페이지 통합 스모크 테스트)."
+  "remarks": "로그인 방식이 Google/Kakao OAuth 전용이므로, E2E 테스트용 이메일+비밀번호 계정을 Supabase Dashboard에서 별도 생성 필요. TEST_BOT_ID 환경 변수로 채팅 테스트 대상 봇 ID 지정 가능. smoke.spec.ts는 instruction에 없던 추가 파일(3개 페이지 통합 스모크 테스트).",
+  "notes": ""
 }

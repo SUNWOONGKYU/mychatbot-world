@@ -52,5 +52,6 @@
     "final": "Passed"
   },
   "priority": "Medium",
-  "remarks": "2026-03-31 documentation-writer-core 작성 완료. Stage+Root 이중 저장."
+  "remarks": "2026-03-31 documentation-writer-core 작성 완료. Stage+Root 이중 저장.",
+  "notes": ""
 }

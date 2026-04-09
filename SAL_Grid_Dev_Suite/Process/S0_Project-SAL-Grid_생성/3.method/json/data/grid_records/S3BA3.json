@@ -51,5 +51,6 @@
     "final": "Passed"
   },
   "priority": "High",
-  "remarks": "Next.js App Router TypeScript 마이그레이션 완료. COMMISSION_RATE=0.20 고정. review는 settlement status='completed' 후에만 가능. OpenRouter 미설정 시 로컬 스킬 매칭 폴백."
+  "remarks": "Next.js App Router TypeScript 마이그레이션 완료. COMMISSION_RATE=0.20 고정. review는 settlement status='completed' 후에만 가능. OpenRouter 미설정 시 로컬 스킬 매칭 폴백.",
+  "notes": ""
 }

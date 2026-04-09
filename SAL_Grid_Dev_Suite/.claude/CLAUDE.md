@@ -43,6 +43,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## ⭐ MBO 목표에 의한 관리 (V3.5 추가)
+
+> **모든 Stage 시작 전 MBO(Management by Objectives) 목표를 PO에게 제시하고 승인을 받아야 한다.**
+
+### 규칙
+1. **Stage 시작 전**: MBO 목표(AS-IS/TO-BE/KPI) 제시 → PO 승인 → 작업 시작. 승인 없이 Task 실행 절대 금지.
+2. **Stage 종료 시**: Stage Gate 검증 리포트에 **목표 달성 여부를 반드시 포함**. 각 KPI의 목표값 vs 실측값 대조. 미달성 항목은 사유 + 후속 조치 명시.
+3. **목표 변경 시**: PO 재승인 필수.
+
+### 상세
+- 스킬 파일: `청룡-sal-grid-dev-슈퍼스킬1/SKILL.md` 섹션 6.0 참조
+- Stage Gate 리포트: 섹션 8.2 참조
+
+---
+
 ## 📊 DB vs JSON 데이터 구분 (핵심 개념)
 
 > **이 구분을 이해해야 viewer 관련 작업 시 혼란이 없음!**

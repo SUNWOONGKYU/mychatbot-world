@@ -52,5 +52,6 @@
     "final": "Passed"
   },
   "priority": "High",
-  "remarks": "56개 테스트 전체 통과. Stage 저장: SAL_Grid_Dev_Suite/Process/S4_개발_마무리/Testing/tests/unit/. 루트: tests/unit/. package.json에 test:unit, test:unit:watch 스크립트 추가."
+  "remarks": "56개 테스트 전체 통과. Stage 저장: SAL_Grid_Dev_Suite/Process/S4_개발_마무리/Testing/tests/unit/. 루트: tests/unit/. package.json에 test:unit, test:unit:watch 스크립트 추가.",
+  "notes": ""
 }

@@ -5,7 +5,7 @@
   "area": "BA",
   "level": 1,
   "task_status": "Completed",
-  "task_progress": 1000,
+  "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": [
     "S3BA3",
@@ -15,7 +15,7 @@
   "task_agent": "api-developer-core",
   "tools": "",
   "execution_type": "AI-Only",
-  "generated_files": "Process/S4_개발_마무리/Backend_APIs/revenue/route.ts, Process/S4_개발_마무리/Backend_APIs/revenue/settlement/route.ts, Process/S4_개발_마무리/Backend_APIs/revenue/dashboard/route.ts",
+  "generated_files": "app/api/revenue/route.ts, app/api/revenue/settlements/route.ts",
   "modification_history": "",
   "verification_instruction": "sal-grid/verification-instructions/S4BA1_verification.md",
   "verification_agent": "code-reviewer-core",
@@ -52,5 +52,6 @@
   },
   "ai_verification_note": "수익 API 3개 파일 모두 정상 구현. calculateFee(gross) 유틸 함수는 PLATFORM_FEE_RATE(기본값 0.20 = 20%) 적용하여 fee와 net 반환. 최소 정산금액 10,000원 검증 포함. 대시보드는 지난달 대비 증감률(growthRate) 및 최근 12개월 차트 데이터, 상위 5개 페르소나 매출 집계 제공. TypeScript strict 모드 오류 없음.",
   "priority": "High",
-  "remarks": "저장 위치: Process/S4_개발_마무리/Backend_APIs/revenue/. git commit 시 Pre-commit Hook이 api/Backend_APIs/revenue/로 자동 복사됨."
+  "remarks": "저장 위치: Process/S4_개발_마무리/Backend_APIs/revenue/. git commit 시 Pre-commit Hook이 api/Backend_APIs/revenue/로 자동 복사됨.",
+  "notes": ""
 }
