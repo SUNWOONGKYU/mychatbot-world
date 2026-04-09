@@ -55,14 +55,13 @@ export function Navbar() {
     <header
       className={clsx(
         'sticky top-0 z-40',
-        'flex items-center justify-between',
-        'h-16 px-4 md:px-6',
         'border-b transition-all duration-200',
         scrolled
           ? 'bg-surface/80 backdrop-blur-md border-border shadow-sm'
           : 'bg-surface border-border',
       )}
     >
+      <div className="mx-auto flex items-center justify-between h-16 px-4 md:px-6" style={{ maxWidth: '1280px' }}>
       {/* 로고 — 바닐라 원본 */}
       <Link
         href="/"
@@ -192,6 +191,7 @@ export function Navbar() {
         >
           {theme === 'dark' ? '☀' : '☽'}
         </button>
+      </div>
       </div>
     </header>
   );
