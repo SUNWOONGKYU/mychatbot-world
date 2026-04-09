@@ -19,26 +19,14 @@ import Link from 'next/link';
 import { HeroSection } from '@/components/landing/hero';
 import { LandingFooter } from '@/components/landing/footer';
 
-/* ── 10가지 대표 직업 ────────────────────────────── */
-const JOBS_LIST = [
-  { icon: '🏪', title: '소상공인', desc: '카페, 식당, 미용실, 쇼핑몰' },
-  { icon: '🏠', title: '부동산 중개인', desc: '공인중개사, 분양사무소' },
-  { icon: '⚖️', title: '변호사', desc: '법률사무소, 법무법인' },
-  { icon: '📋', title: '회계사/세무사', desc: '회계법인, 세무사무소' },
-  { icon: '🏥', title: '의료인', desc: '병원, 클리닉, 한의원, 치과' },
-  { icon: '🛡️', title: '보험 설계사', desc: '보험설계사, 금융설계사' },
-  { icon: '🏛️', title: '정치인', desc: '국회의원, 지방의원, 시의원' },
-  { icon: '🎓', title: '강사/코치', desc: '학원강사, 코치, 교육자' },
-  { icon: '💻', title: '프리랜서', desc: '디자이너, 개발자, 사진작가' },
-  { icon: '💼', title: '컨설턴트', desc: '경영컨설턴트, 전략자문' },
-];
-
-/* ── 4가지 공통점 ────────────────────────────────── */
-const COMMON_REASONS = [
-  { icon: '🔄', title: '반복 문의가 많다', desc: '같은 질문을 하루에 수십 번 받습니다. 챗봇이 자동으로 응대합니다.' },
-  { icon: '⏰', title: '시간이 곧 돈이다', desc: '상담 시간 = 매출 기회. 반복 응대에 시간을 낭비하면 손실입니다.' },
-  { icon: '🌙', title: '영업시간 외 니즈', desc: '24시간 문의가 오지만 대응하지 못합니다. 챗봇이 잠들지 않습니다.' },
-  { icon: '🤝', title: '신뢰가 중요하다', desc: '정확한 정보를 일관되게 전달해야 합니다. 챗봇은 흔들리지 않습니다.' },
+/* ── 6가지 챗봇 유형 (소개글 기준) ───────────────── */
+const CHATBOT_TYPES = [
+  { icon: '🏪', title: '소상공인 대리형', desc: '카페·식당·학원·병원·미용실 — 24시간 자동 상담·예약·문의 응대' },
+  { icon: '🏛️', title: '정치인 대리형', desc: '국회의원·지자체장·지방의원 — 유권자 소통·공약·민원 응대' },
+  { icon: '💼', title: '전문직 수익형', desc: '세무사·변호사·의사·코치 — 1차 상담 자동화 + 유료 상담 연결' },
+  { icon: '🎨', title: '일반인 부업형', desc: '취미·재능·사이드 프로젝트 — 소액 유료 답변·디지털 굿즈 판매' },
+  { icon: '🤖', title: '전문 실행형 도우미', desc: '업무 자동화·투자 자동매매·AI 원격 실행 — 시키면 대신 해주는 챗봇' },
+  { icon: '🌏', title: '생활 도우미', desc: 'AI 소외 국민을 위한 무료·저비용 생활 도우미 — 누구나 부담 없이' },
 ];
 
 /* ── 5단계 생성 프로세스 ──────────────────────────── */
@@ -139,15 +127,16 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* 10가지 직업 */}
+            {/* 6가지 챗봇 유형 */}
             <div className="mt-14 text-center">
-              <h3 className="text-xl font-bold" style={{ color: 'rgb(var(--text-primary))' }}>챗봇이 필요한 10가지 대표 직업</h3>
-              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-                {JOBS_LIST.map((j) => (
-                  <div key={j.title} className="rounded-xl p-4 text-center" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
-                    <span className="text-2xl">{j.icon}</span>
-                    <h4 className="mt-1 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{j.title}</h4>
-                    <p className="text-xs" style={{ color: 'rgb(var(--text-muted))' }}>{j.desc}</p>
+              <h3 className="text-xl font-bold" style={{ color: 'rgb(var(--text-primary))' }}>6가지 챗봇 유형</h3>
+              <p className="mt-1 text-sm" style={{ color: 'rgb(var(--text-secondary))' }}>필요한 유형만 골라 만들 수 있습니다</p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                {CHATBOT_TYPES.map((t) => (
+                  <div key={t.title} className="rounded-xl p-5 text-left" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
+                    <span className="text-2xl">{t.icon}</span>
+                    <h4 className="mt-2 text-sm font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{t.title}</h4>
+                    <p className="mt-1 text-xs leading-relaxed" style={{ color: 'rgb(var(--text-muted))' }}>{t.desc}</p>
                   </div>
                 ))}
               </div>
@@ -155,30 +144,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ SECTION 4: WHY THESE 10 ═══ */}
-        <section className="py-16 sm:py-20" style={{ background: 'rgb(var(--bg-subtle))' }}>
-          <div className="mx-auto max-w-4xl px-4 sm:px-6">
-            <div className="text-center">
-              <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest" style={{ background: 'rgb(var(--color-info) / 0.1)', color: 'rgb(var(--color-info))' }}>
-                📊 WHY THESE 10
-              </span>
-              <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>왜 이 10가지 직업인가?</h2>
-              <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
-                &ldquo;나를 대신해 사람들과 소통해야 하는&rdquo; 직업 중 챗봇 수요가 가장 높은 10가지를 선정했습니다.
-              </p>
-            </div>
-            <h3 className="mt-10 text-center text-lg font-semibold" style={{ color: 'rgb(var(--text-primary))' }}>이 직업들의 공통점</h3>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {COMMON_REASONS.map((r) => (
-                <div key={r.title} className="rounded-xl p-5" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
-                  <span className="text-2xl">{r.icon}</span>
-                  <h4 className="mt-2 font-bold" style={{ color: 'rgb(var(--text-primary))' }}>{r.title}</h4>
-                  <p className="mt-1 text-sm" style={{ color: 'rgb(var(--text-secondary))' }}>{r.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* ═══ SECTION 5: STEP 2 — School ═══ */}
         <section className="py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, rgb(var(--primary-900)), rgb(30 27 75))' }}>
