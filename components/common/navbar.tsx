@@ -7,13 +7,12 @@ import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 
-// 5대 메뉴 (Birth/Skills/Jobs/Community/My Page)
-const NAV_ITEMS = [
-  { label: 'Birth',     labelKo: '탄생',       href: '/create',    icon: '🐣' },
-  { label: 'Skills',    labelKo: '스킬장터',    href: '/skills',    icon: '🔧' },
-  { label: 'Jobs',      labelKo: '구봇구직',    href: '/jobs',      icon: '💼' },
-  { label: 'Community', labelKo: '봇카페',      href: '/community', icon: '🤝' },
-  { label: 'My Page',   labelKo: '마이페이지',  href: '/mypage',    icon: '👤' },
+// 서비스 4메뉴
+const SERVICE_ITEMS = [
+  { label: 'Birth',     labelKo: '탄생',     href: '/create',    icon: '🐣' },
+  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills',    icon: '🔧' },
+  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs',      icon: '💼' },
+  { label: 'Community', labelKo: '봇카페',    href: '/community', icon: '🤝' },
 ] as const;
 
 // Navbar 숨김 경로 — 로그인/회원가입/게스트/어드민은 별도 레이아웃
@@ -73,42 +72,51 @@ export function Navbar() {
         <span className="text-lg font-extrabold tracking-tight text-primary">My Chatbot World</span>
       </Link>
 
-      {/* 5대 메뉴 — 데스크탑(md 이상)에서 표시 */}
+      {/* 서비스 메뉴 + 구분선 + My Page */}
       <nav
         className="items-center gap-1"
         style={{ display: 'flex' }}
         aria-label="주 메뉴"
       >
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            pathname === item.href || pathname.startsWith(item.href + '/');
+        {/* 서비스 4메뉴 */}
+        {SERVICE_ITEMS.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={isActive ? 'page' : undefined}
+            <Link key={item.href} href={item.href} aria-current={isActive ? 'page' : undefined}
               className={clsx(
-                'relative flex items-center gap-1.5 px-4 py-2 rounded-lg',
-                'text-sm font-medium transition-all duration-200',
+                'relative flex flex-col items-center px-3 py-1.5 rounded-lg',
+                'text-xs font-medium transition-all duration-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                isActive
-                  ? 'text-primary bg-primary/10'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
+                isActive ? 'text-primary bg-primary/10' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
               )}
             >
-              <span aria-hidden="true" className="text-base leading-none">{item.icon}</span>
-              <span>{item.label}</span>
-              <span className="text-[11px] text-text-muted">({item.labelKo})</span>
-              {/* 활성 하이라이트 언더라인 */}
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full bg-primary"
-                />
-              )}
+              <span className="text-sm font-semibold">{item.label}</span>
+              <span className="text-[10px] text-text-muted">{item.labelKo}</span>
+              {isActive && <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full bg-primary" />}
             </Link>
           );
         })}
+
+        {/* 구분선 */}
+        <span className="mx-2 h-6 w-px" style={{ background: 'rgb(var(--border))' }} aria-hidden="true" />
+
+        {/* My Page (별도 구분) */}
+        {(() => {
+          const isActive = pathname === '/mypage' || pathname.startsWith('/mypage/');
+          return (
+            <Link href="/mypage" aria-current={isActive ? 'page' : undefined}
+              className={clsx(
+                'relative flex flex-col items-center px-3 py-1.5 rounded-lg',
+                'text-xs font-medium transition-all duration-200',
+                isActive ? 'text-primary bg-primary/10' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
+              )}
+            >
+              <span className="text-sm font-semibold">My Page</span>
+              <span className="text-[10px] text-text-muted">마이페이지</span>
+              {isActive && <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full bg-primary" />}
+            </Link>
+          );
+        })()}
       </nav>
 
       {/* 우측 액션 영역 */}

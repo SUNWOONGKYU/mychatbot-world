@@ -125,6 +125,16 @@ export default function LoginPage() {
           </a>
           에 동의한 것으로 간주합니다.
         </p>
+
+        {/* 관리자 접속 */}
+        <div className="mt-6 text-center">
+          <a
+            href="/admin"
+            className="text-xs text-text-tertiary hover:text-primary underline transition-colors"
+          >
+            관리자로 접속하기
+          </a>
+        </div>
       </div>
     </main>
   )
