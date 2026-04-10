@@ -503,7 +503,7 @@ export default function JobsPage() {
         offset: String((botPage - 1) * ITEMS_PER_PAGE),
       });
 
-      const res = await fetch(`/api/jobs/list?${params}`);
+      const res = await fetch(`/api/jobs?${params}`);
       if (!res.ok) throw new Error('API 오류');
 
       const data = await res.json();

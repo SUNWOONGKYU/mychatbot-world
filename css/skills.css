@@ -205,6 +205,8 @@
   align-items: center;
   gap: 1rem;
   flex-shrink: 0;
+  min-width: 0;
+  overflow: visible;
 }
 
 /* 무료 토글 */
@@ -263,12 +265,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .sk-sort-label {
   font-size: 0.85rem;
   color: var(--sk-text-dim);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sk-sort-select {
@@ -1099,6 +1103,11 @@
   .sk-toolbar-right {
     flex-wrap: wrap;
     gap: 0.75rem;
+    width: 100%;
+  }
+
+  .sk-sort-wrap {
+    flex-shrink: 0;
   }
 
   .sk-detail-header {

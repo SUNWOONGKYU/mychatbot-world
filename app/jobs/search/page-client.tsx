@@ -237,7 +237,7 @@ function SearchContent() {
       let totalCount = 0;
 
       try {
-        const res = await fetch(`/api/jobs/list?${botParams}`);
+        const res = await fetch(`/api/jobs?${botParams}`);
         if (res.ok) {
           const data = await res.json();
           items = data.items ?? [];
