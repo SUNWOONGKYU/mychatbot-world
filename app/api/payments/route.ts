@@ -180,11 +180,13 @@ export async function GET(req: NextRequest) {
     const items = (data as PaymentRow[]).map((p: any) => ({
       id: p.id,
       amount: p.amount,
+      credits: p.credit_amount ?? p.amount,
+      method: p.payment_type,
       status: p.status,
-      paymentType: p.payment_type,
+      depositor_name: (p.metadata as { depositor_name?: string } | null)?.depositor_name ?? null,
       description: p.description,
-      confirmedAt: p.confirmed_at,
-      createdAt: p.created_at,
+      confirmed_at: p.confirmed_at,
+      created_at: p.created_at,
     }));
 
     return NextResponse.json({ items, pagination });

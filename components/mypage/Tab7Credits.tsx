@@ -20,7 +20,7 @@ interface PaymentHistory {
   amount: number;
   credits: number;
   method: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending' | 'completed' | 'cancelled' | 'refunded';
   depositor_name: string | null;
   created_at: string;
 }
@@ -52,8 +52,9 @@ function formatDate(iso: string): string {
 function PaymentStatusBadge({ status }: { status: PaymentHistory['status'] }) {
   const map = {
     pending:   { label: '입금 대기', cls: 'bg-warning/15 text-warning border-warning/30' },
-    confirmed: { label: '완료',     cls: 'bg-success/15 text-success border-success/30' },
+    completed: { label: '충전 완료', cls: 'bg-success/15 text-success border-success/30' },
     cancelled: { label: '취소',     cls: 'bg-error/15 text-error border-error/30' },
+    refunded:  { label: '환불',     cls: 'bg-bg-muted text-text-muted border-border' },
   };
   const { label, cls } = map[status];
   return (
