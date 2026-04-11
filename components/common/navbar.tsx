@@ -61,7 +61,7 @@ export function Navbar() {
           : 'bg-surface border-border',
       )}
     >
-      <div className="mx-auto flex items-center justify-between h-16 px-4 md:px-6" style={{ maxWidth: '1280px' }}>
+      <div className="mx-auto grid h-16 items-center px-4 md:px-6" style={{ maxWidth: '1280px', gridTemplateColumns: '1fr auto 1fr' }}>
       {/* 로고 — 바닐라 원본 */}
       <Link
         href="/"
@@ -119,7 +119,7 @@ export function Navbar() {
       </nav>
 
       {/* 우측 액션 영역 */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 justify-self-end">
         {/* 알림 벨 아이콘 */}
         <button
           type="button"
