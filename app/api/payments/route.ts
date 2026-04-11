@@ -261,7 +261,7 @@ export async function POST(req: NextRequest) {
         bank_name: bankName,
         account_number: accountNumber,
         account_holder: accountHolder,
-        ...(depositor_name ? { description: `입금자명: ${depositor_name}` } : {}),
+        ...(depositor_name ? { metadata: { depositor_name } } : {}),
       })
       .select('id, amount, status, created_at')
       .single();
