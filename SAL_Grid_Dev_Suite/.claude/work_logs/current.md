@@ -32,6 +32,12 @@
 - **문제**: Tab2 "내보내기" 버튼이 존재하지 않는 엔드포인트 호출로 조용히 실패
 - **구현**: Bearer 토큰 인증, 소유권 확인 후 챗봇 JSON 다운로드 응답
 
+### [Agenda M1] Tab5 HiredTab mock → 실DB 연동 (2026-04-11)
+- **파일**: `components/mypage/Tab5Operations.tsx`, `app/api/operations/hired-bots/route.ts` (신규)
+- **문제**: HiredTab 구봇 목록이 하드코딩 mock 데이터 사용
+- **구현**: `/api/operations/hired-bots` — job_postings+job_matches+mcw_bots(React) → bot_jobs+job_applications+bots(Vanilla) 순서로 시도, 42P01 시 빈 배열 반환
+- **SAL Grid**: S5FE11 modification_history 업데이트
+
 ### [FIX 5] Tab3 파일 업로드 필드 불일치 수정 (세션3)
 - **파일**: `components/mypage/Tab3Learning.tsx`, `app/api/kb/upload/route.ts`
 - **문제 1**: Tab3가 `files` (복수) 키로 전송, API가 `file` (단수) 기대 → 파일 미인식

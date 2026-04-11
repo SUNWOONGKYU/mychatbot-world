@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "components/mypage/Tab5Operations.tsx, components/mypage/Tab6Inheritance.tsx, components/mypage/Tab7Credits.tsx, components/mypage/Tab8Security.tsx, app/mypage/page-client.tsx (수정: Tab5~8 import 및 연결), SAL_Grid_Dev_Suite/Process/S5_디자인혁신/Frontend/components/mypage/ (4파일 원본), SAL_Grid_Dev_Suite/Process/S5_디자인혁신/Frontend/app/mypage/page-client.tsx (수정)",
-  "modification_history": "2026-04-07: S5FE11 구현 완료 — 탭5(구직/구봇/수익/통계), 탭6(페르소나 상속+제외항목), 탭7(크레딧 Anthropic스타일), 탭8(보안) | 2026-04-11: Tab8Security 로그아웃 수정 — localStorage/sessionStorage 제거 전 supabase.auth.signOut() 호출 추가 (서버 세션 정리)",
+  "modification_history": "2026-04-07: S5FE11 구현 완료 — 탭5(구직/구봇/수익/통계), 탭6(페르소나 상속+제외항목), 탭7(크레딧 Anthropic스타일), 탭8(보안) | 2026-04-11: Tab8Security 로그아웃 수정 — localStorage/sessionStorage 제거 전 supabase.auth.signOut() 호출 추가 (서버 세션 정리) | 2026-04-11: Tab5 HiredTab mock 제거 — /api/operations/hired-bots 신규 생성 및 실DB 연동 (Agenda M1)",
   "verification_instruction": "sal-grid/verification-instructions/S5FE11_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {

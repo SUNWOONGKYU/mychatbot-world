@@ -186,19 +186,18 @@ function HiredTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data — API 연동 시 /api/operations/hired-bots
-    setBots([
-      {
-        id: '1',
-        bot_name: '배송조회봇',
-        owner: 'user123@example.com',
-        contract_until: '2026-06-30T00:00:00Z',
-        price_per_unit: 500,
-        performance_score: 4.7,
-        cost_total: 125000,
-      },
-    ]);
-    setLoading(false);
+    async function load() {
+      try {
+        const res = await fetch('/api/operations/hired-bots', { headers: authHeaders() });
+        if (res.ok) {
+          const d = await res.json();
+          setBots(d?.hired_bots ?? []);
+        }
+      } catch { /* silent */ } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   return (
