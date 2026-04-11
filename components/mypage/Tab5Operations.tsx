@@ -87,18 +87,29 @@ function JobTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data — API 연동 시 /api/operations/job-postings
-    setPostings([
-      {
-        id: '1',
-        bot_name: '고객상담봇',
-        title: '쇼핑몰 고객상담 챗봇 구인',
-        status: 'active',
-        applicants: 3,
-        created_at: '2026-04-01T00:00:00Z',
-      },
-    ]);
-    setLoading(false);
+    async function load() {
+      try {
+        const res = await fetch('/api/jobs?limit=20', { headers: authHeaders() });
+        if (res.ok) {
+          const d = await res.json();
+          // /api/jobs 응답: { jobs: [...], total }
+          const raw: any[] = d?.jobs ?? d ?? [];
+          setPostings(
+            raw.map((j: any) => ({
+              id: j.id,
+              bot_name: j.bot_name ?? j.title ?? '챗봇',
+              title: j.title ?? '(제목 없음)',
+              status: j.status === 'open' ? 'active' : 'closed',
+              applicants: j.applicant_count ?? j.applicants ?? 0,
+              created_at: j.created_at,
+            }))
+          );
+        }
+      } catch { /* silent */ } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
 
   return (
@@ -260,21 +271,37 @@ function HiredTab() {
 // ── 수익 관리 탭 ─────────────────────────────────────────────
 
 function RevenueTab() {
-  const [types, setTypes] = useState<RevenueType[]>([
-    { id: '1', name: '상담료', price_per_unit: 10000, unit: '건' },
-    { id: '2', name: '예약 수수료', price_per_unit: 5000, unit: '건' },
-  ]);
-  const [records] = useState<RevenueRecord[]>([
-    { date: '2026-04-07', type_name: '상담료', amount: 50000 },
-    { date: '2026-04-06', type_name: '예약 수수료', amount: 25000 },
-    { date: '2026-04-05', type_name: '상담료', amount: 70000 },
-  ]);
+  const [types, setTypes] = useState<RevenueType[]>([]);
+  const [records, setRecords] = useState<RevenueRecord[]>([]);
+  const [revenueLoading, setRevenueLoading] = useState(true);
   const [addingType, setAddingType] = useState(false);
   const [newTypeName, setNewTypeName] = useState('');
   const [newTypePrice, setNewTypePrice] = useState('');
   const [newTypeUnit, setNewTypeUnit] = useState('건');
   const [period, setPeriod] = useState<'day' | 'week' | 'month'>('week');
   const [settleMsg, setSettleMsg] = useState('');
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`/api/revenue?period=daily`, { headers: authHeaders() });
+        if (res.ok) {
+          const d = await res.json();
+          const daily: any[] = d?.daily ?? [];
+          setRecords(
+            daily.map((r: any) => ({
+              date: r.date,
+              type_name: '수익',
+              amount: r.net_amount ?? r.gross_amount ?? 0,
+            }))
+          );
+        }
+      } catch { /* silent */ } finally {
+        setRevenueLoading(false);
+      }
+    }
+    load();
+  }, []);
 
   function addType() {
     if (!newTypeName.trim() || !newTypePrice) return;
@@ -449,12 +476,35 @@ function RevenueTab() {
 // ── 운영 통계 탭 ─────────────────────────────────────────────
 
 function StatsTab() {
-  const stats: OperationStats = {
-    total_conversations: 1284,
-    satisfaction_rate: 94.2,
-    revenue_job: 380000,
-    cost_hired: 125000,
-  };
+  const [stats, setStats] = useState<OperationStats>({
+    total_conversations: 0,
+    satisfaction_rate: 0,
+    revenue_job: 0,
+    cost_hired: 0,
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch('/api/revenue', { headers: authHeaders() });
+        if (res.ok) {
+          const d = await res.json();
+          const s = d?.summary;
+          if (s) {
+            setStats(prev => ({
+              ...prev,
+              revenue_job: s.total_net ?? s.total_gross ?? 0,
+              total_conversations: s.total_transactions ?? 0,
+            }));
+          }
+        }
+      } catch { /* silent */ } finally {
+        setStatsLoading(false);
+      }
+    }
+    load();
+  }, []);
 
   const netProfit = stats.revenue_job - stats.cost_hired;
 

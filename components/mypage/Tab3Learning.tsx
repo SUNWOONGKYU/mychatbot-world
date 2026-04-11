@@ -5,7 +5,7 @@
  */
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 
 type KbTab = 'file' | 'text' | 'obsidian';
@@ -211,6 +211,104 @@ function KbInjectPanel() {
   );
 }
 
+// ── Wiki 섹션 컴포넌트들 ──────────────────────────────────────────────────
+
+function WikiPagesSection() {
+  const [pages, setPages] = useState<{ id: string; title: string; updated_at: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch('/api/wiki/pages', { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setPages(d?.pages ?? d?.data ?? []); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+  if (loading) return <p className="text-sm text-[rgb(var(--text-muted))] text-center py-3">로딩 중...</p>;
+  if (pages.length === 0) return <p className="text-sm text-[rgb(var(--text-muted))] text-center py-3">Wiki 페이지가 없습니다. Wiki 자동 생성을 먼저 실행하세요.</p>;
+  return (
+    <div className="space-y-2">
+      {pages.slice(0, 10).map(p => (
+        <div key={p.id} className="flex items-center justify-between px-3 py-2 rounded bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))]">
+          <span className="text-sm text-[rgb(var(--text-primary))]">{p.title}</span>
+          <span className="text-xs text-[rgb(var(--text-muted))]">{p.updated_at ? new Date(p.updated_at).toLocaleDateString('ko-KR') : ''}</span>
+        </div>
+      ))}
+      {pages.length > 10 && <p className="text-xs text-[rgb(var(--text-muted))] text-center">외 {pages.length - 10}개</p>}
+    </div>
+  );
+}
+
+function WikiGraphSection() {
+  return (
+    <div className="py-4 text-center">
+      <p className="text-3xl mb-2">🕸️</p>
+      <p className="text-sm text-[rgb(var(--text-secondary))]">Wiki 그래프 시각화</p>
+      <a href="/wiki/graph" className="mt-2 inline-block text-xs text-[rgb(var(--color-primary))] hover:underline">그래프 뷰 열기 →</a>
+    </div>
+  );
+}
+
+function WikiLintSection() {
+  const [result, setResult] = useState<{ score: number; issues: string[] } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const run = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/wiki/lint', { headers: authHeaders() });
+      if (res.ok) {
+        const d = await res.json();
+        setResult({ score: d?.score ?? 100, issues: d?.issues ?? [] });
+      }
+    } catch {} finally { setLoading(false); }
+  };
+  return (
+    <div className="space-y-3">
+      <button onClick={run} disabled={loading}
+        className="px-4 py-2 text-sm rounded-[var(--radius-md)] bg-[rgb(var(--color-primary))] text-white font-semibold hover:opacity-90 disabled:opacity-50">
+        {loading ? '검사 중...' : '품질 점검 실행'}
+      </button>
+      {result && (
+        <div>
+          <p className="text-sm font-semibold text-[rgb(var(--text-primary))]">품질 점수: <span className="text-[rgb(var(--color-success))]">{result.score}점</span></p>
+          {result.issues.length === 0
+            ? <p className="text-xs text-[rgb(var(--color-success))] mt-1">문제가 없습니다.</p>
+            : <ul className="mt-2 space-y-1">{result.issues.map((issue, i) => (
+                <li key={i} className="text-xs text-[rgb(var(--color-warning))]">• {issue}</li>
+              ))}</ul>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function WikiGrowthSection() {
+  const [stats, setStats] = useState<{ kb_count: number; wiki_count: number; faq_count: number } | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch('/api/wiki/accumulate', { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setStats({ kb_count: d?.kb_count ?? 0, wiki_count: d?.wiki_count ?? 0, faq_count: d?.faq_count ?? 0 }); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+  if (loading) return <p className="text-sm text-[rgb(var(--text-muted))] text-center py-3">로딩 중...</p>;
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {[
+        { label: 'KB 문서', value: stats?.kb_count ?? 0, icon: '📚' },
+        { label: 'Wiki 페이지', value: stats?.wiki_count ?? 0, icon: '📄' },
+        { label: 'FAQ', value: stats?.faq_count ?? 0, icon: '❓' },
+      ].map(item => (
+        <div key={item.label} className="bg-[rgb(var(--bg-surface))] rounded-[var(--radius-md)] border border-[rgb(var(--border))] p-3 text-center">
+          <p className="text-2xl mb-1">{item.icon}</p>
+          <p className="text-xl font-bold text-[rgb(var(--text-primary))]">{item.value}</p>
+          <p className="text-xs text-[rgb(var(--text-muted))]">{item.label}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Wiki-e-RAG 패널 ──────────────────────────────────────────────────────
 
 function WikiRAGPanel() {
@@ -303,11 +401,10 @@ function WikiRAGPanel() {
                     )}
                   </div>
                 )}
-                {section.id !== 'ingest' && (
-                  <p className="text-sm text-[rgb(var(--text-muted))] text-center py-4">
-                    {section.label} — 추후 연동 예정
-                  </p>
-                )}
+                {section.id === 'pages' && <WikiPagesSection />}
+                {section.id === 'graph' && <WikiGraphSection />}
+                {section.id === 'lint' && <WikiLintSection />}
+                {section.id === 'growth' && <WikiGrowthSection />}
               </div>
             )}
           </div>
@@ -327,18 +424,54 @@ interface FaqItem {
 
 function FaqPanel() {
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [q, setQ] = useState('');
   const [a, setA] = useState('');
 
-  const handleAdd = () => {
-    if (!q.trim() || !a.trim()) return;
-    const newFaq: FaqItem = { id: `faq-${Date.now()}`, question: q.trim(), answer: a.trim() };
-    setFaqs(prev => [...prev, newFaq]);
-    setQ(''); setA(''); setAdding(false);
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch('/api/faq', { headers: authHeaders() });
+        if (res.ok) {
+          const d = await res.json();
+          const items: any[] = d?.faqs ?? d?.items ?? d ?? [];
+          setFaqs(items.map((f: any) => ({ id: f.id, question: f.question, answer: f.answer })));
+        }
+      } catch { /* silent */ } finally { setLoading(false); }
+    }
+    load();
+  }, []);
+
+  const handleAdd = async () => {
+    if (!q.trim() || !a.trim() || saving) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/faq', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ question: q.trim(), answer: a.trim() }),
+      });
+      const d = await res.json();
+      const newFaq: FaqItem = res.ok && d.data
+        ? { id: d.data.id, question: d.data.question, answer: d.data.answer }
+        : { id: `faq-${Date.now()}`, question: q.trim(), answer: a.trim() };
+      setFaqs(prev => [...prev, newFaq]);
+      setQ(''); setA(''); setAdding(false);
+    } catch {
+      setFaqs(prev => [...prev, { id: `faq-${Date.now()}`, question: q.trim(), answer: a.trim() }]);
+      setQ(''); setA(''); setAdding(false);
+    } finally { setSaving(false); }
   };
 
-  const handleDelete = (id: string) => setFaqs(prev => prev.filter(f => f.id !== id));
+  const handleDelete = async (id: string) => {
+    setFaqs(prev => prev.filter(f => f.id !== id));
+    if (id.startsWith('faq-')) return;
+    try {
+      await fetch(`/api/faq/${id}`, { method: 'DELETE', headers: authHeaders() });
+    } catch { /* silent */ }
+  };
 
   return (
     <div
@@ -397,7 +530,9 @@ function FaqPanel() {
         </div>
       )}
 
-      {faqs.length === 0 ? (
+      {loading ? (
+        <p className="text-sm text-[rgb(var(--text-muted))] text-center py-6">로딩 중...</p>
+      ) : faqs.length === 0 ? (
         <p className="text-sm text-[rgb(var(--text-muted))] text-center py-6">아직 FAQ가 없습니다.</p>
       ) : (
         <div className="space-y-3">
