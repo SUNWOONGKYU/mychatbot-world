@@ -258,13 +258,9 @@ async function searchWiki(
       .map((r: any) => `[위키: ${r.title}]\n${r.content}`)
       .join('\n\n');
 
-    // view_count 비동기 업데이트 (실패해도 무시)
+    // view_count 비동기 업데이트 — raw SQL increment via RPC (실패해도 무시)
     const ids: string[] = data.map((r: any) => r.id as string);
-    void supabase
-      .from('wiki_pages')
-      .update({ view_count: (supabase as any).rpc('view_count + 1') })
-      .in('id', ids)
-      .then(() => {});
+    void supabase.rpc('increment_wiki_view_count', { page_ids: ids }).then(() => {});
 
     return { content, titles };
   } catch {
@@ -280,13 +276,14 @@ function triggerWikiAccumulate(
   botId: string,
   question: string,
   answer: string,
-  appUrl: string
+  appUrl: string,
+  conversationId: string
 ): void {
   const url = `${appUrl}/api/wiki/accumulate`;
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ bot_id: botId, question, answer }),
+    body: JSON.stringify({ bot_id: botId, question, answer, conversation_id: conversationId }),
   }).catch((e) => {
     console.warn('[chat/route] wiki accumulate failed:', (e as Error).message);
   });
@@ -432,7 +429,7 @@ async function chatCompletionWithFallback(
         clearTimeout(timeoutId);
         if (e instanceof Error && e.name === 'AbortError') {
           console.warn(`[chat/route] ${model} timeout (30s)`);
-          return NextResponse.json({ error: 'AI 응답 시간이 초과되었습니다.' }, { status: 504 }) as never;
+          throw new Error('AI_TIMEOUT');
         }
         throw e;
       }
@@ -479,7 +476,7 @@ async function chatCompletionWithFallback(
             clearTimeout(retryTimeoutId);
             if (e instanceof Error && e.name === 'AbortError') {
               console.warn(`[chat/route] ${model} retry timeout (30s)`);
-              return NextResponse.json({ error: 'AI 응답 시간이 초과되었습니다.' }, { status: 504 }) as never;
+              throw new Error('AI_TIMEOUT');
             }
             throw e;
           }
@@ -642,7 +639,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // 13. Wiki accumulate 비동기 호출 (복리 축적, 실패해도 무시)
     const appUrl =
       process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
-    triggerWikiAccumulate(botId, message, reply, appUrl);
+    triggerWikiAccumulate(botId, message, reply, appUrl, conversationId);
 
     // 14. JSON 응답 반환
     const responseBody: ChatResponseBody = {
@@ -661,6 +658,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       err instanceof Error ? err.message : 'Internal server error';
     console.error('[POST /api/chat] Error:', message);
 
+    if (message === 'AI_TIMEOUT') {
+      return NextResponse.json({ error: 'AI 응답 시간이 초과되었습니다.' }, { status: 504 });
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

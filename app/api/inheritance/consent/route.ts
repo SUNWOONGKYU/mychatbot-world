@@ -122,8 +122,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   // 크리에이터(소유자) 정보 일괄 조회
   const ownerIds = [...new Set(settings.map((s: any) => s.owner_id))];
   const { data: owners } = await (supabase as any)
-    .from('users')
-    .select('id, email, display_name')
+    .from('profiles')
+    .select('id, display_name')
     .in('id', ownerIds)
     ;
 
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const inheritanceIds = settings.map((s: any) => s.id);
   const { data: personaSettings } = await (supabase as any)
     .from('mcw_inheritance_persona_settings')
-    .select('inheritance_id, persona_id, allowed, chatbots(id, name)')
+    .select('inheritance_id, persona_id, allowed, mcw_bots(id, bot_name)')
     .in('inheritance_id', inheritanceIds)
     ;
 

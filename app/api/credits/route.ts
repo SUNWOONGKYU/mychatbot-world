@@ -151,10 +151,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 환경변수에서 은행 정보 로드
-    const bankName = process.env.PAYMENT_BANK_NAME ?? '국민은행';
-    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER ?? '123-456-789';
-    const accountHolder = process.env.PAYMENT_ACCOUNT_HOLDER ?? 'MCW';
+    // 환경변수에서 은행 정보 로드 (미설정 시 결제 불가 처리)
+    const bankName = process.env.PAYMENT_BANK_NAME;
+    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER;
+    const accountHolder = process.env.PAYMENT_ACCOUNT_HOLDER;
+    if (!bankName || !accountNumber || !accountHolder) {
+      return NextResponse.json(
+        { error: '결제 서비스가 준비 중입니다. 잠시 후 다시 시도해주세요.' },
+        { status: 503 },
+      );
+    }
 
     // mcw_payments에 pending 레코드 생성
     const { data: payment, error: insertError } = await (supabase as any)

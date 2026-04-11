@@ -41,14 +41,13 @@ async function authenticate(supabase: ReturnType<typeof createClient>, authHeade
 async function checkIsAdmin(supabase: ReturnType<typeof createClient>, userId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
-      .from('users')
-      .select('role, is_admin')
+      .from('profiles')
+      .select('is_admin')
       .eq('id', userId)
       .single();
 
     if (error || !data) return false;
-    return (data as { role: string; is_admin: boolean }).role === 'admin' ||
-      (data as { role: string; is_admin: boolean }).is_admin === true;
+    return (data as { is_admin: boolean }).is_admin === true;
   } catch {
     return false;
   }
