@@ -6,11 +6,14 @@
  * - PATCH  /api/faq/{id}  FAQ 항목 수정 (question, answer, order_index)
  * - DELETE /api/faq/{id}  FAQ 항목 삭제
  *
- * 인증: Supabase Auth 세션 필수
+ * 인증: Bearer 토큰 필수
  */
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -27,23 +30,19 @@ interface UpdateFaqBody {
 // PATCH /api/faq/{id}
 // ────────────────────────────────────────────────────────────────
 
-/**
- * FAQ 항목 수정
- * @param request - { question?, answer?, order_index? }
- * @param context - URL 파라미터 { id }
- */
 export async function PATCH(
   request: NextRequest,
   context: RouteContext
 ): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-  const {
-    data: { session },
-    error: authError,
-  } = await supabase.auth.getSession();
-
-  if (authError || !session) {
+  if (authError || !user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
   }
 
@@ -90,23 +89,19 @@ export async function PATCH(
 // DELETE /api/faq/{id}
 // ────────────────────────────────────────────────────────────────
 
-/**
- * FAQ 항목 삭제
- * @param _request - 사용하지 않음
- * @param context - URL 파라미터 { id }
- */
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   context: RouteContext
 ): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-  const {
-    data: { session },
-    error: authError,
-  } = await supabase.auth.getSession();
-
-  if (authError || !session) {
+  if (authError || !user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
   }
 
