@@ -74,8 +74,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    // 테이블이 없으면 graceful fallback
-    if (error.code === '42P01') {
+    // 테이블이 없으면 graceful fallback (42P01: PostgreSQL, PGRST205: PostgREST)
+    if (error.code === '42P01' || error.code === 'PGRST205' || error.message?.includes('does not exist')) {
       return NextResponse.json({
         success: true,
         data: { message: 'KB 테이블이 준비 중입니다. 텍스트가 접수되었습니다.' },

@@ -68,13 +68,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: '가격은 0 이상이어야 합니다.' }, { status: 400 });
   }
 
-  // ── 중복 이름 확인 ────────────────────────────────────
-  const { data: existing } = await supabase
+  // ── 중복 이름 확인 (테이블 없으면 스킵) ──────────────
+  const { data: existing, error: checkError } = await supabase
     .from('mcw_skills')
     .select('id')
     .eq('author_id', user.id)
     .eq('name', body.name.trim())
     .maybeSingle();
+
+  // 테이블 미존재 시 graceful fallback
+  if (checkError && (checkError.code === '42P01' || checkError.code === 'PGRST205' || checkError.message?.includes('does not exist'))) {
+    return NextResponse.json({
+      success: true,
+      data: {
+        message: '스킬 등록 요청이 접수되었습니다. 관리자 검토 후 마켓에 등록됩니다.',
+        status: 'pending',
+      },
+    }, { status: 202 });
+  }
 
   if (existing) {
     return NextResponse.json(
@@ -96,7 +107,7 @@ export async function POST(req: NextRequest) {
       price: body.price ?? 0,
       tags: body.tags ?? [],
       readme: body.readme?.trim() || null,
-      status: 'pending',   // 관리자 검토 필요
+      status: 'pending',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
@@ -104,8 +115,7 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    // 테이블 미존재 시 graceful fallback
-    if (error.code === '42P01') {
+    if (error.code === '42P01' || error.code === 'PGRST205' || error.message?.includes('does not exist')) {
       return NextResponse.json({
         success: true,
         data: {

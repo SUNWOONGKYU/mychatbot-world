@@ -7,47 +7,43 @@
  * - DELETE /api/bots?id={botId}  챗봇 삭제
  *
  * 테이블: mcw_bots (user_id, name, description, deploy_url, qr_svg, ...)
- * 인증: Supabase Auth 세션 필수
+ * 인증: Bearer 토큰 필수
  */
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // ── 타입 정의 ─────────────────────────────────────────────────
 
 /** 챗봇 항목 */
 interface BotItem {
   id: string;
-  user_id: string;
-  name: string;
-  description: string | null;
-  deploy_url: string | null;
-  qr_svg: string | null;
+  owner_id: string;
+  username: string;
+  bot_name: string;
+  bot_desc: string | null;
+  emoji: string | null;
+  category: string | null;
   created_at: string;
   updated_at: string;
 }
 
 // ── GET /api/bots ─────────────────────────────────────────────
 
-/**
- * 로그인 사용자의 챗봇 목록 조회
- * @param request - Next.js Request
- * @returns 챗봇 목록 { success, data: { bots, count } }
- */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-  // 인증 확인
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 },
-    );
+  if (authError || !user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -57,15 +53,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data: bots, error, count } = await supabase
     .from('mcw_bots')
     .select('*', { count: 'exact' })
-    .eq('user_id', session.user.id)
+    .eq('owner_id', user.id)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (error) {
-    return NextResponse.json(
-      { success: false, error: error.message, data: null },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: error.message, data: null }, { status: 500 });
   }
 
   return NextResponse.json({
@@ -79,48 +72,34 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 // ── DELETE /api/bots?id={botId} ───────────────────────────────
 
-/**
- * 챗봇 삭제
- * @param request - Next.js Request (쿼리: id 필수)
- * @returns 삭제 결과 { success }
- */
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 },
-    );
+  if (authError || !user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
   const botId = searchParams.get('id');
 
   if (!botId) {
-    return NextResponse.json(
-      { success: false, error: 'id 파라미터가 필요합니다.', data: null },
-      { status: 400 },
-    );
+    return NextResponse.json({ success: false, error: 'id 파라미터가 필요합니다.', data: null }, { status: 400 });
   }
 
-  // 소유권 확인 후 삭제
   const { error } = await supabase
     .from('mcw_bots')
     .delete()
     .eq('id', botId)
-    .eq('user_id', session.user.id);
+    .eq('owner_id', user.id);
 
   if (error) {
-    return NextResponse.json(
-      { success: false, error: error.message, data: null },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: error.message, data: null }, { status: 500 });
   }
 
   return NextResponse.json({ success: true, data: null });
