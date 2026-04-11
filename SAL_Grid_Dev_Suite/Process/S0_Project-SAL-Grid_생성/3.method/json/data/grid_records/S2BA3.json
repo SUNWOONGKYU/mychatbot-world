@@ -17,7 +17,7 @@
   "execution_type": "AI-Only",
   "priority": "High",
   "generated_files": "",
-  "modification_history": "",
+  "modification_history": "2026-04-11: POST /api/kb/text 신규 생성 — Tab3 텍스트 직접 입력 기능 지원, Bearer 토큰 인증, chatbot_id 미제공 시 사용자 첫 번째 봇 자동 선택",
   "verification_instruction": "sal-grid/verification-instructions/S2BA3_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {},
