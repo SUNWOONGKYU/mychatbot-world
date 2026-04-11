@@ -17,6 +17,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit, RATE_PAYMENTS } from '@/lib/rate-limiter';
 
 // ── API 과금 유틸리티 ─────────────────────────────────────────────────────
 
@@ -207,6 +208,14 @@ interface PaymentRequest {
  * Response: { paymentId, amount, status: 'pending', bankInfo, message, createdAt }
  */
 export async function POST(req: NextRequest) {
+  // Rate Limiting: 무통장 입금 요청은 분당 5회로 제한
+  const rl = rateLimit(req, RATE_PAYMENTS, 'payments:post');
+  if (!rl.allowed) {
+    return NextResponse.json({ error: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.' }, {
+      status: 429,
+      headers: { 'Retry-After': String(rl.retryAfterSec) },
+    });
+  }
   try {
     const supabase = getSupabase();
     const { userId, error: authError } = await authenticate(

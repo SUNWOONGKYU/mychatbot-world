@@ -17,21 +17,12 @@
  * - service_role 키로 RLS 우회
  */
 
-import { createClient } from '@supabase/supabase-js';
+
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin, getAdminSupabase } from '@/lib/admin-auth';
+import { rateLimit, RATE_ADMIN } from '@/lib/rate-limiter';
 
-// ── 관리자 인증 ────────────────────────────────────────────────────────────
-
-function getAdminSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-}
-
-async function requireAdmin(req: NextRequest): Promise<{ authorized: boolean }> {
+> {
   const adminKey = process.env.ADMIN_API_KEY;
   if (!adminKey) {
     console.error('[admin/stats] ADMIN_API_KEY env var not set');

@@ -1,10 +1,10 @@
 # My Chatbot World — Task Plan
 
 > **작성일**: 2026-03-31
-> **수정일**: 2026-04-08
-> **버전**: v3.3
+> **수정일**: 2026-04-12
+> **버전**: v3.4
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 77개 (v3.3 Critical 유지보수성 이슈 2건 추가)
+> **총 Task 수**: 79개 (v3.4 보안 강화 S4SC4/S4SC5 소급 추가)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -143,6 +143,8 @@
 | S4SC1 | API 키 하드코딩 제거 + secrets.js 정리 | SC | — | `security-specialist-core` | Completed |
 | S4SC2 | mcw_chat_logs RLS 보안 강화 | SC | — | `security-specialist-core` | Completed |
 | S4SC3 | STT/TTS API 인증 추가 + CORS 도메인 제한 | SC | — | `security-specialist-core` | Completed |
+| S4SC4 | 관리자 권한 미들웨어 (lib/admin-auth.ts) | SC | S1SC1, S2SC1 | `security-specialist-core` | Completed |
+| S4SC5 | 보안 강화 — Admin Auth 재작성 + Rate Limiting + 라우트 중앙화 | SC | S4SC4 | `security-specialist-core` | Completed |
 | S4DB2 | 테이블명 불일치 통일 (mcw_ prefix) | DB | — | `database-developer-core` | Completed |
 | S4DB3 | 커뮤니티 테이블 5개 마이그레이션 추가 | DB | — | `database-developer-core` | Completed |
 | S4FE4 | faq.html CSS/JS 경로 수정 | FE | — | `frontend-developer-core` | Completed |

@@ -14,12 +14,14 @@
  *  { users: [...], total, page, totalPages }
  *
  * 보안:
- * - requireAdmin() — X-Admin-Key 헤더 검증
+ * - requireAdmin() — Bearer JWT + profiles.is_admin 검증 (lib/admin-auth)
  * - service_role 키로 RLS 우회 + auth.users 접근
+ * - Rate Limiting: 분당 30회
  */
 
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin, getAdminSupabase } from '@/lib/admin-auth';
+import { rateLimit, RATE_ADMIN } from '@/lib/rate-limiter';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────
 
@@ -38,26 +40,7 @@ interface CreditRow {
   updated_at: string;
 }
 
-// ── 관리자 인증 ────────────────────────────────────────────────────────────
-
-function getAdminSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-}
-
-async function requireAdmin(req: NextRequest): Promise<{ authorized: boolean }> {
-  const adminKey = process.env.ADMIN_API_KEY;
-  if (!adminKey) {
-    console.error('[admin/users] ADMIN_API_KEY env var not set');
-    return { authorized: false };
-  }
-  const provided = req.headers.get('X-Admin-Key');
-  return { authorized: provided === adminKey };
-}
+// requireAdmin, getAdminSupabase → lib/admin-auth 에서 import
 
 // ── GET /api/admin/users ──────────────────────────────────────────────────
 
@@ -68,6 +51,14 @@ async function requireAdmin(req: NextRequest): Promise<{ authorized: boolean }> 
  * Response: { users, total, page, totalPages }
  */
 export async function GET(req: NextRequest) {
+  // Rate Limiting
+  const rl = rateLimit(req, RATE_ADMIN, 'admin:users');
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Too many requests' }, {
+      status: 429,
+      headers: { 'Retry-After': String(rl.retryAfterSec) },
+    });
+  }
   try {
     const auth = await requireAdmin(req);
     if (!auth.authorized) {
