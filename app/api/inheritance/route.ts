@@ -223,11 +223,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { data: heirUser } = await (supabase as any)
-    .from('users')
-    .select('id')
-    .eq('email', heirEmail)
-    .maybeSingle();
+  const { data: heirUserResult } = await (supabase as any).auth.admin.getUserByEmail(heirEmail);
+  const heirUser = heirUserResult?.user ? { id: heirUserResult.user.id } : null;
 
   const now = new Date().toISOString();
 
