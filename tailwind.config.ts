@@ -14,6 +14,15 @@ const config: Config = {
     './lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    // .container → 자동 가운데 정렬 + 좌우 패딩
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        sm: '1.5rem',
+        lg: '2rem',
+      },
+    },
     extend: {
       // ── 색상 토큰 ─────────────────────────────────────────────────
       colors: {
