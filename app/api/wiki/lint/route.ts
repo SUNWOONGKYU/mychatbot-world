@@ -57,9 +57,14 @@ function titleSimilarity(a: string, b: string): number {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const supabase = getSupabase();
 
-  // 인증 확인
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError || !session) {
+  // 인증 확인 (Bearer 토큰)
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error: sessionError } = await supabase.auth.getUser(token);
+  if (sessionError || !user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
@@ -80,7 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', body.bot_id)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (botError || !bot) {
