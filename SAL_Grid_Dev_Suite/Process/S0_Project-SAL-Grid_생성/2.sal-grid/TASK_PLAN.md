@@ -2,9 +2,9 @@
 
 > **작성일**: 2026-03-31
 > **수정일**: 2026-04-12
-> **버전**: v3.4
+> **버전**: v3.5
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 79개 (v3.4 보안 강화 S4SC4/S4SC5 소급 추가)
+> **총 Task 수**: 81개 (v3.5 SMS DB/BA 신규 2개 추가 — S4DB4, S4BA8)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -147,6 +147,8 @@
 | S4SC5 | 보안 강화 — Admin Auth 재작성 + Rate Limiting + 라우트 중앙화 | SC | S4SC4 | `security-specialist-core` | Completed |
 | S4DB2 | 테이블명 불일치 통일 (mcw_ prefix) | DB | — | `database-developer-core` | Completed |
 | S4DB3 | 커뮤니티 테이블 5개 마이그레이션 추가 | DB | — | `database-developer-core` | Completed |
+| S4DB4 | SMS DB 확장 — mcw_skills 컬럼 추가 + skill_logs 테이블 생성 | DB | S4DB3 | `database-developer-core` | Pending |
+| S4BA8 | SMS 스킬 데이터 DB 이관 — JSON 파일 → mcw_skills 테이블 | BA | S4DB4 | `api-developer-core` | Pending |
 | S4FE4 | faq.html CSS/JS 경로 수정 | FE | — | `frontend-developer-core` | Completed |
 
 ---

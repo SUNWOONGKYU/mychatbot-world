@@ -1,0 +1,27 @@
+{
+  "task_id": "S4DB4",
+  "task_name": "SMS DB 확장 — mcw_skills 컬럼 추가 + skill_logs 테이블 생성",
+  "stage": 4,
+  "area": "DB",
+  "task_status": "In Progress",
+  "task_progress": 50,
+  "verification_status": "Not Verified",
+  "dependencies": "S4DB3",
+  "task_instruction": "sal-grid/task-instructions/S4DB4_instruction.md",
+  "task_agent": "database-developer-core",
+  "verification_agent": "database-developer-core",
+  "generated_files": "supabase/migrations/20260412000001_sms_schema.sql",
+  "remarks": "mcw_bots.id가 TEXT PK이므로 chatbot_id는 반드시 TEXT. UUID로 선언 시 FK 타입 불일치 오류 발생 (확인됨). SQL 파일 생성 완료 — Supabase에서 실행 필요.",
+  "modification_history": "2026-04-12: 신규 생성",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {
+    "environment": "Supabase SQL Editor에서 직접 실행 필요 (Human-AI Task)",
+    "status": "1 Blocker — PO가 SQL 실행해야 완료 가능"
+  },
+  "comprehensive_verification": {},
+  "priority": "High",
+  "created_at": "2026-04-12",
+  "updated_at": "2026-04-12"
+}

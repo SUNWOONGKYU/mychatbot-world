@@ -4,7 +4,7 @@
   "created_at": "2026-03-31",
   "updated_at": "2026-04-12",
   "method_type": "React",
-  "total_tasks": 109,
+  "total_tasks": 111,
   "description": "AI 챗봇 아바타 웹 프로젝트 — React/Next.js 점진적 전환",
   "task_ids": [
     "S1BI1",
@@ -77,6 +77,8 @@
     "S4DB3",
     "S4SC4",
     "S4SC5",
+    "S4DB4",
+    "S4BA8",
     "S4BA7",
     "S4FE5",
     "S5DB1",
