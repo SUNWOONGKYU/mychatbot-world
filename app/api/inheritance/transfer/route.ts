@@ -160,12 +160,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   if (!isRequester && !isOriginalOwner) {
     const { data: userProfile } = await (supabase as any)
-      .from('users')
-      .select('role')
+      .from('profiles')
+      .select('is_admin')
       .eq('id', userId)
       .maybeSingle();
 
-    if (userProfile?.role !== 'admin') {
+    if (!userProfile?.is_admin) {
       return NextResponse.json(
         { success: false, error: '이 전환 요청에 접근할 권한이 없습니다.' },
         { status: 403 }
@@ -244,11 +244,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 관리자 여부 확인
   const { data: userProfile } = await (supabase as any)
-    .from('users')
-    .select('role')
+    .from('profiles')
+    .select('is_admin')
     .eq('id', userId)
     .maybeSingle();
-  const isAdmin = userProfile?.role === 'admin';
+  const isAdmin = userProfile?.is_admin === true;
 
   // 원 소유자의 피상속인 설정 조회
   const { data: inheritanceSetting, error: settingError } = await (supabase as any)
