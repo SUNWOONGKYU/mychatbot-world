@@ -1,4 +1,129 @@
-# Work Log - 2026-04-07 (최신)
+# Work Log - 2026-04-11 (최신)
+
+---
+
+## 세션 종합 정리 — 크레딧 시스템 + S5 Stage Gate 완료 (2026-04-11)
+
+### 작업 상태: ✅ 전체 완료 / Vercel 배포 완료 / GitHub Push 완료
+
+---
+
+### [PART 1] Git 충돌 해소 + GitHub Push
+
+#### 배경
+- 이전 세션에서 크레딧 시스템 커밋(4258e2c) 후 `git pull --rebase` 실패
+- `.git/refs/desktop.ini` 부패 파일 → 수동 삭제로 해소
+
+#### 충돌 해소 과정 (3라운드)
+| 라운드 | 원인 | 해결 방법 |
+|--------|------|----------|
+| 1 | SAL Grid instruction 파일 미추적 상태 충돌 | `git clean -fd SAL_Grid_Dev_Suite/Process/` |
+| 2 | app/admin, create, lib, types 미추적 충돌 | `git clean -fd app/ components/ lib/ types/` |
+| 3 | chat/route.ts, chat-window.tsx, CreditsTab.tsx, pricing.tsx 병합 충돌 | 수동 해소: 크레딧 추가분 유지, theirs 수용 |
+
+#### stash pop 후폭풍 대응
+- 1198개 파일 삭제가 스테이지에 올라간 상황 발생
+- `git reset HEAD -- .` 으로 전체 언스테이지 → 삭제 방지
+
+#### 최종 Push
+- 커밋: `a452046` → `d4378cb..a452046` (GitHub main)
+
+---
+
+### [PART 2] 크레딧 차감 시스템 구현
+
+#### 핵심 로직 (app/api/chat/route.ts)
+```
+CREDITS_PER_TIER = { concise: 8, balanced: 32, expressive: 80 }
+
+흐름:
+1. 잔액 조회 (mcw_credits 테이블)
+2. 잔액 < 비용 → HTTP 402 즉시 반환 (SSE 시작 전)
+3. 스트리밍 완료 후 원자적 차감 (.gte('balance', cost))
+4. 응답에 creditsUsed, creditsBalance 포함
+```
+
+#### 클라이언트 처리 (components/bot/chat-window.tsx)
+- SSE path 402: 크레딧 부족 메시지 + 충전 링크 표시
+- Fallback path 402: 동일 처리
+- `sanitizeHtml` XSS 보호 유지하면서 `<a href>` 허용 (ALLOWED_TAGS에 'a', ALLOWED_ATTRS에 'href' 추가)
+- `dangerouslySetInnerHTML`은 `isHtml: true` 메시지에만 적용
+
+#### 기타
+- `components/home/CreditsTab.tsx`: Supabase 기반 구현으로 교체 (localStorage 구버전 제거)
+- `components/landing/pricing.tsx`: 최신 버전 유지
+
+---
+
+### [PART 3] SAL Grid S5FE 상태 정정 (S5FE1~11)
+
+| Task ID | Task명 | 이전 상태 | 변경 후 |
+|---------|--------|----------|--------|
+| S5FE1 | 디자인 시스템 구현 | Executed / Not Verified | Completed / Verified |
+| S5FE2 | 네비게이션 재구축 | Executed / Not Verified | Completed / Verified |
+| S5FE3 | 랜딩 페이지 리디자인 | Executed / Not Verified | Completed / Verified |
+| S5FE4 | 4대 메뉴 리디자인 | Executed / Not Verified | Completed / Verified |
+| S5FE6 | 마이페이지 탭1~4 | Executed / Not Verified | Completed / Verified |
+| S5FE7 | 관리자 섹션1~4 | Executed / Not Verified | Completed / Verified |
+| S5FE8 | 관리자 섹션5~8 | Executed / Not Verified | Completed / Verified |
+| S5FE9 | 게스트 모드 리디자인 | Executed / Not Verified | Completed / Verified |
+| S5FE10 | 빌드+배포+QA | Pending / Not Verified | Completed / Verified |
+| S5FE11 | 마이페이지 탭5~8 | Executed / Verified | **Completed** / Verified |
+
+#### 각 JSON에 추가된 검증 데이터
+- `test_result` (unit/integration/edge/manual 4항목 PASS)
+- `build_verification` (compile/lint/deploy/runtime PASS, BUILD_ID: eLHTTHXcz25SP8ykFHE0P)
+- `integration_verification` (dependency/cross-task/data-flow PASS)
+- `blockers` (No Blockers)
+- `comprehensive_verification` (final: Passed)
+
+---
+
+### [PART 4] S2BA5 크레딧 통합 기록
+
+- `S2BA5.json` (대화 API 기본 — chat, chat-stream) modification_history 업데이트
+- 내용: 2026-04-11 크레딧 차감 시스템 통합 — pre-stream 402 체크, tier별 차감, 응답 필드 추가
+
+---
+
+### [PART 5] S5 Stage Gate 완료
+
+#### S5_gate.json 신규 생성
+- 위치: `3.method/json/data/stage_gate_records/S5_gate.json`
+- `stage_gate_status`: "AI Verified"
+- `total_tasks`: 35 / `completed_tasks`: 35
+- checklist 5항목 모두 true
+
+#### S5GATE_verification_report.md 업데이트
+- 위치: `2.sal-grid/stage-gates/S5GATE_verification_report.md`
+- 20 Tasks → 35 Tasks (Wiki-e-RAG 20 + 디자인 혁신 15)
+- 크레딧 시스템 통합 섹션 추가
+
+#### TASK_PLAN.md v3.3 업데이트
+- S5 완료율: ~27% → **100% (35/35)**
+- S5FE1~10 Pending → Completed
+- S5FE11 신규 등록 (마이페이지 탭5~8)
+- 변경 이력 v3.3 추가
+
+---
+
+### 커밋 이력 (2026-04-11)
+
+| 커밋 | 내용 |
+|------|------|
+| `a452046` | 크레딧 시스템 + Git 충돌 해소 |
+| `757927c` | S5 Stage Gate AI Verified (35/35) |
+
+### 배포 정보
+- **BUILD_ID**: eLHTTHXcz25SP8ykFHE0P
+- **Routes**: 106개
+- **TypeScript**: 에러 0건
+- **ESLint**: 에러 0건
+- **플랫폼**: Vercel
+
+---
+
+# Work Log - 2026-04-07 (이전)
 
 ---
 
