@@ -238,9 +238,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const bankName = process.env.PAYMENT_BANK_NAME;
-    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER;
-    const accountHolder = process.env.PAYMENT_ACCOUNT_HOLDER;
+    const bankName = process.env.PAYMENT_BANK_NAME?.trim();
+    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER?.trim();
+    const accountHolder = process.env.PAYMENT_ACCOUNT_HOLDER?.trim();
     if (!bankName || !accountNumber || !accountHolder) {
       return NextResponse.json(
         { error: '결제 계좌 정보가 설정되지 않았습니다. 관리자에게 문의하세요.' },
