@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "components/mypage/Tab1Profile.tsx, components/mypage/Tab2BotManage.tsx, components/mypage/Tab3Learning.tsx, components/mypage/Tab4Skills.tsx, app/mypage/page-client.tsx",
-  "modification_history": "2026-04-07: S5FE6 마이페이지 탭1~4 신규 구현 | 2026-04-09: 비로그인시 리다이렉트 대신 배너+탭 미리보기 표시 | 2026-04-09: 비로그인 배너 중복 제거(1개만) + /api/profile 프로필 API 생성 + 응답 파싱 data.data 수정 + email 안전접근 + 8탭 전체 동작 검증 완료(테스트계정 test@mychatbot.world) | 2026-04-11: Tab3 파일 업로드 버그 수정 — formData 키 files→file(단수), 다중 파일 순차 업로드, Bearer 토큰 인증 통일, chatbot_id 선택 필드화",
+  "modification_history": "2026-04-07: S5FE6 마이페이지 탭1~4 신규 구현 | 2026-04-09: 비로그인시 리다이렉트 대신 배너+탭 미리보기 표시 | 2026-04-09: 비로그인 배너 중복 제거(1개만) + /api/profile 프로필 API 생성 + 응답 파싱 data.data 수정 + email 안전접근 + 8탭 전체 동작 검증 완료(테스트계정 test@mychatbot.world) | 2026-04-11: Tab3 파일 업로드 버그 수정 — formData 키 files→file(단수), 다중 파일 순차 업로드, Bearer 토큰 인증 통일, chatbot_id 선택 필드화 | 2026-04-11: Agenda M2 — Tab2 챗봇관리 6대 도구 실 API 연동: ChatLogPanel(/api/bots/[id]/chat-log), KbPanel(/api/kb?chatbot_id=), SkillsPanel(/api/skills/my), SchoolPanel(/api/school/progress), CommunityPanel(링크), BotSettingsPanel(PATCH /api/settings 저장 추가, 초기로드 포함)",
   "verification_instruction": "sal-grid/verification-instructions/S5FE6_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {

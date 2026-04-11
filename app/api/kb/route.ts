@@ -53,19 +53,33 @@ interface CreateKbRequest {
  * @returns KB 항목 목록 + 총 개수
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  // 인증 확인
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  // 쿠키 세션 우선, Bearer 토큰 폴백
+  let userId: string;
+  let supabase: any;
+  const cookieClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const { data: { session } } = await cookieClient.auth.getSession();
+  if (session?.user) {
+    userId = session.user.id;
+    supabase = cookieClient;
+  } else {
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: '인증이 필요합니다.', data: null },
+        { status: 401 }
+      );
+    }
+    const svcClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const { data: { user } } = await svcClient.auth.getUser(token);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: '인증이 필요합니다.', data: null },
+        { status: 401 }
+      );
+    }
+    userId = user.id;
+    supabase = svcClient;
   }
 
   // 쿼리 파라미터 파싱
@@ -87,7 +101,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id, owner_id')
       .eq('id', chatbotId)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', userId)
       .single();
 
     if (chatbotError || !chatbot) {
