@@ -1,10 +1,15 @@
 /**
  * @task S5FE11
- * @description 마이페이지 탭6 — 상속 (페르소나 단위, 제외 항목 선택)
+ * @description 마이페이지 탭6 — 상속 (실제 API 연동)
+ *
+ * GET  /api/inheritance  → 현재 상속 설정 + 페르소나 목록 조회
+ * POST /api/inheritance  → 피상속인 지정 (body: { heirEmail, message? })
+ * PATCH /api/inheritance → 페르소나별 허용 여부 업데이트
+ *                          (body: { personas: [{ personaId, allowed }] })
  */
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
 
 // ── 타입 ─────────────────────────────────────────────────────
@@ -12,49 +17,30 @@ import clsx from 'clsx';
 interface Persona {
   id: string;
   name: string;
+  allowed: boolean;
 }
 
-type ExcludeKey = 'chat_logs' | 'kb' | 'paid_skills' | 'credits' | 'revenue_settings' | 'specific_personas';
-
-interface PersonaInheritance {
-  persona_id: string;
-  heir_email: string;
-  exclude: Record<ExcludeKey, boolean>;
-  status: 'none' | 'pending' | 'accepted' | 'declined';
+interface HeirInfo {
+  inheritanceId: string;
+  userId: string | null;
+  email: string;
+  status: 'pending' | 'accepted' | 'declined';
+  invitedAt: string;
 }
 
-const EXCLUDE_OPTIONS: { key: ExcludeKey; label: string }[] = [
-  { key: 'chat_logs',        label: '대화 로그' },
-  { key: 'kb',               label: 'KB 지식베이스' },
-  { key: 'paid_skills',      label: '유료 스킬' },
-  { key: 'credits',          label: '크레딧' },
-  { key: 'revenue_settings', label: '수익 설정' },
-  { key: 'specific_personas', label: '특정 페르소나 제외' },
-];
+interface InheritanceData {
+  heir: HeirInfo | null;
+  personas: Persona[];
+}
 
-const MOCK_PERSONAS: Persona[] = [
-  { id: 'p1', name: '고객상담 페르소나' },
-  { id: 'p2', name: '마케팅 도우미 페르소나' },
-  { id: 'p3', name: '내부 업무 봇 페르소나' },
-];
-
-const DEFAULT_EXCLUDE: Record<ExcludeKey, boolean> = {
-  chat_logs:        false,
-  kb:               false,
-  paid_skills:      false,
-  credits:          false,
-  revenue_settings: false,
-  specific_personas: false,
-};
-
-function StatusBadge({ status }: { status: PersonaInheritance['status'] }) {
-  const map = {
-    none:     { label: '미설정',    cls: 'bg-bg-muted text-text-muted border-border' },
-    pending:  { label: '대기 중',   cls: 'bg-warning/15 text-warning border-warning/30' },
-    accepted: { label: '수락됨',    cls: 'bg-success/15 text-success border-success/30' },
-    declined: { label: '거절됨',    cls: 'bg-error/15 text-error border-error/30' },
+function StatusBadge({ status }: { status: HeirInfo['status'] | 'none' }) {
+  const map: Record<string, { label: string; cls: string }> = {
+    none:     { label: '미설정',  cls: 'bg-bg-muted text-text-muted border-border' },
+    pending:  { label: '대기 중', cls: 'bg-warning/15 text-warning border-warning/30' },
+    accepted: { label: '수락됨',  cls: 'bg-success/15 text-success border-success/30' },
+    declined: { label: '거절됨',  cls: 'bg-error/15 text-error border-error/30' },
   };
-  const { label, cls } = map[status];
+  const { label, cls } = map[status] ?? map['none'];
   return (
     <span className={clsx('inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border', cls)}>
       {label}
@@ -62,179 +48,285 @@ function StatusBadge({ status }: { status: PersonaInheritance['status'] }) {
   );
 }
 
+// ── 인증 토큰 헬퍼 ───────────────────────────────────────────
+
+function getAuthHeaders(): Record<string, string> {
+  // Next.js 클라이언트 — localStorage에 Supabase 세션 토큰이 저장된 경우 활용
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(
+      Object.keys(localStorage).find((k) => k.includes('auth-token') || k.includes('supabase')) ?? ''
+    );
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const token = parsed?.access_token ?? parsed?.session?.access_token;
+      if (token) return { Authorization: `Bearer ${token}` };
+    }
+  } catch {
+    // fallback
+  }
+  return {};
+}
+
+// ── 컴포넌트 ─────────────────────────────────────────────────
+
 export default function Tab6Inheritance() {
-  const [inheritances, setInheritances] = useState<PersonaInheritance[]>(
-    MOCK_PERSONAS.map((p) => ({
-      persona_id: p.id,
-      heir_email: '',
-      exclude: { ...DEFAULT_EXCLUDE },
-      status: 'none',
-    })),
-  );
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [sending, setSending] = useState<string | null>(null);
+  const [data, setData] = useState<InheritanceData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // 폼 상태
+  const [heirEmail, setHeirEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
   const [sentMsg, setSentMsg] = useState('');
 
-  function getInheritance(pid: string) {
-    return inheritances.find((i) => i.persona_id === pid)!;
+  // ── 데이터 로드 ───────────────────────────────────────────
+
+  const fetchInheritance = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/inheritance', {
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error ?? '상속 설정을 불러오지 못했습니다.');
+      }
+      setData(json.data as InheritanceData);
+      if (json.data.heir?.email) {
+        setHeirEmail(json.data.heir.email);
+      }
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : '오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchInheritance();
+  }, [fetchInheritance]);
+
+  // ── 피상속인 발송 ─────────────────────────────────────────
+
+  async function sendRequest() {
+    if (!heirEmail.trim()) return;
+    setSending(true);
+    setSentMsg('');
+    try {
+      const res = await fetch('/api/inheritance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        body: JSON.stringify({ heirEmail: heirEmail.trim(), message: message.trim() || undefined }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error ?? '발송에 실패했습니다.');
+      }
+      setSentMsg('상속 동의 요청이 발송되었습니다.');
+      setTimeout(() => setSentMsg(''), 3000);
+      await fetchInheritance();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : '오류가 발생했습니다.');
+    } finally {
+      setSending(false);
+    }
   }
 
-  function updateEmail(pid: string, email: string) {
-    setInheritances((prev) =>
-      prev.map((i) => (i.persona_id === pid ? { ...i, heir_email: email } : i)),
+  // ── 페르소나 허용 토글 ────────────────────────────────────
+
+  async function togglePersona(personaId: string, allowed: boolean) {
+    if (!data) return;
+    // 낙관적 UI 업데이트
+    setData((prev) =>
+      prev
+        ? {
+            ...prev,
+            personas: prev.personas.map((p) =>
+              p.id === personaId ? { ...p, allowed } : p
+            ),
+          }
+        : prev
     );
+    try {
+      const res = await fetch('/api/inheritance', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        body: JSON.stringify({ personas: [{ personaId, allowed }] }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error ?? '업데이트에 실패했습니다.');
+      }
+    } catch (e: unknown) {
+      // 실패 시 롤백
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              personas: prev.personas.map((p) =>
+                p.id === personaId ? { ...p, allowed: !allowed } : p
+              ),
+            }
+          : prev
+      );
+      setError(e instanceof Error ? e.message : '오류가 발생했습니다.');
+    }
   }
 
-  function toggleExclude(pid: string, key: ExcludeKey) {
-    setInheritances((prev) =>
-      prev.map((i) =>
-        i.persona_id === pid
-          ? { ...i, exclude: { ...i.exclude, [key]: !i.exclude[key] } }
-          : i,
-      ),
-    );
-  }
+  // ── 렌더 ─────────────────────────────────────────────────
 
-  async function sendRequest(pid: string) {
-    const inh = getInheritance(pid);
-    if (!inh.heir_email.trim()) return;
-    setSending(pid);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 800));
-    setInheritances((prev) =>
-      prev.map((i) =>
-        i.persona_id === pid ? { ...i, status: 'pending' } : i,
-      ),
-    );
-    setSending(null);
-    setSentMsg('상속 동의 요청이 발송되었습니다.');
-    setTimeout(() => setSentMsg(''), 3000);
-  }
+  const heirStatus = data?.heir?.status ?? 'none';
+  const isAccepted = heirStatus === 'accepted';
 
   return (
     <div>
       <h2 className="text-xl font-bold text-text-primary mb-2">상속 설정</h2>
       <p className="text-sm text-text-secondary mb-6">
-        페르소나별로 피상속인을 지정하고 상속할 항목을 설정합니다.
-        상속 동의 요청을 발송하면 피상속인이 이메일로 수락/거절할 수 있습니다.
+        피상속인을 지정하고 페르소나별 상속 허용 여부를 설정합니다.
+        상속 동의 요청을 발송하면 피상속인이 수락/거절할 수 있습니다.
       </p>
 
+      {/* 성공 메시지 */}
       {sentMsg && (
         <div className="mb-4 p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
           {sentMsg}
         </div>
       )}
 
-      <div className="space-y-3">
-        {MOCK_PERSONAS.map((p) => {
-          const inh = getInheritance(p.id);
-          const expanded = expandedId === p.id;
+      {/* 에러 메시지 */}
+      {error && (
+        <div className="mb-4 p-3 rounded-lg bg-error/10 border border-error/30 text-error text-sm text-center">
+          {error}
+        </div>
+      )}
 
-          return (
-            <div key={p.id} className="bg-bg-surface rounded-xl border border-border overflow-hidden">
-              {/* 헤더 */}
+      {/* 로딩 */}
+      {loading && (
+        <div className="text-center py-10 text-text-muted text-sm">불러오는 중...</div>
+      )}
+
+      {!loading && (
+        <>
+          {/* ── 피상속인 지정 섹션 ──────────────────────────── */}
+          <div className="bg-bg-surface rounded-xl border border-border p-5 mb-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-text-primary">피상속인 지정</h3>
+              <StatusBadge status={heirStatus} />
+            </div>
+
+            {data?.heir && (
+              <p className="text-xs text-text-muted">
+                현재 지정: <span className="text-text-secondary font-medium">{data.heir.email}</span>
+              </p>
+            )}
+
+            <div>
+              <label className="block text-sm font-semibold text-text-primary mb-2">
+                피상속인 이메일
+              </label>
+              <input
+                type="email"
+                placeholder="heir@example.com"
+                value={heirEmail}
+                onChange={(e) => setHeirEmail(e.target.value)}
+                disabled={isAccepted}
+                className="w-full px-3 py-2 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60 disabled:opacity-50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-text-primary mb-2">
+                초대 메시지 (선택)
+              </label>
+              <textarea
+                placeholder="상속 요청 시 함께 보낼 메시지를 입력하세요."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                disabled={isAccepted}
+                rows={3}
+                className="w-full px-3 py-2 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60 disabled:opacity-50 resize-none"
+              />
+            </div>
+
+            {isAccepted ? (
+              <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
+                상속이 수락되었습니다.
+              </div>
+            ) : heirStatus === 'declined' ? (
+              <div className="space-y-3">
+                <div className="p-3 rounded-lg bg-error/10 border border-error/30 text-error text-sm text-center">
+                  상속이 거절되었습니다. 이메일을 확인하고 재발송하세요.
+                </div>
+                <button
+                  onClick={sendRequest}
+                  disabled={sending || !heirEmail.trim()}
+                  className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 transition-opacity"
+                >
+                  {sending ? '발송 중...' : '재발송'}
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={() => setExpandedId(expanded ? null : p.id)}
-                className="w-full flex items-center justify-between p-4 hover:bg-bg-surface-hover transition-colors text-left"
+                onClick={sendRequest}
+                disabled={sending || !heirEmail.trim()}
+                className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 transition-opacity"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary text-sm font-bold">
-                    {p.name[0]}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-text-primary">{p.name}</p>
-                    {inh.heir_email && (
-                      <p className="text-xs text-text-muted">{inh.heir_email}</p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <StatusBadge status={inh.status} />
-                  <span className={clsx('text-text-muted transition-transform', expanded && 'rotate-180')}>
-                    ▾
-                  </span>
-                </div>
+                {sending
+                  ? '발송 중...'
+                  : heirStatus === 'pending'
+                  ? '재발송'
+                  : '상속 동의 요청 발송'}
               </button>
+            )}
+          </div>
 
-              {/* 상세 설정 */}
-              {expanded && (
-                <div className="border-t border-border p-5 space-y-5">
-                  {/* 피상속인 이메일 */}
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-2">
-                      피상속인 이메일
-                    </label>
+          {/* ── 페르소나별 허용 여부 ─────────────────────────── */}
+          {data && data.personas.length > 0 && (
+            <div className="bg-bg-surface rounded-xl border border-border p-5 space-y-4">
+              <h3 className="text-sm font-semibold text-text-primary">페르소나별 상속 허용</h3>
+              <p className="text-xs text-text-muted -mt-2">
+                체크된 페르소나만 피상속인에게 상속됩니다.
+              </p>
+              <div className="space-y-2">
+                {data.personas.map((p) => (
+                  <label
+                    key={p.id}
+                    className="flex items-center gap-3 bg-bg-subtle rounded-lg px-4 py-3 cursor-pointer hover:bg-bg-muted transition-colors"
+                  >
                     <input
-                      type="email"
-                      placeholder="heir@example.com"
-                      value={inh.heir_email}
-                      onChange={(e) => updateEmail(p.id, e.target.value)}
-                      disabled={inh.status === 'accepted'}
-                      className="w-full px-3 py-2 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60 disabled:opacity-50"
+                      type="checkbox"
+                      checked={p.allowed}
+                      onChange={(e) => togglePersona(p.id, e.target.checked)}
+                      disabled={!data.heir}
+                      className="w-4 h-4 accent-primary"
                     />
-                  </div>
-
-                  {/* 제외 항목 */}
-                  <div>
-                    <label className="block text-sm font-semibold text-text-primary mb-3">
-                      제외할 항목 (체크된 항목은 상속하지 않음)
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                      {EXCLUDE_OPTIONS.map((opt) => (
-                        <label
-                          key={opt.key}
-                          className="flex items-center gap-2 bg-bg-subtle rounded-lg px-3 py-2.5 cursor-pointer hover:bg-bg-muted transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={inh.exclude[opt.key]}
-                            onChange={() => toggleExclude(p.id, opt.key)}
-                            disabled={inh.status === 'accepted'}
-                            className="w-4 h-4 accent-primary"
-                          />
-                          <span className="text-xs text-text-secondary">{opt.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 상태 안내 + 발송 버튼 */}
-                  {inh.status === 'accepted' ? (
-                    <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
-                      상속이 수락되었습니다.
-                    </div>
-                  ) : inh.status === 'declined' ? (
-                    <div className="space-y-3">
-                      <div className="p-3 rounded-lg bg-error/10 border border-error/30 text-error text-sm text-center">
-                        상속이 거절되었습니다. 다시 요청하려면 이메일을 확인하고 재발송하세요.
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary text-xs font-bold">
+                        {p.name[0]}
                       </div>
-                      <button
-                        onClick={() => sendRequest(p.id)}
-                        disabled={!!sending}
-                        className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity"
-                      >
-                        {sending === p.id ? '발송 중...' : '재발송'}
-                      </button>
+                      <span className="text-sm text-text-secondary">{p.name}</span>
                     </div>
-                  ) : (
-                    <button
-                      onClick={() => sendRequest(p.id)}
-                      disabled={!inh.heir_email.trim() || !!sending}
-                      className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 transition-opacity"
-                    >
-                      {sending === p.id
-                        ? '발송 중...'
-                        : inh.status === 'pending'
-                        ? '재발송'
-                        : '상속 동의 요청 발송'}
-                    </button>
-                  )}
-                </div>
+                  </label>
+                ))}
+              </div>
+              {!data.heir && (
+                <p className="text-xs text-text-muted text-center">
+                  피상속인을 먼저 지정해야 페르소나 설정을 변경할 수 있습니다.
+                </p>
               )}
             </div>
-          );
-        })}
-      </div>
+          )}
+
+          {data && data.personas.length === 0 && (
+            <div className="text-center py-8 text-text-muted text-sm">
+              상속할 페르소나가 없습니다. 먼저 챗봇을 생성하세요.
+            </div>
+          )}
+        </>
+      )}
 
       {/* 상속 수락 페이지 안내 */}
       <div className="mt-6 p-4 rounded-xl bg-bg-muted border border-border">
