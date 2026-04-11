@@ -21,11 +21,12 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 /** 챗봇 항목 */
 interface BotItem {
   id: string;
-  user_id: string;
-  name: string;
-  description: string | null;
-  deploy_url: string | null;
-  qr_svg: string | null;
+  owner_id: string;
+  username: string;
+  bot_name: string;
+  bot_desc: string | null;
+  emoji: string | null;
+  category: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data: bots, error, count } = await supabase
     .from('mcw_bots')
     .select('*', { count: 'exact' })
-    .eq('user_id', user.id)
+    .eq('owner_id', user.id)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -95,7 +96,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     .from('mcw_bots')
     .delete()
     .eq('id', botId)
-    .eq('user_id', user.id);
+    .eq('owner_id', user.id);
 
   if (error) {
     return NextResponse.json({ success: false, error: error.message, data: null }, { status: 500 });
