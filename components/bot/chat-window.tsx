@@ -34,8 +34,8 @@ import {
 
 /** 허용 태그/속성 목록 기반 간이 sanitize — DOMPurify 미설치 환경용 */
 function sanitizeHtml(dirty: string): string {
-  const ALLOWED_TAGS = ['b', 'i', 'em', 'strong', 'br', 'span', 'p', 'ul', 'ol', 'li', 'code', 'pre'];
-  const ALLOWED_ATTRS = ['class', 'style'];
+  const ALLOWED_TAGS = ['a', 'b', 'i', 'em', 'strong', 'br', 'span', 'p', 'ul', 'ol', 'li', 'code', 'pre'];
+  const ALLOWED_ATTRS = ['class', 'style', 'href'];
   // 서버사이드(SSR) 실행 방지
   if (typeof window === 'undefined') return '';
   const doc = new DOMParser().parseFromString(dirty, 'text/html');
@@ -653,6 +653,28 @@ export default function ChatWindow({
         body: JSON.stringify(payload),
       });
 
+      // 402: 크레딧 부족
+      if (streamRes.status === 402) {
+        clearTimeout(safetyTimer);
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === typingId
+              ? {
+                  ...m,
+                  content:
+                    '💳 크레딧 잔액이 부족합니다. <a href="/home?tab=credits" class="underline text-blue-400">충전하기 →</a>',
+                  streaming: false,
+                  isHtml: true,
+                }
+              : m
+          )
+        );
+        setIsSending(false);
+        inputRef.current?.focus();
+        return;
+      }
+
+
       if (streamRes.ok && streamRes.body) {
         const reader = streamRes.body.getReader();
         const decoder = new TextDecoder();
@@ -718,6 +740,25 @@ export default function ChatWindow({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      if (res.status === 402) {
+        clearTimeout(safetyTimer);
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === typingId
+              ? {
+                  ...m,
+                  content:
+                    '💳 크레딧 잔액이 부족합니다. <a href="/home?tab=credits" class="underline text-blue-400">충전하기 →</a>',
+                  streaming: false,
+                  isHtml: true,
+                }
+              : m
+          )
+        );
+        setIsSending(false);
+        inputRef.current?.focus();
+        return;
+      }
       if (res.ok) {
         const data = (await res.json()) as { reply?: string };
         if (data.reply) {

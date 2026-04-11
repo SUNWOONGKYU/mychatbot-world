@@ -61,6 +61,10 @@ interface ChatResponseBody {
   emotionTier: string;
   /** RAG 소스 (wiki | chunk | none) — S5BI1 */
   ragSource?: 'wiki' | 'chunk' | 'none';
+  /** 이번 회화 차감 크레딧 */
+  creditsUsed?: number;
+  /** 차감 후 잔액 */
+  creditsBalance?: number;
 }
 
 // ============================
@@ -366,6 +370,69 @@ async function compactHistory(
 }
 
 // ============================
+// 크레딧 시스템
+// ============================
+
+/**
+ * 감성 티어별 회당 크레딧 비용 (1크레딧=1원, 정액×2배 마진)
+ * - concise(Haiku): 8 크레딧/회  (~250회/2,000크레딧)
+ * - balanced(Sonnet): 32 크레딧/회 (~250회/8,000크레딧)
+ * - expressive(Opus/GPT-4o): 80 크레딧/회
+ */
+const CREDITS_PER_TIER: Record<string, number> = {
+  concise: 8,
+  balanced: 32,
+  expressive: 80,
+};
+
+/**
+ * 크레딧 잔액 확인 후 차감 (원자적 업데이트)
+ * 잔액 부족 시 success: false 반환
+ *
+ * @returns { success, balance } — balance는 차감 후 잔액
+ */
+async function checkAndDeductCredits(
+  userId: string,
+  cost: number
+): Promise<{ success: boolean; balance: number }> {
+  const supabase = getSupabaseServer();
+
+  // 현재 잔액 조회
+  const { data, error: fetchError } = await supabase
+    .from('mcw_credits')
+    .select('balance')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.warn('[credits] fetch error:', fetchError.message);
+    return { success: false, balance: 0 };
+  }
+
+  const currentBalance: number = (data as { balance: number } | null)?.balance ?? 0;
+
+  if (currentBalance < cost) {
+    return { success: false, balance: currentBalance };
+  }
+
+  const newBalance = currentBalance - cost;
+
+  // 잔액 차감 (gte 조건으로 동시 요청 이중 차감 방지)
+  const { error: updateError } = await supabase
+    .from('mcw_credits')
+    .update({ balance: newBalance, updated_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .gte('balance', cost);
+
+  if (updateError) {
+    console.warn('[credits] update error:', updateError.message);
+    return { success: false, balance: currentBalance };
+  }
+
+  return { success: true, balance: newBalance };
+}
+
+// ============================
 // 멀티모델 재시도 래퍼
 // ============================
 
@@ -574,6 +641,27 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const routerResult = selectModel({ emotionSlider: emotionLevel, costTier });
     const { selectedModel, emotionTier } = routerResult;
 
+    // 4-1. 크레딧 잔액 사전 확인 (차감은 AI 응답 후)
+    const creditCost = CREDITS_PER_TIER[emotionTier] ?? 8;
+    const supabaseCheck = getSupabaseServer();
+    const { data: creditRow } = await supabaseCheck
+      .from('mcw_credits')
+      .select('balance')
+      .eq('user_id', userId)
+      .maybeSingle();
+    const currentBalance: number = (creditRow as { balance: number } | null)?.balance ?? 0;
+    if (currentBalance < creditCost) {
+      return NextResponse.json(
+        {
+          error: 'Insufficient credits',
+          balance: currentBalance,
+          required: creditCost,
+        },
+        { status: 402 }
+      );
+    }
+
+
     // 5. conversationId 확인 / 신규 생성 + 임베딩 생성 (병렬)
     let conversationId = inputConversationId ?? '';
     const [resolvedConversationId, queryEmbedding] = await Promise.all([
@@ -639,6 +727,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // 12. assistant 메시지 DB 저장
     const messageId = await saveMessage(conversationId, 'assistant', reply);
 
+    // 12-1. 크레딧 차감 (AI 응답 성공 후)
+    const deductResult = await checkAndDeductCredits(userId, creditCost);
+    if (!deductResult.success) {
+      // 차감 실패는 응답을 막지 않음 — 로깅만 (이미 잔액 확인 후 통과했으므로 race condition 가능성)
+      console.warn(`[credits] deduct failed for user ${userId}, cost ${creditCost}`);
+    }
+
+
     // 13. Wiki accumulate 비동기 호출 (복리 축적, 실패해도 무시)
     const appUrl =
       process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
@@ -653,6 +749,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       modelName: selectedModel.name, // 라우터가 의도한 모델명 (표시용)
       emotionTier,
       ragSource,
+      creditsUsed: creditCost,
+      creditsBalance: deductResult.success ? deductResult.balance : undefined,
     };
 
     return NextResponse.json(responseBody, { status: 200 });

@@ -187,14 +187,15 @@ export function buildSystemMessage(botConfig) {
   const personaCategory = botConfig?.personaCategory || '';
   const userTitle = botConfig?.userTitle || '';
   // v22.3: CPC 직접 연결 페르소나 (Claude Code / Trader) — AI 중간 처리 없이 소대장에게 직접 전달
-  const isCpcDirect = personaName === 'Claude Code' || personaName === 'Trader';
+  const isCpcDirect = personaName === 'Claude Code' || personaName === 'Trader' || personaName === 'Claude 연락병';
 
   let roleRules;
   if (isCpcDirect) {
+    const silentToken = personaName === 'Claude 연락병' ? '\n__SILENT__' : '';
     roleRules = `- 사용자를 "${userTitle || '지휘관님'}"이라고 부르세요
 - CPC 소대장은 "소대장"이라고만 부르세요 (님 붙이지 마세요)
 - 이 페르소나는 CPC 소대장과 직접 연결됩니다. 메시지는 소대장에게 자동으로 전달됩니다.
-- 소대장이 처리 중임을 간단히 안내하세요.`;
+- 소대장이 처리 중임을 간단히 안내하세요.${silentToken}`;
   } else if (personaCategory === 'avatar') {
     roleRules = `- 사용자를 "${userTitle || '고객님'}"이라고 부르세요
 - "지휘관", "소대장", "연락병" 등 군사 용어를 절대 사용하지 마세요`;
@@ -236,6 +237,7 @@ ${roleRules}`;
  * @type {string[]}
  */
 export const MODEL_STACK = [
+  'google/gemini-2.0-flash-exp:free',
   'google/gemini-2.5-flash',
   'openai/gpt-4o',
   'anthropic/claude-sonnet-4-6',
