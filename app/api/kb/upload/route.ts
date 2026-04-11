@@ -222,7 +222,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { data: kbItem, error: insertError } = await supabase
       .from('mcw_kb_items')
       .insert({
-        chatbot_id: chatbotId,
+        bot_id: chatbotId,
         title: kbTitle,
         content: extraction.text,
         source_type: 'file',

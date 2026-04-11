@@ -97,7 +97,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { data: items, error: listError, count } = await supabase
       .from('mcw_kb_items')
       .select('*', { count: 'exact' })
-      .eq('chatbot_id', chatbotId)
+      .eq('bot_id', chatbotId)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -200,7 +200,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { data: newItem, error: insertError } = await supabase
       .from('mcw_kb_items')
       .insert({
-        chatbot_id: body.chatbot_id,
+        bot_id: body.chatbot_id,
         title: body.title.trim(),
         content: body.content,
         source_type: body.source_type ?? 'text',
@@ -268,7 +268,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     // KB 항목 소유권 확인 (mcw_bots 조인)
     const { data: kbItem, error: findError } = await supabase
       .from('mcw_kb_items')
-      .select('id, chatbot_id, file_path, mcw_bots!inner(owner_id)')
+      .select('id, bot_id, file_path, mcw_bots!inner(owner_id)')
       .eq('id', kbId)
       .single();
 

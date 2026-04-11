@@ -66,7 +66,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // KB 항목 조회 + 소유권 확인
     const { data: kbItem, error: kbError } = await supabase
       .from('mcw_kb_items')
-      .select('id, chatbot_id, title, file_path, file_name, content, mcw_bots!inner(owner_id, id)')
+      .select('id, bot_id, title, file_path, file_name, content, mcw_bots!inner(owner_id, id)')
       .eq('id', body.kb_item_id)
       .single();
 
