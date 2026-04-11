@@ -2,6 +2,53 @@
 
 ---
 
+## 15. S5 Stage Gate 검증 완료 (2026-04-11)
+
+### 작업 상태: 완료
+
+### getSession() 전면 교정 (Low 13건 포함)
+
+| 파일 | 수정 내용 |
+|------|----------|
+| `app/api/settings/route.ts` (GET/PATCH/POST/DELETE) | getSession() → Bearer token |
+| `app/api/kb/route.ts` (GET/POST/DELETE) | getSession() → Bearer token |
+| `app/api/kb/embed/route.ts` | getSession() → Bearer token |
+| `app/api/kb/ocr/route.ts` | getSession() → Bearer token |
+| `app/api/kb/upload/route.ts` | getSession() → Bearer token |
+| `app/api/wiki/pages/route.ts` (POST/PATCH/DELETE) | getSession() → Bearer token |
+| `app/api/wiki/ingest/route.ts` | getSession() → Bearer token |
+| `app/api/sync/route.ts` (GET/POST) | getSession() → Bearer token |
+| `app/api/create-bot/route.ts` | getSession() → Bearer token |
+| `app/api/create-bot/faq/route.ts` | getSession() → Bearer token |
+| `app/api/create-bot/deploy/route.ts` | getSession() → Bearer token |
+| `app/api/create-bot/analyze/route.ts` | getSession() → Bearer token |
+
+### S5FE Task JSON 업데이트
+
+| Task | 이전 | 이후 |
+|------|------|------|
+| S5FE1~4, S5FE6~9 (8개) | Executed / Not Verified | Completed / Verified |
+| S5FE10 | Pending / Not Verified | Completed / Verified |
+| S5FE11 | Executed / Verified | Completed / Verified |
+
+### S5 Stage Gate 결과
+
+- **총 Task**: 35개 / **완료**: 35/35 / **검증**: 35/35
+- **빌드**: TypeScript 오류 없음, Vercel 배포 완료 (4bdca1e)
+- **판정**: AI Verified
+
+### 생성된 파일
+
+1. `stage_gate_records/S5_gate.json` (신규)
+2. `stage-gates/S5GATE_verification_report.md` (업데이트)
+
+### Git 커밋
+```
+4bdca1e  fix: getSession() → Bearer token 인증 교정 (12개 API 라우트)
+```
+
+---
+
 ## 14. 추가 검증 세션 — 버그 발견 및 수정 (2026-04-11 Priority 1~4)
 
 ### 작업 상태: 완료
