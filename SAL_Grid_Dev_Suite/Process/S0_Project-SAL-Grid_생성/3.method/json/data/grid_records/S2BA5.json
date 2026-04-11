@@ -17,7 +17,7 @@
   "execution_type": "AI-Only",
   "priority": "High",
   "generated_files": "api/chat.js, api/chat-stream.js",
-  "modification_history": "2026-03-31: 소급 등록",
+  "modification_history": "2026-03-31: 소급 등록 | 2026-04-11: 크레딧 차감 시스템 통합 — app/api/chat/route.ts에 pre-stream 402 잔액 체크 + 응답 후 원자적 차감(CREDITS_PER_TIER: concise=8, balanced=32, expressive=80), creditsUsed/creditsBalance 응답 필드 추가",
   "verification_instruction": "sal-grid/verification-instructions/S2BA5_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {},

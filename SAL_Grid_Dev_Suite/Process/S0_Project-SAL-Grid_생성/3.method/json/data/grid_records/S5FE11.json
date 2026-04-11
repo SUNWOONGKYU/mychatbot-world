@@ -3,7 +3,7 @@
   "task_name": "마이페이지 리디자인 — 탭5~8 (운영관리/상속/크레딧/보안)",
   "stage": 5,
   "area": "FE",
-  "task_status": "Executed",
+  "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S5FE1, S5FE2, S5DS4",

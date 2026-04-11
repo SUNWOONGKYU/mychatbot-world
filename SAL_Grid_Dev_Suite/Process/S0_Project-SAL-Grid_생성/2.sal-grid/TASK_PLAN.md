@@ -19,7 +19,7 @@
 | S2 | 핵심 기능 | 16 | ~40% (소급 3개 완료) |
 | S3 | 확장 기능 | 19 | ~50% (소급 8개 완료) |
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
-| S5 | 디자인 혁신 | 15 | ~27% (소급 DS 4개 완료) |
+| S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | **합계** | | **77** | **~39%** |
 
 ---
@@ -163,22 +163,21 @@
 | S5DS3 | 핵심 컴포넌트 디자인 스펙 | DS | S5DS1, S5DS2 | `ux-ui-designer-core` | Completed |
 | S5DS4 | 페이지별 와이어프레임 레이아웃 | DS | S5DS1, S5DS2, S5DS3 | `ux-ui-designer-core` | Completed |
 
-### S5 FE (Frontend) — 실행 (신규 11개)
+### S5 FE (Frontend) — 실행 (신규 11개 + S5FE11 추가)
 
 | Task ID | Task명 | Area | Dependencies | Agent | Status |
 |---------|--------|------|-------------|-------|--------|
-| S5FE1 | 디자인 시스템 구현 (globals.css + tailwind.config — 다크/라이트 동시 지원) | FE | S5DS2, S5DS3 | `frontend-developer-core` | Pending |
-| S5FE2 | 네비게이션 재구축 (상단바 4대 메뉴 + 모바일 탭바) | FE | S5DS1, S5FE1 | `frontend-developer-core` | Pending |
-| S5FE3 | 랜딩 페이지 리디자인 | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
-| S5FE4 | 4대 메뉴 페이지 리디자인 (Birth/Skills/Jobs/Community + 채팅UI) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
-| S5FE6 | 마이페이지 리디자인 — 탭1~4 (프로필/챗봇관리/챗봇학습/스킬관리) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
-| S5FE7 | 관리자 대시보드 구현 — 섹션1~4 (개요/공지/회원/결제) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
-| S5FE8 | 관리자 대시보드 구현 — 섹션5~8 (챗봇/스킬/구봇구직/커뮤니티) | FE | S5DS4, S5FE1, S5FE2, S5FE7 | `frontend-developer-core` | Pending |
-| S5FE9 | 게스트 모드 리디자인 | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Pending |
-| S5FE10 | 빌드 + 배포 + 크로스브라우저 QA | FE | S5FE3, S5FE4, S5FE6, S5FE7, S5FE8, S5FE9 | `devops-troubleshooter-core` | Pending |
+| S5FE1 | 디자인 시스템 구현 (globals.css + tailwind.config — 다크/라이트 동시 지원) | FE | S5DS2, S5DS3 | `frontend-developer-core` | Completed |
+| S5FE2 | 네비게이션 재구축 (상단바 4대 메뉴 + 모바일 탭바) | FE | S5DS1, S5FE1 | `frontend-developer-core` | Completed |
+| S5FE3 | 랜딩 페이지 리디자인 | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Completed |
+| S5FE4 | 4대 메뉴 페이지 리디자인 (Birth/Skills/Jobs/Community + 채팅UI) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Completed |
+| S5FE6 | 마이페이지 리디자인 — 탭1~4 (프로필/챗봇관리/챗봇학습/스킬관리) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Completed |
+| S5FE7 | 관리자 대시보드 구현 — 섹션1~4 (개요/공지/회원/결제) | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Completed |
+| S5FE8 | 관리자 대시보드 구현 — 섹션5~8 (챗봇/스킬/구봇구직/커뮤니티) | FE | S5DS4, S5FE1, S5FE2, S5FE7 | `frontend-developer-core` | Completed |
+| S5FE9 | 게스트 모드 리디자인 | FE | S5DS4, S5FE1, S5FE2 | `frontend-developer-core` | Completed |
+| S5FE10 | 빌드 + 배포 + 크로스브라우저 QA | FE | S5FE3, S5FE4, S5FE6, S5FE7, S5FE8, S5FE9 | `devops-troubleshooter-core` | Completed |
+| S5FE11 | 마이페이지 리디자인 — 탭5~8 (운영관리/상속/크레딧/보안) | FE | S5FE1, S5FE2, S5DS4 | `frontend-developer-core` | Completed |
 | S5FE12 | 디자인 Quick Win 6개 적용 (CSS 변수 튜닝 — 보더/그림자/타이포/글로우/OpenType) | FE | S5FE1 | `frontend-developer-core` | Completed |
-
-> **참고**: 마이페이지 탭5~8 (운영관리/상속/크레딧/보안)은 별도 Task(미등록)로 추후 추가 예정. S5FE6은 탭1~4만 담당.
 
 ---
 
@@ -297,3 +296,4 @@ S4 (개발 마무리)
 | v3.0 | 2026-04-07 | S5 디자인 혁신 Stage 추가 — 12개 Task (DS 4개 소급완료 + FE 8개 신규) |
 | v3.1 | 2026-04-07 | S5 FE Task 재구성 — PO 확정 사항 반영 (4대 메뉴, 마이페이지 8탭, 관리자 대시보드 8섹션). FE 8개→10개. S5FE4(4대 메뉴 통합), S5FE6(마이페이지 탭1~4), S5FE7(관리자 섹션1~4), S5FE8(관리자 섹션5~8), S5FE9(게스트 모드), S5FE10(빌드+QA) 신규. 총 72개→74개. |
 | v3.2 | 2026-04-08 | S5FE12 추가 — 디자인 Quick Win 6개 (CSS 변수 튜닝: 보더 반투명, 그림자 다층화, letter-spacing 스케일, 퍼플 글로우 확장, OpenType). 벤치마크 분석(Vercel/Linear/Stripe/Notion/Supabase) 기반. 총 74개→75개. |
+| v3.3 | 2026-04-11 | S5FE1~10+FE11 완료 처리 — 디자인 혁신 FE Task 전체 Completed. S5FE11 TASK_PLAN.md 등록(마이페이지 탭5~8). S5 Stage Gate AI Verified (35/35). 크레딧 차감 시스템(S2BA5) 통합 기록. 총 75개→76개. |
