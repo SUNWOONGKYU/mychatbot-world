@@ -89,7 +89,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </p>
 
             {/* CTA 버튼 */}
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href={primaryHref}
                 className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -117,7 +117,8 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               </Link>
               <Link
                 href="/guest"
-                className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                style={{ background: 'rgb(16 185 129)', boxShadow: '0 8px 24px rgb(16 185 129 / 0.4)' }}
               >
                 ⚡ 지금 무료로 체험하기
               </Link>
