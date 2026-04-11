@@ -3,7 +3,7 @@
  * @description 페르소나 로더 — botId 기반 페르소나 로딩 + 인메모리 캐싱 + KB RAG 통합
  *
  * 주요 기능:
- * - Supabase `personas` 테이블에서 botId로 페르소나 조회
+ * - Supabase `mcw_personas` 테이블에서 botId로 페르소나 조회
  * - 시스템 프롬프트 조합: "You are {name}. {personality}. Tone: {tone}."
  * - 인메모리 Map 캐싱으로 동일 botId 반복 조회 방지
  * - kb_embeddings 벡터 유사도 검색 → 상위 3개 컨텍스트 삽입 (graceful fallback)
@@ -36,7 +36,7 @@ function getSupabaseServer() {
 // ============================
 
 /**
- * Supabase `personas` 테이블 행 타입
+ * Supabase `mcw_personas` 테이블 행 타입
  */
 export interface PersonaRow {
   id: string;
@@ -45,6 +45,8 @@ export interface PersonaRow {
   personality: string;
   tone: string;
   greeting?: string | null;
+  role?: string | null;
+  category?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -178,7 +180,7 @@ function appendKbContext(
  * @param queryEmbedding - (선택) 현재 메시지 임베딩 (KB 검색용)
  *                         미제공 시 KB 검색 건너뜀
  * @returns PersonaContext
- * @throws Error - personas 테이블에 botId 없음 / DB 오류
+ * @throws Error - mcw_personas 테이블에 botId 없음 / DB 오류
  *
  * @example
  * ```ts
@@ -197,9 +199,9 @@ export async function loadPersona(
 
   const supabase = getSupabaseServer();
 
-  // personas 테이블 조회
+  // mcw_personas 테이블 조회
   const { data, error } = await supabase
-    .from('personas')
+    .from('mcw_personas')
     .select('*')
     .eq('bot_id', botId)
     .single();

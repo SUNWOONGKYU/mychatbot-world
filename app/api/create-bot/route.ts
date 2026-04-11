@@ -360,6 +360,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     is_public: true,
     greeting: analysis.suggestedGreeting,
     faqs: faqs,
+    personality: description.trim(),
+    tone: analysis.tone,
   };
 
   const { error: personaInsertError } = await supabase
