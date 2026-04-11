@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { data, error } = await supabase
     .from('mcw_personas')
-    .insert({ bot_id: botId, name: body.name.trim() })
+    .insert({ id: crypto.randomUUID(), bot_id: botId, name: body.name.trim() })
     .select('id, name, created_at')
     .single();
 
