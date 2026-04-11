@@ -5,7 +5,7 @@
  */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 // ── 타입 ─────────────────────────────────────────────────────
@@ -23,6 +23,15 @@ interface PaymentHistory {
   status: 'pending' | 'confirmed' | 'cancelled';
   depositor_name: string | null;
   created_at: string;
+}
+
+interface UsageHistory {
+  id: string;
+  description: string;
+  amount: number;
+  model: string | null;
+  tokens: number | null;
+  createdAt: string;
 }
 
 // ── 상수 ─────────────────────────────────────────────────────
@@ -75,9 +84,58 @@ function authHeaders(): HeadersInit {
     : { 'Content-Type': 'application/json' };
 }
 
+// ── 사용 내역 섹션 ────────────────────────────────────────────
+
+function UsageHistorySection({
+  items,
+  loading,
+  onMount,
+}: {
+  items: UsageHistory[];
+  loading: boolean;
+  onMount: () => void;
+}) {
+  const called = useRef(false);
+  useEffect(() => {
+    if (!called.current) {
+      called.current = true;
+      onMount();
+    }
+  }, [onMount]);
+
+  if (loading) {
+    return <div className="text-center text-text-muted py-6 text-sm">불러오는 중...</div>;
+  }
+  if (items.length === 0) {
+    return <p className="text-center text-text-muted py-6 text-sm">크레딧 사용 내역이 없습니다.</p>;
+  }
+  return (
+    <div className="space-y-2">
+      {items.map((u) => (
+        <div
+          key={u.id}
+          className="flex items-center justify-between py-3 border-b border-border last:border-0"
+        >
+          <div>
+            <p className="text-sm text-text-primary font-medium">{u.description}</p>
+            <p className="text-xs text-text-muted">
+              {formatDate(u.createdAt)}
+              {u.model ? ` · ${u.model}` : ''}
+              {u.tokens ? ` · ${u.tokens.toLocaleString()}토큰` : ''}
+            </p>
+          </div>
+          <span className="text-sm font-semibold text-error">-{formatCurrency(u.amount)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Tab7Credits() {
   const [creditInfo, setCreditInfo] = useState<CreditInfo>({ balance: 0, total_charged: 0 });
   const [history, setHistory] = useState<PaymentHistory[]>([]);
+  const [usageHistory, setUsageHistory] = useState<UsageHistory[]>([]);
+  const [usageLoading, setUsageLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // 패키지 선택
@@ -89,7 +147,7 @@ export default function Tab7Credits() {
   const [errorMsg, setErrorMsg] = useState('');
 
   // 히스토리 탭
-  const [historyTab, setHistoryTab] = useState<'use' | 'charge'>('charge');
+  const [historyTab, setHistoryTab] = useState<'charge' | 'use'>('charge');
 
   useEffect(() => {
     async function load() {
@@ -106,11 +164,10 @@ export default function Tab7Credits() {
         }
         if (payRes.ok) {
           const d = await payRes.json();
-          // /api/payments 응답: { items, pagination } (data 래퍼 없음)
           setHistory(d?.items ?? []);
         }
       } catch {
-        // silent fail, keep defaults
+        // silent fail
       } finally {
         setLoading(false);
       }
@@ -365,7 +422,23 @@ export default function Tab7Credits() {
             </div>
           )
         ) : (
-          <p className="text-center text-text-muted py-6 text-sm">사용 내역 기능 준비 중입니다.</p>
+          <UsageHistorySection
+            items={usageHistory}
+            loading={usageLoading}
+            onMount={async () => {
+              if (usageHistory.length > 0 || usageLoading) return;
+              setUsageLoading(true);
+              try {
+                const res = await fetch('/api/credits/usage', { headers: authHeaders() });
+                if (res.ok) {
+                  const d = await res.json();
+                  setUsageHistory(d?.items ?? []);
+                }
+              } catch { /* silent */ } finally {
+                setUsageLoading(false);
+              }
+            }}
+          />
         )}
       </div>
     </div>

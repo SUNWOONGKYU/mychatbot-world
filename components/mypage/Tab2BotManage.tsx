@@ -109,16 +109,36 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
 
   const handleAdd = async () => {
     if (!newName.trim() || list.length >= 10) return;
-    const tempId = `temp-${Date.now()}`;
-    const newPersona: Persona = { id: tempId, name: newName.trim() };
-    setList(prev => [...prev, newPersona]);
+    const name = newName.trim();
     setNewName('');
     setAdding(false);
-    // TODO: 실제 API 연동
+    try {
+      const res = await fetch(`/api/bots/${botId}/personas`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ name }),
+      });
+      const d = await res.json();
+      if (res.ok && d.data) {
+        setList(prev => [...prev, { id: d.data.id, name: d.data.name }]);
+      } else {
+        setList(prev => [...prev, { id: `temp-${Date.now()}`, name }]);
+      }
+    } catch {
+      setList(prev => [...prev, { id: `temp-${Date.now()}`, name }]);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     setList(prev => prev.filter(p => p.id !== id));
+    if (id.startsWith('temp-')) return;
+    try {
+      await fetch(`/api/bots/${botId}/personas`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+        body: JSON.stringify({ personaId: id }),
+      });
+    } catch { /* silent */ }
   };
 
   return (
