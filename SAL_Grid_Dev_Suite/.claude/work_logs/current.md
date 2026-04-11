@@ -1,4 +1,44 @@
-# Work Log - 2026-04-11 (최신)
+# Work Log - 2026-04-11 (최신 — 세션2: 마이페이지 버그 수정 4건)
+
+---
+
+## 세션2 마이페이지 버그 수정 (2026-04-11)
+
+### 작업 상태: ✅ 완료 — 4건 Fix + Push
+
+### [FIX 1] Tab7 크레딧 결제 내역 (커밋 1d4a02b)
+- **파일**: `app/api/payments/route.ts`, `components/mypage/Tab7Credits.tsx`
+- **문제**: GET 응답 필드 camelCase↔snake_case 불일치, `confirmed` 상태 매핑 오류
+- **수정**:
+  - API: `createdAt`→`created_at`, `paymentType`→`method`, `credits`/`depositor_name` 추가
+  - Tab7: `PaymentHistory.status` 타입 `confirmed`→`completed`+`refunded`
+  - `PaymentStatusBadge`: `confirmed` 매핑 제거, `completed`/`refunded` 추가
+- **SAL Grid**: S4BA2 modification_history 업데이트
+
+### [FIX 2] Tab8 로그아웃 서버 세션 (커밋 acf56c4)
+- **파일**: `components/mypage/Tab8Security.tsx`
+- **문제**: localStorage만 삭제, Supabase 서버 세션 미종료
+- **수정**: `handleLogout`을 async로 변경, `supabase.auth.signOut()` 호출 추가
+- **SAL Grid**: S5FE11 modification_history 업데이트
+
+### [FIX 3] POST /api/kb/text 신규 생성 (커밋 09febe9)
+- **파일**: `app/api/kb/text/route.ts` (신규)
+- **문제**: Tab3 텍스트 KB 입력이 `/api/kb/text` 호출하지만 endpoint 없었음
+- **구현**: Bearer 토큰 인증, chatbot_id 미제공 시 첫 번째 봇 자동 선택
+- **SAL Grid**: S2BA3 modification_history 업데이트
+
+### [FIX 4] GET /api/bots/{id}/export 신규 생성 (커밋 c8ea1f4)
+- **파일**: `app/api/bots/[id]/export/route.ts` (신규)
+- **문제**: Tab2 "내보내기" 버튼이 존재하지 않는 엔드포인트 호출로 조용히 실패
+- **구현**: Bearer 토큰 인증, 소유권 확인 후 챗봇 JSON 다운로드 응답
+
+### 미처리 항목 (낮은 우선순위 - 오류 없음)
+- Tab5 운영관리: Mock 데이터 사용 중 (`/api/operations/*` 미구현) — 화면은 정상 표시
+- Tab6 상속: API 이미 존재 (`/api/inheritance/route.ts`) — 정상 작동
+
+---
+
+# Work Log - 2026-04-11 (세션1: 크레딧 시스템 + S5 Stage Gate 완료)
 
 ---
 
