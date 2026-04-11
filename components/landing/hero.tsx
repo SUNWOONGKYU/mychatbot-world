@@ -59,11 +59,8 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </div>
 
             {/* 메인 헤드라인 — 원본 바닐라 카피 */}
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-              당신의{' '}
-              <span className="text-white font-black">AI</span> 챗봇이{' '}
-              <br className="hidden sm:block" />
-              이 세상에{' '}
+            <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl whitespace-nowrap">
+              당신의 <span className="font-black">AI</span> 챗봇이 이 세상에{' '}
               <span
                 style={{
                   background:
