@@ -55,7 +55,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .eq('skill_id', skillId)
     .eq('user_id', user.id)
     .select()
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('[PATCH /api/skills/[id]/toggle] update error:', error);

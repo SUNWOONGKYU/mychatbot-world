@@ -136,10 +136,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { data: personas, error: personasError } = await (supabase as any)
     .from('mcw_bots')
-    .select('id, name')
-    .eq('owner_id', userId)
-    .eq('is_deleted', false)
-    ;
+    .select('id, bot_name')
+    .eq('owner_id', userId);
 
   if (personasError) {
     console.error('[GET /api/inheritance] 페르소나 조회 오류:', personasError);
@@ -175,7 +173,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       : null,
     personas: (personas ?? []).map((p: any) => ({
       id: p.id,
-      name: p.name,
+      name: p.bot_name ?? p.name ?? '(이름 없음)',
       allowed: personaSettingsMap.has(p.id) ? (personaSettingsMap.get(p.id) ?? true) : true,
     })),
   };
