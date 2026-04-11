@@ -89,8 +89,9 @@ interface PaginationMeta {
   totalPages: number;
 }
 
-// 허용 충전 금액
-const ALLOWED_AMOUNTS = [1000, 5000, 10000, 50000] as const;
+// 허용 충전 금액 (UI 패키지와 일치: 30,000 / 50,000 / 100,000 + 직접 입력 최소 10,000)
+const ALLOWED_AMOUNTS = [30000, 50000, 100000] as const;
+const CUSTOM_MIN_AMOUNT = 10000; // 직접 입력 최소 금액
 
 // ── Supabase ──────────────────────────────────────────────────────────────
 
@@ -196,12 +197,13 @@ export async function GET(req: NextRequest) {
 // ── POST /api/payments ────────────────────────────────────────────────────
 
 interface PaymentRequest {
-  amount: typeof ALLOWED_AMOUNTS[number];
+  amount: number;
+  depositor_name?: string;
 }
 
 /**
  * 무통장 입금 요청 생성
- * Body: { amount: 1000 | 5000 | 10000 | 50000 }
+ * Body: { amount: 30000 | 50000 | 100000 | (직접 입력 최소 10,000), depositor_name?: string }
  * Response: { paymentId, amount, status: 'pending', bankInfo, message, createdAt }
  */
 export async function POST(req: NextRequest) {
@@ -222,12 +224,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { amount } = body;
+    const { amount, depositor_name } = body;
 
-    if (!amount || !(ALLOWED_AMOUNTS as readonly number[]).includes(amount)) {
+    // 패키지 금액이거나 직접 입력 최소 금액 이상이어야 함
+    const isPackageAmount = (ALLOWED_AMOUNTS as readonly number[]).includes(amount);
+    const isValidCustomAmount = Number.isInteger(amount) && amount >= CUSTOM_MIN_AMOUNT;
+    if (!amount || (!isPackageAmount && !isValidCustomAmount)) {
       return NextResponse.json(
         {
-          error: `Invalid amount. Allowed values: ${ALLOWED_AMOUNTS.join(', ')} (KRW)`,
+          error: `Invalid amount. Package values: ${ALLOWED_AMOUNTS.join(', ')} KRW, or custom minimum ${CUSTOM_MIN_AMOUNT.toLocaleString()} KRW.`,
         },
         { status: 400 },
       );
@@ -256,6 +261,7 @@ export async function POST(req: NextRequest) {
         bank_name: bankName,
         account_number: accountNumber,
         account_holder: accountHolder,
+        ...(depositor_name ? { description: `입금자명: ${depositor_name}` } : {}),
       })
       .select('id, amount, status, created_at')
       .single();

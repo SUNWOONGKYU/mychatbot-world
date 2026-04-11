@@ -101,11 +101,13 @@ export default function Tab7Credits() {
         ]);
         if (credRes.ok) {
           const d = await credRes.json();
-          setCreditInfo(d?.data ?? { balance: 0, total_charged: 0 });
+          // /api/credits 응답: { balance, currency, updatedAt } (data 래퍼 없음)
+          setCreditInfo({ balance: d?.balance ?? 0, total_charged: 0 });
         }
         if (payRes.ok) {
           const d = await payRes.json();
-          setHistory(d?.data ?? []);
+          // /api/payments 응답: { items, pagination } (data 래퍼 없음)
+          setHistory(d?.items ?? []);
         }
       } catch {
         // silent fail, keep defaults
@@ -153,7 +155,8 @@ export default function Tab7Credits() {
       const payRes = await fetch('/api/payments', { headers: authHeaders() });
       if (payRes.ok) {
         const d = await payRes.json();
-        setHistory(d?.data ?? []);
+        // /api/payments 응답: { items, pagination }
+        setHistory(d?.items ?? []);
       }
       setTimeout(() => setSuccessMsg(''), 6000);
     } catch (err: unknown) {

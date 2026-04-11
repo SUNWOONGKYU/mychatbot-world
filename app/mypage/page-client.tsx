@@ -267,7 +267,23 @@ export default function MyPageClient() {
 
         if (skillsRes.status === 'fulfilled' && skillsRes.value.ok) {
           const data = await skillsRes.value.json();
-          setSkills(Array.isArray(data) ? data : (data.skills ?? []));
+          // API 응답: { skills: MySkillItem[], total }
+          // MySkillItem: { installation_id, skill_id, installed_at, status, execution_count, last_used_at, skill_meta }
+          // Tab4 기대: { id, name, description, version, author, active, attached_bots, downloaded_at, icon, category }
+          const rawSkills = Array.isArray(data) ? data : (data.skills ?? []);
+          const mapped: SkillItem[] = rawSkills.map((s: any) => ({
+            id: s.skill_id ?? s.id,
+            name: s.skill_meta?.name ?? s.name ?? '(이름 없음)',
+            description: s.skill_meta?.description ?? s.description ?? null,
+            version: s.skill_meta?.version ?? s.version ?? '1.0.0',
+            author: s.skill_meta?.author ?? s.author ?? '',
+            active: s.status !== undefined ? s.status === 'active' : (s.is_active ?? true),
+            attached_bots: s.attached_bots ?? [],
+            downloaded_at: s.installed_at ?? s.downloaded_at ?? new Date().toISOString(),
+            icon: s.skill_meta?.icon ?? s.icon,
+            category: s.skill_meta?.category ?? s.category,
+          }));
+          setSkills(mapped);
         }
 
         if (creditsRes.status === 'fulfilled' && creditsRes.value.ok) {
