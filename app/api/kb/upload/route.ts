@@ -60,19 +60,15 @@ const STORAGE_BUCKET = 'kb-files';
  * @returns 업로드 결과 + 생성된 KB 항목
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  // 인증 확인
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   // Content-Type 확인
@@ -164,7 +160,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {
@@ -196,7 +192,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Supabase Storage 업로드
     const timestamp = Date.now();
     const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const storagePath = `${session.user.id}/${chatbotId}/${timestamp}_${safeFileName}`;
+    const storagePath = `${user.id}/${chatbotId}/${timestamp}_${safeFileName}`;
 
     const { data: storageData, error: storageError } = await supabase.storage
       .from(STORAGE_BUCKET)

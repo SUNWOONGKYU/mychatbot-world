@@ -123,18 +123,15 @@ function validateSettings(
  * @returns BotSettings (없으면 기본값 반환)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -153,7 +150,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {
@@ -217,18 +214,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * @returns 업데이트된 BotSettings
  */
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   let body: UpdateSettingsRequest;
@@ -264,7 +258,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', chatbot_id)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {
@@ -324,18 +318,15 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
  * @returns 생성된 BotSettings
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   let body: { chatbot_id: string };
@@ -361,7 +352,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', body.chatbot_id)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {
@@ -432,18 +423,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  * @returns 초기화된 BotSettings
  */
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -462,7 +450,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {

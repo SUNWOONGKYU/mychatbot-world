@@ -45,14 +45,14 @@ interface FaqResponse {
  */
 export async function POST(request: NextRequest): Promise<NextResponse<FaqResponse>> {
   // ── 1. 인증 검증 ────────────────────────────────────────────────────────────
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: authError,
-  } = await supabase.auth.getSession();
-
-  if (authError || !session) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
   }
 

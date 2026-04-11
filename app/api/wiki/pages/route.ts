@@ -99,8 +99,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const supabase = getSupabase();
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError || !session) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
@@ -121,7 +126,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', body.bot_id)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (!bot) {
@@ -158,8 +163,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
   const supabase = getSupabase();
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError || !session) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
@@ -189,7 +199,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     }
 
     const ownerCheck = existing.mcw_bots as unknown as { owner_id: string };
-    if (ownerCheck.owner_id !== session.user.id) {
+    if (ownerCheck.owner_id !== user.id) {
       return NextResponse.json({ success: false, error: '수정 권한이 없습니다.', data: null }, { status: 403 });
     }
 
@@ -222,8 +232,13 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
   const supabase = getSupabase();
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError || !session) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
@@ -246,7 +261,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     }
 
     const ownerCheck = existing.mcw_bots as unknown as { owner_id: string };
-    if (ownerCheck.owner_id !== session.user.id) {
+    if (ownerCheck.owner_id !== user.id) {
       return NextResponse.json({ success: false, error: '삭제 권한이 없습니다.', data: null }, { status: 403 });
     }
 
