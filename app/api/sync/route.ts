@@ -108,7 +108,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { data: kbStats, error: kbError } = await supabase
       .from('mcw_kb_items')
       .select('is_embedded')
-      .eq('chatbot_id', chatbotId);
+      .eq('bot_id', chatbotId);
 
     if (kbError) {
       console.error('[SYNC GET] KB 통계 조회 실패:', kbError.message);
@@ -267,7 +267,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const { data: pendingKbs, error: pendingError } = await supabase
         .from('mcw_kb_items')
         .select('id, title')
-        .eq('chatbot_id', body.chatbot_id)
+        .eq('bot_id', body.chatbot_id)
         .eq('is_embedded', false);
 
       if (pendingError) {

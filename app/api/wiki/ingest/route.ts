@@ -210,7 +210,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let kbQuery = supabase
       .from('mcw_kb_items')
       .select('id, title, content')
-      .eq('chatbot_id', body.bot_id);
+      .eq('bot_id', body.bot_id);
 
     if (body.kb_item_ids && body.kb_item_ids.length > 0) {
       kbQuery = kbQuery.in('id', body.kb_item_ids);
