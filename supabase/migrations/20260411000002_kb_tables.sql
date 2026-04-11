@@ -11,7 +11,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 -- ============================================================
 CREATE TABLE IF NOT EXISTS kb_embeddings (
     id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    kb_item_id  UUID        NOT NULL REFERENCES mcw_kb_items(id) ON DELETE CASCADE,
+    kb_item_id  TEXT        NOT NULL REFERENCES mcw_kb_items(id) ON DELETE CASCADE,
     chunk_index INT         NOT NULL,
     chunk_text  TEXT        NOT NULL,
     token_count INT,
@@ -36,8 +36,9 @@ CREATE POLICY "kb_embeddings_select_own"
     USING (
         EXISTS (
             SELECT 1 FROM mcw_kb_items k
+            JOIN mcw_bots b ON b.id = k.bot_id
             WHERE k.id = kb_item_id
-              AND k.owner_id = auth.uid()
+              AND b.owner_id = auth.uid()::text
         )
     );
 
