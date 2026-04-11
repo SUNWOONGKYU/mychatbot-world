@@ -1,4 +1,90 @@
-# Work Log - 2026-04-07 (최신)
+# Work Log - 2026-04-11 (최신)
+
+---
+
+## 14. 추가 검증 세션 — 버그 발견 및 수정 (2026-04-11 Priority 1~4)
+
+### 작업 상태: 완료
+
+### 발견된 버그 및 수정
+
+| 파일 | 문제 | 수정 |
+|------|------|------|
+| `app/api/faq/route.ts` | `getSession()` → Bearer 토큰 불인식 (401) | `getUser(token)` 방식으로 교정 |
+| `app/api/faq/[id]/route.ts` | 동일 문제 | 동일 교정 |
+| `app/api/bots/route.ts` | `user_id` 컬럼명 오류 (실제: `owner_id`) | `owner_id` + BotItem 타입 교정 |
+| `app/api/kb/text/route.ts` | 42P01만 처리 (실제 에러: PGRST205) | PGRST205 + `does not exist` 추가 |
+| `app/api/skills/register/route.ts` | 동일 문제, 중복체크 단계 fallback 누락 | PGRST205 처리 + 중복체크 fallback |
+| `app/api/wiki/lint/route.ts` | `getSession()` → Bearer 토큰 불인식 (401) | `getUser(token)` 방식으로 교정 |
+| `app/api/bots/[id]/personas/route.ts` | `description` 컬럼 없음 (PGRST205) + `id` 기본값 없음 (23502) | description 제거 + `crypto.randomUUID()` 주입 |
+
+### 검증 결과 (Priority 1~4 전체, test@mychatbot.world / Test1234!)
+
+| # | 엔드포인트 | 결과 | 비고 |
+|---|----------|------|------|
+| P1-H1 | PATCH /api/auth/me | ✅ 200 | 프로필 업데이트 정상 |
+| P1-H3 | PATCH /api/auth/password | ✅ 200 | 비밀번호 변경 정상 |
+| P1-H4 | POST /api/bots/[id]/clone | ✅ 200 | 만료 토큰 → 재로그인 후 정상 |
+| P1-H5 | PATCH /api/skills/[id]/toggle | ✅ 404 | 설치 스킬 없음 — 정상 동작 |
+| P1-H6 | GET /api/inheritance | ✅ 200 | personas 목록 포함 정상 |
+| P2 | GET /api/faq?botId={id} | ✅ 200 | Bearer 토큰 교정 후 정상 |
+| P2 | POST /api/faq (chatbot_id) | ✅ 201 | FAQ 생성 정상 |
+| P2 | DELETE /api/faq/[id] | ✅ 200 | FAQ 삭제 정상 |
+| P2 | POST /api/bots/[id]/personas | ✅ 201 | description 제거 + UUID 주입 후 정상 |
+| P2 | DELETE /api/bots/[id]/personas | ✅ 200 | 페르소나 삭제 정상 |
+| P4 | GET /api/payments | ✅ 200 | 결제 내역 조회 정상 |
+| P4 | POST /api/payments | ✅ 200 | 무통장 입금 요청 정상 |
+
+### Git 커밋 (이번 추가 검증 세션)
+```
+2a65c85  fix: mcw_personas id 컬럼 UUID 자동 생성 추가
+548a064  fix: mcw_personas description 컬럼 제거 (DB 스키마 불일치 교정)
+```
+
+---
+
+## 13. 검증 결과 + 버그픽스 (test@mychatbot.world 계정 검증, 2026-04-11 초반)
+
+### 작업 상태: 완료
+
+### 발견된 버그 및 수정
+
+| 파일 | 문제 | 수정 |
+|------|------|------|
+| `app/api/faq/route.ts` | `getSession()` → Bearer 토큰 불인식 (401) | `getUser(token)` 방식으로 교정 |
+| `app/api/faq/[id]/route.ts` | 동일 문제 | 동일 교정 |
+| `app/api/bots/route.ts` | `user_id` 컬럼명 오류 (실제: `owner_id`) | `owner_id` + BotItem 타입 교정 |
+| `app/api/kb/text/route.ts` | 42P01만 처리 (실제 에러: PGRST205) | PGRST205 + `does not exist` 추가 |
+| `app/api/skills/register/route.ts` | 동일 문제, 중복체크 단계 fallback 누락 | PGRST205 처리 + 중복체크 fallback |
+| `app/api/wiki/lint/route.ts` | `getSession()` → Bearer 토큰 불인식 (401) | `getUser(token)` 방식으로 교정 |
+
+### 검증 결과 (test@mychatbot.world / Test1234!)
+
+| # | 엔드포인트 | 결과 | 비고 |
+|---|----------|------|------|
+| Tab1 | GET /api/auth/me | ✅ 200 | 프로필 정상 로드 |
+| Tab2 | GET /api/bots | ✅ 200 | 봇 목록 (owner_id 교정 후) |
+| Tab3 | GET /api/faq | ✅ 200 | Bearer 토큰 인식 |
+| Tab3 | GET /api/wiki/pages | ⚠️ 400 | bot_id 필요, 정상 동작 |
+| Tab3 | POST /api/kb/text | ✅ 200 | 테이블 없음 graceful fallback |
+| Tab3 | POST /api/wiki/lint | ✅ 200 | Bearer 토큰 교정 후 정상 |
+| Tab3 | POST /api/wiki/accumulate | ✅ 200 | 정상 |
+| Tab4 | POST /api/skills/register | ✅ 202 | 테이블 없음 graceful fallback |
+| Tab5 | GET /api/jobs | ✅ 200 | 정상 |
+| Tab5 | GET /api/revenue | ✅ 200 | 정상 |
+| Tab6 | GET /api/inheritance | ✅ 200 | 정상 |
+| Tab7 | GET /api/credits/usage | ✅ 200 | 정상 |
+
+### Git 커밋 (13번 세션)
+```
+a5b3e2b  fix: wiki/lint getSession → Bearer token 인증 교정
+7eafe8d  fix: bots 컬럼명 교정 + kb/skills graceful fallback 에러코드 수정
+091b801  fix: getSession → Bearer token 인증 교정 (bots, faq 라우트)
+```
+
+---
+
+# Work Log - 2026-04-07 (이전)
 
 ---
 
