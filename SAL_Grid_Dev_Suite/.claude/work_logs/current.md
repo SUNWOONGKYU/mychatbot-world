@@ -32,6 +32,17 @@
 - **문제**: Tab2 "내보내기" 버튼이 존재하지 않는 엔드포인트 호출로 조용히 실패
 - **구현**: Bearer 토큰 인증, 소유권 확인 후 챗봇 JSON 다운로드 응답
 
+### [FIX 5] Tab3 파일 업로드 필드 불일치 수정 (세션3)
+- **파일**: `components/mypage/Tab3Learning.tsx`, `app/api/kb/upload/route.ts`
+- **문제 1**: Tab3가 `files` (복수) 키로 전송, API가 `file` (단수) 기대 → 파일 미인식
+- **문제 2**: Tab3가 `chatbot_id` 미전송, API가 필수로 요구 → 400 에러
+- **문제 3**: 업로드 API가 `getSession()` 쿠키 기반 인증 사용, Tab3는 Bearer 토큰 사용 → 401
+- **수정**:
+  - Tab3: `files` → `file` (단수), 다중 파일은 1개씩 순차 업로드 루프
+  - 업로드 API: `getSession()` → Bearer 토큰 인증으로 전환 (SERVICE_ROLE_KEY 사용)
+  - 업로드 API: `chatbot_id` 필수 → 선택(미제공 시 `general` 폴더에 저장)
+- **SAL Grid**: S5FE6 modification_history 업데이트
+
 ### 미처리 항목 (낮은 우선순위 - 오류 없음)
 - Tab5 운영관리: Mock 데이터 사용 중 (`/api/operations/*` 미구현) — 화면은 정상 표시
 - Tab6 상속: API 이미 존재 (`/api/inheritance/route.ts`) — 정상 작동

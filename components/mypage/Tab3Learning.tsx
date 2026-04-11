@@ -52,17 +52,20 @@ function KbInjectPanel() {
     setUploading(true);
     setUploadResult('');
     try {
-      const formData = new FormData();
-      Array.from(files).forEach(f => formData.append('files', f));
-      formData.append('type', type);
       const token = getToken();
-      const res = await fetch('/api/kb/upload', {
-        method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: formData,
-      });
-      if (!res.ok) throw new Error('업로드 실패');
-      setUploadResult('업로드 완료! KB에 반영되었습니다.');
+      let successCount = 0;
+      for (const f of Array.from(files)) {
+        const formData = new FormData();
+        formData.append('file', f);
+        formData.append('type', type);
+        const res = await fetch('/api/kb/upload', {
+          method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          body: formData,
+        });
+        if (res.ok) successCount++;
+      }
+      setUploadResult(`${successCount}개 파일 업로드 완료! KB에 반영되었습니다.`);
     } catch {
       setUploadResult('업로드 중 오류가 발생했습니다.');
     } finally {
