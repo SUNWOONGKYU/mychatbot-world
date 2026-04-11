@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
+import supabase from '@/lib/supabase';
 
 function authHeaders(): HeadersInit {
   const token =
@@ -202,7 +203,8 @@ function LogoutSection() {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
 
-  function handleLogout() {
+  async function handleLogout() {
+    await supabase.auth.signOut();
     if (typeof window !== 'undefined') {
       localStorage.removeItem('mcw_access_token');
       sessionStorage.removeItem('mcw_access_token');
