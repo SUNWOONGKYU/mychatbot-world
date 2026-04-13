@@ -76,7 +76,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // ── 봇 정보 로딩 ────────────────────────────────────────────────────────────
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
   let systemPrompt = `당신은 AI 챗봇입니다. 친근하고 도움이 되는 방식으로 한국어로 답변하세요.`;
