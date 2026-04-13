@@ -8,7 +8,7 @@
 -- Fix: Revoke anon EXECUTE. Only authenticated users need vector search.
 -- Guest chat uses its own system prompt; no RAG needed for anon.
 
-REVOKE EXECUTE ON FUNCTION match_kb_items(vector, float, int, uuid) FROM anon;
+REVOKE EXECUTE ON FUNCTION match_kb_items(vector(1536), int, text) FROM anon;
 
 -- Ensure authenticated role retains access (unchanged)
-GRANT EXECUTE ON FUNCTION match_kb_items(vector, float, int, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION match_kb_items(vector(1536), int, text) TO authenticated;
