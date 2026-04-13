@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S3PF3",
+  "diagnostic_name": "API 응답 시간",
+  "area": "PF",
+  "target": "Supabase 쿼리 AI API 호출",
+  "track": "Diagnosis",
+  "standard": "SRE SLI/SLO",
+  "dependencies": ["S2AP2", "S1DB2"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

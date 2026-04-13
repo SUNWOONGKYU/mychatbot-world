@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S3PF5",
+  "diagnostic_name": "캐싱 전략",
+  "area": "PF",
+  "target": "ISR SWR API 캐싱",
+  "track": "Diagnosis",
+  "standard": "HTTP Caching RFC 7234",
+  "dependencies": ["S2AP1"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S1AR3",
+  "diagnostic_name": "상태 관리 패턴",
+  "area": "AR",
+  "target": "전역 상태 props drilling lib/use-skills-store",
+  "track": "Diagnosis",
+  "standard": "React Best Practices",
+  "dependencies": [],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

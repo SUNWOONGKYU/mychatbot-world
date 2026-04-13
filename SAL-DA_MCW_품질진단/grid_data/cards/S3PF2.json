@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S3PF2",
+  "diagnostic_name": "이미지/폰트 최적화",
+  "area": "PF",
+  "target": "next/image Pretendard 로딩",
+  "track": "Diagnosis",
+  "standard": "Core Web Vitals",
+  "dependencies": ["S2MT5"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

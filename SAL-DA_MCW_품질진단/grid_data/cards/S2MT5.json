@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S2MT5",
+  "diagnostic_name": "CSS 아키텍처 일관성",
+  "area": "MT",
+  "target": "globals.css + 12개 CSS + Tailwind",
+  "track": "Diagnosis",
+  "standard": "CSS Architecture (Tailwind Best Practices)",
+  "dependencies": ["S1AR4"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

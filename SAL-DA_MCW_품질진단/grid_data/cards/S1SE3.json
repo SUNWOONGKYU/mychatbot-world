@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S1SE3",
+  "diagnostic_name": "환경변수 노출 위험",
+  "area": "SE",
+  "target": ".env 클라이언트 코드 내 키 참조",
+  "track": "Diagnosis",
+  "standard": "OWASP A02:2021 Cryptographic Failures",
+  "dependencies": [],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

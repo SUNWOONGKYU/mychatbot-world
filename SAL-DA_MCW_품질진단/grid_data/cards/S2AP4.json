@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S2AP4",
+  "diagnostic_name": "HTTP 메서드 적절성",
+  "area": "AP",
+  "target": "GET/POST/PATCH/DELETE 사용",
+  "track": "Diagnosis",
+  "standard": "HTTP/1.1 RFC 7231",
+  "dependencies": ["S1AR1"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

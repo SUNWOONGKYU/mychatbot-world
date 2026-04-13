@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S3PF4",
+  "diagnostic_name": "클라이언트 렌더링 효율",
+  "area": "PF",
+  "target": "불필요한 리렌더 useMemo/useCallback",
+  "track": "Diagnosis",
+  "standard": "React Performance",
+  "dependencies": ["S2MT1"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

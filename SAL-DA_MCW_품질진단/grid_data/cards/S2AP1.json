@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S2AP1",
+  "diagnostic_name": "API 엔드포인트 명명 일관성",
+  "area": "AP",
+  "target": "63개 route 경로 패턴",
+  "track": "Diagnosis",
+  "standard": "RESTful API Design",
+  "dependencies": ["S1AR1"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

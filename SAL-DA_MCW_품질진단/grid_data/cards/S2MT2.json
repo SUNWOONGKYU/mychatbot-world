@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S2MT2",
+  "diagnostic_name": "타입 안전성 수준",
+  "area": "MT",
+  "target": "any 사용 타입 커버리지",
+  "track": "Diagnosis",
+  "standard": "TypeScript Strict Mode",
+  "dependencies": ["S1AR4"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}

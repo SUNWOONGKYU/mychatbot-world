@@ -1,0 +1,22 @@
+{
+  "diagnostic_id": "S2AP3",
+  "diagnostic_name": "입력 검증 (Zod/스키마)",
+  "area": "AP",
+  "target": "API route 요청 파싱",
+  "track": "Diagnosis",
+  "standard": "OWASP Input Validation",
+  "dependencies": ["S1SE4"],
+  "status": null,
+  "issues": null,
+  "evidence": null,
+  "impact": null,
+  "improvement_plan": null,
+  "priority": null,
+  "expected_effect": null,
+  "improvement_status": "Pending",
+  "improvement_agent": null,
+  "improvement_content": null,
+  "re_status": null,
+  "final_verdict": null,
+  "remarks": null
+}
