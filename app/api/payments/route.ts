@@ -100,7 +100,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(
@@ -110,7 +110,7 @@ async function authenticate(
   if (!authHeader) return { userId: null, error: 'Unauthorized: missing Authorization header' };
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
   if (!token) return { userId: null, error: 'Unauthorized: missing Bearer token' };
-  const { data, error } = await (supabase as any).auth.getUser(token);
+  const { data, error } = await supabase.auth.getUser(token);
   if (error || !data?.user) return { userId: null, error: 'Unauthorized: invalid or expired token' };
   return { userId: data.user.id, error: null };
 }
@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const { userId, error: authError } = await authenticate(
-      supabase as any,
+      supabase,
       req.headers.get('Authorization'),
     );
     if (authError || !userId) {
@@ -219,7 +219,7 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const { userId, error: authError } = await authenticate(
-      supabase as any,
+      supabase,
       req.headers.get('Authorization'),
     );
     if (authError || !userId) {
@@ -257,7 +257,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: payment, error: insertError } = await (supabase as any)
+    const { data: payment, error: insertError } = await supabase
       .from('mcw_payments')
       .insert({
         user_id: userId,

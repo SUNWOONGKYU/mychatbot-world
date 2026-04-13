@@ -72,7 +72,7 @@ function getSupabaseServer() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 // ============================
@@ -244,7 +244,7 @@ async function searchWiki(
 ): Promise<{ content: string; titles: string[] } | null> {
   try {
     const supabase = getSupabaseServer();
-    const { data, error } = await (supabase as any).rpc('match_wiki_pages', {
+    const { data, error } = await supabase.rpc('match_wiki_pages', {
       p_bot_id: botId,
       query_embedding: queryEmbedding,
       match_threshold: 0.75,

@@ -23,7 +23,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('서버 설정 오류: Supabase 환경 변수가 누락되었습니다.');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(
@@ -33,7 +33,7 @@ async function authenticate(
   if (!authHeader) return { userId: null, userEmail: null, error: '인증이 필요합니다.' };
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
   if (!token) return { userId: null, userEmail: null, error: '인증 토큰이 없습니다.' };
-  const { data, error } = await (supabase as any).auth.getUser(token);
+  const { data, error } = await supabase.auth.getUser(token);
   if (error || !data?.user) {
     return { userId: null, userEmail: null, error: '유효하지 않거나 만료된 토큰입니다.' };
   }
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   // 자신이 피상속인으로 지정된 건 조회 (user ID 또는 email 기준)
-  const { data: settings, error: settingsError } = await (supabase as any)
+  const { data: settings, error: settingsError } = await supabase
     .from('mcw_inheritance_settings')
     .select('*')
     .or(`heir_id.eq.${userId},heir_email.eq.${userEmail}`)
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   // 크리에이터(소유자) 정보 일괄 조회
   const ownerIds = [...new Set(settings.map((s: any) => s.owner_id))];
-  const { data: owners } = await (supabase as any)
+  const { data: owners } = await supabase
     .from('profiles')
     .select('id, display_name')
     .in('id', ownerIds)
@@ -131,7 +131,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   // 각 피상속 건의 페르소나 설정 조회 (chatbots 테이블 join)
   const inheritanceIds = settings.map((s: any) => s.id);
-  const { data: personaSettings } = await (supabase as any)
+  const { data: personaSettings } = await supabase
     .from('mcw_inheritance_persona_settings')
     .select('inheritance_id, persona_id, allowed, mcw_bots(id, bot_name)')
     .in('inheritance_id', inheritanceIds)
@@ -208,7 +208,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // 해당 피상속 건 조회 — 본인이 피상속인인지 확인
-  const { data: setting, error: settingError } = await (supabase as any)
+  const { data: setting, error: settingError } = await supabase
     .from('mcw_inheritance_settings')
     .select('*')
     .eq('id', inheritanceId)
@@ -252,7 +252,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     updatePayload.heir_id = userId;
   }
 
-  const { error: updateError } = await (supabase as any)
+  const { error: updateError } = await supabase
     .from('mcw_inheritance_settings')
     .update(updatePayload)
     .eq('id', inheritanceId);
@@ -267,7 +267,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 이벤트 로그 기록
   const eventType = action === 'accept' ? 'heir_accepted' : 'heir_declined';
-  await (supabase as any).from('mcw_inheritance_event_logs').insert({
+  await supabase.from('mcw_inheritance_event_logs').insert({
     inheritance_id: inheritanceId,
     event_type: eventType,
     actor_id: userId,
@@ -278,7 +278,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 거부 시 크리에이터에게 알림 이벤트 기록
   if (action === 'decline') {
-    await (supabase as any).from('mcw_inheritance_event_logs').insert({
+    await supabase.from('mcw_inheritance_event_logs').insert({
       inheritance_id: inheritanceId,
       event_type: 'owner_notified_heir_declined',
       actor_id: userId,

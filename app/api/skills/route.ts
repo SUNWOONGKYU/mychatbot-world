@@ -1,5 +1,5 @@
 /**
- * @task S3BA2
+ * @task S3BA2, S4BA8
  * @description 스킬 마켓 목록/검색 API
  *
  * GET /api/skills — 스킬 목록 + 검색 + 카테고리 필터
@@ -9,12 +9,12 @@
  *   category  — 카테고리 필터
  *
  * 응답: SkillCatalogItem[] (설치 수, 평균 평점 포함)
+ *
+ * S4BA8: JSON 파일 로더 → mcw_skills 테이블 DB 조회로 전환
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 // ============================
 // 타입 정의
@@ -26,7 +26,7 @@ export interface PromptSkillDef {
   icon: string;
   category: string;
   description: string;
-  type: 'prompt';
+  type: 'prompt' | 'integration';
   isFree: boolean;
   price: number;
   systemPrompt: string;
@@ -49,41 +49,7 @@ function getSupabaseServer() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key) as any;
-}
-
-// ============================
-// 스킬 정의 파일 로더
-// ============================
-
-/**
- * skill-market/prompt-skills/*.json 파일을 모두 로드하여 반환
- */
-async function loadPromptSkills(): Promise<PromptSkillDef[]> {
-  const skillsDir = path.join(process.cwd(), 'skill-market', 'prompt-skills');
-  let files: string[] = [];
-
-  try {
-    files = await fs.readdir(skillsDir);
-  } catch {
-    // 디렉터리가 없으면 빈 배열 반환
-    return [];
-  }
-
-  const skills: PromptSkillDef[] = [];
-
-  for (const file of files) {
-    if (!file.endsWith('.json')) continue;
-    try {
-      const raw = await fs.readFile(path.join(skillsDir, file), 'utf-8');
-      const skill = JSON.parse(raw) as PromptSkillDef;
-      skills.push(skill);
-    } catch {
-      // 개별 파일 파싱 실패 시 건너뜀
-    }
-  }
-
-  return skills;
+  return createClient(url, key);
 }
 
 // ============================
@@ -96,45 +62,66 @@ export async function GET(req: NextRequest) {
     const query = (searchParams.get('q') ?? '').toLowerCase().trim();
     const category = searchParams.get('category')?.trim();
 
-    // 1. 스킬 정의 파일 로드
-    const allSkills = await loadPromptSkills();
-
-    // 2. 검색 + 카테고리 필터
-    let filtered = allSkills;
-
-    if (query) {
-      filtered = filtered.filter(
-        (s: any) =>
-          s.name.toLowerCase().includes(query) ||
-          s.description.toLowerCase().includes(query) ||
-          (s.tags ?? []).some((t: any) => t.toLowerCase().includes(query))
-      );
-    }
-
-    if (category) {
-      filtered = filtered.filter(
-        (s: any) => s.category.toLowerCase() === category.toLowerCase()
-      );
-    }
-
-    // 3. 설치 수 / 평균 평점 집계
     const supabase = getSupabaseServer();
 
-    // skill_installations: 설치 수
+    // 1. mcw_skills 테이블에서 ready-made 스킬 조회
+    let dbQuery = supabase
+      .from('mcw_skills')
+      .select('id, name, description, category, price, metadata, skill_content, use_count')
+      .eq('is_active', true)
+      .eq('origin', 'ready-made');
+
+    if (category) {
+      dbQuery = dbQuery.ilike('category', category);
+    }
+
+    const { data: skillRows, error } = await dbQuery;
+
+    if (error) throw error;
+
+    // 2. DB rows → PromptSkillDef 변환
+    let allSkills: PromptSkillDef[] = (skillRows ?? []).map((row: any) => ({
+      id: row.metadata?.legacy_id ?? row.id,
+      name: row.name,
+      icon: row.metadata?.icon ?? '',
+      category: row.category ?? '',
+      description: row.description ?? '',
+      type: (row.metadata?.type ?? 'prompt') as 'prompt' | 'integration',
+      isFree: row.metadata?.isFree ?? (Number(row.price) === 0),
+      price: Number(row.price) ?? 0,
+      systemPrompt: row.skill_content ?? '',
+      examples: row.metadata?.examples ?? [],
+      tags: row.metadata?.tags ?? [],
+    }));
+
+    // 3. 검색 필터 (카테고리는 DB 쿼리에서 처리, 텍스트 검색은 클라이언트 필터)
+    if (query) {
+      allSkills = allSkills.filter(
+        s =>
+          s.name.toLowerCase().includes(query) ||
+          s.description.toLowerCase().includes(query) ||
+          (s.tags ?? []).some((t: string) => t.toLowerCase().includes(query))
+      );
+    }
+
+    // 4. 설치 수 / 평균 평점 집계 (skill_id = metadata.legacy_id)
+    const legacyIds = allSkills.map(s => s.id);
+
     const { data: installCounts } = await supabase
       .from('skill_installations')
       .select('skill_id')
-      .eq('status', 'active');
+      .eq('status', 'active')
+      .in('skill_id', legacyIds);
 
     const installCountMap: Record<string, number> = {};
     for (const row of installCounts ?? []) {
       installCountMap[row.skill_id] = (installCountMap[row.skill_id] ?? 0) + 1;
     }
 
-    // skill_reviews: 평균 평점 + 리뷰 수
     const { data: reviews } = await supabase
       .from('skill_reviews')
-      .select('skill_id, rating');
+      .select('skill_id, rating')
+      .in('skill_id', legacyIds);
 
     const ratingMap: Record<string, { sum: number; count: number }> = {};
     for (const row of reviews ?? []) {
@@ -145,8 +132,8 @@ export async function GET(req: NextRequest) {
       ratingMap[row.skill_id].count += 1;
     }
 
-    // 4. 결과 조합
-    const result: SkillCatalogItem[] = filtered.map((skill: any) => {
+    // 5. 결과 조합
+    const result: SkillCatalogItem[] = allSkills.map(skill => {
       const ratingData = ratingMap[skill.id];
       return {
         ...skill,
@@ -158,7 +145,9 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ skills: result, total: result.length });
+    return NextResponse.json({ skills: result, total: result.length }, {
+      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' },
+    });
   } catch (error) {
     console.error('[GET /api/skills] error:', error);
     return NextResponse.json(

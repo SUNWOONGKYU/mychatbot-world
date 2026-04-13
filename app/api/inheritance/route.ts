@@ -25,7 +25,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('서버 설정 오류: Supabase 환경 변수가 누락되었습니다.');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(
@@ -39,7 +39,7 @@ async function authenticate(
   if (!token) {
     return { userId: null, userEmail: null, error: '인증 토큰이 없습니다.' };
   }
-  const { data, error } = await (supabase as any).auth.getUser(token);
+  const { data, error } = await supabase.auth.getUser(token);
   if (error || !data?.user) {
     return { userId: null, userEmail: null, error: '유효하지 않거나 만료된 토큰입니다.' };
   }
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: authError }, { status: 401 });
   }
 
-  const { data: setting, error: settingError } = await (supabase as any)
+  const { data: setting, error: settingError } = await supabase
     .from('mcw_inheritance_settings')
     .select('*')
     .eq('owner_id', userId)
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { data: personas, error: personasError } = await (supabase as any)
+  const { data: personas, error: personasError } = await supabase
     .from('mcw_bots')
     .select('id, bot_name')
     .eq('owner_id', userId);
@@ -149,7 +149,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   let personaSettings: PersonaSettingRow[] = [];
   if (setting) {
-    const { data: ps } = await (supabase as any)
+    const { data: ps } = await supabase
       .from('mcw_inheritance_persona_settings')
       .select('*')
       .eq('inheritance_id', setting.id)
@@ -223,12 +223,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { data: heirUserResult } = await (supabase as any).auth.admin.getUserByEmail(heirEmail);
+  const { data: heirUserResult } = await supabase.auth.admin.getUserByEmail(heirEmail);
   const heirUser = heirUserResult?.user ? { id: heirUserResult.user.id } : null;
 
   const now = new Date().toISOString();
 
-  const { data: existing } = await (supabase as any)
+  const { data: existing } = await supabase
     .from('mcw_inheritance_settings')
     .select('id')
     .eq('owner_id', userId)
@@ -237,7 +237,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   let inheritanceId: string;
 
   if (existing) {
-    const { data: updated, error: updateError } = await (supabase as any)
+    const { data: updated, error: updateError } = await supabase
       .from('mcw_inheritance_settings')
       .update({
         heir_id: heirUser?.id ?? null,
@@ -260,7 +260,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
     inheritanceId = updated.id;
   } else {
-    const { data: inserted, error: insertError } = await (supabase as any)
+    const { data: inserted, error: insertError } = await supabase
       .from('mcw_inheritance_settings')
       .insert({
         owner_id: userId,
@@ -285,7 +285,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // 이벤트 로그 기록 (이메일 서비스 대체)
-  await (supabase as any).from('mcw_inheritance_event_logs').insert({
+  await supabase.from('mcw_inheritance_event_logs').insert({
     inheritance_id: inheritanceId,
     event_type: 'heir_invited',
     actor_id: userId,
@@ -339,7 +339,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { data: setting, error: settingError } = await (supabase as any)
+  const { data: setting, error: settingError } = await supabase
     .from('mcw_inheritance_settings')
     .select('id')
     .eq('owner_id', userId)
@@ -368,7 +368,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     updated_at: now,
   }));
 
-  const { error: upsertError } = await (supabase as any)
+  const { error: upsertError } = await supabase
     .from('mcw_inheritance_persona_settings')
     .upsert(upsertData, { onConflict: 'inheritance_id,persona_id' });
 
@@ -406,7 +406,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: authError }, { status: 401 });
   }
 
-  const { data: setting } = await (supabase as any)
+  const { data: setting } = await supabase
     .from('mcw_inheritance_settings')
     .select('id, heir_email')
     .eq('owner_id', userId)
@@ -420,12 +420,12 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 
   // 페르소나 설정 먼저 삭제
-  await (supabase as any)
+  await supabase
     .from('mcw_inheritance_persona_settings')
     .delete()
     .eq('inheritance_id', setting.id);
 
-  const { error: deleteError } = await (supabase as any)
+  const { error: deleteError } = await supabase
     .from('mcw_inheritance_settings')
     .delete()
     .eq('id', setting.id);
@@ -438,7 +438,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  await (supabase as any).from('mcw_inheritance_event_logs').insert({
+  await supabase.from('mcw_inheritance_event_logs').insert({
     inheritance_id: setting.id,
     event_type: 'heir_removed',
     actor_id: userId,

@@ -18,7 +18,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(supabase: ReturnType<typeof createClient>, authHeader: string) {
@@ -52,7 +52,7 @@ async function syncVoteCounts(
   const upvotes = (votes ?? []).filter((v: { vote_type: string }) => v.vote_type === 'up').length;
   const downvotes = (votes ?? []).filter((v: { vote_type: string }) => v.vote_type === 'down').length;
 
-  const { error: updateErr } = await (supabase.from(table as any) as any).update({ upvotes, downvotes }).eq('id', targetId);
+  const { error: updateErr } = await supabase.from(table).update({ upvotes, downvotes }).eq('id', targetId);
   if (updateErr) {
     console.warn(`[community/like/route] vote count sync failed for ${targetType}/${targetId}:`, updateErr.message);
   }
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const authHeader = req.headers.get('authorization') ?? '';
-    const { userId, error: authError } = await authenticate(supabase as any, authHeader);
+    const { userId, error: authError } = await authenticate(supabase, authHeader);
     if (authError) return NextResponse.json({ error: authError }, { status: 401 });
 
     const body = (await req.json().catch(() => ({}))) as {
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
 
     // 대상 존재 확인
     const table = targetTable(tType)!;
-    const { error: targetErr } = await (supabase as any).from(table).select('id').eq('id', tId).single();
+    const { error: targetErr } = await supabase.from(table).select('id').eq('id', tId).single();
     if (targetErr) {
       if (targetErr.code === 'PGRST116') return NextResponse.json({ error: `${tType} not found` }, { status: 404 });
       return NextResponse.json({ error: `Failed to fetch ${tType}` }, { status: 500 });
@@ -197,10 +197,10 @@ export async function POST(req: NextRequest) {
     }
 
     // 투표 수 동기화
-    await syncVoteCounts(supabase as any, tType, tId);
+    await syncVoteCounts(supabase, tType, tId);
 
     // 최신 카운트
-    const { data: updated } = await (supabase as any).from(table).select('upvotes, downvotes').eq('id', tId).single();
+    const { data: updated } = await supabase.from(table).select('upvotes, downvotes').eq('id', tId).single();
     const upvotes = (updated as { upvotes: number | null } | null)?.upvotes ?? 0;
     const downvotes = (updated as { downvotes: number | null } | null)?.downvotes ?? 0;
 

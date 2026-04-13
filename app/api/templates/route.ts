@@ -68,7 +68,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // template_name 기준 가나다 정렬
     templates.sort((a: any, b: any) => a.template_name.localeCompare(b.template_name, 'ko'));
 
-    return NextResponse.json({ templates });
+    return NextResponse.json({ templates }, {
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal server error';
     console.error('[api/templates] Error:', message);

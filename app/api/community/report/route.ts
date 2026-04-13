@@ -27,7 +27,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(supabase: ReturnType<typeof createClient>, authHeader: string) {
@@ -59,10 +59,10 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const authHeader = req.headers.get('authorization') ?? '';
-    const { userId, error: authError } = await authenticate(supabase as any, authHeader);
+    const { userId, error: authError } = await authenticate(supabase, authHeader);
     if (authError) return NextResponse.json({ error: authError }, { status: 401 });
 
-    const isAdmin = await checkIsAdmin(supabase as any, userId!);
+    const isAdmin = await checkIsAdmin(supabase, userId!);
     if (!isAdmin) return NextResponse.json({ error: 'Forbidden: admin access required' }, { status: 403 });
 
     const { searchParams } = new URL(req.url);
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const authHeader = req.headers.get('authorization') ?? '';
-    const { userId, error: authError } = await authenticate(supabase as any, authHeader);
+    const { userId, error: authError } = await authenticate(supabase, authHeader);
     if (authError) return NextResponse.json({ error: authError }, { status: 401 });
 
     const body = (await req.json().catch(() => ({}))) as {
@@ -180,10 +180,10 @@ export async function PATCH(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const authHeader = req.headers.get('authorization') ?? '';
-    const { userId, error: authError } = await authenticate(supabase as any, authHeader);
+    const { userId, error: authError } = await authenticate(supabase, authHeader);
     if (authError) return NextResponse.json({ error: authError }, { status: 401 });
 
-    const isAdmin = await checkIsAdmin(supabase as any, userId!);
+    const isAdmin = await checkIsAdmin(supabase, userId!);
     if (!isAdmin) return NextResponse.json({ error: 'Forbidden: admin access required' }, { status: 403 });
 
     const body = (await req.json().catch(() => ({}))) as {
