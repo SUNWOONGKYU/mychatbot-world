@@ -200,6 +200,7 @@ export async function GET(req: NextRequest) {
 interface PaymentRequest {
   amount: number;
   depositor_name?: string;
+  description?: string;
 }
 
 /**
@@ -233,7 +234,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { amount, depositor_name } = body;
+    const { amount, depositor_name, description } = body;
 
     // 패키지 금액이거나 직접 입력 최소 금액 이상이어야 함
     const isPackageAmount = (ALLOWED_AMOUNTS as readonly number[]).includes(amount);
@@ -270,6 +271,7 @@ export async function POST(req: NextRequest) {
         bank_name: bankName,
         account_number: accountNumber,
         account_holder: accountHolder,
+        ...(description ? { description } : {}),
         ...(depositor_name ? { metadata: { depositor_name } } : {}),
       })
       .select('id, amount, status, created_at')
