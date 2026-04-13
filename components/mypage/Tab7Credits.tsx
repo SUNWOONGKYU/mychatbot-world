@@ -94,6 +94,54 @@ const PERSONA_TEMPLATES = [
   },
 ];
 
+const VOICE_PACKS = [
+  {
+    id: 'vp-basic',
+    emoji: '🎙️',
+    name: '기본 AI 음성 팩',
+    description: '남성·여성 2종 AI 음성, 챗봇 응답 TTS 지원',
+    price: 15000,
+  },
+  {
+    id: 'vp-pro',
+    emoji: '🎤',
+    name: '프로 AI 음성 팩',
+    description: '감정 표현 가능한 AI 음성 5종, 자연스러운 억양',
+    price: 30000,
+  },
+  {
+    id: 'vp-character',
+    emoji: '🗣️',
+    name: '캐릭터 음성 팩',
+    description: '귀엽고 개성 있는 캐릭터 스타일 음성 3종',
+    price: 20000,
+  },
+];
+
+const AVATAR_PACKS = [
+  {
+    id: 'ap-basic',
+    emoji: '🖼️',
+    name: '기본 아바타 팩',
+    description: '다양한 스타일 챗봇 아바타 이미지 10종',
+    price: 15000,
+  },
+  {
+    id: 'ap-business',
+    emoji: '👔',
+    name: '비즈니스 아바타 팩',
+    description: '전문직 콘셉트 고화질 캐릭터 아바타 10종',
+    price: 20000,
+  },
+  {
+    id: 'ap-anime',
+    emoji: '✨',
+    name: '애니메이션 아바타 팩',
+    description: '일러스트 스타일 귀여운 캐릭터 아바타 10종',
+    price: 20000,
+  },
+];
+
 function formatCurrency(n: number): string {
   return '₩' + n.toLocaleString('ko-KR');
 }
@@ -194,6 +242,13 @@ export default function Tab7Credits() {
   // 히스토리 탭
   const [historyTab, setHistoryTab] = useState<'charge' | 'use'>('charge');
 
+  // 음성 & 아바타 팩 구매
+  const [selectedAddonId, setSelectedAddonId] = useState<string | null>(null);
+  const [addonDepositor, setAddonDepositor] = useState('');
+  const [addonSubmitting, setAddonSubmitting] = useState(false);
+  const [addonSuccess, setAddonSuccess] = useState('');
+  const [addonError, setAddonError] = useState('');
+
   // 페르소나 템플릿 구매
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const [templateDepositor, setTemplateDepositor] = useState('');
@@ -272,6 +327,41 @@ export default function Tab7Credits() {
       setErrorMsg(err instanceof Error ? err.message : '신청에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleAddonSubmit() {
+    if (!selectedAddonId) {
+      setAddonError('아이템을 선택해주세요.');
+      return;
+    }
+    if (!addonDepositor.trim()) {
+      setAddonError('입금자명을 입력해주세요.');
+      return;
+    }
+    const item = [...VOICE_PACKS, ...AVATAR_PACKS].find((t) => t.id === selectedAddonId)!;
+    setAddonSubmitting(true);
+    setAddonError('');
+    try {
+      const res = await fetch('/api/payments', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          amount: item.price,
+          depositor_name: addonDepositor.trim(),
+          description: `[부가기능] ${item.name}`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+      setAddonSuccess(`"${item.name}" 구매 신청이 완료되었습니다. 입금 확인 후 24시간 이내 적용됩니다.`);
+      setAddonDepositor('');
+      setSelectedAddonId(null);
+      setTimeout(() => setAddonSuccess(''), 8000);
+    } catch (err: unknown) {
+      setAddonError(err instanceof Error ? err.message : '신청에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setAddonSubmitting(false);
     }
   }
 
@@ -564,6 +654,126 @@ export default function Tab7Credits() {
         {!selectedTemplateId && templateSuccess && (
           <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
             {templateSuccess}
+          </div>
+        )}
+      </div>
+
+      {/* 음성 & 아바타 팩 구매 */}
+      <div className="bg-bg-surface rounded-2xl border border-border p-6 space-y-5">
+        <div>
+          <h3 className="font-semibold text-text-primary">음성 & 아바타 팩</h3>
+          <p className="text-xs text-text-muted mt-1">
+            내 챗봇에 AI 음성과 고유 아바타를 장착하세요. 일회성 구매 · 영구 사용
+          </p>
+        </div>
+
+        {/* 음성 팩 */}
+        <div>
+          <p className="text-xs font-semibold text-text-secondary mb-2">🎙️ 음성 팩</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {VOICE_PACKS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setSelectedAddonId(selectedAddonId === item.id ? null : item.id)}
+                className={clsx(
+                  'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
+                  selectedAddonId === item.id
+                    ? 'border-accent bg-accent/10 shadow-accent-glow'
+                    : 'border-border bg-bg-subtle hover:border-accent/50',
+                )}
+              >
+                <span className="text-2xl">{item.emoji}</span>
+                <span className="text-sm font-semibold text-text-primary leading-snug">{item.name}</span>
+                <span className="text-[11px] text-text-muted leading-snug">{item.description}</span>
+                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-accent' : 'text-text-secondary')}>
+                  {item.price.toLocaleString('ko-KR')}원
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 아바타 팩 */}
+        <div>
+          <p className="text-xs font-semibold text-text-secondary mb-2">🖼️ 아바타 팩</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {AVATAR_PACKS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setSelectedAddonId(selectedAddonId === item.id ? null : item.id)}
+                className={clsx(
+                  'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
+                  selectedAddonId === item.id
+                    ? 'border-accent bg-accent/10 shadow-accent-glow'
+                    : 'border-border bg-bg-subtle hover:border-accent/50',
+                )}
+              >
+                <span className="text-2xl">{item.emoji}</span>
+                <span className="text-sm font-semibold text-text-primary leading-snug">{item.name}</span>
+                <span className="text-[11px] text-text-muted leading-snug">{item.description}</span>
+                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-accent' : 'text-text-secondary')}>
+                  {item.price.toLocaleString('ko-KR')}원
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 구매 폼 — 아이템 선택 시 */}
+        {selectedAddonId && (() => {
+          const item = [...VOICE_PACKS, ...AVATAR_PACKS].find((t) => t.id === selectedAddonId)!;
+          return (
+            <div className="bg-bg-subtle rounded-xl border border-accent/30 p-4 space-y-3">
+              <p className="text-sm font-semibold text-text-primary">
+                선택: {item.emoji} {item.name} — {item.price.toLocaleString('ko-KR')}원
+              </p>
+              <div className="grid grid-cols-3 gap-2 text-sm">
+                <div className="bg-bg-muted rounded-lg p-3">
+                  <p className="text-xs text-text-muted mb-1">은행</p>
+                  <p className="font-semibold text-text-primary">{BANK_INFO.bank}</p>
+                </div>
+                <div className="bg-bg-muted rounded-lg p-3">
+                  <p className="text-xs text-text-muted mb-1">계좌번호</p>
+                  <p className="font-semibold text-text-primary text-xs">{BANK_INFO.account}</p>
+                </div>
+                <div className="bg-bg-muted rounded-lg p-3">
+                  <p className="text-xs text-text-muted mb-1">예금주</p>
+                  <p className="font-semibold text-text-primary">{BANK_INFO.holder}</p>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm text-text-secondary mb-1.5">입금자명 (필수)</label>
+                <input
+                  type="text"
+                  placeholder="입금자명을 정확히 입력하세요"
+                  value={addonDepositor}
+                  onChange={(e) => setAddonDepositor(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60"
+                />
+              </div>
+              {addonError && <p className="text-sm text-error">{addonError}</p>}
+              {addonSuccess && (
+                <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm">
+                  {addonSuccess}
+                </div>
+              )}
+              <button
+                onClick={handleAddonSubmit}
+                disabled={addonSubmitting || !addonDepositor.trim()}
+                className="w-full py-2.5 rounded-xl bg-accent text-black font-bold text-sm hover:opacity-90 disabled:opacity-40 transition-opacity"
+              >
+                {addonSubmitting ? '처리 중...' : `${item.price.toLocaleString('ko-KR')}원 무통장 입금 신청`}
+              </button>
+              <p className="text-xs text-text-muted text-center">
+                입금 확인 후 24시간 이내 적용됩니다. 문의: support@mychatbot.world
+              </p>
+            </div>
+          );
+        })()}
+
+        {!selectedAddonId && addonSuccess && (
+          <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
+            {addonSuccess}
           </div>
         )}
       </div>
