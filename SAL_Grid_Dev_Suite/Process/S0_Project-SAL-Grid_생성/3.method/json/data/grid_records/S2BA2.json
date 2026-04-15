@@ -17,7 +17,7 @@
   "execution_type": "AI-Only",
   "priority": "High",
   "generated_files": "lib/persona-loader.ts, app/api/chat/route.ts, app/api/chat/stream/route.ts",
-  "modification_history": "",
+  "modification_history": "2026-04-12: 고정 CREDITS_PER_TIER 제거 → 토큰 기반 과금 전환. calcCreditCost 구현. checkAndDeductCredits → lib/chat/credits.ts 공유 함수로 교체. | 2026-04-12(review-evaluate): subscription_balance 기반 multiplier(×2/×4) 동적 결정. conversationId 소유권 검증(OWASP A01) 추가. botId 존재 확인 추가. DB migration 20260412_add_subscription_balance.sql 추가. checkAndDeductCredits subscription_balance 동기 차감 구현. Tab7Credits authHeaders localStorage→Supabase session 전환(OWASP A07). credit-policy §3 단건충전×4 행, §10 처리시간 24시간 통일.",
   "verification_instruction": "sal-grid/verification-instructions/S2BA2_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {},

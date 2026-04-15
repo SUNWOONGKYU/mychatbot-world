@@ -86,7 +86,7 @@ const state = {
    ============================================================ */
 
 /**
- * 챗봇/일감 목록 API 호출
+ * 코코봇/일감 목록 API 호출
  * @param {Object} params - 필터/검색/페이지네이션 파라미터
  * @returns {Promise<Object>} - { items, total, page, totalPages }
  */
@@ -113,7 +113,7 @@ async function fetchJobList(params = {}) {
 }
 
 /**
- * 구봇(챗봇) 목록 로드
+ * 구봇(코코봇) 목록 로드
  */
 async function loadBots() {
   if (state.bot.loading) return;
@@ -267,8 +267,8 @@ async function loadSearchResults(keyword, filters = {}) {
    ============================================================ */
 
 /**
- * 챗봇 카드 렌더링
- * @param {Array} bots - 챗봇 데이터 배열
+ * 코코봇 카드 렌더링
+ * @param {Array} bots - 코코봇 데이터 배열
  */
 function renderBotCards(bots) {
   const grid = document.getElementById('botGrid');
@@ -307,8 +307,8 @@ function renderBotCards(bots) {
 }
 
 /**
- * 단일 챗봇 카드 DOM 요소 생성
- * @param {Object} bot - 챗봇 데이터
+ * 단일 코코봇 카드 DOM 요소 생성
+ * @param {Object} bot - 코코봇 데이터
  * @returns {HTMLElement}
  */
 function createBotCard(bot) {
@@ -316,7 +316,7 @@ function createBotCard(bot) {
   card.className = 'jobs-card bot-card';
   card.setAttribute('tabindex', '0');
   card.setAttribute('role', 'article');
-  card.setAttribute('aria-label', `${bot.name} 챗봇`);
+  card.setAttribute('aria-label', `${bot.name} 코코봇`);
 
   const catClass = CATEGORY_COLORS[bot.category] || 'cat-etc';
   const catLabel = CATEGORY_LABELS[bot.category] || bot.category;
@@ -1289,7 +1289,7 @@ function showToast(message, duration = 3000) {
 
 function generateMockBots(category = 'all', sort = 'popular') {
   const allBots = [
-    { id: 'b1', name: '고객응대 도우미', category: 'customer-service', description: '24시간 고객 문의를 자동으로 처리하는 스마트 챗봇입니다.', rating: 4.8, reviewCount: 1234, price: 29000, skills: ['NLP', '다국어', 'API연동'], isNew: false, isFeatured: true },
+    { id: 'b1', name: '고객응대 도우미', category: 'customer-service', description: '24시간 고객 문의를 자동으로 처리하는 스마트 코코봇입니다.', rating: 4.8, reviewCount: 1234, price: 29000, skills: ['NLP', '다국어', 'API연동'], isNew: false, isFeatured: true },
     { id: 'b2', name: '영어 튜터봇', category: 'education', description: '개인 맞춤형 영어 학습 플랜을 제공하는 AI 튜터입니다.', rating: 4.6, reviewCount: 892, price: 19000, skills: ['교육', '언어학습', '퀴즈'], isNew: true, isFeatured: false },
     { id: 'b3', name: '마케팅 어시스턴트', category: 'marketing', description: 'SNS 콘텐츠와 광고 문구를 자동으로 생성해드립니다.', rating: 4.5, reviewCount: 567, price: 49000, skills: ['콘텐츠생성', 'SNS', '카피라이팅'], isNew: false, isFeatured: false },
     { id: 'b4', name: '코딩 도우미', category: 'development', description: '코드 리뷰, 디버깅, 문서화를 도와드립니다.', rating: 4.9, reviewCount: 2341, price: 39000, skills: ['코드리뷰', '디버깅', 'Git'], isNew: false, isFeatured: true },
@@ -1313,8 +1313,8 @@ function generateMockBots(category = 'all', sort = 'popular') {
 
 function generateMockJobs(category = 'all') {
   const allJobs = [
-    { id: 'j1', title: '쇼핑몰 고객응대 챗봇 개발', category: 'customer-service', description: '온라인 쇼핑몰의 FAQs, 반품/교환 처리를 자동화할 챗봇이 필요합니다.', budget: 500000, requiredSkills: ['NLP', 'Shopify연동', 'FAQ처리'], deadline: new Date(Date.now() + 7 * 86400000).toISOString() },
-    { id: 'j2', title: '영어회화 학습 AI 개발', category: 'education', description: '초등학생 대상 영어 회화 연습 챗봇입니다. 발음 교정 기능 포함.', budget: 800000, requiredSkills: ['음성인식', '발음교정', '게이미피케이션'], deadline: new Date(Date.now() + 14 * 86400000).toISOString() },
+    { id: 'j1', title: '쇼핑몰 고객응대 코코봇 개발', category: 'customer-service', description: '온라인 쇼핑몰의 FAQs, 반품/교환 처리를 자동화할 코코봇이 필요합니다.', budget: 500000, requiredSkills: ['NLP', 'Shopify연동', 'FAQ처리'], deadline: new Date(Date.now() + 7 * 86400000).toISOString() },
+    { id: 'j2', title: '영어회화 학습 AI 개발', category: 'education', description: '초등학생 대상 영어 회화 연습 코코봇입니다. 발음 교정 기능 포함.', budget: 800000, requiredSkills: ['음성인식', '발음교정', '게이미피케이션'], deadline: new Date(Date.now() + 14 * 86400000).toISOString() },
     { id: 'j3', title: 'SNS 마케팅 봇 제작', category: 'marketing', description: '인스타그램/트위터에 자동으로 콘텐츠를 생성하고 포스팅하는 봇.', budget: 300000, requiredSkills: ['SNS API', '콘텐츠생성', '스케줄링'], deadline: new Date(Date.now() + 3 * 86400000).toISOString() },
   ];
 

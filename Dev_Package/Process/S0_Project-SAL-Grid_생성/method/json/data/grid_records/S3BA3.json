@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "",
-  "modification_history": "",
+  "modification_history": "2026-04-11: Agenda REV1 — GET/POST /api/user/settings 신설 (app/api/user/settings/route.ts): mcw_user_settings 테이블 upsert, key-value JSONB 구조, 테이블 미존재 시 graceful fallback(200 반환); RevenueTab 수익활동 설정 저장/로드 목적 (최초 사용 사례: key='revenue_settings')",
   "verification_instruction": "sal-grid/verification-instructions/S3BA3_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "",

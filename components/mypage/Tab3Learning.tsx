@@ -1,6 +1,6 @@
 /**
  * @task S5FE6
- * @description 마이페이지 탭3 — 챗봇 학습 (구 Learning 통합)
+ * @description 마이페이지 탭3 — 코코봇 교육 (구 Learning 통합)
  * KB 주입, Wiki-e-RAG, FAQ, 전체 학습 현황
  */
 'use client';
@@ -52,20 +52,17 @@ function KbInjectPanel() {
     setUploading(true);
     setUploadResult('');
     try {
+      const formData = new FormData();
+      Array.from(files).forEach(f => formData.append('files', f));
+      formData.append('type', type);
       const token = getToken();
-      let successCount = 0;
-      for (const f of Array.from(files)) {
-        const formData = new FormData();
-        formData.append('file', f);
-        formData.append('type', type);
-        const res = await fetch('/api/kb/upload', {
-          method: 'POST',
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-          body: formData,
-        });
-        if (res.ok) successCount++;
-      }
-      setUploadResult(`${successCount}개 파일 업로드 완료! KB에 반영되었습니다.`);
+      const res = await fetch('/api/kb/upload', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+      if (!res.ok) throw new Error('업로드 실패');
+      setUploadResult('업로드 완료! KB에 반영되었습니다.');
     } catch {
       setUploadResult('업로드 중 오류가 발생했습니다.');
     } finally {
@@ -565,7 +562,7 @@ function LearningOverview() {
       className="rounded-[var(--radius-xl)] border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] p-5"
       style={{ boxShadow: 'var(--shadow-sm)' }}
     >
-      <h3 className="text-base font-semibold text-[rgb(var(--text-primary))] mb-4">전체 챗봇 학습 현황</h3>
+      <h3 className="text-base font-semibold text-[rgb(var(--text-primary))] mb-4">전체 코코봇 교육 현황</h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: '총 KB 문서', value: '—', icon: '📚' },

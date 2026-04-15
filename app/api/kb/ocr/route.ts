@@ -41,8 +41,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const supabase = getSupabase();
 
   // 인증 확인
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError || !session) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
@@ -61,7 +66,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // KB 항목 조회 + 소유권 확인
     const { data: kbItem, error: kbError } = await supabase
       .from('mcw_kb_items')
-      .select('id, chatbot_id, title, file_path, file_name, content, mcw_bots!inner(owner_id, id)')
+      .select('id, bot_id, title, file_path, file_name, content, mcw_bots!inner(owner_id, id)')
       .eq('id', body.kb_item_id)
       .single();
 
@@ -70,7 +75,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const ownerCheck = kbItem.mcw_bots as unknown as { owner_id: string; id: string };
-    if (ownerCheck.owner_id !== session.user.id) {
+    if (ownerCheck.owner_id !== user.id) {
       return NextResponse.json({ success: false, error: '접근 권한이 없습니다.', data: null }, { status: 403 });
     }
 

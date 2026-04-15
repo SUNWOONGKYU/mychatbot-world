@@ -10,8 +10,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 // ============================
 // 타입 정의
@@ -43,7 +41,7 @@ function getSupabaseServer() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 function getSupabaseUser(req: NextRequest) {
@@ -57,22 +55,26 @@ function getSupabaseUser(req: NextRequest) {
 }
 
 // ============================
-// 스킬 정의 로더
+// 스킬 정의 로더 (mcw_skills DB 조회)
 // ============================
 
 async function loadSkillDef(skillId: string): Promise<SkillDef | null> {
-  const filePath = path.join(
-    process.cwd(),
-    'skill-market',
-    'prompt-skills',
-    `${skillId}.json`
-  );
-  try {
-    const raw = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(raw) as SkillDef;
-  } catch {
-    return null;
-  }
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from('mcw_skills')
+    .select('id, name, price, metadata, is_active')
+    .eq('metadata->>legacy_id', skillId)
+    .eq('is_active', true)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  return {
+    id: skillId,
+    name: data.name,
+    isFree: data.metadata?.isFree ?? (Number(data.price) === 0),
+    price: Number(data.price) ?? 0,
+  };
 }
 
 // ============================

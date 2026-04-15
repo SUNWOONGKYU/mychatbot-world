@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Backend_APIs/job-list.js, job-hire.js, job-review.js, job-matching.js, job-fee.js",
-    "modification_history": "",
+    "modification_history": "2026-04-11: Agenda BOT1 — GET /api/bots/public 신설 (app/api/bots/public/route.ts): mcw_bots에서 deploy_url IS NOT NULL 공개 봇 조회, sort=popular/latest/rating, category 필터 지원 | 2026-04-12: Agenda FEE1 — POST /api/jobs/fee 신설 (app/api/jobs/fee/route.ts): 거래액→수수료 계산 (standard 10%/silver 8%/gold 5%), KRW/USD 지원, 인증 불필요 공개 엔드포인트",
     "verification_instruction": "sal-grid/verification-instructions/S3BA6_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",

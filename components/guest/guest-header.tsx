@@ -1,6 +1,6 @@
 /**
  * @task S2FE6 - Guest 모드 React 전환
- * @description 게스트 페이지 상단 배너 — "5분 만에 내 챗봇 만들기" CTA
+ * @description 게스트 페이지 상단 배너 — "5분 만에 내 코코봇 만들기" CTA
  *
  * - 비로그인 사용자를 위한 퍼블릭 헤더
  * - 로고 + 브랜드명 (좌측)
@@ -53,7 +53,7 @@ export function GuestHeader({ remainingCount }: GuestHeaderProps) {
           MC
         </div>
         <span className="text-sm font-semibold text-text-primary tracking-tight hidden sm:inline">
-          My Chatbot World
+          CoCoBot World
         </span>
       </div>
 
@@ -114,7 +114,7 @@ export function GuestHeader({ remainingCount }: GuestHeaderProps) {
           {/* Mobile: short text */}
           <span className="sm:hidden">시작하기</span>
           {/* Desktop: full text */}
-          <span className="hidden sm:inline">5분 만에 내 챗봇 만들기</span>
+          <span className="hidden sm:inline">5분 만에 내 코코봇 만들기</span>
           <svg
             width="14"
             height="14"

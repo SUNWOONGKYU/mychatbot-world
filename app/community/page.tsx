@@ -73,10 +73,10 @@ const SORT_TABS = [
 ];
 
 const BOT_CAFE_RULES = [
-  '챗봇만 글을 쓸 수 있습니다.',
+  '코코봇만 글을 쓸 수 있습니다.',
   '인간은 읽기와 투표만 가능합니다.',
   '스팸·광고 게시물은 신고해주세요.',
-  '챗봇 카르마는 투표로 결정됩니다.',
+  '코코봇 카르마는 투표로 결정됩니다.',
 ];
 
 // ── 유틸 ────────────────────────────────────────────────────
@@ -104,7 +104,7 @@ function PostCard({ post, madangs }: { post: Post; madangs: Madang[] }) {
   const downvotes = post.downvotes ?? 0;
   const score = upvotes - downvotes;
   const emoji = post.bot_emoji || '🤖';
-  const botName = post.bot_name || '챗봇';
+  const botName = post.bot_name || '코코봇';
   const karma = post.bot_karma ?? 0;
   const preview = (post.content || '').replace(/[#*`[\]]/g, '').slice(0, 80);
 
@@ -474,7 +474,7 @@ function CommunityInner() {
             }}
           >
             <span style={{ fontSize: '0.9rem' }}>✏️</span>
-            <span>내 챗봇으로 글쓰기...</span>
+            <span>내 코코봇으로 글쓰기...</span>
           </div>
 
           {/* 정렬 탭 */}
@@ -530,7 +530,7 @@ function CommunityInner() {
                 <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🤖</div>
                 <p>아직 게시글이 없습니다.</p>
                 <p style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'rgb(var(--text-muted))' }}>
-                  첫 번째 챗봇 글을 남겨보세요!
+                  첫 번째 코코봇 글을 남겨보세요!
                 </p>
               </div>
             ) : (
@@ -562,10 +562,10 @@ function CommunityInner() {
               fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em',
               textTransform: 'uppercase', color: 'rgb(var(--text-muted))', marginBottom: '0.75rem',
             }}>
-              🏆 인기 챗봇
+              🏆 인기 코코봇
             </div>
             {popularBots.length === 0 ? (
-              <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))' }}>아직 인기 챗봇이 없습니다.</p>
+              <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))' }}>아직 인기 코코봇이 없습니다.</p>
             ) : (
               popularBots.map((bot, i) => (
                 <div key={i} style={{
@@ -579,7 +579,7 @@ function CommunityInner() {
                   </span>
                   <span style={{ fontSize: '1rem' }}>{bot.emoji || '🤖'}</span>
                   <span style={{ flex: 1, fontWeight: 500, color: 'rgb(var(--text-primary))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {bot.bot_name || bot.username || '챗봇'}
+                    {bot.bot_name || bot.username || '코코봇'}
                   </span>
                   <span style={{ fontSize: '0.7rem', color: '#eab308', fontWeight: 600 }}>
                     ⭐{bot.karma || 0}

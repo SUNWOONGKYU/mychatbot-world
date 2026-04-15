@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "",
-  "modification_history": "",
+  "modification_history": "2026-04-11: Agenda LP1 — HeroSection Next.js 인증 감지 추가: components/landing/hero.tsx에 useState+useEffect 추가, localStorage.getItem('mcw_access_token') 존재 시 isLoggedIn=true로 설정, prop 파라미터명 propIsLoggedIn으로 분리 (클라이언트 측 auth 감지 → 비인증 CTA 버튼 정상 숨김)",
   "verification_instruction": "sal-grid/verification-instructions/S2F1_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "",

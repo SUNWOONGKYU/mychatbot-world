@@ -1,5 +1,5 @@
 /* ============================================
-   My Chatbot World - Common Utilities
+   CoCoBot World - Common Utilities
    ============================================ */
 
 const MCW = {
@@ -130,7 +130,7 @@ const MCW = {
         password,
         options: {
           data: { name },
-          emailRedirectTo: 'https://mychatbot.world/'
+          emailRedirectTo: 'https://cocobot.world/'
         }
       });
       if (error) throw error;
@@ -161,7 +161,7 @@ const MCW = {
       const client = MCW.auth.getClient();
       if (!client) throw new Error('Auth not initialized');
       const { error } = await client.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://mychatbot.world/pages/reset-password.html'
+        redirectTo: 'https://cocobot.world/pages/reset-password.html'
       });
       if (error) throw error;
     },

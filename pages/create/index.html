@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나의 챗봇 생성하기 - My Chatbot World</title>
+    <title>나의 코코봇 생성하기 - CoCoBot World</title>
     <link rel="stylesheet" href="../../css/styles.css?v=16.0">
     <link rel="stylesheet" href="../../css/create.css?v=16.0">
 </head>
@@ -12,7 +12,7 @@
 <body class="dark-body">
     <nav class="navbar scrolled">
         <div class="container navbar-inner">
-            <a href="/" class="navbar-logo"><span>My Chatbot World</span></a>
+            <a href="/" class="navbar-logo"><span>CoCoBot World</span></a>
             <div class="navbar-cta">
                 <a href="../home/index.html" class="btn btn-secondary btn-sm">마이 페이지</a>
             </div>
@@ -42,11 +42,11 @@
 
             <!-- Step 1: 봇 기본정보 -->
             <div class="create-step" id="step1">
-                <h2 class="step-title">챗봇의 기본 정보를 입력하세요</h2>
+                <h2 class="step-title">코코봇의 기본 정보를 입력하세요</h2>
                 <p class="step-desc">🎤 옆 마이크를 누르면 음성으로 입력됩니다. 직접 텍스트로 입력해도 됩니다.</p>
                 <div class="form-card">
                     <div class="form-group">
-                        <label class="form-label">챗봇 이름 *</label>
+                        <label class="form-label">코코봇 이름 *</label>
                         <div class="input-with-mic">
                             <input type="text" class="form-input" id="botName"
                                 placeholder="예: 홍길동, 김변호사, 박의원, 최셰프" maxlength="30">
@@ -57,7 +57,7 @@
                         <label class="form-label">한 줄 소개</label>
                         <div class="input-with-mic">
                             <input type="text" class="form-input" id="botDesc"
-                                placeholder="예: 나를 대신해 24시간 소통하는 AI 챗봇" maxlength="100">
+                                placeholder="예: 나를 대신해 24시간 소통하는 AI 코코봇" maxlength="100">
                             <button type="button" class="mic-btn" onclick="voiceToField('botDesc')" title="음성 입력">🎤</button>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         <label class="form-label">사용자명 (URL용)</label>
                         <div class="input-with-mic">
                             <div class="input-with-prefix" style="flex:1">
-                                <span class="input-prefix">mychatbot.world/bot/</span>
+                                <span class="input-prefix">cocobot.world/bot/</span>
                                 <input type="text" class="form-input" id="botUsername" placeholder="my-bot" maxlength="20"
                                     pattern="[a-z0-9-]+">
                             </div>
@@ -171,11 +171,11 @@
 
             <!-- Step 5: 생성 (목소리 선택 + 생성하기) -->
             <div class="create-step hidden" id="step5">
-                <h2 class="step-title">챗봇을 완성하세요</h2>
-                <p class="step-desc">목소리를 선택하고 챗봇을 생성하세요</p>
+                <h2 class="step-title">코코봇을 완성하세요</h2>
+                <p class="step-desc">목소리를 선택하고 코코봇을 생성하세요</p>
 
                 <div class="voice-pick" id="voicePick">
-                    <h3 class="voice-pick-title">챗봇 목소리를 선택하세요</h3>
+                    <h3 class="voice-pick-title">코코봇 목소리를 선택하세요</h3>
                     <div class="voice-pick-grid" id="voicePickGrid">
                         <label class="voice-pick-card active" data-voice="fable">
                             <input type="radio" name="botVoice" value="fable" checked>
@@ -215,14 +215,14 @@
 
                 <div class="step-actions" style="margin-top:2rem;">
                     <button class="btn btn-secondary" onclick="goToStep(4)">← 이전</button>
-                    <button class="btn btn-primary btn-lg" onclick="completeCreation()">챗봇 생성하기</button>
+                    <button class="btn btn-primary btn-lg" onclick="completeCreation()">코코봇 생성하기</button>
                 </div>
             </div>
 
             <!-- Step 6: 아바타 설정 -->
             <div class="create-step hidden" id="step6">
                 <h2 class="step-title">아바타를 설정하세요</h2>
-                <p class="step-desc">챗봇의 얼굴이 될 아바타를 선택하거나 직접 업로드하세요 (선택사항)</p>
+                <p class="step-desc">코코봇의 얼굴이 될 아바타를 선택하거나 직접 업로드하세요 (선택사항)</p>
 
                 <div class="form-card">
                     <div class="form-group">
@@ -276,7 +276,7 @@
             <!-- Step 7: 테마 선택 -->
             <div class="create-step hidden" id="step7">
                 <h2 class="step-title">테마를 선택하세요</h2>
-                <p class="step-desc">챗봇 페이지의 디자인 테마를 선택하세요</p>
+                <p class="step-desc">코코봇 페이지의 디자인 테마를 선택하세요</p>
 
                 <div class="form-card">
                     <div class="form-group">
@@ -315,7 +315,7 @@
                         <label class="form-label">미리보기</label>
                         <div class="theme-preview-box" id="themePreviewBox">
                             <div class="theme-preview-header" id="themePreviewHeader">
-                                <span id="themePreviewName">챗봇 이름</span>
+                                <span id="themePreviewName">코코봇 이름</span>
                             </div>
                             <div class="theme-preview-body" id="themePreviewBody">
                                 <div class="theme-preview-bubble bot">안녕하세요! 무엇이든 물어보세요.</div>
@@ -335,7 +335,7 @@
             <div class="create-step hidden" id="step8">
                 <div class="complete-celebration">
                     <div class="complete-icon">🎉</div>
-                    <h2 class="step-title">축하합니다! 챗봇이 완성되었습니다!</h2>
+                    <h2 class="step-title">축하합니다! 코코봇이 완성되었습니다!</h2>
 
                     <div class="form-card" style="text-align:left; margin-bottom:1.5rem;">
                         <label class="form-label">배포 채널 선택</label>
@@ -344,7 +344,7 @@
                                 <input type="checkbox" name="deployChannel" value="web" checked>
                                 <span class="channel-icon">🌐</span>
                                 <span class="channel-label">웹</span>
-                                <span class="channel-desc">mychatbot.world</span>
+                                <span class="channel-desc">cocobot.world</span>
                             </label>
                             <label class="channel-select-item">
                                 <input type="checkbox" name="deployChannel" value="kakao">
@@ -363,7 +363,7 @@
 
                     <div class="complete-info">
                         <div class="complete-url">
-                            <label>챗봇 URL:</label>
+                            <label>코코봇 URL:</label>
                             <div class="url-copy-box">
                                 <input type="text" id="botUrl" readonly>
                                 <button class="btn btn-sm btn-primary" onclick="copyUrl()">복사</button>
@@ -375,12 +375,12 @@
                         </p>
                     </div>
                     <div class="complete-actions">
-                        <a href="#" id="chatLink" class="btn btn-primary btn-lg">챗봇과 대화하기</a>
+                        <a href="#" id="chatLink" class="btn btn-primary btn-lg">코코봇과 대화하기</a>
                         <a href="../home/index.html" class="btn btn-secondary btn-lg">마이 페이지로 가기</a>
                     </div>
                 </div>
 
-                <p class="complete-next-hint">마이페이지에서 지식베이스, 스킬, 챗봇 스쿨을 관리할 수 있습니다.</p>
+                <p class="complete-next-hint">마이페이지에서 지식베이스, 스킬, 코코봇 스쿨을 관리할 수 있습니다.</p>
             </div>
         </div>
     </main>

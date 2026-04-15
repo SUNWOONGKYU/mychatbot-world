@@ -1,11 +1,11 @@
 /**
  * @task S5FE6
- * @description 마이페이지 탭2 — 챗봇 관리
- * 내 챗봇 목록(카드뷰), 페르소나 관리, per-persona 툴 6종, 복제/내보내기/삭제
+ * @description 마이페이지 탭2 — 코코봇 관리
+ * 내 코코봇 목록(카드뷰), 페르소나 관리, per-persona 툴 6종, 복제/내보내기/삭제
  */
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
 // ── 타입 ─────────────────────────────────────────────────────────────────
@@ -34,9 +34,9 @@ const TOOL_LIST: { id: ToolId; label: string; icon: string; desc: string }[] = [
   { id: 'chat-log',      label: '대화 로그',    icon: '💬', desc: '대화 기록 조회' },
   { id: 'kb',           label: 'KB 지식베이스', icon: '📚', desc: '지식 업로드/관리' },
   { id: 'skills',       label: '스킬 장착',     icon: '⚡', desc: '스킬 장착/해제' },
-  { id: 'chatbot-school',label: '챗봇스쿨',     icon: '🎓', desc: '학습 현황 확인' },
+  { id: 'chatbot-school',label: '코코봇스쿨',   icon: '🎓', desc: '학습 현황 확인' },
   { id: 'community',    label: '커뮤니티',      icon: '🌐', desc: '커뮤니티 활동 내역' },
-  { id: 'settings',     label: '챗봇 설정',     icon: '⚙️', desc: 'AI 모델/DM 보안 등' },
+  { id: 'settings',     label: '코코봇 설정',   icon: '⚙️', desc: 'AI 모델/DM 보안 등' },
 ];
 
 const DM_SECURITY_LEVELS = [
@@ -94,7 +94,7 @@ function UrlPanel({ url }: { url: string | null }) {
           </div>
         </>
       ) : (
-        <p className="text-sm text-[rgb(var(--text-muted))]">배포 URL이 없습니다. 챗봇을 배포해주세요.</p>
+        <p className="text-sm text-[rgb(var(--text-muted))]">배포 URL이 없습니다. 코코봇을 배포해주세요.</p>
       )}
     </div>
   );
@@ -200,164 +200,9 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
   );
 }
 
-// ── 툴 패널: 대화 로그 ────────────────────────────────────────────────────
-
-function ChatLogPanel({ botId }: { botId: string }) {
-  const [conversations, setConversations] = useState<{ id: string; created_at: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`/api/bots/${botId}/chat-log`, { headers: authHeaders() })
-      .then(r => r.ok ? r.json() : { conversations: [] })
-      .then(d => setConversations(d?.conversations ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [botId]);
-
-  if (loading) return <p className="text-xs text-[rgb(var(--text-muted))] py-2 text-center">로딩 중...</p>;
-  if (conversations.length === 0) return <p className="text-xs text-[rgb(var(--text-muted))] text-center py-4">대화 기록이 없습니다.</p>;
-
-  return (
-    <div className="space-y-1.5 max-h-48 overflow-y-auto">
-      <p className="text-xs text-[rgb(var(--text-muted))] mb-2">총 {conversations.length}건 (최근 20건)</p>
-      {conversations.map(c => (
-        <div key={c.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))]">
-          <span className="text-[rgb(var(--text-secondary))]">{new Date(c.created_at).toLocaleDateString('ko-KR')}</span>
-          <span className="text-[rgb(var(--text-muted))] text-[10px]">{c.id.slice(0, 8)}…</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── 툴 패널: KB 지식베이스 ────────────────────────────────────────────────
-
-function KbPanel({ botId }: { botId: string }) {
-  const [items, setItems] = useState<{ id: string; title: string; source_type: string; char_count: number }[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`/api/kb?chatbot_id=${botId}`, { headers: authHeaders() })
-      .then(r => r.ok ? r.json() : { data: { items: [] } })
-      .then(d => setItems(d?.data?.items ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [botId]);
-
-  if (loading) return <p className="text-xs text-[rgb(var(--text-muted))] py-2 text-center">로딩 중...</p>;
-  if (items.length === 0) return (
-    <p className="text-xs text-[rgb(var(--text-muted))] text-center py-4">
-      학습 자료가 없습니다.<br />
-      <a href="/mypage?tab=learning" className="text-[rgb(var(--color-primary))] underline">학습 탭에서 추가하기</a>
-    </p>
-  );
-
-  return (
-    <div className="space-y-1.5 max-h-48 overflow-y-auto">
-      <p className="text-xs text-[rgb(var(--text-muted))] mb-2">총 {items.length}건</p>
-      {items.map(item => (
-        <div key={item.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))]">
-          <span className="text-[rgb(var(--text-secondary))] truncate flex-1">{item.title}</span>
-          <span className="text-[rgb(var(--text-muted))] ml-2 flex-shrink-0">{(item.char_count / 1000).toFixed(1)}k자</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── 툴 패널: 스킬 ─────────────────────────────────────────────────────────
-
-function SkillsPanel() {
-  const [skills, setSkills] = useState<{ skill_id: string; execution_count: number; skill_meta: { name: string; icon: string } | null }[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/skills/my', { headers: authHeaders() })
-      .then(r => r.ok ? r.json() : { skills: [] })
-      .then(d => setSkills(d?.skills ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <p className="text-xs text-[rgb(var(--text-muted))] py-2 text-center">로딩 중...</p>;
-  if (skills.length === 0) return <p className="text-xs text-[rgb(var(--text-muted))] text-center py-4">설치된 스킬이 없습니다.</p>;
-
-  return (
-    <div className="space-y-1.5 max-h-48 overflow-y-auto">
-      <p className="text-xs text-[rgb(var(--text-muted))] mb-2">설치된 스킬 {skills.length}개</p>
-      {skills.map(s => (
-        <div key={s.skill_id} className="flex items-center gap-2 text-xs px-2 py-1.5 rounded bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))]">
-          <span>{s.skill_meta?.icon ?? '⚡'}</span>
-          <span className="text-[rgb(var(--text-secondary))] flex-1 truncate">{s.skill_meta?.name ?? s.skill_id}</span>
-          <span className="text-[rgb(var(--text-muted))] flex-shrink-0">{s.execution_count}회</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── 툴 패널: 챗봇스쿨 ────────────────────────────────────────────────────
-
-function SchoolPanel() {
-  const [summary, setSummary] = useState<Record<string, { total_modules: number; completed_modules: number; average_progress: number }>>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/school/progress', { headers: authHeaders() })
-      .then(r => r.ok ? r.json() : { summary: {} })
-      .then(d => setSummary(d?.summary ?? {}))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  const curricula = Object.entries(summary);
-
-  if (loading) return <p className="text-xs text-[rgb(var(--text-muted))] py-2 text-center">로딩 중...</p>;
-  if (curricula.length === 0) return <p className="text-xs text-[rgb(var(--text-muted))] text-center py-4">학습 이력이 없습니다.</p>;
-
-  return (
-    <div className="space-y-2 max-h-48 overflow-y-auto">
-      {curricula.map(([cid, stat]) => (
-        <div key={cid} className="px-2 py-1.5 rounded bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))]">
-          <div className="flex items-center justify-between text-xs mb-1">
-            <span className="text-[rgb(var(--text-secondary))] truncate">{cid}</span>
-            <span className="text-[rgb(var(--text-muted))] ml-2 flex-shrink-0">{stat.completed_modules}/{stat.total_modules}</span>
-          </div>
-          <div className="w-full h-1.5 bg-[rgb(var(--bg-muted))] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[rgb(var(--color-primary))] rounded-full"
-              style={{ width: `${stat.average_progress}%` }}
-            />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── 툴 패널: 커뮤니티 ────────────────────────────────────────────────────
-
-function CommunityPanel() {
-  return (
-    <div className="text-center py-4 space-y-3">
-      <p className="text-xs text-[rgb(var(--text-muted))]">챗봇 커뮤니티 활동을 확인하세요</p>
-      <a
-        href="/community"
-        className={clsx(
-          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-md)] text-xs border',
-          'border-[rgb(var(--border))] text-[rgb(var(--text-secondary))] hover:border-[rgb(var(--border-strong))]',
-          'transition-colors',
-        )}
-      >
-        🌐 커뮤니티 방문하기
-      </a>
-    </div>
-  );
-}
-
 // ── 하위 컴포넌트: per-persona 툴 6종 패널 ──────────────────────────────
 
-function ToolPanel({ activeTool, onSelect, botId }: { activeTool: ToolId | null; onSelect: (t: ToolId | null) => void; botId: string }) {
+function ToolPanel({ activeTool, onSelect }: { activeTool: ToolId | null; onSelect: (t: ToolId | null) => void }) {
   return (
     <div className="space-y-2">
       <p className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide">툴 (6종)</p>
@@ -390,60 +235,26 @@ function ToolPanel({ activeTool, onSelect, botId }: { activeTool: ToolId | null;
       {activeTool && (
         <div className="mt-3 p-4 rounded-[var(--radius-md)] bg-[rgb(var(--bg-muted))] border border-[rgb(var(--border))]">
           {activeTool === 'settings' ? (
-            <BotSettingsPanel botId={botId} />
-          ) : activeTool === 'chat-log' ? (
-            <ChatLogPanel botId={botId} />
-          ) : activeTool === 'kb' ? (
-            <KbPanel botId={botId} />
-          ) : activeTool === 'skills' ? (
-            <SkillsPanel />
-          ) : activeTool === 'chatbot-school' ? (
-            <SchoolPanel />
-          ) : activeTool === 'community' ? (
-            <CommunityPanel />
-          ) : null}
+            <BotSettingsPanel />
+          ) : (
+            <div className="text-sm text-[rgb(var(--text-secondary))] text-center py-4">
+              <span className="text-2xl block mb-2">
+                {TOOL_LIST.find(t => t.id === activeTool)?.icon}
+              </span>
+              {TOOL_LIST.find(t => t.id === activeTool)?.label} 패널 — 추후 연동 예정
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-// ── 하위 컴포넌트: 챗봇 설정 (DM 보안 + AI 모델) ───────────────────────
+// ── 하위 컴포넌트: 코코봇 설정 (DM 보안 + AI 모델) ───────────────────────
 
-function BotSettingsPanel({ botId }: { botId: string }) {
+function BotSettingsPanel() {
   const [dmLevel, setDmLevel] = useState(1);
   const [model, setModel] = useState('gpt-4o-mini');
-  const [saving, setSaving] = useState(false);
-  const [saveMsg, setSaveMsg] = useState('');
-
-  // 초기 설정 로드
-  useEffect(() => {
-    fetch(`/api/settings?chatbot_id=${botId}`, { headers: authHeaders() })
-      .then(r => r.ok ? r.json() : null)
-      .then(d => {
-        const s = d?.data?.settings;
-        if (s?.model) setModel(s.model);
-      })
-      .catch(() => {});
-  }, [botId]);
-
-  const handleSave = async () => {
-    setSaving(true);
-    setSaveMsg('');
-    try {
-      const res = await fetch('/api/settings', {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ chatbot_id: botId, model }),
-      });
-      setSaveMsg(res.ok ? '저장되었습니다.' : '저장에 실패했습니다.');
-    } catch {
-      setSaveMsg('저장에 실패했습니다.');
-    } finally {
-      setSaving(false);
-      setTimeout(() => setSaveMsg(''), 3000);
-    }
-  };
 
   return (
     <div className="space-y-4">
@@ -483,28 +294,6 @@ function BotSettingsPanel({ botId }: { botId: string }) {
           <option value="gpt-4o-mini">GPT-4o Mini</option>
           <option value="gpt-4-turbo">GPT-4 Turbo</option>
         </select>
-      </div>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className={clsx(
-            'px-4 py-2 text-sm rounded-[var(--radius-md)]',
-            'bg-[rgb(var(--color-primary))] text-[rgb(var(--text-on-primary))]',
-            'hover:bg-[rgb(var(--color-primary-hover))] transition-colors disabled:opacity-50',
-          )}
-        >
-          {saving ? '저장 중...' : '저장'}
-        </button>
-        {saveMsg && (
-          <span className={clsx(
-            'text-xs',
-            saveMsg.includes('실패') ? 'text-[rgb(var(--color-error))]' : 'text-[rgb(var(--color-success))]',
-          )}>
-            {saveMsg}
-          </span>
-        )}
       </div>
     </div>
   );
@@ -627,7 +416,7 @@ function BotCard({ bot, onDelete, onClone }: {
           </div>
 
           {/* 툴 6종 패널 */}
-          <ToolPanel activeTool={activeTool} onSelect={setActiveTool} botId={bot.id} />
+          <ToolPanel activeTool={activeTool} onSelect={setActiveTool} />
 
           {/* 액션 버튼: 복제/내보내기/삭제 */}
           <div className="flex gap-2 flex-wrap pt-1 border-t border-[rgb(var(--border))]">
@@ -722,7 +511,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-[rgb(var(--text-primary))]">
-          내 챗봇 ({bots.length})
+          내 코코봇 ({bots.length})
         </h2>
         <a
           href="/birth"
@@ -732,7 +521,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
             'hover:bg-[rgb(var(--color-primary-hover))] transition-colors',
           )}
         >
-          + 새 챗봇
+          + 새 코코봇
         </a>
       </div>
 
@@ -740,8 +529,8 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
       {bots.length === 0 ? (
         <div className="text-center py-16 text-[rgb(var(--text-muted))]">
           <p className="text-4xl mb-3">🤖</p>
-          <p className="font-medium">아직 챗봇이 없습니다.</p>
-          <p className="text-sm mt-1">새 챗봇을 만들어보세요!</p>
+          <p className="font-medium">아직 코코봇이 없습니다.</p>
+          <p className="text-sm mt-1">새 코코봇을 만들어보세요!</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
@@ -763,7 +552,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
           'text-sm text-[rgb(var(--text-secondary))] border border-dashed border-[rgb(var(--border))]',
           'hover:border-[rgb(var(--border-strong))] transition-colors',
         )}>
-          <span>JSON에서 챗봇 가져오기</span>
+          <span>JSON에서 코코봇 가져오기</span>
           <input type="file" accept=".json" className="hidden" />
         </label>
       </div>

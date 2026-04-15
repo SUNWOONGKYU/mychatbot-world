@@ -52,7 +52,7 @@ function BotIcon({ avatarUrl, name }: { avatarUrl?: string; name: string }) {
         'shadow-xl shadow-primary/10',
         'overflow-hidden',
       )}
-      aria-label={`${name} 챗봇 아이콘`}
+      aria-label={`${name} 코코봇 아이콘`}
     >
       {avatarUrl ? (
         <Image
@@ -87,7 +87,7 @@ function BirthTitle({ name }: { name: string }) {
         {name}
       </h1>
       <p className="text-sm text-text-secondary max-w-xs">
-        AI 챗봇이 성공적으로 생성되었습니다.
+        AI 코코봇이 성공적으로 생성되었습니다.
         <br />아래 URL로 바로 대화할 수 있어요.
       </p>
     </div>
@@ -193,7 +193,7 @@ export function BirthPageClient({ bot, deployUrl }: BirthPageClientProps) {
 
         {/* 하단 안내 텍스트 */}
         <p className="text-center text-xs text-text-muted mt-8">
-          QR코드를 스캔하거나 URL을 공유해 챗봇을 알려보세요.
+          QR코드를 스캔하거나 URL을 공유해 코코봇을 알려보세요.
         </p>
       </div>
     </div>

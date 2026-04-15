@@ -17,7 +17,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import {
-  SKILLS, SKILL_CATEGORIES, SKILL_PRESETS,
+  fetchSkillsFromAPI, SKILL_CATEGORIES, SKILL_PRESETS,
   buildStars, installSkillById, removeSkillById,
   type SkillItem,
 } from '@/lib/skills-data';
@@ -251,17 +251,23 @@ function SkillCardInner({ skill, stars }: { skill: SkillItem; stars: string }) {
 export default function SkillsMarketPageInner() {
   const { installedIds, install, remove, isInstalled, count } = useSkillsStore();
 
+  const [skills, setSkills] = useState<SkillItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('popular');
   const [showFreeOnly, setShowFreeOnly] = useState(false);
   const [purchaseTarget, setPurchaseTarget] = useState<SkillItem | null>(null);
 
+  // DB에서 스킬 목록 로드
+  useEffect(() => {
+    fetchSkillsFromAPI().then(setSkills);
+  }, []);
+
   const { visible: toastVisible, message: toastMsg, show: showToast } = useToast();
 
   // ── 필터 + 정렬 ───────────────────────────────────────────────
   const filtered = useMemo(() => {
-    let list = [...SKILLS];
+    let list = [...skills];
 
     // 카테고리
     if (activeCategory !== 'all' && activeCategory !== '전체') {
@@ -295,7 +301,7 @@ export default function SkillsMarketPageInner() {
     }
 
     return list;
-  }, [activeCategory, searchQuery, showFreeOnly, sortBy, installedIds]);
+  }, [skills, activeCategory, searchQuery, showFreeOnly, sortBy, installedIds]);
 
   // ── 설치/제거 핸들러 ─────────────────────────────────────────
   const handleInstall = useCallback((skill: SkillItem) => {

@@ -236,7 +236,7 @@ export default function SignupPage() {
         <div className="text-center mb-8">
           <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">MCW</a>
           <h1 className="text-2xl font-bold text-text-primary mb-2">회원가입</h1>
-          <p className="text-sm text-text-secondary">나의 챗봇 세계에 오신 것을 환영합니다</p>
+          <p className="text-sm text-text-secondary">나의 코코봇 세계에 오신 것을 환영합니다</p>
         </div>
 
         {/* 카드 */}

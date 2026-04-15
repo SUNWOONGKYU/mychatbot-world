@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "app/admin/sections/SectionBots.tsx, app/admin/sections/SectionSkills.tsx, app/admin/sections/SectionJobs.tsx, app/admin/sections/SectionCommunity.tsx, app/admin/page.tsx (S5FE7 통합 확장), app/admin/components/AdminSidebar.tsx (disabled 제거)",
-  "modification_history": "2026-04-07: S5FE8 구현 — 섹션5~8 신규 4개 파일 생성, page.tsx에 섹션5~8 import+렌더링 추가, AdminSidebar disabled 제거",
+  "modification_history": "2026-04-07: S5FE8 구현 — 섹션5~8 신규 4개 파일 생성, page.tsx에 섹션5~8 import+렌더링 추가, AdminSidebar disabled 제거 | 2026-04-11: Agenda A1 — SectionBots mockBots() 제거(API 실패 시 빈 배열), SectionSkills mockSkills() 제거(API 실패 시 빈 배열)",
   "verification_instruction": "sal-grid/verification-instructions/S5FE8_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {

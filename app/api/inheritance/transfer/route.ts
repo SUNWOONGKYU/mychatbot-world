@@ -29,7 +29,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('서버 설정 오류: Supabase 환경 변수가 누락되었습니다.');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(
@@ -39,7 +39,7 @@ async function authenticate(
   if (!authHeader) return { userId: null, userEmail: null, error: '인증이 필요합니다.' };
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
   if (!token) return { userId: null, userEmail: null, error: '인증 토큰이 없습니다.' };
-  const { data, error } = await (supabase as any).auth.getUser(token);
+  const { data, error } = await supabase.auth.getUser(token);
   if (error || !data?.user) {
     return { userId: null, userEmail: null, error: '유효하지 않거나 만료된 토큰입니다.' };
   }
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { data: transfer, error: transferError } = await (supabase as any)
+  const { data: transfer, error: transferError } = await supabase
     .from('mcw_inheritance_transfers')
     .select('*')
     .eq('id', transferId)
@@ -159,13 +159,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const isOriginalOwner = transfer.original_owner_id === userId;
 
   if (!isRequester && !isOriginalOwner) {
-    const { data: userProfile } = await (supabase as any)
-      .from('users')
-      .select('role')
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('is_admin')
       .eq('id', userId)
       .maybeSingle();
 
-    if (userProfile?.role !== 'admin') {
+    if (!userProfile?.is_admin) {
       return NextResponse.json(
         { success: false, error: '이 전환 요청에 접근할 권한이 없습니다.' },
         { status: 403 }
@@ -243,15 +243,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // 관리자 여부 확인
-  const { data: userProfile } = await (supabase as any)
-    .from('users')
-    .select('role')
+  const { data: userProfile } = await supabase
+    .from('profiles')
+    .select('is_admin')
     .eq('id', userId)
     .maybeSingle();
-  const isAdmin = userProfile?.role === 'admin';
+  const isAdmin = userProfile?.is_admin === true;
 
   // 원 소유자의 피상속인 설정 조회
-  const { data: inheritanceSetting, error: settingError } = await (supabase as any)
+  const { data: inheritanceSetting, error: settingError } = await supabase
     .from('mcw_inheritance_settings')
     .select('*')
     .eq('owner_id', originalOwnerId)
@@ -303,7 +303,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // 진행 중인 전환 요청 중복 확인
-  const { data: existingTransfer } = await (supabase as any)
+  const { data: existingTransfer } = await supabase
     .from('mcw_inheritance_transfers')
     .select('id, status')
     .eq('inheritance_id', inheritanceSetting.id)
@@ -323,7 +323,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const now = new Date().toISOString();
 
   // 전환 요청 생성 — pending_review 상태 (자동 전환 금지)
-  const { data: newTransfer, error: insertError } = await (supabase as any)
+  const { data: newTransfer, error: insertError } = await supabase
     .from('mcw_inheritance_transfers')
     .insert({
       inheritance_id: inheritanceSetting.id,
@@ -350,7 +350,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // 이벤트 로그 기록
-  await (supabase as any).from('mcw_inheritance_event_logs').insert({
+  await supabase.from('mcw_inheritance_event_logs').insert({
     inheritance_id: inheritanceSetting.id,
     event_type: 'transfer_requested',
     actor_id: userId,

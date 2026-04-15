@@ -69,7 +69,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 function getMockBots(category: string, sort: BotSort): BotItem[] {
   const all: BotItem[] = [
-    { id: 'b1', name: '고객응대 도우미', category: 'customer-service', description: '24시간 고객 문의를 자동으로 처리하는 스마트 챗봇입니다.', emoji: '🤖', rating: 4.8, reviewCount: 1234, price: 29000, skills: ['NLP', '다국어', 'API연동'], isNew: false, isFeatured: true },
+    { id: 'b1', name: '고객응대 도우미', category: 'customer-service', description: '24시간 고객 문의를 자동으로 처리하는 스마트 코코봇입니다.', emoji: '🤖', rating: 4.8, reviewCount: 1234, price: 29000, skills: ['NLP', '다국어', 'API연동'], isNew: false, isFeatured: true },
     { id: 'b2', name: '영어 튜터봇', category: 'education', description: '개인 맞춤형 영어 학습 플랜을 제공하는 AI 튜터입니다.', emoji: '📚', rating: 4.6, reviewCount: 892, price: 19000, skills: ['교육', '언어학습', '퀴즈'], isNew: true, isFeatured: false },
     { id: 'b3', name: '마케팅 어시스턴트', category: 'marketing', description: 'SNS 콘텐츠와 광고 문구를 자동으로 생성해드립니다.', emoji: '📣', rating: 4.5, reviewCount: 567, price: 49000, skills: ['콘텐츠생성', 'SNS', '카피라이팅'], isNew: false, isFeatured: false },
     { id: 'b4', name: '코딩 도우미', category: 'development', description: '코드 리뷰, 디버깅, 문서화를 도와드립니다.', emoji: '💻', rating: 4.9, reviewCount: 2341, price: 39000, skills: ['코드리뷰', '디버깅', 'Git'], isNew: false, isFeatured: true },
@@ -93,8 +93,8 @@ function getMockBots(category: string, sort: BotSort): BotItem[] {
 
 function getMockJobs(category: string): JobItem[] {
   const all: JobItem[] = [
-    { id: 'j1', title: '쇼핑몰 고객응대 챗봇 개발', category: 'customer-service', description: '온라인 쇼핑몰의 FAQs, 반품/교환 처리를 자동화할 챗봇이 필요합니다.', budget: 500000, requiredSkills: ['NLP', 'Shopify연동', 'FAQ처리'], deadline: new Date(Date.now() + 7 * 86400000).toISOString(), status: 'open' },
-    { id: 'j2', title: '영어회화 학습 AI 개발', category: 'education', description: '초등학생 대상 영어 회화 연습 챗봇입니다. 발음 교정 기능 포함.', budget: 800000, requiredSkills: ['음성인식', '발음교정', '게이미피케이션'], deadline: new Date(Date.now() + 14 * 86400000).toISOString(), status: 'open' },
+    { id: 'j1', title: '쇼핑몰 고객응대 코코봇 개발', category: 'customer-service', description: '온라인 쇼핑몰의 FAQs, 반품/교환 처리를 자동화할 코코봇이 필요합니다.', budget: 500000, requiredSkills: ['NLP', 'Shopify연동', 'FAQ처리'], deadline: new Date(Date.now() + 7 * 86400000).toISOString(), status: 'open' },
+    { id: 'j2', title: '영어회화 학습 AI 개발', category: 'education', description: '초등학생 대상 영어 회화 연습 코코봇입니다. 발음 교정 기능 포함.', budget: 800000, requiredSkills: ['음성인식', '발음교정', '게이미피케이션'], deadline: new Date(Date.now() + 14 * 86400000).toISOString(), status: 'open' },
     { id: 'j3', title: 'SNS 마케팅 봇 제작', category: 'marketing', description: '인스타그램/트위터에 자동으로 콘텐츠를 생성하고 포스팅하는 봇.', budget: 300000, requiredSkills: ['SNS API', '콘텐츠생성', '스케줄링'], deadline: new Date(Date.now() + 3 * 86400000).toISOString(), status: 'open' },
   ];
   return category === 'all' ? all : all.filter(j => j.category === category);
@@ -143,7 +143,7 @@ function BotCard({ bot }: { bot: BotItem }) {
           (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))';
           (e.currentTarget as HTMLElement).style.boxShadow = 'none';
         }}
-        aria-label={`${bot.name} 챗봇`}
+        aria-label={`${bot.name} 코코봇`}
       >
         {/* 카드 헤더 */}
         <div className="flex items-start gap-3">
@@ -640,8 +640,8 @@ export default function JobsPage() {
             <span style={{ color: 'rgb(var(--color-primary))' }}>구봇구직</span>
           </h1>
           <p className="text-lg mb-10" style={{ color: 'rgb(var(--text-secondary))' }}>
-            챗봇을 고용하거나, 일감을 찾아보세요.<br />
-            최적의 챗봇과 프로젝트를 매칭합니다.
+            코코봇을 고용하거나, 일감을 찾아보세요.<br />
+            최적의 코코봇과 프로젝트를 매칭합니다.
           </p>
 
           {/* 검색 폼 */}
@@ -662,9 +662,9 @@ export default function JobsPage() {
               type="search"
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
-              placeholder="챗봇 이름, 기능, 카테고리 검색..."
+              placeholder="코코봇 이름, 기능, 카테고리 검색..."
               autoComplete="off"
-              aria-label="챗봇 검색"
+              aria-label="코코봇 검색"
               className="w-full pl-12 pr-24 py-4 text-base focus:outline-none transition-all"
               style={{
                 background: 'rgb(var(--bg-surface))',
@@ -756,7 +756,7 @@ export default function JobsPage() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" aria-hidden="true">
               <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
-            구봇 찾기
+            코코봇 찾기
             <span
               className="text-[0.7rem] px-2 py-0.5 rounded-full"
               style={{ background: 'rgb(var(--bg-muted))' }}
@@ -821,7 +821,7 @@ export default function JobsPage() {
           {/* 툴바 */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <p className="text-sm text-white/40">
-              <span>{botTotal.toLocaleString('ko-KR')}</span>개의 챗봇을 찾았습니다
+              <span>{botTotal.toLocaleString('ko-KR')}</span>개의 코코봇을 찾았습니다
             </p>
             <div className="flex items-center gap-2">
               <label htmlFor="botSort" className="text-sm text-white/40">정렬:</label>
@@ -848,11 +848,11 @@ export default function JobsPage() {
             </div>
           ) : bots.length === 0 ? (
             botDemo ? (
-              <EmptyState label="챗봇" icon="🤖" />
+              <EmptyState label="코코봇" icon="🤖" />
             ) : (
               <div className="text-center py-16" role="status">
                 <div className="text-5xl mb-4">🤖</div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>챗봇을 찾을 수 없습니다</h3>
+                <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>코코봇을 찾을 수 없습니다</h3>
                 <p className="mb-4" style={{ color: 'rgb(var(--text-secondary))' }}>다른 카테고리나 검색어를 시도해보세요.</p>
                 <button
                   onClick={() => handleCategoryChange('all')}
@@ -872,7 +872,7 @@ export default function JobsPage() {
             <div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
               aria-live="polite"
-              aria-label="챗봇 목록"
+              aria-label="코코봇 목록"
             >
               {bots.map(bot => <BotCard key={bot.id} bot={bot} />)}
             </div>

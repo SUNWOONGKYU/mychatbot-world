@@ -58,39 +58,7 @@ function getSupabaseServer() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key) as any;
-}
-
-// ============================
-// 크레딧 과금 설정
-// ============================
-
-const CREDITS_PER_TIER: Record<string, number> = {
-  concise: 8,
-  balanced: 32,
-  expressive: 80,
-};
-
-async function checkAndDeductCredits(
-  userId: string,
-  cost: number
-): Promise<{ success: boolean; balance: number }> {
-  const supabase = getSupabaseServer();
-  const { data } = await supabase
-    .from('mcw_credits')
-    .select('balance')
-    .eq('user_id', userId)
-    .maybeSingle();
-  const currentBalance: number = (data as { balance: number } | null)?.balance ?? 0;
-  if (currentBalance < cost) return { success: false, balance: currentBalance };
-  const newBalance = currentBalance - cost;
-  const { error } = await supabase
-    .from('mcw_credits')
-    .update({ balance: newBalance, updated_at: new Date().toISOString() })
-    .eq('user_id', userId)
-    .gte('balance', cost);
-  if (error) return { success: false, balance: currentBalance };
-  return { success: true, balance: newBalance };
+  return createClient(url, key);
 }
 
 // ============================
@@ -267,44 +235,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // ──────────────────────────────────────────
-  // 스트림 시작 전: 인증 + 크레딧 사전 확인
-  // ──────────────────────────────────────────
-  const userId = await getUserId(req);
-  if (!userId) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // 모델 선택 (크레딧 비용 계산에 필요)
-  const routerResult = selectModel({ emotionSlider: emotionLevel, costTier });
-  const { selectedModel, emotionTier } = routerResult;
-  const creditCost = CREDITS_PER_TIER[emotionTier] ?? 8;
-
-  // 크레딧 잔액 확인
-  {
-    const supabase = getSupabaseServer();
-    const { data: creditData } = await supabase
-      .from('mcw_credits')
-      .select('balance')
-      .eq('user_id', userId)
-      .maybeSingle();
-    const currentBalance: number =
-      (creditData as { balance: number } | null)?.balance ?? 0;
-    if (currentBalance < creditCost) {
-      return new Response(
-        JSON.stringify({
-          error: 'Insufficient credits',
-          balance: currentBalance,
-          required: creditCost,
-        }),
-        { status: 402, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-  }
-
-  // ──────────────────────────────────────────
   // 메인 스트리밍 로직
   // ──────────────────────────────────────────
   const stream = new ReadableStream<Uint8Array>({
@@ -317,8 +247,23 @@ export async function POST(req: NextRequest): Promise<Response> {
       };
 
       try {
-        // 1. 페르소나 로딩
+        // 1. 인증 확인
+        const userId = await getUserId(req);
+        if (!userId) {
+          write('error', JSON.stringify({ error: 'Unauthorized' }));
+          controller.close();
+          return;
+        }
+
+        // 2. 페르소나 로딩
         const personaCtx = await loadPersona(botId);
+
+        // 3. AI 모델 선택
+        const routerResult = selectModel({
+          emotionSlider: emotionLevel,
+          costTier,
+        });
+        const { selectedModel, emotionTier } = routerResult;
 
         // 4. conversationId 확인 / 신규 생성
         let conversationId = inputConversationId ?? '';
@@ -376,11 +321,8 @@ export async function POST(req: NextRequest): Promise<Response> {
           fullReply
         );
 
-        // 12. 크레딧 차감 (AI 응답 성공 후)
-        await checkAndDeductCredits(userId, creditCost);
-
-        // 13. done 이벤트 전송
-        write('done', JSON.stringify({ messageId, creditsUsed: creditCost }));
+        // 12. done 이벤트 전송
+        write('done', JSON.stringify({ messageId }));
         controller.close();
       } catch (err) {
         const errMsg =

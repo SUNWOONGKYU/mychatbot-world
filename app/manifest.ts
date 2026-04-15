@@ -15,16 +15,23 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: 'ko',
     icons: [
       {
-        src: '/icons/icon-192x192.svg',
+        src: '/icons/icon-192x192.png',
         sizes: '192x192',
-        type: 'image/svg+xml',
+        type: 'image/png',
         purpose: 'maskable',
       },
       {
-        src: '/icons/icon-512x512.svg',
+        src: '/icons/icon-512x512.png',
         sizes: '512x512',
-        type: 'image/svg+xml',
+        type: 'image/png',
         purpose: 'any',
+      },
+    ],
+    screenshots: [
+      {
+        src: '/screenshots/home.png',
+        sizes: '1280x720',
+        type: 'image/png',
       },
     ],
     shortcuts: [
@@ -32,15 +39,15 @@ export default function manifest(): MetadataRoute.Manifest {
         name: '봇 만들기',
         short_name: '새 봇',
         description: '새로운 AI 챗봇을 만듭니다',
-        url: '/create',
-        icons: [{ src: '/icons/icon-96x96.svg', sizes: '96x96' }],
+        url: '/bots/new',
+        icons: [{ src: '/icons/icon-96x96.png', sizes: '96x96' }],
       },
       {
         name: '마켓플레이스',
         short_name: '마켓',
         description: '다양한 AI 스킬을 탐색합니다',
         url: '/marketplace',
-        icons: [{ src: '/icons/icon-96x96.svg', sizes: '96x96' }],
+        icons: [{ src: '/icons/icon-96x96.png', sizes: '96x96' }],
       },
     ],
   };

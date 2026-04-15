@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "api/guest-create.js, api/templates.js, api/usage.js",
-  "modification_history": "2026-03-05: 3개 API 엔드포인트 생성 (guest-create, templates, usage)",
+  "modification_history": "2026-03-05: 3개 API 엔드포인트 생성 (guest-create, templates, usage) | 2026-04-11: Agenda CS1 — POST /api/support 신설 (app/api/support/route.ts): support_inquiries 테이블 insert, ALLOWED_TYPES 화이트리스트 검증, 이메일 형식 검증, 내용 5000자 제한, x-forwarded-for IP 수집 | Agenda U1 — GET /api/usage 신설 (app/api/usage/route.ts): Bearer 인증, 이번 달 범위 자동 계산, mcw_credit_usage → mcw_ai_usage 폴백, by_model/by_bot 집계 반환",
   "verification_instruction": "sal-grid/verification-instructions/S2BA4_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "unit_test: PASS, integration_test: PASS, edge_cases: PASS, manual_test: PASS",

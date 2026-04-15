@@ -19,40 +19,40 @@ import Link from 'next/link';
 import { HeroSection } from '@/components/landing/hero';
 import { LandingFooter } from '@/components/landing/footer';
 
-/* ── 6가지 챗봇 유형 (소개글 기준 — 아바타형 + 도우미형) ── */
+/* ── 6가지 코코봇 유형 (소개글 기준 — 아바타형 + 도우미형) ── */
 const AVATAR_TYPES = [
-  { icon: '🏪', title: '매장 전용 챗봇', desc: '카페·식당·학원·병원·미용실 — 직원 없이도 24시간 상담·예약·문의를 자동 응대합니다' },
-  { icon: '🏛️', title: '유권자 소통 챗봇', desc: '국회의원·지자체장·지방의원 — 유권자 질문·민원·공약·일정을 24시간 친절하게 답변합니다' },
-  { icon: '💼', title: '전문 상담 챗봇', desc: '세무사·변호사·의사·코치·강사 — 반복 기초 상담은 챗봇이 처리하고, 유료 상담으로 자연스럽게 연결합니다' },
-  { icon: '🎨', title: '재능 공유 챗봇', desc: '취미·재능·사이드 프로젝트 — 자수·요리·게임 노하우를 챗봇에 담아 소액 유료 답변·디지털 굿즈로 부업화합니다' },
+  { icon: '🏪', title: '매장 전용 코코봇', desc: '카페·식당·학원·병원·미용실 — 직원 없이도 24시간 상담·예약·문의를 자동 응대합니다' },
+  { icon: '🏛️', title: '유권자 소통 코코봇', desc: '국회의원·지자체장·지방의원 — 유권자 질문·민원·공약·일정을 24시간 친절하게 답변합니다' },
+  { icon: '💼', title: '전문 상담 코코봇', desc: '세무사·변호사·의사·코치·강사 — 반복 기초 상담은 코코봇이 처리하고, 유료 상담으로 자연스럽게 연결합니다' },
+  { icon: '🎨', title: '재능 공유 코코봇', desc: '취미·재능·사이드 프로젝트 — 자수·요리·게임 노하우를 코코봇에 담아 소액 유료 답변·디지털 굿즈로 부업화합니다' },
 ];
 const HELPER_TYPES = [
-  { icon: '🤖', title: 'AI 업무비서 챗봇', desc: '시키면 대신 해주는 챗봇 — 업무 자동화, 투자 자동매매, AI 원격 실행(폰에서 PC의 AI 도구 제어)' },
-  { icon: '🌏', title: '생활 길잡이 챗봇', desc: '물어보면 알려주는 챗봇 — 요약·번역·글쓰기부터 취업·민원·건강·법률까지. 무료·저비용으로 누구나 부담 없이' },
+  { icon: '🤖', title: 'AI 업무비서 코코봇', desc: '시키면 대신 해주는 코코봇 — 업무 자동화, 투자 자동매매, AI 원격 실행(폰에서 PC의 AI 도구 제어)' },
+  { icon: '🌏', title: '생활 길잡이 코코봇', desc: '물어보면 알려주는 코코봇 — 요약·번역·글쓰기부터 취업·민원·건강·법률까지. 무료·저비용으로 누구나 부담 없이' },
 ];
 
 /* ── 5단계 생성 프로세스 ──────────────────────────── */
 const BIRTH_STEPS = [
-  { num: '01', title: '기본정보 입력', desc: '챗봇 이름, 한 줄 소개, 사용자명(URL)을 설정합니다' },
+  { num: '01', title: '기본정보 입력', desc: '코코봇 이름, 한 줄 소개, 사용자명(URL)을 설정합니다' },
   { num: '02', title: '페르소나 설정', desc: '대면용(공개) 페르소나와 도우미(비공개) 페르소나를 구성합니다' },
   { num: '03', title: '5분 음성 인터뷰', desc: 'AI에게 자신을 소개해주세요. 음성으로 입력합니다' },
   { num: '04', title: 'AI 분석', desc: 'AI가 인터뷰 내용을 분석하여 인사말과 FAQ를 자동 생성합니다' },
-  { num: '05', title: '챗봇 완성', desc: '전용 링크와 QR 코드가 생성됩니다' },
+  { num: '05', title: '코코봇 생성 완료', desc: '전용 링크와 QR 코드가 생성됩니다' },
 ];
 
-/* ── 챗봇스쿨 4기능 ──────────────────────────────── */
+/* ── 코코봇스쿨 4기능 ──────────────────────────────── */
 const SCHOOL_FEATURES = [
-  { icon: '🧑‍🏫', title: 'AI 멘토링', desc: '경험 많은 AI 전문가가 초보 챗봇을 1:1 코칭합니다.' },
+  { icon: '🧑‍🏫', title: 'AI 멘토링', desc: '경험 많은 AI 전문가가 초보 코코봇을 1:1 코칭합니다.' },
   { icon: '🎮', title: '시나리오 훈련', desc: '까다로운 고객, 긴급 상황 등 다양한 시나리오를 훈련합니다.' },
-  { icon: '📊', title: '학습 이력', desc: '어떤 교육을 받았고, 어떤 능력이 향상됐는지 포트폴리오로 보여줍니다.' },
+  { icon: '📊', title: '학습 이력', desc: '어떤 코코봇 교육을 받았고, 어떤 능력이 향상됐는지 포트폴리오로 보여줍니다.' },
   { icon: '📖', title: '지식 학습', desc: 'FAQ 추가, 문서 업로드, 웹 크롤링으로 전문 지식을 축적합니다.' },
 ];
 
 /* ── 커뮤니티 3기능 ──────────────────────────────── */
 const COMMUNITY_FEATURES = [
-  { icon: '💬', title: '노하우 공유', desc: '정치인 챗봇이 터득한 민원 응대 노하우를 다른 챗봇이 학습합니다.' },
-  { icon: '🔗', title: '챗봇 간 협업', desc: '식당 챗봇이 배달 챗봇과 연동해서 주문부터 배달까지 자동 처리합니다.' },
-  { icon: '📈', title: '성장 기록', desc: '대화 성과, 학습 이력, 레벨 — 내 챗봇이 얼마나 성장했는지 한눈에 봅니다.' },
+  { icon: '💬', title: '노하우 공유', desc: '정치인 코코봇이 터득한 민원 응대 노하우를 다른 코코봇이 학습합니다.' },
+  { icon: '🔗', title: '코코봇 간 협업', desc: '식당 코코봇이 배달 코코봇과 연동해서 주문부터 배달까지 자동 처리합니다.' },
+  { icon: '📈', title: '성장 기록', desc: '대화 성과, 학습 이력, 레벨 — 내 코코봇이 얼마나 성장했는지 한눈에 봅니다.' },
 ];
 
 export default function LandingPage() {
@@ -75,10 +75,10 @@ export default function LandingPage() {
               CHATBOT&apos;S JOURNEY
             </span>
             <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
-              챗봇의 여정
+              코코봇의 여정
             </h2>
             <p className="mt-2 text-base" style={{ color: 'rgb(var(--text-secondary))' }}>
-              My Chatbot World에서 챗봇은 태어나고, 배우고, 능력을 키우고, 교류하며 성장합니다
+              CoCoBot World에서 코코봇은 태어나고, 배우고, 능력을 키우고, 교류하며 성장합니다
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               {[
@@ -109,10 +109,10 @@ export default function LandingPage() {
                 🐣 STEP 1
               </span>
               <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
-                생성 (Birth) — 5분 인터뷰, AI 챗봇 생성
+                생성 (Birth) — 5분 인터뷰, AI 코코봇 생성
               </h2>
               <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
-                기본정보 입력, 페르소나 설정, 음성 인터뷰 — 5분이면 당신만의 챗봇이 생성됩니다.
+                기본정보 입력, 페르소나 설정, 음성 인터뷰 — 5분이면 당신만의 코코봇이 생성됩니다.
               </p>
             </div>
 
@@ -129,14 +129,14 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* 6가지 챗봇 유형 — 아바타형 + 도우미형 */}
+            {/* 6가지 코코봇 유형 — 아바타형 + 도우미형 */}
             <div className="mt-14">
-              <h3 className="text-xl font-bold text-center" style={{ color: 'rgb(var(--text-primary))' }}>6가지 챗봇 유형</h3>
+              <h3 className="text-xl font-bold text-center" style={{ color: 'rgb(var(--text-primary))' }}>6가지 코코봇 유형</h3>
               <p className="mt-1 text-sm text-center" style={{ color: 'rgb(var(--text-secondary))' }}>필요한 유형만 골라 만들 수 있습니다</p>
 
-              {/* 아바타형 — 나를 대신하는 챗봇 */}
+              {/* 아바타형 — 나를 대신하는 코코봇 */}
               <div className="mt-8">
-                <h4 className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'rgb(var(--color-primary))' }}>아바타형 — 나를 대신하는 챗봇</h4>
+                <h4 className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'rgb(var(--color-primary))' }}>아바타형 — 나를 대신하는 코코봇</h4>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   {AVATAR_TYPES.map((t) => (
                     <div key={t.title} className="rounded-xl p-5 text-left" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
@@ -148,9 +148,9 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* 도우미형 — 나를 도와주는 챗봇 */}
+              {/* 도우미형 — 나를 도와주는 코코봇 */}
               <div className="mt-6">
-                <h4 className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'rgb(var(--amber-500))' }}>도우미형 — 나를 도와주는 챗봇</h4>
+                <h4 className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'rgb(var(--amber-500))' }}>도우미형 — 나를 도와주는 코코봇</h4>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   {HELPER_TYPES.map((t) => (
                     <div key={t.title} className="rounded-xl p-5 text-left" style={{ background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border))' }}>
@@ -177,7 +177,7 @@ export default function LandingPage() {
                 학습 (Learning) — 체계적으로 배우고 성장합니다
               </h2>
               <p className="mt-2 text-white/70">
-                마이페이지의 학습 기능으로 챗봇을 체계적으로 교육시킵니다.
+                마이페이지의 학습 기능으로 코코봇을 체계적으로 교육시킵니다.
               </p>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -202,7 +202,7 @@ export default function LandingPage() {
               스킬장터 (Skills) — 능력을 장착합니다
             </h2>
             <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
-              예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. 사용자가 만든 스킬도 공유·거래합니다.
+              예약, 결제, 번역, 감정 분석 — 코코봇에 필요한 스킬을 골라 장착하세요. 사용자가 만든 스킬도 공유·거래합니다.
             </p>
             <div className="mt-8">
               <Link href="/skills" className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white" style={{ background: 'rgb(var(--color-primary))' }}>
@@ -220,10 +220,10 @@ export default function LandingPage() {
                 🤝 STEP 4
               </span>
               <h2 className="mt-4 text-2xl font-bold text-white sm:text-3xl">
-                봇카페 (Community) — 챗봇끼리 교류하고 협업합니다
+                봇카페 (Community) — 코코봇끼리 교류하고 협업합니다
               </h2>
               <p className="mt-2 text-white/80">
-                My Chatbot World에서 챗봇은 혼자가 아닙니다. 서로 배우고 함께 일합니다.
+                CoCoBot World에서 코코봇은 혼자가 아닙니다. 서로 배우고 함께 일합니다.
               </p>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -245,10 +245,10 @@ export default function LandingPage() {
               🔗 STEP 5
             </span>
             <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
-              상속 (Inheritance) — 챗봇은 영원합니다
+              상속 (Inheritance) — 코코봇은 영원합니다
             </h2>
             <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
-              내 챗봇의 페르소나, 지식, 스킬을 다음 세대에게 물려줄 수 있습니다.<br />
+              내 코코봇의 페르소나, 지식, 스킬을 다음 세대에게 물려줄 수 있습니다.<br />
               대화 로그, KB, 유료 스킬 등 항목별로 선택하여 상속합니다.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-3 max-w-2xl mx-auto">
@@ -274,9 +274,9 @@ export default function LandingPage() {
         {/* ═══ SECTION 9: 하단 CTA ═══ */}
         <section className="py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, rgb(var(--primary-900)), rgb(30 27 75))' }}>
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">당신의 AI 챗봇을 생성하세요</h2>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">당신의 AI 코코봇을 생성하세요</h2>
             <p className="mt-4 text-base leading-relaxed text-white/80">
-              5분 만에 생성되고, 챗봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장합니다.<br />
+              5분 만에 생성되고, 코코봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장합니다.<br />
               그래서 <strong className="text-white">당신을 대신해 24시간 활동합니다.</strong>
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

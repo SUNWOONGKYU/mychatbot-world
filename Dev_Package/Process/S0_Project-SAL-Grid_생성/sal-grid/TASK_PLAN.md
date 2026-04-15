@@ -8,10 +8,10 @@
 | 프로젝트명 | My Chatbot World — AI 챗봇 생성 플랫폼 |
 | Method | Vanilla |
 | 생성일 | 2026-02-11 |
-| 최종 수정 | 2026-03-07 |
-| 총 Task 수 | 79 |
+| 최종 수정 | 2026-04-12 |
+| 총 Task 수 | 92 |
 | 완료 Task | 72 |
-| 전체 진척률 | 91% |
+| 전체 진척률 | 78% |
 
 ---
 
@@ -23,6 +23,7 @@
 | 2026-03-04 | v2.0 | Dev_Package_archive_20260304에서 신규 Dev_Package로 이식. 프로토타입_개선안 반영하여 21개 신규 Task 추가 (S2: +8, S3: +6, S4: +7). 총 Task 수 35 → 56. |
 | 2026-03-05 | v3.0 | 5대 메뉴 확정 (Birth/Learning/Skills/Jobs/Community) + 어드민 기능 추가. 17개 신규 Task (S2: +2, S3: +7, S4: +8). 총 Task 수 56 → 73. |
 | 2026-03-07 | v4.0 | 기능 완성도 점검 후 6개 신규 Task 추가 (S3: +6). Skills 마켓플레이스 구현, Birth 데이터 영속화, Learning 시나리오 연결, Jobs/Community 정합성 수정. 전체 Status를 JSON grid_records와 동기화. 총 Task 수 73 → 79. |
+| 2026-04-12 | v5.0 | SAL-DA 보안 진단 결과 반영. 기존 Task 3개 modification_history 업데이트 (S4S1, S3BA1, S1BI1). S5 Stage 신설 — 보안/테스트/API/DB/프론트/운영 13개 개선 Task 추가. 총 Task 수 79 → 92. |
 
 ---
 
@@ -34,25 +35,26 @@
 | S2 | 개발 1차 | 20 | 19 | 95% |
 | S3 | 개발 2차 | 31 | 25 | 81% |
 | S4 | 개발 마무리 | 24 | 24 | 100% |
-| **합계** | | **79** | **72** | **91%** |
+| S5 | 품질 개선 | 13 | 0 | 0% |
+| **합계** | | **92** | **72** | **78%** |
 
 ---
 
 ## Area별 분포
 
-| Area | S1 | S2 | S3 | S4 | 합계 |
-|------|----|----|----|-----|------|
-| M (Documentation) | 1 | 0 | 0 | 1 | 2 |
-| F (Frontend) | 0 | 8 | 13 | 8 | 29 |
-| BA (Backend APIs) | 0 | 4 | 8 | 5 | 17 |
-| DB (Database) | 1 | 1 | 3 | 1 | 6 |
-| BI (Backend Infra) | 1 | 1 | 1 | 0 | 3 |
-| S (Security) | 0 | 2 | 0 | 1 | 3 |
-| T (Testing) | 0 | 1 | 2 | 5 | 8 |
-| DO (DevOps) | 1 | 0 | 0 | 2 | 3 |
-| E (External) | 0 | 1 | 3 | 1 | 5 |
-| CS (Content/System) | 0 | 2 | 2 | 0 | 4 |
-| **합계** | **4** | **20** | **31** | **24** | **79** |
+| Area | S1 | S2 | S3 | S4 | S5 | 합계 |
+|------|----|----|----|----|-----|------|
+| M (Documentation) | 1 | 0 | 0 | 1 | 0 | 2 |
+| F (Frontend) | 0 | 8 | 13 | 8 | 1 | 30 |
+| BA (Backend APIs) | 0 | 4 | 8 | 5 | 4 | 21 |
+| DB (Database) | 1 | 1 | 3 | 1 | 2 | 8 |
+| BI (Backend Infra) | 1 | 1 | 1 | 0 | 0 | 3 |
+| S (Security) | 0 | 2 | 0 | 1 | 2 | 5 |
+| T (Testing) | 0 | 1 | 2 | 5 | 3 | 11 |
+| DO (DevOps) | 1 | 0 | 0 | 2 | 1 | 4 |
+| E (External) | 0 | 1 | 3 | 1 | 0 | 5 |
+| CS (Content/System) | 0 | 2 | 2 | 0 | 0 | 4 |
+| **합계** | **4** | **20** | **31** | **24** | **13** | **92** |
 
 ---
 
@@ -171,7 +173,31 @@
 
 ---
 
-## Task ID 전체 목록 (79개)
+## S5 — 품질 개선 (13 tasks)
+
+> SAL-DA 보안 진단 결과 기반 개선 작업. 보안/개인정보/테스트/API/DB/접근성/운영 영역 포함.
+
+| Task ID | Task 이름 | Area | Dependencies | Status | 진행률 |
+|---------|----------|------|-------------|--------|--------|
+| S5S1 | 개인정보처리방침 페이지 + 동의 플로우 | S | S4S1 | Pending | 0% |
+| S5S2 | 보안 취약점 신고 채널 구축 | S | S4S1 | Pending | 0% |
+| S5BA1 | 서버 측 입력 검증 강화 (Zod) | BA | S3BA1, S4BA4 | Pending | 0% |
+| S5BA2 | API 인증 패턴 표준화 | BA | S4S1, S4BA4 | Pending | 0% |
+| S5BA3 | chat/route.ts 복잡도 분리 리팩토링 | BA | S3BA1 | Pending | 0% |
+| S5BA4 | 회원 탈퇴 + 데이터 삭제 API | BA | S5S1, S5BA1 | Pending | 0% |
+| S5DB1 | Database 타입 자동 생성 적용 | DB | S4DB1 | Pending | 0% |
+| S5DB2 | Supabase RLS 전면 감사 | DB | S4S1, S4DB1 | Pending | 0% |
+| S5T1 | E2E 테스트 환경 구축 (Playwright) | T | S4T4, S4T5 | Pending | 0% |
+| S5T2 | Happy Path E2E 테스트 작성 | T | S5T1 | Pending | 0% |
+| S5T3 | API 통합 테스트 확장 | T | S5BA1, S5BA2 | Pending | 0% |
+| S5F1 | 접근성 개선 WCAG 2.2 | F | S4F5, S4F6 | Pending | 0% |
+| S5DO1 | 모니터링·알림 설정 | DO | S4DO1, S4DO2 | Pending | 0% |
+
+**S5 완료율: 0/13 (0%) — Stage Gate: Not Started**
+
+---
+
+## Task ID 전체 목록 (92개)
 
 S1M1, S1DB1, S1BI1, S1DO1,
 S2F1, S2F2, S2F3, S2F4, S2BA1, S2BA2, S2BA3, S2S1, S2CS1, S2T1,
@@ -183,4 +209,6 @@ S3F8, S3F9, S3F10, S3F11, S3BA6, S3BA7, S3DB3,
 S3F12, S3F13, S3F14, S3BA8, S3CS2, S3T2,
 S4F1, S4BA1, S4E1, S4T1, S4T2, S4T3, S4DO1, S4DO2, S4M1,
 S4F2, S4F3, S4F4, S4BA2, S4BA3, S4DB1, S4T4,
-S4F5, S4F6, S4F7, S4F8, S4BA4, S4BA5, S4S1, S4T5
+S4F5, S4F6, S4F7, S4F8, S4BA4, S4BA5, S4S1, S4T5,
+S5S1, S5S2, S5BA1, S5BA2, S5BA3, S5BA4, S5DB1, S5DB2,
+S5T1, S5T2, S5T3, S5F1, S5DO1

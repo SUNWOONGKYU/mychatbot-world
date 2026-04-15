@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const { data, error } = await supabase
     .from('mcw_personas')
-    .select('id, name, description, created_at')
+    .select('id, name, created_at')
     .eq('bot_id', botId)
     .order('created_at', { ascending: true });
 
@@ -66,7 +67,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const owned = await verifyOwner(supabase, botId, user.id);
   if (!owned) return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 });
 
-  let body: { name?: string; description?: string };
+  let body: { name?: string };
   try { body = await req.json(); } catch {
     return NextResponse.json({ error: '요청 바디 파싱 실패' }, { status: 400 });
   }
@@ -85,8 +86,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { data, error } = await supabase
     .from('mcw_personas')
-    .insert({ bot_id: botId, name: body.name.trim(), description: body.description?.trim() ?? null })
-    .select('id, name, description, created_at')
+    .insert({ id: crypto.randomUUID(), bot_id: botId, name: body.name.trim() })
+    .select('id, name, created_at')
     .single();
 
   if (error) {

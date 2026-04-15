@@ -6,8 +6,8 @@ import { Suspense } from 'react';
 import SkillsMarketPageInner from './page-client';
 
 export const metadata = {
-  title: 'Skills (스킬장터) — My Chatbot World',
-  description: '예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. My Chatbot World 스킬장터.',
+  title: 'Skills (스킬장터) — CoCoBot World',
+  description: '예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. CoCoBot World 스킬장터.',
 };
 
 export default function SkillsMarketPage() {
@@ -24,7 +24,7 @@ export default function SkillsMarketPage() {
           <p className="page-hero-subtitle">
             예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요.<br />
             {/* 총 스킬 수는 클라이언트 컴포넌트에서 표시 */}
-            23개 스킬로 챗봇의 능력을 강화하세요.
+            23개 스킬로 코코봇의 능력을 강화하세요.
           </p>
         </div>
       </section>

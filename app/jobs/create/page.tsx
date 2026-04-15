@@ -330,7 +330,7 @@ export default function JobCreatePage() {
             type="text"
             value={form.title}
             onChange={(e: any) => setForm((f: any) => ({ ...f, title: e.target.value }))}
-            placeholder="예: React/Next.js 챗봇 UI 개발자 모집"
+            placeholder="예: React/Next.js 코코봇 UI 개발자 모집"
             maxLength={200}
             className={`w-full px-4 py-2.5 bg-bg-base border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors text-sm ${
               errors.title ? 'border-error' : 'border-border focus:border-primary'

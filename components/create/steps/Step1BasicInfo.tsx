@@ -1,5 +1,5 @@
 /**
- * Step 1: 기본정보 — 챗봇 이름, 한줄소개, URL 사용자명 (음성입력 포함)
+ * Step 1: 기본정보 — 코코봇 이름, 한줄소개, URL 사용자명 (음성입력 포함)
  */
 'use client';
 
@@ -54,13 +54,13 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
   }, [usernameManual]);
 
   const handleNext = () => {
-    if (!botName.trim()) { alert('챗봇 이름을 입력해주세요'); return; }
+    if (!botName.trim()) { alert('코코봇 이름을 입력해주세요'); return; }
     let username = botUsername.trim();
     if (!username) {
       username = koreanToUrl(botName);
       setBotUsername(username);
     }
-    if (!confirm(`사용자명(URL)을 "${username}"(으)로 하시겠습니까?\n\n챗봇 주소: mychatbot.world/bot/${username}\n\n수정하려면 "취소"를 누르세요.`)) {
+    if (!confirm(`사용자명(URL)을 "${username}"(으)로 하시겠습니까?\n\n코코봇 주소: cocobot.world/bot/${username}\n\n수정하려면 "취소"를 누르세요.`)) {
       setUsernameManual(true);
       return;
     }
@@ -69,12 +69,12 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
 
   return (
     <div>
-      <h2 style={stepTitle}>챗봇의 기본 정보를 입력하세요</h2>
+      <h2 style={stepTitle}>코코봇의 기본 정보를 입력하세요</h2>
       <p style={stepDesc}>🎤 옆 마이크를 누르면 음성으로 입력됩니다. 직접 텍스트로 입력해도 됩니다.</p>
 
       <div style={formCard}>
         <div style={formGroup}>
-          <label style={formLabel}>챗봇 이름 *</label>
+          <label style={formLabel}>코코봇 이름 *</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input
               type="text"
@@ -96,7 +96,7 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
               style={{ ...formInput, flex: 1 }}
               value={botDesc}
               onChange={e => setBotDesc(e.target.value)}
-              placeholder="예: 나를 대신해 24시간 소통하는 AI 챗봇"
+              placeholder="예: 나를 대신해 24시간 소통하는 AI 코코봇"
               maxLength={100}
             />
             <MicButton onResult={(text) => setBotDesc(botDesc + (botDesc ? ' ' : '') + text)} />
@@ -125,7 +125,7 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
                 display: 'flex',
                 alignItems: 'center',
               }}>
-                mychatbot.world/bot/
+                cocobot.world/bot/
               </span>
               <input
                 type="text"

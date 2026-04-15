@@ -16,7 +16,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "app/mypage/page.tsx, app/mypage/page-client.tsx, app/mypage/inheritance/page.tsx, app/mypage/inheritance-accept/page.tsx",
-  "modification_history": "2026-04-02: 서버/클라이언트 분리 재구성. page.tsx→서버 컴포넌트 래퍼, page-client.tsx→클라이언트 컴포넌트(내 챗봇 목록+봇 설정 편집 모달+상속 설정 요약 섹션 추가) | 2026-04-02: pages/home/index.html 크레딧 충전 — 시뮬레이션 제거, 무통장 입금 모달 추가 | 2026-04-06: Vanilla HTML 충실 전환 — 6개 탭(회원정보/챗봇관리/유료스킬/수익활동/크레딧/보안) 사이드바 구조, 유료스킬(목소리복제/3D아바타/커스텀테마), 수익활동(상담/예약/추천/콘텐츠 토글), 비밀번호 변경, ToggleSwitch 컴포넌트, 크레딧 패키지 Vanilla와 동일하게 재정렬",
+  "modification_history": "2026-04-02: 서버/클라이언트 분리 재구성. page.tsx→서버 컴포넌트 래퍼, page-client.tsx→클라이언트 컴포넌트(내 챗봇 목록+봇 설정 편집 모달+상속 설정 요약 섹션 추가) | 2026-04-02: pages/home/index.html 크레딧 충전 — 시뮬레이션 제거, 무통장 입금 모달 추가 | 2026-04-06: Vanilla HTML 충실 전환 — 6개 탭(회원정보/챗봇관리/유료스킬/수익활동/크레딧/보안) 사이드바 구조, 유료스킬(목소리복제/3D아바타/커스텀테마), 수익활동(상담/예약/추천/콘텐츠 토글), 비밀번호 변경, ToggleSwitch 컴포넌트, 크레딧 패키지 Vanilla와 동일하게 재정렬 | 2026-04-13: OWASP A07 수정 — inheritance/page.tsx + inheritance-accept/page.tsx의 getToken()/authHeaders() localStorage 패턴 → supabase.auth.getSession() async 전환, useEffect async IIFE 패턴 적용, 비로그인 시 /login 리다이렉트 세션 체크 추가.",
   "verification_instruction": "sal-grid/verification-instructions/S4FE2_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {

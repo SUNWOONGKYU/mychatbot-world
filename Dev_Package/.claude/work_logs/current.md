@@ -4,6 +4,79 @@
 
 ---
 
+## S5 Stage 전체 13개 Task 실행 완료 (2026-04-12)
+
+### 작업 상태: ✅ 완료
+
+### 실행 결과 요약
+
+| Task ID | Task 이름 | 생성/수정 파일 |
+|---------|----------|-------------|
+| S5S1 | 개인정보처리방침 + 동의 플로우 | app/signup/page.tsx (동의 체크박스 추가) |
+| S5S2 | 보안 취약점 신고 채널 | public/.well-known/security.txt, app/security/page.tsx |
+| S5BA1 | Zod 입력 검증 | lib/validations/chat.ts, lib/validations/admin.ts |
+| S5BA2 | API 인증 표준화 | lib/api-auth.ts (withAuth/withAdminAuth HOC) |
+| S5BA3 | chat/route.ts 분리 | lib/chat/credits.ts, lib/chat/rag.ts, lib/chat/completion.ts |
+| S5BA4 | 회원 탈퇴 API+UI | app/api/user/account/route.ts, components/mypage/DeleteAccountSection.tsx |
+| S5DB1 | DB 타입 정의 | lib/database.types.ts, package.json (gen:types) |
+| S5DB2 | RLS 감사 SQL | supabase/migrations/20260412_rls_audit.sql |
+| S5T1 | E2E 환경 | package.json (test:e2e 스크립트) |
+| S5T2 | Happy Path E2E | tests/e2e/auth-flow.spec.ts (17개 테스트) |
+| S5T3 | Zod 단위 테스트 | tests/unit/validations.test.ts (25/25 PASS) |
+| S5F1 | 접근성 WCAG 2.2 | app/layout.tsx (skip-nav, id=main-content) |
+| S5DO1 | 모니터링·분석 | app/api/health/route.ts, layout.tsx (@vercel/analytics) |
+
+### 전체 진행률
+- 완료: 85/92 Tasks (92%)
+- S5 Stage: 13/13 (100%)
+
+### 테스트 결과
+- 단위 테스트: 147/147 PASS (npm run test:unit)
+- E2E 테스트: 서버 기동 후 실행 가능
+
+---
+
+## SAL-DA 보안 진단 결과 반영 + S5 Stage 신설 (2026-04-12)
+
+### 작업 상태: ✅ 완료
+
+### Phase 1: 기존 Task modification_history 업데이트
+
+| Task ID | 수정 내용 |
+|---------|----------|
+| S4S1 | middleware.ts 신규 생성(/api/admin/* 보호), timingSafeEqual 적용, ADMIN_EMAILS 폴백 제거 |
+| S3BA1 | chat/route.ts ANON_KEY 폴백 제거, sanitizeUserInput() 프롬프트 인젝션 방어 추가 |
+| S1BI1 | next.config.mjs CSP 헤더 추가, remotePatterns 와일드카드 제거 |
+
+### Phase 2: S5 Stage 13개 Task 신규 등록
+
+| Task ID | Task 이름 | Area |
+|---------|----------|------|
+| S5S1 | 개인정보처리방침 페이지 + 동의 플로우 | S |
+| S5S2 | 보안 취약점 신고 채널 구축 | S |
+| S5BA1 | 서버 측 입력 검증 강화 (Zod) | BA |
+| S5BA2 | API 인증 패턴 표준화 | BA |
+| S5BA3 | chat/route.ts 복잡도 분리 리팩토링 | BA |
+| S5BA4 | 회원 탈퇴 + 데이터 삭제 API | BA |
+| S5DB1 | Database 타입 자동 생성 적용 | DB |
+| S5DB2 | Supabase RLS 전면 감사 | DB |
+| S5T1 | E2E 테스트 환경 구축 (Playwright) | T |
+| S5T2 | Happy Path E2E 테스트 작성 | T |
+| S5T3 | API 통합 테스트 확장 | T |
+| S5F1 | 접근성 개선 WCAG 2.2 | F |
+| S5DO1 | 모니터링·알림 설정 | DO |
+
+### 업데이트된 파일 (5개 위치 CRUD 완료)
+
+1. `sal-grid/TASK_PLAN.md` — S5 섹션 추가, 총 Task 79→92, 진척률 91%→78%, 변경이력 v5.0
+2. `method/json/data/index.json` — total_tasks 92, task_ids 13개 추가
+3. `method/json/data/grid_records/` — S5S1~S5DO1 13개 JSON 신규 생성
+4. `sal-grid/task-instructions/` — S5 13개 instruction 파일 생성
+5. `sal-grid/verification-instructions/` — S5 13개 verification 파일 생성
+6. `grid_records/S4S1.json`, `S3BA1.json`, `S1BI1.json` — modification_history 업데이트
+
+---
+
 ## 1. SAL Grid Dev Suite 적용 (2026-03-04)
 
 ### 작업 상태: 완료 (PART 1~4)

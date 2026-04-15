@@ -24,8 +24,10 @@
  * - service_role 키로 RLS 우회
  */
 
-import { createClient } from '@supabase/supabase-js';
+
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin, getAdminSupabase } from '@/lib/admin-auth';
+import { rateLimit, RATE_ADMIN } from '@/lib/rate-limiter';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────
 
@@ -35,10 +37,17 @@ interface PaymentRow {
   amount: number;
   status: string;
   payment_type: string;
+  description?: string | null;
   created_at: string;
   updated_at?: string;
   confirmed_at?: string;
   confirmed_by?: string;
+}
+
+// 크레딧 충전이 아닌 상품 구매 (음성팩, 아바타팩, 페르소나 템플릿 등)
+function isProductPurchase(description?: string | null): boolean {
+  if (!description) return false;
+  return description.startsWith('[부가기능]') || description.startsWith('[페르소나 템플릿]');
 }
 
 interface UserCreditRow {
@@ -51,27 +60,6 @@ interface PatchBody {
   paymentId: string;
   action: 'approve' | 'reject';
   confirmedBy?: string;
-}
-
-// ── 관리자 인증 ────────────────────────────────────────────────────────────
-
-function getAdminSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-}
-
-async function requireAdmin(req: NextRequest): Promise<{ authorized: boolean }> {
-  const adminKey = process.env.ADMIN_API_KEY;
-  if (!adminKey) {
-    console.error('[admin/payments] ADMIN_API_KEY env var not set');
-    return { authorized: false };
-  }
-  const provided = req.headers.get('X-Admin-Key');
-  return { authorized: provided === adminKey };
 }
 
 // ── GET /api/admin/payments ───────────────────────────────────────────────
@@ -163,7 +151,7 @@ export async function PATCH(req: NextRequest) {
     // 결제 레코드 조회
     const { data: paymentData, error: fetchError } = await (supabase as any)
       .from('mcw_payments')
-      .select('id, user_id, amount, status, payment_type')
+      .select('id, user_id, amount, status, payment_type, description')
       .eq('id', paymentId)
       .maybeSingle();
 
@@ -214,8 +202,9 @@ export async function PATCH(req: NextRequest) {
       });
     }
 
-    // ── 승인 처리 (/api/payments/confirm 로직 재사용) ────────────────────
-    const { user_id: userId, amount } = payment;
+    // ── 승인 처리 ────────────────────────────────────────────────────────
+    const { user_id: userId, amount, description: paymentDesc } = payment;
+    const isProduct = isProductPurchase(paymentDesc);
 
     // 1. mcw_payments → 'completed'
     const { error: updatePaymentError } = await (supabase as any)
@@ -233,7 +222,20 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to update payment status' }, { status: 500 });
     }
 
-    // 2. mcw_credits.balance += amount (upsert)
+    // 상품 구매([부가기능], [페르소나 템플릿])는 크레딧 충전 없이 완료
+    if (isProduct) {
+      return NextResponse.json({
+        paymentId,
+        userId,
+        amount,
+        action: 'approved',
+        type: 'product',
+        message: `${paymentDesc} 구매 확인 완료. 아이템을 수동 지급하세요.`,
+        processedAt: now,
+      });
+    }
+
+    // 2. 크레딧 충전: mcw_credits.balance += amount (upsert)
     const { data: creditData, error: creditFetchError } = await (supabase as any)
       .from('mcw_credits')
       .select('balance, total_purchased')
@@ -290,6 +292,7 @@ export async function PATCH(req: NextRequest) {
       amount,
       newBalance,
       action: 'approved',
+      type: 'credit',
       message: `${amount.toLocaleString()}원 입금 확인 완료. 크레딧이 충전되었습니다.`,
       processedAt: now,
     });

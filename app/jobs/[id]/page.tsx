@@ -302,7 +302,7 @@ export default function JobDetailPage() {
 
       // 페이지 타이틀 업데이트
       if (data.job?.title || data.title) {
-        document.title = `${data.job?.title ?? data.title} — 구봇구직 | My Chatbot World`;
+        document.title = `${data.job?.title ?? data.title} — 구봇구직 | CoCoBot World`;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : '오류가 발생했습니다.');
@@ -524,7 +524,7 @@ export default function JobDetailPage() {
                   AI 매칭 결과
                   {matches.length > 0 && (
                     <span className="text-xs font-normal text-gray-400 ml-1">
-                      ({matches.length}개 챗봇 추천)
+                      ({matches.length}개 코코봇 추천)
                     </span>
                   )}
                 </h2>

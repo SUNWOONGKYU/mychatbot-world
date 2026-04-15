@@ -15,8 +15,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 // ============================
 // 타입 정의
@@ -53,7 +51,7 @@ function getSupabaseServer() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 function getSupabaseUser(req: NextRequest) {
@@ -71,30 +69,27 @@ function getSupabaseUser(req: NextRequest) {
 // ============================
 
 async function loadSkillMeta(skillId: string): Promise<SkillDefMeta | null> {
-  const filePath = path.join(
-    process.cwd(),
-    'skill-market',
-    'prompt-skills',
-    `${skillId}.json`
-  );
-  try {
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const def = JSON.parse(raw);
-    // 필요한 필드만 추출 (systemPrompt 등 민감 정보 제외)
-    return {
-      id: def.id,
-      name: def.name,
-      icon: def.icon,
-      category: def.category,
-      description: def.description,
-      type: def.type,
-      isFree: def.isFree,
-      price: def.price,
-      tags: def.tags,
-    };
-  } catch {
-    return null;
-  }
+  const supabase = getSupabaseServer();
+  const { data, error } = await supabase
+    .from('mcw_skills')
+    .select('name, price, metadata, is_active')
+    .eq('metadata->>legacy_id', skillId)
+    .eq('is_active', true)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  return {
+    id: skillId,
+    name: data.name,
+    icon: data.metadata?.icon ?? '',
+    category: data.metadata?.category ?? '',
+    description: data.description ?? '',
+    type: data.metadata?.type ?? 'prompt',
+    isFree: data.metadata?.isFree ?? (Number(data.price) === 0),
+    price: Number(data.price) ?? 0,
+    tags: data.metadata?.tags ?? [],
+  };
 }
 
 // ============================

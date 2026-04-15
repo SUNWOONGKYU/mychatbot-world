@@ -45,14 +45,14 @@ interface FaqResponse {
  */
 export async function POST(request: NextRequest): Promise<NextResponse<FaqResponse>> {
   // ── 1. 인증 검증 ────────────────────────────────────────────────────────────
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: authError,
-  } = await supabase.auth.getSession();
-
-  if (authError || !session) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
     return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
   }
 
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
   }
 
   // ── 3. AI FAQ 생성 ──────────────────────────────────────────────────────────
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
       { success: false, error: 'AI 서비스 설정이 올바르지 않습니다.' },
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
     );
   }
 
-  const openai = createOpenAI({ apiKey });
+  const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const toneGuide: Record<string, string> = {
     friendly: '친근하고 따뜻한 말투로',
@@ -130,7 +130,7 @@ ${keywordContext}
 
   try {
     const result = await generateText({
-      ...openai.chat('gpt-4o-mini'),
+      ...openai.chat('openai/gpt-4o-mini'),
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },

@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "",
-  "modification_history": "",
+  "modification_history": "2026-04-12: SAL-DA 보안 진단 반영 — app/api/chat/route.ts 수정: (1) getSupabaseServer()에서 SERVICE_ROLE_KEY 없을 때 ANON_KEY 폴백 제거 → 명시적 Error throw로 변경 (2) sanitizeUserInput() 함수 추가: 프롬프트 인젝션 패턴 차단(ignore previous instructions/system:/[INST] 등), 최대 4000자 제한",
   "verification_instruction": "sal-grid/verification-instructions/S3BA1_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "",

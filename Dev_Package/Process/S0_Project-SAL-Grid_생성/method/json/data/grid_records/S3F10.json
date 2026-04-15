@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Frontend/pages/jobs/detail.html, Process/S3_개발-2차/Frontend/pages/jobs/hire.html, Process/S3_개발-2차/Frontend/pages/jobs/match.html, Process/S3_개발-2차/Frontend/js/job-detail.js, Process/S3_개발-2차/Frontend/css/job-detail.css",
-    "modification_history": "",
+    "modification_history": "2026-04-12: Agenda MATCH1 — Next.js 전환: app/jobs/match/page.tsx 신규 생성. ?job_id= 파라미터 수신, GET /api/jobs/{id}(일감 요약) + GET /api/jobs/match?job_id=(매칭 결과) 병렬 로드, 결과 없으면 POST /api/jobs/match 실행 버튼 표시, 매칭 카드 (순위/점수 원형/점수 바/reason), 알고리즘 설명 접이식(skills 40%/rating 35%/salary 15%/category 10%), Bearer token 인증 | 2026-04-12: Agenda HIRE1 — Next.js 전환: app/jobs/hire/page.tsx 신규 생성 (?bot_id= 파라미터, 사이드카드 GET /api/bots/public, 폼 제출 POST /api/jobs/hire Bearer 인증, 성공 모달→/jobs/match?job_id=)",
     "verification_instruction": "sal-grid/verification-instructions/S3F10_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",

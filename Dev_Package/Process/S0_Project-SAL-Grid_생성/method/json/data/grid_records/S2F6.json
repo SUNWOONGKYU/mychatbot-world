@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "pages/guest/index.html, pages/guest/chat.html, js/guest-mode.js, index.html (CTA 버튼 추가)",
-  "modification_history": "2026-03-05: 게스트 체험 모드 UI 전체 구현 (index.html, chat.html, guest-mode.js, CTA 버튼)",
+  "modification_history": "2026-03-05: 게스트 체험 모드 UI 전체 구현 (index.html, chat.html, guest-mode.js, CTA 버튼) | 2026-04-12: Agenda CHAT1 — Next.js 전환: app/guest/chat/page.tsx 신설 (게스트 채팅 UI, localStorage 세션/카테고리/봇ID 읽기, 메시지 10개 한도, /api/chat 연동, 데모 응답 폴백, 회원가입 유도 모달)",
   "verification_instruction": "sal-grid/verification-instructions/S2F6_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "unit_test: PASS, integration_test: PASS, edge_cases: PASS, manual_test: PASS",

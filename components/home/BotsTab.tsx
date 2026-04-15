@@ -121,9 +121,9 @@ export function BotsTab({ user }: { user: any }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ ...S.h1, marginBottom: 0 }}>챗봇 및 운영 관리</h1>
+        <h1 style={{ ...S.h1, marginBottom: 0 }}>코코봇 운영 관리</h1>
         {!hasBots && !draft && (
-          <button style={S.btnPrimary} onClick={() => router.push('/create')}>+ 새 챗봇 생성</button>
+          <button style={S.btnPrimary} onClick={() => router.push('/create')}>+ 새 코코봇 생성</button>
         )}
       </div>
 
@@ -138,10 +138,10 @@ export function BotsTab({ user }: { user: any }) {
           <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'rgba(255,255,255,0.4)' }}>
             <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem', opacity: 0.5 }}>🤖</div>
             <h3 style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.75rem' }}>
-              아직 생성된 챗봇이 없습니다
+              아직 생성된 코코봇이 없습니다
             </h3>
-            <p style={{ fontSize: '0.9rem', marginBottom: '2rem' }}>나만의 AI 챗봇을 생성하고 관리해 보세요.</p>
-            <button style={S.btnPrimary} onClick={() => router.push('/create')}>+ 새 챗봇 생성</button>
+            <p style={{ fontSize: '0.9rem', marginBottom: '2rem' }}>나만의 코코봇을 생성하고 관리해 보세요.</p>
+            <button style={S.btnPrimary} onClick={() => router.push('/create')}>+ 새 코코봇 생성</button>
           </div>
         )}
 
@@ -327,7 +327,7 @@ function BotSettingsPanel({ bot, onSaved, onClose }: { bot: Bot; onSaved: () => 
   };
 
   const handleDelete = () => {
-    if (!confirm(`정말 "${bot.botName}" 챗봇을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`정말 "${bot.botName}" 코코봇을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
     deleteBot(bot.id);
     onSaved();
     onClose();
@@ -390,7 +390,7 @@ function BotSettingsPanel({ bot, onSaved, onClose }: { bot: Bot; onSaved: () => 
           이 작업은 되돌릴 수 없습니다. 봇과 관련된 모든 데이터가 삭제됩니다.
         </p>
         <button style={{ padding: '8px 20px', background: '#ef4444', color: 'white', border: 'none', borderRadius: 10, fontWeight: 600, cursor: 'pointer' }}
-          onClick={handleDelete}>이 챗봇 삭제하기</button>
+          onClick={handleDelete}>이 코코봇 삭제하기</button>
       </div>
     </div>
   );
@@ -410,7 +410,7 @@ function PersonaCard({ bot, persona, idx, onRefresh }: { bot: Bot; persona: Pers
     { id: 'logs',      icon: '📑', label: '대화 로그' },
     { id: 'data',      icon: '💾', label: '지식베이스' },
     { id: 'skills',    icon: '🧩', label: '스킬 관리' },
-    { id: 'school',    icon: '🎓', label: '챗봇 스쿨' },
+    { id: 'school',    icon: '🎓', label: '코코봇 스쿨' },
     { id: 'community', icon: '💬', label: '커뮤니티' },
     { id: 'psettings', icon: '🔧', label: '설정' },
   ];
@@ -629,7 +629,7 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem' }}>텍스트 지식</div>
         <textarea style={{ ...darkInput, resize: 'vertical', minHeight: 80 }}
-          placeholder="챗봇이 알아야 할 정보를 자유롭게 입력하세요..."
+          placeholder="코코봇이 알아야 할 정보를 자유롭게 입력하세요..."
           value={kb.freeText || ''}
           onChange={e => setKb((prev: any) => ({ ...prev, freeText: e.target.value }))}
         />
@@ -753,7 +753,7 @@ function SkillCard({ skill, action, onAction }: { skill: any; action: 'install' 
   );
 }
 
-// ── 4. 챗봇 스쿨 패널 ───────────────────────────────────────
+// ── 4. 코코봇 스쿨 패널 ───────────────────────────────────────
 function SchoolPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
   const stats = getStats(bot.id, persona.id);
   const installed = getSkills(bot.id, persona.id);

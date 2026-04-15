@@ -1,5 +1,5 @@
 /* ============================================
-   My Chatbot World - My Page Logic (home.js)
+   CoCoBot World - My Page Logic (home.js)
    Per-persona management structure
    ============================================ */
 
@@ -97,9 +97,9 @@ const HomePage = (() => {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🤖</div>
-          <h3>아직 생성된 챗봇이 없습니다</h3>
-          <p>나만의 AI 챗봇을 생성하고 관리해 보세요.</p>
-          <button class="btn btn-primary" onclick="location.href='../create/index.html'">+ 새 챗봇 생성</button>
+          <h3>아직 생성된 코코봇이 없습니다</h3>
+          <p>나만의 AI 코코봇을 생성하고 관리해 보세요.</p>
+          <button class="btn btn-primary" onclick="location.href='../create/index.html'">+ 새 코코봇 생성</button>
         </div>`;
       return;
     }
@@ -237,7 +237,7 @@ const HomePage = (() => {
             <span class="tool-icon">🧩</span> 스킬 관리
           </button>
           <button class="tool-btn" data-tool="school" onclick="HomePage.openTool('${botId}','${pId}','school')">
-            <span class="tool-icon">🎓</span> 챗봇 스쿨
+            <span class="tool-icon">🎓</span> 코코봇 스쿨
           </button>
           <button class="tool-btn" data-tool="community" onclick="HomePage.openTool('${botId}','${pId}','community')">
             <span class="tool-icon">💬</span> 커뮤니티
@@ -316,7 +316,7 @@ const HomePage = (() => {
       <div class="delete-bot-zone">
         <h4>봇 삭제</h4>
         <p>이 작업은 되돌릴 수 없습니다. 봇과 관련된 모든 데이터가 삭제됩니다.</p>
-        <button class="btn-danger" onclick="HomePage.deleteBot('${botId}', '${escAttr(bot.botName || '')}')">이 챗봇 삭제하기</button>
+        <button class="btn-danger" onclick="HomePage.deleteBot('${botId}', '${escAttr(bot.botName || '')}')">이 코코봇 삭제하기</button>
       </div>
     `;
     panel.classList.add('open');
@@ -468,7 +468,7 @@ const HomePage = (() => {
       <div class="kb-section">
         <div class="kb-section-title"><span>텍스트 지식</span></div>
         <textarea class="form-control-dark" rows="4"
-          placeholder="챗봇이 알아야 할 정보를 자유롭게 입력하세요..."
+          placeholder="코코봇이 알아야 할 정보를 자유롭게 입력하세요..."
           oninput="HomePage.updateFreeText('${botId}', '${personaId}', this.value)">${escHtml(kb.freeText || '')}</textarea>
       </div>
 
@@ -1204,10 +1204,10 @@ const HomePage = (() => {
   }
 
   function deleteBot(botId, botName) {
-    if (!confirm(`정말 "${botName}" 챗봇을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`정말 "${botName}" 코코봇을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
 
     MCW.storage.deleteBot(botId);
-    MCW.showToast('챗봇이 삭제되었습니다.');
+    MCW.showToast('코코봇이 삭제되었습니다.');
     renderBotList();
 
     // 클라우드(Supabase)에서도 삭제 — 없으면 새로고침 시 부활함

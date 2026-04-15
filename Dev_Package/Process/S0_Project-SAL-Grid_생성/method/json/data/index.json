@@ -3,10 +3,10 @@
   "project_name": "My Chatbot World - AI 챗봇 생성 플랫폼",
   "method_type": "Vanilla",
   "created_at": "2026-02-11",
-  "updated_at": "2026-03-07",
-  "total_tasks": 79,
-  "completed_tasks": 78,
-  "overall_progress": 99,
+  "updated_at": "2026-04-12",
+  "total_tasks": 92,
+  "completed_tasks": 85,
+  "overall_progress": 92,
   "task_ids": [
     "S1M1", "S1DB1", "S1BI1", "S1DO1",
     "S2F1", "S2F2", "S2F3", "S2F4", "S2BA1", "S2BA2", "S2BA3", "S2S1", "S2CS1", "S2T1",
@@ -18,6 +18,8 @@
     "S3F12", "S3F13", "S3F14", "S3BA8", "S3CS2", "S3T2",
     "S4F1", "S4BA1", "S4E1", "S4T1", "S4T2", "S4T3", "S4DO1", "S4DO2", "S4M1",
     "S4F2", "S4F3", "S4F4", "S4BA2", "S4BA3", "S4DB1", "S4T4",
-    "S4F5", "S4F6", "S4F7", "S4F8", "S4BA4", "S4BA5", "S4S1", "S4T5"
+    "S4F5", "S4F6", "S4F7", "S4F8", "S4BA4", "S4BA5", "S4S1", "S4T5",
+    "S5S1", "S5S2", "S5BA1", "S5BA2", "S5BA3", "S5BA4", "S5DB1", "S5DB2",
+    "S5T1", "S5T2", "S5T3", "S5F1", "S5DO1"
   ]
 }

@@ -11,6 +11,7 @@ interface Payment {
   amount: number;
   status: string;
   payment_type?: string;
+  description?: string | null;
   created_at: string;
   confirmed_at?: string;
   confirmed_by?: string;
@@ -132,8 +133,14 @@ export default function SectionPayments({ adminKey, onBadgeChange }: SectionPaym
   }, [viewMode, paymentTab, loadPayments, loadTransactions, loadPendingCount]);
 
   // ── 승인 ──────────────────────────────────────────────────────────────
+  const isProductPayment = (p: Payment) =>
+    !!(p.description?.startsWith('[부가기능]') || p.description?.startsWith('[페르소나 템플릿]'));
+
   const handleApprove = async (payment: Payment) => {
-    if (!confirm(`${payment.metadata?.depositor_name || '?'} 님의 ${payment.amount.toLocaleString()}원 입금을 승인하시겠습니까?`)) return;
+    const label = isProductPayment(payment)
+      ? `${payment.metadata?.depositor_name || '?'} 님의 ${payment.description} 구매를 승인하시겠습니까?\n(크레딧 충전 없이 결제 확인 처리됩니다)`
+      : `${payment.metadata?.depositor_name || '?'} 님의 ${payment.amount.toLocaleString()}원 입금을 승인하시겠습니까?\n(크레딧 ${payment.amount.toLocaleString()}원이 충전됩니다)`;
+    if (!confirm(label)) return;
     setProcessing(payment.id);
     try {
       const res = await fetch('/api/admin/payments', {
@@ -146,7 +153,10 @@ export default function SectionPayments({ adminKey, onBadgeChange }: SectionPaym
         }),
       });
       if (res.ok) {
-        showToast(`승인 완료 — ${payment.amount.toLocaleString()}원 크레딧 충전`);
+        const d = await res.json();
+        showToast(d.type === 'product'
+          ? `승인 완료 — ${payment.description} (아이템 수동 지급 필요)`
+          : `승인 완료 — ${payment.amount.toLocaleString()}원 크레딧 충전`);
         loadPayments(paymentTab, 1);
         loadPendingCount();
         onBadgeChange();
@@ -329,8 +339,8 @@ export default function SectionPayments({ adminKey, onBadgeChange }: SectionPaym
                 <tr>
                   <th>ID</th>
                   <th>입금자</th>
+                  <th>구매 항목</th>
                   <th>금액</th>
-                  <th>은행</th>
                   <th>신청일</th>
                   <th>상태</th>
                   <th>처리</th>
@@ -361,11 +371,27 @@ export default function SectionPayments({ adminKey, onBadgeChange }: SectionPaym
                           </div>
                         )}
                       </td>
+                      <td>
+                        {p.description ? (
+                          <span
+                            style={{
+                              fontSize: '0.78rem',
+                              fontWeight: 600,
+                              color: p.description.startsWith('[부가기능]') || p.description.startsWith('[페르소나 템플릿]')
+                                ? 'var(--admin-primary)'
+                                : 'var(--admin-success)',
+                            }}
+                          >
+                            {p.description}
+                          </span>
+                        ) : (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--admin-muted)' }}>
+                            크레딧 충전
+                          </span>
+                        )}
+                      </td>
                       <td style={{ fontWeight: 700, color: 'var(--admin-success)' }}>
                         {p.amount.toLocaleString()}원
-                      </td>
-                      <td style={{ fontSize: '0.82rem', color: 'var(--admin-muted)' }}>
-                        {p.metadata?.bank || '-'}
                       </td>
                       <td style={{ fontSize: '0.78rem', color: 'var(--admin-muted)' }}>
                         {fmtDate(p.created_at)}

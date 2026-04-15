@@ -37,7 +37,7 @@ const MAX_TURNS = 10;
 /* ── GuestChat Props ─────────────────────────────────────────── */
 
 interface GuestChatProps {
-  /** 데모 챗봇 ID (없으면 기본 데모봇) */
+  /** 데모 코코봇 ID (없으면 기본 데모봇) */
   botId?: string;
   /** 10회 한도 초과 시 콜백 */
   onLimitReached: () => void;
@@ -99,7 +99,7 @@ export function GuestChat({ botId, onLimitReached }: GuestChatProps) {
       const welcome: ChatMessage = {
         id: genId(),
         role: 'bot',
-        content: '안녕하세요! 저는 My Chatbot World 데모 챗봇이에요. 무엇이든 물어보세요. 회원가입 없이 10회까지 무료로 체험할 수 있어요.',
+        content: '안녕하세요! 저는 CoCoBot World 데모 코코봇이에요. 무엇이든 물어보세요. 회원가입 없이 10회까지 무료로 체험할 수 있어요.',
         createdAt: new Date().toISOString(),
       };
       setMessages([welcome]);
@@ -144,10 +144,9 @@ export function GuestChat({ botId, onLimitReached }: GuestChatProps) {
     }
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/api/guest-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // Authorization 헤더 없음 — 게스트 모드
         body: JSON.stringify({
           message: text,
           botId: botId ?? 'demo',

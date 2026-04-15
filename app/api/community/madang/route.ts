@@ -15,7 +15,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 // 정적 마당 목록 (DB 테이블이 없는 경우 하드코딩)
@@ -46,11 +46,15 @@ export async function GET(req: NextRequest) {
         console.error('[community/madang] popular bots error:', error.message);
         return NextResponse.json({ bots: [] });
       }
-      return NextResponse.json({ bots: bots ?? [] });
+      return NextResponse.json({ bots: bots ?? [] }, {
+        headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+      });
     }
 
-    // 마당 목록
-    return NextResponse.json({ madangs: MADANG_LIST });
+    // 마당 목록 (정적 데이터 — 장기 캐싱)
+    return NextResponse.json({ madangs: MADANG_LIST }, {
+      headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' },
+    });
   } catch (err) {
     console.error('[community/madang] error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

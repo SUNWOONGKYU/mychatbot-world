@@ -46,7 +46,7 @@ export default function Step6Avatar({ data, onNext, onBack }: Props) {
   return (
     <div>
       <h2 style={stepTitle}>아바타를 설정하세요</h2>
-      <p style={stepDesc}>챗봇의 얼굴이 될 아바타를 선택하거나 직접 업로드하세요 (선택사항)</p>
+      <p style={stepDesc}>코코봇의 얼굴이 될 아바타를 선택하거나 직접 업로드하세요 (선택사항)</p>
 
       <div style={formCard}>
         {/* 이모지 선택 */}

@@ -1,9 +1,9 @@
 /**
  * @task S5FE3 - 랜딩 페이지 리디자인
  * @component PricingSection
- * @description 가격 섹션 — 4티어 (일단/이단/삼단/사단, Dan I~IV)
- *              VAT 포함 가격: ₩9,900 / ₩29,700 / ₩99,000 / ₩297,000
- *              크레딧제: 1크레딧=1원, 정액×2배, 초과×4배
+ * @description 가격 섹션 — 4티어 (Free/Starter/Pro/Business)
+ *              P4 와이어프레임 SECTION 5 기준
+ *              가격: 3만/5만/10만/문의 (할인 없음)
  */
 'use client';
 
@@ -25,87 +25,82 @@ interface PricingTier {
 
 const PRICING_TIERS: PricingTier[] = [
   {
-    id: 'dan1',
-    name: '일단 (Dan I)',
-    price: 9900,
-    tagline: '₩9,900',
-    priceSuffix: '/월 (VAT 포함)',
-    description: '첫 발을 내딛는 1인 사업자 · 개인 프리랜서에게 최적.',
+    id: 'free',
+    name: 'Free',
+    price: 0,
+    tagline: '무료',
+    description: '개인 실험과 학습용. 핵심 기능을 무제한 무료로.',
     features: [
-      '월 2,000 크레딧 포함',
-      'Economy 모델 ~250회 대화',
-      '챗봇 3개',
-      '기본 템플릿 50종+',
-      '커스텀 페르소나',
-      '챗봇 위젯 임베드',
+      '코코봇 1개',
+      '월 200회 대화',
+      '기본 템플릿 5종',
+      '커뮤니티 지원',
+      '코코봇 위젯 임베드',
+    ],
+    ctaLabel: '무료로 시작',
+    ctaHref: '/create',
+    ctaStyle: 'ghost',
+  },
+  {
+    id: 'starter',
+    name: 'Starter',
+    price: 30000,
+    tagline: '₩30,000',
+    priceSuffix: '/월',
+    description: '소규모 비즈니스와 1인 사업자에게 최적.',
+    features: [
+      '코코봇 5개',
+      '월 2,000회 대화',
+      '전체 템플릿 50종+',
+      '지식베이스 연동 (10MB)',
       '이메일 지원',
-    ],
-    ctaLabel: '일단 시작하기',
-    ctaHref: '/create?plan=dan1',
-    ctaStyle: 'secondary',
-  },
-  {
-    id: 'dan2',
-    name: '이단 (Dan II)',
-    price: 29700,
-    tagline: '₩29,700',
-    priceSuffix: '/월 (VAT 포함)',
-    description: '소규모 팀 · 스타트업 · 활발한 고객 응대에 적합.',
-    features: [
-      '월 8,000 크레딧 포함',
-      'Economy 모델 ~1,000회 대화',
-      '챗봇 10개',
-      '지식베이스 연동 (100MB)',
-      '커스텀 페르소나 무제한',
+      '커스텀 페르소나',
       '대화 분석 기본',
-      '우선 이메일 지원',
     ],
-    ctaLabel: '이단 시작하기',
-    ctaHref: '/create?plan=dan2',
+    ctaLabel: 'Starter 시작하기',
+    ctaHref: '/create?plan=starter',
     ctaStyle: 'secondary',
   },
   {
-    id: 'dan3',
-    name: '삼단 (Dan III)',
-    price: 99000,
-    tagline: '₩99,000',
-    priceSuffix: '/월 (VAT 포함)',
-    description: '팀 · 에이전시 · 다중 챗봇 운영 전문가용.',
+    id: 'pro',
+    name: 'Pro',
+    price: 50000,
+    tagline: '₩50,000',
+    priceSuffix: '/월',
+    description: '팀 · 에이전시 · 전문가를 위한 무제한 플랜.',
     features: [
-      '월 30,000 크레딧 포함',
-      'Economy 모델 ~3,750회 대화',
-      '챗봇 무제한',
+      '코코봇 무제한',
+      '대화 무제한',
+      '전체 템플릿 + 커스텀',
       '지식베이스 무제한',
+      '우선 지원 (24h)',
       'API 연동',
       '팀원 초대 (5인)',
       '고급 분석 대시보드',
       '스킬 수익 분배',
-      '우선 지원 (24h)',
     ],
     recommended: true,
-    ctaLabel: '삼단 시작하기',
-    ctaHref: '/create?plan=dan3',
+    ctaLabel: 'Pro 시작하기',
+    ctaHref: '/create?plan=pro',
     ctaStyle: 'primary',
   },
   {
-    id: 'dan4',
-    name: '사단 (Dan IV)',
-    price: 297000,
-    tagline: '₩297,000',
-    priceSuffix: '/월 (VAT 포함)',
-    description: '엔터프라이즈 · 화이트라벨 · 대규모 고객 서비스.',
+    id: 'business',
+    name: 'Business',
+    price: 100000,
+    tagline: '₩100,000~',
+    priceSuffix: '/월',
+    description: '엔터프라이즈 · 화이트라벨 · 대규모 배포.',
     features: [
-      '월 120,000 크레딧 포함',
-      'Economy 모델 ~15,000회 대화',
-      '모든 삼단 기능 포함',
+      '모든 Pro 기능 포함',
       '화이트라벨 (브랜딩 제거)',
       '전담 고객 성공 매니저',
-      '팀원 무제한',
-      '99.9% SLA 보장',
       '맞춤 통합 개발',
+      '99.9% SLA 보장',
+      '팀원 무제한',
     ],
-    ctaLabel: '사단 도입 문의',
-    ctaHref: '/contact?plan=dan4',
+    ctaLabel: '도입 문의하기',
+    ctaHref: '/contact',
     ctaStyle: 'ghost',
   },
 ];
@@ -139,7 +134,7 @@ export function PricingSection() {
             className="mt-4 text-lg"
             style={{ color: 'rgb(var(--text-secondary))' }}
           >
-            1크레딧 = 1원. 정액 크레딧으로 시작하고, 더 필요하면 추가 충전하세요.
+            무료로 시작하고 성장에 맞춰 업그레이드하세요. 언제든지 변경 가능합니다.
           </p>
         </div>
 
@@ -303,7 +298,7 @@ export function PricingSection() {
           className="mt-10 text-center text-sm"
           style={{ color: 'rgb(var(--text-muted))' }}
         >
-          모든 요금제 VAT 포함 · 무통장 입금 우선 지원 · 언제든지 플랜 변경 가능
+          모든 요금제 VAT 별도 · 무통장 입금 우선 지원 · 언제든지 플랜 변경 가능
         </p>
       </div>
     </section>

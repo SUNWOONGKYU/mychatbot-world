@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "Dev_Package/Process/S3_개발-2차/Frontend/pages/home/usage.html, Dev_Package/Process/S3_개발-2차/Frontend/js/usage-dashboard.js",
-  "modification_history": "2026-03-05: 사용량 대시보드 UI 생성 — usage.html (월별 진행 바, 스켈레톤, 업그레이드 배너, 봇별 CSS 차트), usage-dashboard.js (fetch + 렌더링 + 에러 처리 + Supabase Auth)",
+  "modification_history": "2026-03-05: 사용량 대시보드 UI 생성 — usage.html (월별 진행 바, 스켈레톤, 업그레이드 배너, 봇별 CSS 차트), usage-dashboard.js (fetch + 렌더링 + 에러 처리 + Supabase Auth) | 2026-04-11: Agenda U1 — Next.js 전환: components/home/UsageTab.tsx 생성 (Bearer 인증, /api/usage 연동, 모델별 사용량 테이블 + 진행 바), app/api/usage/route.ts 신설 (mcw_credit_usage→mcw_ai_usage 폴백, 이번 달 집계, by_model/by_bot 그룹핑)",
   "verification_instruction": "sal-grid/verification-instructions/S3F7_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "{ \"unit_test\": \"PASS\", \"integration_test\": \"PASS\", \"edge_cases\": \"PASS\", \"manual_test\": \"PASS\" }",

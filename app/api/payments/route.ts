@@ -17,6 +17,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit, RATE_PAYMENTS } from '@/lib/rate-limiter';
 
 // ── API 과금 유틸리티 ─────────────────────────────────────────────────────
 
@@ -99,7 +100,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error('Server configuration error: missing Supabase credentials');
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 async function authenticate(
@@ -109,7 +110,7 @@ async function authenticate(
   if (!authHeader) return { userId: null, error: 'Unauthorized: missing Authorization header' };
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
   if (!token) return { userId: null, error: 'Unauthorized: missing Bearer token' };
-  const { data, error } = await (supabase as any).auth.getUser(token);
+  const { data, error } = await supabase.auth.getUser(token);
   if (error || !data?.user) return { userId: null, error: 'Unauthorized: invalid or expired token' };
   return { userId: data.user.id, error: null };
 }
@@ -128,7 +129,7 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = getSupabase();
     const { userId, error: authError } = await authenticate(
-      supabase as any,
+      supabase,
       req.headers.get('Authorization'),
     );
     if (authError || !userId) {
@@ -180,13 +181,11 @@ export async function GET(req: NextRequest) {
     const items = (data as PaymentRow[]).map((p: any) => ({
       id: p.id,
       amount: p.amount,
-      credits: p.credit_amount ?? p.amount,
-      method: p.payment_type,
       status: p.status,
-      depositor_name: (p.metadata as { depositor_name?: string } | null)?.depositor_name ?? null,
+      paymentType: p.payment_type,
       description: p.description,
-      confirmed_at: p.confirmed_at,
-      created_at: p.created_at,
+      confirmedAt: p.confirmed_at,
+      createdAt: p.created_at,
     }));
 
     return NextResponse.json({ items, pagination });
@@ -201,6 +200,7 @@ export async function GET(req: NextRequest) {
 interface PaymentRequest {
   amount: number;
   depositor_name?: string;
+  description?: string;
 }
 
 /**
@@ -209,10 +209,18 @@ interface PaymentRequest {
  * Response: { paymentId, amount, status: 'pending', bankInfo, message, createdAt }
  */
 export async function POST(req: NextRequest) {
+  // Rate Limiting: 무통장 입금 요청은 분당 5회로 제한
+  const rl = rateLimit(req, RATE_PAYMENTS, 'payments:post');
+  if (!rl.allowed) {
+    return NextResponse.json({ error: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.' }, {
+      status: 429,
+      headers: { 'Retry-After': String(rl.retryAfterSec) },
+    });
+  }
   try {
     const supabase = getSupabase();
     const { userId, error: authError } = await authenticate(
-      supabase as any,
+      supabase,
       req.headers.get('Authorization'),
     );
     if (authError || !userId) {
@@ -226,7 +234,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { amount, depositor_name } = body;
+    const { amount, depositor_name, description } = body;
 
     // 패키지 금액이거나 직접 입력 최소 금액 이상이어야 함
     const isPackageAmount = (ALLOWED_AMOUNTS as readonly number[]).includes(amount);
@@ -250,7 +258,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: payment, error: insertError } = await (supabase as any)
+    const { data: payment, error: insertError } = await supabase
       .from('mcw_payments')
       .insert({
         user_id: userId,
@@ -263,6 +271,7 @@ export async function POST(req: NextRequest) {
         bank_name: bankName,
         account_number: accountNumber,
         account_holder: accountHolder,
+        ...(description ? { description } : {}),
         ...(depositor_name ? { metadata: { depositor_name } } : {}),
       })
       .select('id, amount, status, created_at')

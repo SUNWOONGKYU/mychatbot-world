@@ -1,0 +1,5 @@
+Contact: mailto:security@mychatbotworld.com
+Expires: 2027-04-12T00:00:00.000Z
+Acknowledgments: https://mychatbotworld.com/security#acknowledgments
+Policy: https://mychatbotworld.com/security
+Preferred-Languages: ko, en

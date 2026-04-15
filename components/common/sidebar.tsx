@@ -18,7 +18,7 @@ interface NavSection {
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    title: '내 챗봇',
+    title: '내 코코봇',
     items: [
       { label: '홈',          href: '/home',             icon: '🏠' },
       { label: '봇 만들기',   href: '/create',           icon: '＋' },

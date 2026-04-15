@@ -1,0 +1,26 @@
+{
+  "name": "cpc-ai-remote",
+  "version": "1.0.0",
+  "displayName": "AI 원격 실행 도우미",
+  "description": "핸드폰에서 챗봇으로 PC의 Claude Code를 원격 지휘통제. CPC(Claude Platoons Control) + MCP + Tailscale 기반.",
+  "category": "package-skill",
+  "price": "상담",
+  "author": "Sunny (SUNWOONGKYU)",
+  "platform": "mychatbot-world",
+  "requires": [
+    "claude-code",
+    "supabase",
+    "vercel-cli",
+    "tailscale",
+    "python3",
+    "node"
+  ],
+  "files": {
+    "server": ["server/cpc_mcp_server.py", "server/cpc_http_bridge.py"],
+    "skills": ["skills/cpc-engage/SKILL.md", "skills/cpc-setup/SKILL.md"],
+    "hooks": ["hooks/dangerous-cmd-approval.py"],
+    "config": ["config/settings.local.json.template", "config/settings.json.template"],
+    "sql": ["sql/create_tables.sql"],
+    "installer": "install.sh"
+  }
+}

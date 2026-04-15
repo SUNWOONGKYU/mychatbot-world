@@ -12,7 +12,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { SKILLS, type SkillItem } from '@/lib/skills-data';
+import { fetchSkillsFromAPI, type SkillItem } from '@/lib/skills-data';
 import { useSkillsStore } from '@/lib/use-skills-store';
 
 // ── Toast ─────────────────────────────────────────────────────────
@@ -90,16 +90,21 @@ export default function MySkillsPage() {
   const { installedIds, remove } = useSkillsStore();
   const { vis: toastVis, msg: toastMsg, show: showToast } = useToast();
 
+  const [allSkills, setAllSkills] = useState<SkillItem[]>([]);
   // 활성/비활성 상태 (로컬 — localStorage 확장 가능)
   const [inactiveIds, setInactiveIds] = useState<string[]>([]);
 
-  const installedSkills: SkillItem[] = SKILLS.filter(s => installedIds.includes(s.id));
+  useEffect(() => {
+    fetchSkillsFromAPI().then(setAllSkills);
+  }, []);
+
+  const installedSkills: SkillItem[] = allSkills.filter(s => installedIds.includes(s.id));
 
   const handleToggle = useCallback((skillId: string) => {
     setInactiveIds(prev =>
       prev.includes(skillId) ? prev.filter(id => id !== skillId) : [...prev, skillId]
     );
-    const skill = SKILLS.find(s => s.id === skillId);
+    const skill = allSkills.find(s => s.id === skillId);
     const willBeActive = inactiveIds.includes(skillId);
     showToast(`"${skill?.name}" 스킬을 ${willBeActive ? '활성화' : '비활성화'}했습니다.`);
   }, [inactiveIds, showToast]);

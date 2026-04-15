@@ -6,10 +6,10 @@
  * Route: /mypage
  * Tabs:
  *   탭1. 프로필 관리 (닉네임/이메일/가입일, 아바타, 알림)
- *   탭2. 챗봇 관리 (카드뷰, 페르소나, 툴6종, 복제/내보내기/삭제)
- *   탭3. 챗봇 학습 (KB주입, Wiki-e-RAG, FAQ, 학습현황)
+ *   탭2. 코코봇 관리 (카드뷰, 페르소나, 툴6종, 복제/내보내기/삭제)
+ *   탭3. 코코봇 교육 (KB주입, Wiki-e-RAG, FAQ, 학습현황)
  *   탭4. 스킬 관리 (다운로드 스킬, 토글, 장착봇, 마켓등록)
- *   탭5~8. 챗봇운영관리 / 상속 / 크레딧결제 / 계정보안 (별도 Task S5FE7)
+ *   탭5~8. 코코봇 운영 관리 / 상속 / 크레딧결제 / 계정보안 (별도 Task S5FE7)
  *
  * APIs:
  *   /api/auth/me            — 프로필 조회
@@ -79,10 +79,10 @@ type TabId = 'profile' | 'bots' | 'learning' | 'skills' | 'operations' | 'inheri
 
 const NAV_ITEMS: { id: TabId; label: string; icon: string }[] = [
   { id: 'profile',      label: '프로필 관리',    icon: '👤' },
-  { id: 'bots',         label: '챗봇 관리',      icon: '🤖' },
-  { id: 'learning',     label: '챗봇 학습',      icon: '📚' },
+  { id: 'bots',         label: '코코봇 관리',      icon: '🤖' },
+  { id: 'learning',     label: '코코봇 교육',      icon: '📚' },
   { id: 'skills',       label: '스킬 관리',      icon: '⚡' },
-  { id: 'operations',   label: '챗봇 운영 관리', icon: '💼' },
+  { id: 'operations',   label: '코코봇 운영 관리', icon: '💼' },
   { id: 'inheritance',  label: '상속',           icon: '🏛️' },
   { id: 'credits',      label: '크레딧/결제',    icon: '🪙' },
   { id: 'security',     label: '계정 보안',      icon: '🔒' },
@@ -138,7 +138,7 @@ function ProfileHeader({
             안녕하세요, {profile.full_name || profile.email.split('@')[0]}님 👋
           </p>
           <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">
-            오늘도 챗봇이 열심히 일하고 있어요!
+            오늘도 코코봇이 열심히 일하고 있어요!
           </p>
         </div>
 
@@ -308,7 +308,7 @@ export default function MyPageClient() {
           <span className="text-2xl">🔒</span>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-[rgb(var(--text-primary))]">로그인하면 실제 데이터가 표시됩니다</p>
-            <p className="text-sm text-[rgb(var(--text-muted))] mt-0.5">지금은 미리보기 모드입니다. 로그인 후 내 챗봇, 스킬, 크레딧을 관리하세요.</p>
+            <p className="text-sm text-[rgb(var(--text-muted))] mt-0.5">지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.</p>
           </div>
           <a
             href="/login?redirect=/mypage"

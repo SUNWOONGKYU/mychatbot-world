@@ -79,19 +79,19 @@ export function ChatbotTypes() {
               color: 'rgb(var(--color-primary))',
             }}
           >
-            챗봇 유형
+            코코봇 유형
           </span>
           <h2
             className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
             style={{ color: 'rgb(var(--text-primary))' }}
           >
-            나의 챗봇을 선택하세요
+            나의 코코봇을 선택하세요
           </h2>
           <p
             className="mt-4 text-lg"
             style={{ color: 'rgb(var(--text-secondary))' }}
           >
-            목적에 맞는 챗봇 유형을 선택하면 5분 인터뷰로 바로 생성됩니다.
+            목적에 맞는 코코봇 유형을 선택하면 5분 인터뷰로 바로 생성됩니다.
           </p>
         </div>
 
@@ -207,7 +207,7 @@ export function ChatbotTypes() {
               background: 'rgb(var(--color-primary) / 0.05)',
             }}
           >
-            더 많은 챗봇 유형 보기
+            더 많은 코코봇 유형 보기
             <svg
               className="h-4 w-4"
               fill="none"

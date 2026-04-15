@@ -1,8 +1,8 @@
 /**
- * Step 5: 목소리 선택 + 챗봇 생성하기
+ * Step 5: 목소리 선택 + 코코봇 생성하기
  * - 6가지 목소리 카드 (fable, nova, shimmer, alloy, echo, onyx)
  * - 미리듣기 버튼 → /api/tts 호출
- * - 챗봇 생성하기 버튼 → /api/create-bot/deploy 호출
+ * - 코코봇 생성하기 버튼 → /api/create-bot/deploy 호출
  */
 'use client';
 
@@ -114,8 +114,8 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
 
   return (
     <div>
-      <h2 style={stepTitle}>챗봇을 완성하세요</h2>
-      <p style={stepDesc}>목소리를 선택하고 챗봇을 생성하세요</p>
+      <h2 style={stepTitle}>코코봇을 완성하세요</h2>
+      <p style={stepDesc}>목소리를 선택하고 코코봇을 생성하세요</p>
 
       {/* 목소리 선택 카드 영역 */}
       <div style={{
@@ -126,7 +126,7 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
         borderRadius: '16px',
         textAlign: 'center',
       }}>
-        <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>챗봇 목소리를 선택하세요</h3>
+        <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>코코봇 목소리를 선택하세요</h3>
 
         <div style={{
           display: 'grid',
@@ -205,7 +205,7 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
             cursor: isCreating ? 'not-allowed' : 'pointer',
           }}
         >
-          {isCreating ? '생성 중...' : '챗봇 생성하기'}
+          {isCreating ? '생성 중...' : '코코봇 생성하기'}
         </button>
       </div>
     </div>

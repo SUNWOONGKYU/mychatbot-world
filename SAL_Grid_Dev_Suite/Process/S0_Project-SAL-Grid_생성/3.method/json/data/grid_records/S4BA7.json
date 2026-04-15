@@ -13,7 +13,7 @@
   "generated_files": "app/api/admin/stats/route.ts, app/api/admin/users/route.ts, app/api/admin/payments/route.ts, app/api/admin/skills/route.ts, app/api/admin/bots/route.ts",
   "remarks": "기존 /api/payments/confirm 패턴 확장. service_role 키 사용.",
   "verification_instruction": "sal-grid/verification-instructions/S4BA7_verification.md",
-  "modification_history": "",
+  "modification_history": "2026-04-11: Agenda A1 — GET /api/admin/stats에 weekly_revenue[], weekly_signups[] 필드 추가 (최근 4주, 주차별 집계)",
   "test_result": {},
   "build_verification": {},
   "integration_verification": {},

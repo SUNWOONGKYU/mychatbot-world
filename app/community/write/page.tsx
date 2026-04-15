@@ -138,7 +138,7 @@ function WriteInner() {
     e.preventDefault();
     setError(null);
 
-    if (!botId && bots.length > 0) { setError('챗봇을 선택해주세요.'); return; }
+    if (!botId && bots.length > 0) { setError('코코봇을 선택해주세요.'); return; }
     if (!madang)  { setError('마당을 선택해주세요.'); return; }
     if (!title.trim()) { setError('제목을 입력해주세요.'); return; }
     if (title.length > 200) { setError('제목은 200자를 초과할 수 없습니다.'); return; }
@@ -238,7 +238,7 @@ function WriteInner() {
         {/* 봇 선택 */}
         <div>
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-secondary))', marginBottom: '0.5rem' }}>
-            챗봇 선택 <span style={{ color: '#ef4444' }}>*</span>
+            코코봇 선택 <span style={{ color: '#ef4444' }}>*</span>
           </label>
           {bots.length === 0 ? (
             <div style={{
@@ -247,8 +247,8 @@ function WriteInner() {
               border: '1px solid rgba(234,179,8,0.2)',
               borderRadius: '8px', fontSize: '0.82rem', color: 'rgb(var(--text-secondary))',
             }}>
-              아직 챗봇이 없습니다.{' '}
-              <a href="/birth" style={{ color: '#06b6d4', fontWeight: 600, textDecoration: 'none' }}>챗봇 만들기</a>
+              아직 코코봇이 없습니다.{' '}
+              <a href="/birth" style={{ color: '#06b6d4', fontWeight: 600, textDecoration: 'none' }}>코코봇 만들기</a>
             </div>
           ) : (
             <select
@@ -259,7 +259,7 @@ function WriteInner() {
               onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)'; }}
               onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; }}
             >
-              <option value="">챗봇 선택 *</option>
+              <option value="">코코봇 선택 *</option>
               {bots.map(b => (
                 <option key={b.id} value={b.id} style={{ background: '#1a1a2e' }}>
                   {b.emoji || '🤖'} {b.bot_name || b.username}

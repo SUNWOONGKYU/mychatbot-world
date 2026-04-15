@@ -74,7 +74,7 @@ async function analyzeWithAI(
   name: string,
   description: string
 ): Promise<AnalyzeResult> {
-  const openai = createOpenAI({ apiKey });
+  const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const systemPrompt = `당신은 비즈니스 분석 전문가입니다.
 챗봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
@@ -90,7 +90,7 @@ async function analyzeWithAI(
 }`;
 
   const result = await generateText({
-    ...openai.chat('gpt-4o-mini'),
+    ...openai.chat('openai/gpt-4o-mini'),
     messages: [
       { role: 'system', content: systemPrompt },
       {
@@ -101,7 +101,9 @@ async function analyzeWithAI(
     temperature: 0.3,
   });
 
-  const parsed = JSON.parse(result.text ?? '{}') as Partial<AnalyzeResult>;
+  let rawAnalyze = (result.text ?? '{}').trim();
+  rawAnalyze = rawAnalyze.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  const parsed = JSON.parse(rawAnalyze) as Partial<AnalyzeResult>;
 
   return {
     businessType: parsed.businessType ?? 'general',
@@ -125,7 +127,7 @@ async function generateFaqsWithAI(
   description: string,
   analysis: AnalyzeResult
 ): Promise<FaqItem[]> {
-  const openai = createOpenAI({ apiKey });
+  const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const toneGuide: Record<string, string> = {
     friendly: '친근하고 따뜻한 말투로',
@@ -156,7 +158,7 @@ ${toneDescription} 작성하세요.
 - 실제 고객이 궁금해할 만한 내용`;
 
   const result = await generateText({
-    ...openai.chat('gpt-4o-mini'),
+    ...openai.chat('openai/gpt-4o-mini'),
     messages: [
       { role: 'system', content: systemPrompt },
       {
@@ -168,7 +170,10 @@ ${toneDescription} 작성하세요.
     maxTokens: 2000,
   });
 
-  const parsed = JSON.parse(result.text ?? '[]') as Partial<FaqItem>[];
+  // 마크다운 코드 펜스 제거 후 파싱 (AI가 ```json ... ``` 블록으로 감쌀 때 대비)
+  let raw = (result.text ?? '[]').trim();
+  raw = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  const parsed = JSON.parse(raw) as Partial<FaqItem>[];
 
   if (!Array.isArray(parsed)) return [];
 
@@ -204,12 +209,15 @@ function generateBotId(): string {
  * @internal
  */
 function generateSlug(name: string, suffix: string): string {
+  // ASCII 알파벳·숫자만 유지 (한글 등 비ASCII는 제거 → bot-{suffix} 폴백)
   const base = name
     .toLowerCase()
-    .replace(/[^a-z0-9가-힣\s]/g, '')
-    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/[\s-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .slice(0, 20);
-  return `${base}-${suffix}`.replace(/^-/, '');
+  return base ? `${base}-${suffix}` : `bot-${suffix}`;
 }
 
 // ── 메인 라우트 핸들러 ────────────────────────────────────────────────────────
@@ -228,21 +236,18 @@ function generateSlug(name: string, suffix: string): string {
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // ── Step 1: 인증 검증 ───────────────────────────────────────────────────────
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: authError,
-  } = await supabase.auth.getSession();
-
-  if (authError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다. 로그인 후 다시 시도해주세요.' },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다. 로그인 후 다시 시도해주세요.' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다. 로그인 후 다시 시도해주세요.' }, { status: 401 });
   }
 
-  const userId = session.user.id;
+  const userId = user.id;
 
   // ── Step 2: 요청 파싱 및 유효성 검사 ───────────────────────────────────────
   let body: CreateBotRequest;
@@ -285,8 +290,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // OpenAI API 키 검증
-  const openAiApiKey = process.env.OPENAI_API_KEY;
+  // OpenRouter API 키 검증
+  const openAiApiKey = process.env.OPENROUTER_API_KEY;
   if (!openAiApiKey) {
     return NextResponse.json(
       { success: false, error: 'AI 서비스 설정이 올바르지 않습니다.' },
@@ -363,6 +368,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     is_public: true,
     greeting: analysis.suggestedGreeting,
     faqs: faqs,
+    personality: description.trim(),
+    tone: analysis.tone,
   };
 
   const { error: personaInsertError } = await supabase

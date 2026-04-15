@@ -184,7 +184,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .eq('page_type', 'faq')
       .ilike('title', `%${body.question.slice(0, 20)}%`)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       // 기존 FAQ 업데이트 (view_count 증가)

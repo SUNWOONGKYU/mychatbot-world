@@ -91,7 +91,7 @@ export default async function FaqPage({ searchParams }: PageProps) {
                 {chatbot.name}
               </a>
             ) : (
-              <span>챗봇</span>
+              <span>코코봇</span>
             )}
             <span>/</span>
             <span className="text-text-primary font-medium">FAQ 관리</span>

@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "css/skills.css, css/pages.css, app/jobs/page.tsx, app/community/page.tsx, components/bot/chat-window.tsx, app/bot/[botId]/page.tsx, app/create/page.tsx, components/create/CreateWizard.tsx",
-  "modification_history": "2026-04-07: S5 디자인 시스템 CSS 변수 적용 — 하드코딩 컬러 제거, 다크/라이트 모드 동시 지원 | 2026-04-11: 4대 메뉴 전체 검증 — Jobs API 경로 /api/jobs/list→/api/jobs 수정(500 에러 해소), Skills 정렬 라벨 flex-shrink 보호(잘림 해소), Birth 라벨 정상 확인, Community 실제 DB 데이터 로드 확인. 테스트 계정 test@mychatbot.world로 검증 완료",
+  "modification_history": "2026-04-07: S5 디자인 시스템 CSS 변수 적용 — 하드코딩 컬러 제거, 다크/라이트 모드 동시 지원 | 2026-04-11: 4대 메뉴 전체 검증 — Jobs API 경로 /api/jobs/list→/api/jobs 수정(500 에러 해소), Skills 정렬 라벨 flex-shrink 보호(잘림 해소), Birth 라벨 정상 확인, Community 실제 DB 데이터 로드 확인. 테스트 계정 test@mychatbot.world로 검증 완료 | 2026-04-11: Agenda B1 — Step5Voice/Step8Deploy Birth 플로우 버그 수정",
   "verification_instruction": "sal-grid/verification-instructions/S5FE4_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {

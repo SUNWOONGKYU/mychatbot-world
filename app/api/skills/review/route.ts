@@ -43,7 +43,7 @@ function getSupabaseServer() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key) as any;
+  return createClient(url, key);
 }
 
 function getSupabaseUser(req: NextRequest) {

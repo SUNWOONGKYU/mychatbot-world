@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Frontend/pages/jobs/index.html, Process/S3_개발-2차/Frontend/pages/jobs/search.html, Process/S3_개발-2차/Frontend/js/jobs.js, Process/S3_개발-2차/Frontend/css/jobs.css",
-    "modification_history": "",
+    "modification_history": "2026-04-11: Agenda J1 — loadBots() 버그 수정: data.items 없을 때 throw로 mock fallback 동작; loadJobs() required_skills 방어 처리 추가 (Array.isArray 분기, 문자열이면 comma split) | 2026-04-11: Agenda J2 — loadJobs()에 category 필터 추가: category !== 'all'일 때 CATEGORY_LABELS[category]를 search 파라미터로 전달 | 2026-04-11: Agenda BOT1 — loadBots()를 /api/bots/public 호출로 전환: mcw_bots 공개 봇 실DB 연동, BotItem 매핑 (avg_rating→rating, karma→reviewCount, created_at 7일 이내=isNew, karma>100=isFeatured)",
     "verification_instruction": "sal-grid/verification-instructions/S3F9_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",

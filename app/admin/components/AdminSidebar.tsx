@@ -38,7 +38,7 @@ export default function AdminSidebar({
       badge: badges.payments,
       badgeColor: 'danger',
     },
-    { id: 'bots', label: '챗봇 관리', icon: '🤖' },
+    { id: 'bots', label: '코코봇 관리', icon: '🤖' },
     {
       id: 'skills',
       label: '스킬 관리',

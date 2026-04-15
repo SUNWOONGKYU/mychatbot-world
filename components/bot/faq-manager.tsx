@@ -35,13 +35,13 @@ interface DragState {
 }
 
 interface FaqManagerProps {
-  /** 챗봇 ID */
+  /** 코코봇 ID */
   botId: string;
   /** 초기 FAQ 목록 */
   initialFaqs: FaqRecord[];
-  /** 챗봇 이름 (AI 자동 생성 시 사용) */
+  /** 코코봇 이름 (AI 자동 생성 시 사용) */
   botName?: string;
-  /** 챗봇 설명 (AI 자동 생성 시 사용) */
+  /** 코코봇 설명 (AI 자동 생성 시 사용) */
   botDescription?: string;
 }
 
@@ -58,7 +58,7 @@ const isTempId = (id: string) => id.startsWith('__new__');
 
 /**
  * FAQ 관리 컴포넌트
- * 챗봇 FAQ의 추가, 편집, 삭제, 순서 변경을 제공한다.
+ * 코코봇 FAQ의 추가, 편집, 삭제, 순서 변경을 제공한다.
  */
 export function FaqManager({
   botId,
@@ -202,7 +202,7 @@ export function FaqManager({
   // ── AI 자동 생성 ──────────────────────────────────────────────
   const generateWithAI = async () => {
     if (!botName && !botDescription) {
-      setError('AI 자동 생성을 위해 챗봇 이름 또는 설명이 필요합니다.');
+      setError('AI 자동 생성을 위해 코코봇 이름 또는 설명이 필요합니다.');
       return;
     }
 
@@ -214,8 +214,8 @@ export function FaqManager({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: botName || '챗봇',
-          description: botDescription || botName || '챗봇 서비스',
+          name: botName || '코코봇',
+          description: botDescription || botName || '코코봇 서비스',
         }),
       });
       const json = await res.json();

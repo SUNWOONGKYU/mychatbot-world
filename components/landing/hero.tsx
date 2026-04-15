@@ -14,7 +14,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
   const primaryHref = isLoggedIn ? '/home' : '/create';
-  const primaryLabel = isLoggedIn ? '내 챗봇 관리하기' : '5분 인터뷰로 챗봇 생성하기';
+  const primaryLabel = isLoggedIn ? '내 코코봇 관리하기' : '5분 인터뷰로 코코봇 생성하기';
 
   return (
     <section
@@ -55,15 +55,12 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             {/* 배지 */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm">
               <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-              <span className="font-medium">AI 챗봇 라이프사이클 플랫폼</span>
+              <span className="font-medium">코코봇 라이프사이클 플랫폼</span>
             </div>
 
             {/* 메인 헤드라인 — 원본 바닐라 카피 */}
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-              당신의{' '}
-              <span className="text-white font-black">AI</span> 챗봇이{' '}
-              <br className="hidden sm:block" />
-              이 세상에{' '}
+            <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl whitespace-nowrap">
+              당신의 <span className="font-black">AI</span> 코코봇이 이 세상에{' '}
               <span
                 style={{
                   background:
@@ -89,7 +86,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </p>
 
             {/* CTA 버튼 */}
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href={primaryHref}
                 className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -117,7 +114,8 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
               </Link>
               <Link
                 href="/guest"
-                className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                style={{ background: 'rgb(16 185 129)', boxShadow: '0 8px 24px rgb(16 185 129 / 0.4)' }}
               >
                 ⚡ 지금 무료로 체험하기
               </Link>

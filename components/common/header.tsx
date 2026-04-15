@@ -8,7 +8,7 @@ import clsx from 'clsx';
 /**
  * Header — 상단 헤더 바
  * - 모바일: MobileNav 햄버거 + 타이틀
- * - 데스크탑: 타이틀 "My Chatbot World"
+ * - 데스크탑: 타이틀 "CoCoBot World"
  * - 우측: ThemeToggle + 유저 아바타 placeholder
  * - 고정 높이 h-header, bg-surface, border-b border-border
  */
@@ -29,12 +29,12 @@ export function Header() {
 
         {/* Title — always visible on desktop, hidden on mobile if hamburger takes space */}
         <h1 className="text-base font-semibold text-text-primary tracking-tight hidden md:block select-none">
-          My Chatbot World
+          CoCoBot World
         </h1>
 
         {/* Mobile title (shown next to hamburger) */}
         <h1 className="text-base font-semibold text-text-primary tracking-tight md:hidden select-none">
-          My Chatbot World
+          CoCoBot World
         </h1>
       </div>
 

@@ -60,25 +60,16 @@ const STORAGE_BUCKET = 'kb-files';
  * @returns 업로드 결과 + 생성된 KB 항목
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-
-  // 인증 확인 (Bearer 토큰)
   const authHeader = request.headers.get('authorization');
   if (!authHeader?.startsWith('Bearer ')) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
   const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   const { data: { user } } = await supabase.auth.getUser(token);
   if (!user) {
-    return NextResponse.json(
-      { success: false, error: '유효하지 않은 토큰입니다.', data: null },
-      { status: 401 }
-    );
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
-  const session = { user };
 
   // Content-Type 확인
   const contentType = request.headers.get('content-type') ?? '';
@@ -113,6 +104,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   if (!file) {
     return NextResponse.json(
       { success: false, error: '파일이 첨부되지 않았습니다.', data: null },
+      { status: 400 }
+    );
+  }
+
+  if (!chatbotId) {
+    return NextResponse.json(
+      { success: false, error: 'chatbot_id 필드가 필요합니다.', data: null },
       { status: 400 }
     );
   }
@@ -157,21 +155,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인 (chatbot_id 제공 시)
-    if (chatbotId) {
-      const { data: chatbot, error: chatbotError } = await supabase
-        .from('mcw_bots')
-        .select('id')
-        .eq('id', chatbotId)
-        .eq('owner_id', session.user.id)
-        .single();
+    // 챗봇 소유권 확인
+    const { data: chatbot, error: chatbotError } = await supabase
+      .from('mcw_bots')
+      .select('id')
+      .eq('id', chatbotId)
+      .eq('owner_id', user.id)
+      .single();
 
-      if (chatbotError || !chatbot) {
-        return NextResponse.json(
-          { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
-          { status: 403 }
-        );
-      }
+    if (chatbotError || !chatbot) {
+      return NextResponse.json(
+        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { status: 403 }
+      );
     }
 
     // 파일 → Buffer 변환
@@ -196,7 +192,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Supabase Storage 업로드
     const timestamp = Date.now();
     const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const storagePath = `${session.user.id}/${chatbotId ?? 'general'}/${timestamp}_${safeFileName}`;
+    const storagePath = `${user.id}/${chatbotId}/${timestamp}_${safeFileName}`;
 
     const { data: storageData, error: storageError } = await supabase.storage
       .from(STORAGE_BUCKET)
@@ -226,7 +222,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { data: kbItem, error: insertError } = await supabase
       .from('mcw_kb_items')
       .insert({
-        chatbot_id: chatbotId,
+        bot_id: chatbotId,
         title: kbTitle,
         content: extraction.text,
         source_type: 'file',

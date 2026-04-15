@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "Dev_Package/Process/S3_개발-2차/Backend_APIs/growth.js",
-  "modification_history": "",
+  "modification_history": "2026-04-12: Agenda GROWTH1 — Next.js 전환: app/api/bots/[id]/growth/route.ts 신설 (GET, Bearer 인증, mcw_bots→bots 폴백으로 소유자 확인, bot_growth 테이블 조회, 경험치=(대화수×10)+(FAQ수×5)+(긍정피드백×2), 레벨1/2/3 계산, nextLevelExp 반환)",
   "verification_instruction": "sal-grid/verification-instructions/S3BA5_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "{ \"unit_test\": \"PASS\", \"integration_test\": \"PASS\", \"edge_cases\": \"PASS\", \"manual_test\": \"PASS\" }",

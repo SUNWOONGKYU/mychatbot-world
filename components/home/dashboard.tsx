@@ -1,9 +1,9 @@
 /**
  * @task S2FE3
- * @description Home 대시보드 — 챗봇 카드 목록 + 사용량 차트 (SVG 순수 구현)
+ * @description Home 대시보드 — 코코봇 카드 목록 + 사용량 차트 (SVG 순수 구현)
  *
  * Props:
- * - bots: 챗봇 목록 (page.tsx에서 /api/bots 로드)
+ * - bots: 코코봇 목록 (page.tsx에서 /api/bots 로드)
  * - loading, error: 로딩/에러 상태
  * - selectedBotId: 현재 선택된 봇
  * - onSelectBot, onBotDeleted, onRefresh: 이벤트 핸들러
@@ -52,7 +52,7 @@ interface DashboardProps {
   onSelectBot: (id: string) => void;
   onBotDeleted: (id: string) => void;
   onRefresh: () => void;
-  /** 기본 표시 섹션: 'bots'(챗봇 목록) | 'usage'(사용량 차트) */
+  /** 기본 표시 섹션: 'bots'(코코봇 목록) | 'usage'(사용량 차트) */
   defaultSection?: 'bots' | 'usage';
 }
 
@@ -267,21 +267,21 @@ interface BotCardProps {
 }
 
 /**
- * 개별 챗봇 카드
+ * 개별 코코봇 카드
  * - 이름, 배포 URL, 대화 횟수, 수정/삭제 버튼
  */
 function BotCard({ bot, isSelected, onSelect, onDelete, onEdit }: BotCardProps) {
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm(`"${bot.name}" 챗봇을 삭제하시겠습니까?`)) return;
+    if (!confirm(`"${bot.name}" 코코봇을 삭제하시겠습니까?`)) return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/bots?id=${bot.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('삭제 실패');
       onDelete();
     } catch {
-      alert('챗봇 삭제에 실패했습니다.');
+      alert('코코봇 삭제에 실패했습니다.');
     } finally {
       setDeleting(false);
     }
@@ -433,7 +433,7 @@ function UsageSection({ botId }: UsageSectionProps) {
   if (!botId) {
     return (
       <div className="flex items-center justify-center h-40 text-text-muted text-sm">
-        챗봇을 먼저 선택하세요.
+        코코봇을 먼저 선택하세요.
       </div>
     );
   }
@@ -490,7 +490,7 @@ function UsageSection({ botId }: UsageSectionProps) {
 
 /**
  * Dashboard
- * - 챗봇 카드 그리드 (section='bots')
+ * - 코코봇 카드 그리드 (section='bots')
  * - 사용량 차트 (section='usage')
  */
 export function Dashboard({
@@ -545,9 +545,9 @@ export function Dashboard({
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
         <span className="text-5xl">🤖</span>
-        <h3 className="text-lg font-semibold text-text-primary">챗봇이 아직 없습니다</h3>
+        <h3 className="text-lg font-semibold text-text-primary">코코봇이 아직 없습니다</h3>
         <p className="text-sm text-text-secondary">
-          새 챗봇을 만들면 여기에 표시됩니다.
+          새 코코봇을 만들면 여기에 표시됩니다.
         </p>
       </div>
     );
@@ -574,7 +574,7 @@ export function Dashboard({
       </div>
 
       {section === 'bots' ? (
-        /* 챗봇 카드 그리드 */
+        /* 코코봇 카드 그리드 */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {bots.map((bot) => (
             <BotCard

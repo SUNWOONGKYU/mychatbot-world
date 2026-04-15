@@ -67,18 +67,15 @@ interface SyncResult {
  * @returns SyncStatus
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -97,7 +94,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', chatbotId)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {
@@ -111,7 +108,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { data: kbStats, error: kbError } = await supabase
       .from('mcw_kb_items')
       .select('is_embedded')
-      .eq('chatbot_id', chatbotId);
+      .eq('bot_id', chatbotId);
 
     if (kbError) {
       console.error('[SYNC GET] KB 통계 조회 실패:', kbError.message);
@@ -192,18 +189,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * @returns SyncResult
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.', data: null },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.', data: null }, { status: 401 });
   }
 
   let body: SyncRequest;
@@ -233,7 +227,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from('mcw_bots')
       .select('id')
       .eq('id', body.chatbot_id)
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', user.id)
       .single();
 
     if (chatbotError || !chatbot) {
@@ -248,7 +242,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from('sync_logs')
       .insert({
         chatbot_id: body.chatbot_id,
-        user_id: session.user.id,
+        user_id: user.id,
         scope,
         status: 'running',
         started_at: startedAt.toISOString(),
@@ -273,7 +267,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const { data: pendingKbs, error: pendingError } = await supabase
         .from('mcw_kb_items')
         .select('id, title')
-        .eq('chatbot_id', body.chatbot_id)
+        .eq('bot_id', body.chatbot_id)
         .eq('is_embedded', false);
 
       if (pendingError) {

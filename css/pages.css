@@ -113,9 +113,9 @@ body.page-dark .navbar {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: var(--space-6);
-  background: rgb(var(--color-primary) / 0.12);
-  border: 1px solid rgb(var(--color-primary) / 0.25);
-  color: rgb(var(--color-primary));
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--page-accent, var(--primary-300));
 }
 
 .page-hero-title {
@@ -124,16 +124,16 @@ body.page-dark .navbar {
   line-height: 1.1;
   letter-spacing: -0.03em;
   margin-bottom: var(--space-4);
-  color: rgb(var(--text-primary));
+  color: white;
 }
 
 .page-hero-title .accent {
-  color: rgb(var(--color-primary));
+  color: var(--page-accent, var(--primary-400));
 }
 
 .page-hero-subtitle {
   font-size: var(--font-size-lg);
-  color: rgb(var(--text-secondary));
+  color: rgba(255,255,255,0.55);
   line-height: 1.7;
   max-width: 600px;
   margin: 0 auto;

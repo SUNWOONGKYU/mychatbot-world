@@ -4,8 +4,9 @@
     "type": "module",
     "description": "My Chatbot World - AI 챗봇 생성 플랫폼",
     "dependencies": {
-        "@supabase/supabase-js": "^2.39.0",
         "@supabase/ssr": "^0.5.2",
+        "@supabase/supabase-js": "^2.39.0",
+        "@vercel/analytics": "^1.6.1",
         "@xsai/generate-text": "latest",
         "@xsai/providers": "latest",
         "clsx": "^2.1.1",
@@ -15,7 +16,8 @@
         "qrcode": "^1.5.4",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
-        "tailwind-merge": "^2.5.4"
+        "tailwind-merge": "^2.5.4",
+        "zod": "^4.3.6"
     },
     "devDependencies": {
         "@types/node": "^22.0.0",
@@ -35,6 +37,9 @@
         "lint": "next lint",
         "test": "vitest run --config vitest.config.js",
         "test:unit": "vitest run tests/unit",
-        "test:unit:watch": "vitest tests/unit"
+        "test:unit:watch": "vitest tests/unit",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "gen:types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/database.types.ts"
     }
 }

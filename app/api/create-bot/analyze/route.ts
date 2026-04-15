@@ -42,18 +42,15 @@ export interface AnalyzeResult {
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // ── 1. 인증 검증 ────────────────────────────────────────────────────────────
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-  const {
-    data: { session },
-    error: authError,
-  } = await supabase.auth.getSession();
-
-  if (authError || !session) {
-    return NextResponse.json(
-      { success: false, error: '인증이 필요합니다.' },
-      { status: 401 }
-    );
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return NextResponse.json({ success: false, error: '인증이 필요합니다.' }, { status: 401 });
   }
 
   // ── 2. 요청 파싱 및 유효성 검사 ────────────────────────────────────────────
@@ -91,7 +88,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // ── 3. AI 분석 ─────────────────────────────────────────────────────────────
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
       { success: false, error: 'AI 서비스 설정이 올바르지 않습니다.' },
@@ -99,7 +96,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const openai = createOpenAI({ apiKey });
+  const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const systemPrompt = `당신은 비즈니스 분석 전문가입니다.
 챗봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
@@ -123,7 +120,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const result = await generateText({
-      ...openai.chat('gpt-4o-mini'),
+      ...openai.chat('openai/gpt-4o-mini'),
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },

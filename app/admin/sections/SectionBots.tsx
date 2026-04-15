@@ -233,7 +233,7 @@ export default function SectionBots({ adminKey }: Props) {
     <section className="admin-section">
       {/* 헤더 */}
       <div className="admin-section-header">
-        <h2 className="admin-section-title">🤖 챗봇 관리</h2>
+        <h2 className="admin-section-title">🤖 코코봇 관리</h2>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <span className="abadge abadge--muted">{bots.length} 전체</span>
           <span className="abadge abadge--green">{bots.filter((b) => b.status === 'active').length} 활성</span>

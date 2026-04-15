@@ -165,10 +165,10 @@ function SkillRow({
           {/* 장착된 봇 */}
           <div>
             <p className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide mb-2">
-              장착된 챗봇
+              장착된 코코봇
             </p>
             {skill.attached_bots.length === 0 ? (
-              <p className="text-xs text-[rgb(var(--text-muted))]">아직 장착된 챗봇이 없습니다.</p>
+              <p className="text-xs text-[rgb(var(--text-muted))]">아직 장착된 코코봇이 없습니다.</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {skill.attached_bots.map(bot => (

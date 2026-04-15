@@ -2,7 +2,7 @@
  * @task S2FE3, S5F2
  * @description KB 관리 컴포넌트
  *
- * - 선택된 챗봇의 KB 문서 목록 조회 (GET /api/kb?chatbot_id={id})
+ * - 선택된 코코봇의 KB 문서 목록 조회 (GET /api/kb?chatbot_id={id})
  * - 새 문서 추가 (POST /api/kb → POST /api/kb/embed)
  * - 문서 삭제 (DELETE /api/kb?id={id})
  * - 임베딩 중 로딩 스피너
@@ -338,7 +338,7 @@ export function KbManager({ botId, bots, onSelectBot }: KbManagerProps) {
       {/* 봇 선택 */}
       <div className="flex items-center gap-3">
         <label htmlFor="kb-bot-select" className="text-sm font-medium text-text-secondary shrink-0">
-          챗봇 선택:
+          코코봇 선택:
         </label>
         <select
           id="kb-bot-select"
@@ -351,7 +351,7 @@ export function KbManager({ botId, bots, onSelectBot }: KbManagerProps) {
         >
           {bots.length === 0 && (
             <option value="" disabled>
-              챗봇 없음
+              코코봇 없음
             </option>
           )}
           {bots.map((bot) => (
@@ -394,7 +394,7 @@ export function KbManager({ botId, bots, onSelectBot }: KbManagerProps) {
         />
 
         <textarea
-          placeholder="문서 내용을 입력하세요. 이 내용이 챗봇의 지식베이스로 사용됩니다."
+          placeholder="문서 내용을 입력하세요. 이 내용이 코코봇의 지식베이스로 사용됩니다."
           value={form.content}
           onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
           rows={5}
@@ -473,7 +473,7 @@ export function KbManager({ botId, bots, onSelectBot }: KbManagerProps) {
           </div>
         ) : !botId ? (
           <div className="flex items-center justify-center h-24 text-text-muted text-sm">
-            챗봇을 먼저 선택하세요.
+            코코봇을 먼저 선택하세요.
           </div>
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">

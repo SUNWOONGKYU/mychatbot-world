@@ -46,7 +46,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo / Header */}
         <div className="text-center mb-10">
-          <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">My Chatbot World</a>
+          <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">CoCoBot World</a>
           <h1 className="text-2xl font-bold text-text-primary mb-2">로그인</h1>
           <p className="text-sm text-text-secondary">
             소셜 계정으로 빠르게 시작하세요

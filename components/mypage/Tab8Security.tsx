@@ -7,7 +7,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
-import supabase from '@/lib/supabase';
 
 function authHeaders(): HeadersInit {
   const token =
@@ -203,8 +202,7 @@ function LogoutSection() {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
+  function handleLogout() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('mcw_access_token');
       sessionStorage.removeItem('mcw_access_token');
@@ -326,7 +324,7 @@ function DeleteAccountSection() {
           <div className="p-4 rounded-xl bg-error/10 border border-error/30 space-y-2">
             <p className="text-sm font-semibold text-error">삭제 시 사라지는 항목</p>
             <ul className="text-xs text-text-secondary space-y-1 list-disc list-inside">
-              <li>내 모든 챗봇과 페르소나</li>
+              <li>내 모든 코코봇과 페르소나</li>
               <li>대화 로그, KB 지식베이스</li>
               <li>크레딧 잔액 및 결제 내역</li>
               <li>스킬 및 구독 정보</li>

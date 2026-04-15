@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "",
-    "modification_history": "2026-03-05: 어드민 기능 구현 완료, Task 등록 시 완료 처리",
+    "modification_history": "2026-03-05: 어드민 기능 구현 완료, Task 등록 시 완료 처리 | 2026-04-12: SAL-DA 보안 진단 반영 — (1) middleware.ts 신규 생성: /api/admin/* 라우트 보호, X-Admin-Key 또는 Bearer 토큰 검증 (2) lib/admin-auth.ts: verifyAdminKey에 crypto.timingSafeEqual 적용하여 타이밍 공격 방어, ADMIN_EMAILS 하드코딩 폴백 제거 및 env var 미설정 시 경고 로그 추가",
     "verification_instruction": "sal-grid/verification-instructions/S4S1_verification.md",
     "verification_agent": "security-specialist-core",
     "test_result": "",

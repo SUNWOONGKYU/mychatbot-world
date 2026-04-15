@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "Dev_Package/Process/S3_개발-2차/Frontend/pages/bot/faq.html, Dev_Package/Process/S3_개발-2차/Frontend/js/faq-manage.js",
-  "modification_history": "",
+  "modification_history": "2026-04-11: Agenda CS1 — 고객센터 페이지 실API 연동: app/customer-service/page.tsx의 가짜 setTimeout 폼 제출 → 실제 fetch('/api/support') POST 호출로 교체, TYPE_MAP(한글→영문 타입 변환), 성공/실패 alert 처리, submitting 상태 관리",
   "verification_instruction": "sal-grid/verification-instructions/S3F2_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "{ \"unit_test\": \"PASS\", \"integration_test\": \"PASS\", \"edge_cases\": \"PASS\", \"manual_test\": \"PASS\" }",

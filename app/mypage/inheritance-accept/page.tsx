@@ -159,7 +159,7 @@ function RequestCard({ req, onAccept, onReject, actionLoading }: RequestCardProp
       {/* 메타 정보 */}
       <div className="grid grid-cols-2 gap-3">
         <div className="p-3 bg-bg-subtle rounded-xl">
-          <p className="text-xs text-text-muted mb-1">챗봇 수</p>
+          <p className="text-xs text-text-muted mb-1">코코봇 수</p>
           <p className="font-semibold text-text-primary text-sm">
             {req.persona_count > 0 ? `${req.persona_count}개` : '-'}
           </p>
@@ -190,8 +190,8 @@ function RequestCard({ req, onAccept, onReject, actionLoading }: RequestCardProp
       {/* 수락 안내 (pending 상태에서만) */}
       {isPending && (
         <div className="p-3 bg-bg-subtle rounded-xl text-xs text-text-secondary leading-relaxed">
-          수락 시 원래 소유자의 계정이 비활성화될 경우 챗봇 소유권이 자동으로 이전됩니다.
-          권한 범위: 챗봇 운영, 대화 내역 접근, 설정 변경.
+          수락 시 원래 소유자의 계정이 비활성화될 경우 코코봇 소유권이 자동으로 이전됩니다.
+          권한 범위: 코코봇 운영, 대화 내역 접근, 설정 변경.
         </div>
       )}
 
@@ -282,7 +282,7 @@ export default function InheritanceAcceptPage() {
         prev.map(r => r.id === acceptModal.id ? { ...r, status: 'accepted' as ConsentStatus } : r),
       );
       setAcceptModal({ open: false, id: null });
-      setDoneMessage('상속 요청을 수락했습니다. 계정 비활성 조건 충족 시 챗봇 소유권이 자동 이전됩니다.');
+      setDoneMessage('상속 요청을 수락했습니다. 계정 비활성 조건 충족 시 코코봇 소유권이 자동 이전됩니다.');
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : '수락 처리에 실패했습니다.');
     } finally {
@@ -348,7 +348,7 @@ export default function InheritanceAcceptPage() {
       <ConfirmModal
         open={acceptModal.open}
         title="상속 수락"
-        body="이 상속 요청을 수락하시겠습니까? 수락 후 원래 소유자의 계정이 비활성화될 경우 챗봇 소유권이 자동으로 이전됩니다."
+        body="이 상속 요청을 수락하시겠습니까? 수락 후 원래 소유자의 계정이 비활성화될 경우 코코봇 소유권이 자동으로 이전됩니다."
         confirmLabel="수락하기"
         confirmVariant="primary"
         loading={actionLoading}
@@ -382,7 +382,7 @@ export default function InheritanceAcceptPage() {
             <div>
               <h1 className="text-2xl font-bold text-text-primary">피상속 수락</h1>
               <p className="text-sm text-text-secondary mt-1">
-                나에게 온 챗봇 피상속 동의 요청을 확인하세요.
+                나에게 온 코코봇 피상속 동의 요청을 확인하세요.
               </p>
             </div>
             {pendingRequests.length > 0 && (
@@ -472,7 +472,7 @@ export default function InheritanceAcceptPage() {
                       {req.owner_name ?? req.owner_email ?? '알 수 없는 사용자'}
                     </p>
                     <p className="text-xs text-text-muted mt-0.5">
-                      {formatDate(req.created_at)} · {req.persona_count}개 챗봇
+                      {formatDate(req.created_at)} · {req.persona_count}개 코코봇
                     </p>
                   </div>
                   <StatusBadge status={req.status} />
@@ -486,9 +486,9 @@ export default function InheritanceAcceptPage() {
         <section className="bg-bg-subtle border border-border rounded-2xl p-5">
           <h3 className="text-sm font-bold text-text-primary mb-2">수락 시 권한 범위</h3>
           <ul className="space-y-1.5 text-xs text-text-secondary">
-            <li>• 원래 소유자의 챗봇 페르소나 운영 및 관리</li>
+            <li>• 원래 소유자의 코코봇 페르소나 운영 및 관리</li>
             <li>• 기존 대화 내역 열람 (읽기 전용)</li>
-            <li>• 챗봇 설정 수정 및 배포 URL 관리</li>
+            <li>• 코코봇 설정 수정 및 배포 URL 관리</li>
             <li>• 원래 소유자 계정이 비활성화된 경우에만 권한이 활성화됩니다.</li>
           </ul>
         </section>

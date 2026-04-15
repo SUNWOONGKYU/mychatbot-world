@@ -12,7 +12,7 @@
   "tools": "",
   "execution_type": "AI-Only",
   "generated_files": "",
-  "modification_history": "",
+  "modification_history": "2026-04-11: Agenda HOME1 — Next.js home page: Usage 탭 추가 (TabId union 확장, NAV_ITEMS에 '📊 AI 사용량' 항목 추가, UsageTab 컴포넌트 연결) | Agenda REV1 — RevenueTab 실DB 연동: /api/revenue 호출로 total_gross/platform_fee/net 실값 표시, /api/user/settings 연동으로 수익활동 설정 Supabase 저장 (localStorage 폴백 유지)",
   "verification_instruction": "sal-grid/verification-instructions/S3F1_verification.md",
   "verification_agent": "code-reviewer",
   "test_result": "",

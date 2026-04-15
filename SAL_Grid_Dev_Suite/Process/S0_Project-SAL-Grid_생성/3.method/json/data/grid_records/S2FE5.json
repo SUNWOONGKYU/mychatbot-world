@@ -17,7 +17,7 @@
   "execution_type": "AI-Only",
   "priority": "Medium",
   "generated_files": "",
-  "modification_history": "",
+  "modification_history": "2026-04-11: Agenda B1 — Step5Voice payload 수정(botId 전송으로 변경, 가짜 ID 덮어쓰기 버그 해소) | 2026-04-11: Agenda B1 — Step8Deploy에 '탄생 축하하기' 버튼 추가(onFinish 호출 → /birth?botId=xxx 리다이렉트 연결, Birth 탄생 애니메이션 도달 가능)",
   "verification_instruction": "sal-grid/verification-instructions/S2FE5_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {},

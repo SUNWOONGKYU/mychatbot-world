@@ -55,7 +55,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           href="/"
           className="flex items-center gap-2 text-xl font-extrabold tracking-tight"
           style={{ color: 'rgb(var(--color-primary))' }}
-          aria-label="My Chatbot World 홈"
+          aria-label="CoCoBot World 홈"
         >
           <span
             className="flex h-8 w-8 items-center justify-center rounded-lg text-sm text-white"

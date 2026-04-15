@@ -3,7 +3,7 @@
  * @description 챗봇 생성 위저드 스텝 컴포넌트
  *
  * Step 0: 템플릿 선택 (신규 — S4GA1)
- * Step 1: 기본 정보 입력 (챗봇 이름, 설명)
+ * Step 1: 기본 정보 입력 (코코봇 이름, 설명)
  * Step 2: 음성/텍스트 입력 → AI 분석 (S2BA1 analyze API)
  * Step 3: AI 분석 결과 확인 및 FAQ 검토/편집
  * Step 4: 배포 완료 — URL + QR 코드 표시
@@ -397,16 +397,16 @@ interface Step1Props {
 }
 
 /**
- * Step1BasicInfo — 챗봇 이름과 설명 입력
+ * Step1BasicInfo — 코코봇 이름과 설명 입력
  */
 export function Step1BasicInfo({ state, onUpdate, onNext }: Step1Props) {
   const [errors, setErrors] = useState<{ name?: string; description?: string }>({});
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
-    if (!state.name.trim()) newErrors.name = '챗봇 이름을 입력해 주세요.';
+    if (!state.name.trim()) newErrors.name = '코코봇 이름을 입력해 주세요.';
     else if (state.name.trim().length > 100) newErrors.name = '100자 이내로 입력해 주세요.';
-    if (!state.description.trim()) newErrors.description = '챗봇 설명을 입력해 주세요.';
+    if (!state.description.trim()) newErrors.description = '코코봇 설명을 입력해 주세요.';
     else if (state.description.trim().length < 10)
       newErrors.description = '설명을 10자 이상 입력해 주세요.';
     setErrors(newErrors);
@@ -420,7 +420,7 @@ export function Step1BasicInfo({ state, onUpdate, onNext }: Step1Props) {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <Label htmlFor="bot-name" required>챗봇 이름</Label>
+        <Label htmlFor="bot-name" required>코코봇 이름</Label>
         <TextInput
           id="bot-name"
           value={state.name}
@@ -437,7 +437,7 @@ export function Step1BasicInfo({ state, onUpdate, onNext }: Step1Props) {
       </div>
 
       <div>
-        <Label htmlFor="bot-description" required>챗봇 설명</Label>
+        <Label htmlFor="bot-description" required>코코봇 설명</Label>
         <Textarea
           id="bot-description"
           value={state.description}
@@ -445,7 +445,7 @@ export function Step1BasicInfo({ state, onUpdate, onNext }: Step1Props) {
             onUpdate({ description: v });
             if (errors.description) setErrors((e) => ({ ...e, description: undefined }));
           }}
-          placeholder="어떤 비즈니스를 위한 챗봇인지 설명해 주세요. 운영 시간, 주요 서비스, 특이사항 등을 포함하면 더 좋은 FAQ가 생성됩니다."
+          placeholder="어떤 비즈니스를 위한 코코봇인지 설명해 주세요. 운영 시간, 주요 서비스, 특이사항 등을 포함하면 더 좋은 FAQ가 생성됩니다."
           maxLength={2000}
           rows={5}
         />
@@ -551,12 +551,12 @@ export function Step2VoiceInput({ state, onUpdate, onNext, onBack }: Step2Props)
   };
 
   if (isAnalyzing) {
-    return <Spinner label="AI가 챗봇을 분석하고 FAQ를 생성하는 중..." />;
+    return <Spinner label="AI가 코코봇을 분석하고 FAQ를 생성하는 중..." />;
   }
 
   return (
     <div className="flex flex-col gap-5">
-      {/* 챗봇 정보 요약 */}
+      {/* 코코봇 정보 요약 */}
       <div className={clsx(
         'p-3 rounded-lg bg-primary/5 border border-primary/20',
         'text-sm',
@@ -594,7 +594,7 @@ export function Step2VoiceInput({ state, onUpdate, onNext, onBack }: Step2Props)
             id="voice-text"
             value={state.voiceText}
             onChange={(v) => onUpdate({ voiceText: v })}
-            placeholder="챗봇에 대한 추가 정보를 입력해 주세요. 자주 묻는 질문, 특별 서비스 등을 자유롭게 적어주세요. (생략 가능)"
+            placeholder="코코봇에 대한 추가 정보를 입력해 주세요. 자주 묻는 질문, 특별 서비스 등을 자유롭게 적어주세요. (생략 가능)"
             maxLength={1000}
             rows={4}
           />
@@ -605,7 +605,7 @@ export function Step2VoiceInput({ state, onUpdate, onNext, onBack }: Step2Props)
       {inputMode === 'voice' && (
         <div>
           <p className="text-sm text-text-secondary mb-3">
-            음성으로 챗봇에 대한 추가 정보를 말씀해 주세요.
+            음성으로 코코봇에 대한 추가 정보를 말씀해 주세요.
             <br />
             <span className="text-xs text-text-muted">
               STT 처리는 이후 단계에서 자동으로 진행됩니다.
@@ -1022,10 +1022,10 @@ export function Step4DeployComplete({ state, onFinish }: Step4Props) {
 
       <div>
         <h3 className="text-lg font-bold text-text-primary">
-          {state.name} 챗봇이 배포되었습니다!
+          {state.name} 코코봇이 배포되었습니다!
         </h3>
         <p className="mt-1 text-sm text-text-secondary">
-          아래 URL이나 QR 코드로 챗봇에 접근할 수 있습니다.
+          아래 URL이나 QR 코드로 코코봇에 접근할 수 있습니다.
         </p>
       </div>
 
@@ -1065,7 +1065,7 @@ export function Step4DeployComplete({ state, onFinish }: Step4Props) {
           <p className="text-xs text-text-muted">QR 코드</p>
           <div
             className="p-3 rounded-lg bg-white border border-border shadow-sm"
-            aria-label="챗봇 QR 코드"
+            aria-label="코코봇 QR 코드"
             dangerouslySetInnerHTML={{ __html: state.qrSvg }}
           />
           <p className="text-xs text-text-muted">
