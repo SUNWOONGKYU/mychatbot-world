@@ -147,7 +147,7 @@
   </div>
   <div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:4px;text-align:center">종합 Grade</div>
-    <div class="grade-badge">7 / 10</div>
+    <div class="grade-badge">8 / 10</div>
   </div>
 </div>
 
@@ -663,12 +663,12 @@
   <!-- Grade Cards -->
   <div class="dashboard-grid" style="margin-bottom:24px">
     <div class="metric-card" style="grid-column:span 2">
-      <div class="grade-display">7 / 10</div>
+      <div class="grade-display">8 / 10</div>
       <div class="metric-label">종합 After Grade (32 카드)</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Grade = max(1, ceil((10 + 19×0.5) / 32 × 10)) = max(1, ceil(6.09)) = 7</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Grade = max(1, ceil((16 + 16×0.5) / 32 × 10)) = max(1, ceil(7.5)) = 8</div>
     </div>
-    <div class="metric-card"><div class="metric-value" style="color:var(--normal)">11</div><div class="metric-label">Normal</div></div>
-    <div class="metric-card"><div class="metric-value" style="color:var(--warning)">21</div><div class="metric-label">Warning</div></div>
+    <div class="metric-card"><div class="metric-value" style="color:var(--normal)">16</div><div class="metric-label">Normal</div></div>
+    <div class="metric-card"><div class="metric-value" style="color:var(--warning)">16</div><div class="metric-label">Warning</div></div>
     <div class="metric-card"><div class="metric-value" style="color:var(--normal)">0</div><div class="metric-label">Danger</div></div>
   </div>
 
@@ -676,13 +676,13 @@
   <div class="changes-box" style="margin-bottom:24px">
     <div class="changes-title">3단계 등급 추적</div>
     <table>
-      <thead><tr><th>지표</th><th>4/9 Before (27카드, 개선 전)</th><th>4/9 After (27카드, 개선 완료)</th><th>4/12 보충 (32카드, +5카드)</th><th>4/13 최종 (32카드, S2SE6 완료)</th><th>4/13 Danger 0 (DB3·MT2·PF5 해결)</th></tr></thead>
+      <thead><tr><th>지표</th><th>4/9 Before</th><th>4/9 After</th><th>4/12 보충</th><th>4/13 Danger 0</th><th>4/15 인프라 강화</th></tr></thead>
       <tbody>
-        <tr><td>Grade</td><td style="color:var(--danger)">5/10</td><td style="color:var(--warning)">6/10</td><td style="color:var(--primary);font-weight:700">6/10</td><td style="color:var(--normal);font-weight:700">7/10</td><td style="color:var(--normal);font-weight:700">7/10 ✅</td></tr>
-        <tr><td>Normal</td><td>6</td><td style="color:var(--normal)">9 (+3: SE2↑ SE3↑ PF3↑)</td><td style="color:var(--normal)">9 (신규 카드 Normal 없음)</td><td style="color:var(--normal)">10 (+1: SE6 RLS+anon key 적용)</td><td style="color:var(--normal)">11 (+1: DB3 anon revoke)</td></tr>
-        <tr><td>Warning</td><td>17</td><td style="color:var(--warning)">15 (SE4↑ MT3↑ Normal로, -2)</td><td style="color:var(--warning)">19 (+4: AP5/AP6/AP7/AP8 re_status Warning)</td><td style="color:var(--warning)">19 (변동 없음)</td><td style="color:var(--warning)">21 (+2: MT2 any제거↑ PF5 캐싱↑)</td></tr>
-        <tr><td>Danger</td><td>4</td><td style="color:var(--danger)">3 (4개→3개, SE2/SE3/PF3 수정)</td><td style="color:var(--danger)">4 (+1: S2SE6 Pending)</td><td style="color:var(--warning)">3 (S2SE6 Normal로 ↑)</td><td style="color:var(--normal);font-weight:700">0 ✅ (DB3·MT2·PF5 해결)</td></tr>
-        <tr><td>Pass/Acceptable/Fail</td><td>23 Acceptable</td><td style="color:var(--pass)">24 Acceptable + 3 Pass</td><td style="color:var(--pass)">25 Acceptable + 7 Pass</td><td style="color:var(--pass)">25 Acceptable + 8 Pass (0 Fail)</td><td style="color:var(--pass)">27 Acceptable + 9 Pass (0 Fail)</td></tr>
+        <tr><td>Grade</td><td style="color:var(--danger)">5/10</td><td style="color:var(--warning)">6/10</td><td style="color:var(--primary);font-weight:700">6/10</td><td style="color:var(--normal);font-weight:700">7/10</td><td style="color:var(--normal);font-weight:900">8/10 ✅</td></tr>
+        <tr><td>Normal</td><td>6</td><td style="color:var(--normal)">9</td><td style="color:var(--normal)">9</td><td style="color:var(--normal)">11</td><td style="color:var(--normal);font-weight:700">16 (+5: SE1·SE3·SE5·AP5·AP6)</td></tr>
+        <tr><td>Warning</td><td>17</td><td style="color:var(--warning)">15</td><td style="color:var(--warning)">19</td><td style="color:var(--warning)">21</td><td style="color:var(--warning)">16 (−5)</td></tr>
+        <tr><td>Danger</td><td>4</td><td style="color:var(--danger)">3</td><td style="color:var(--danger)">4</td><td style="color:var(--normal);font-weight:700">0 ✅</td><td style="color:var(--normal)">0 ✅</td></tr>
+        <tr><td>Pass/Fail</td><td>23 Acc</td><td style="color:var(--pass)">24 Acc + 3 Pass</td><td style="color:var(--pass)">25 Acc + 7 Pass</td><td style="color:var(--pass)">23 Acc + 9 Pass</td><td style="color:var(--pass);font-weight:700">18 Acc + 14 Pass</td></tr>
       </tbody>
     </table>
   </div>
@@ -696,24 +696,29 @@
   <table>
     <thead><tr><th>Area</th><th>카드수</th><th>Normal</th><th>Warning</th><th>Danger</th><th>Grade</th></tr></thead>
     <tbody>
-      <tr><td>SE 보안</td><td>6</td><td style="color:var(--normal)">3</td><td style="color:var(--warning)">3</td><td>0</td><td style="color:var(--normal);font-weight:700">8/10 ✅</td></tr>
+      <tr><td>SE 보안</td><td>6</td><td style="color:var(--normal)">6</td><td style="color:var(--normal)">0</td><td>0</td><td style="color:var(--normal);font-weight:900">10/10 ✅</td></tr>
       <tr><td>AR 아키텍처</td><td>4</td><td style="color:var(--normal)">2</td><td style="color:var(--warning)">2</td><td>0</td><td style="color:var(--primary);font-weight:700">8/10</td></tr>
-      <tr><td>DB 데이터베이스</td><td>3</td><td style="color:var(--normal)">1</td><td style="color:var(--warning)">2</td><td style="color:var(--normal)">0</td><td style="color:var(--normal);font-weight:700">7/10 ✅</td></tr>
-      <tr><td>AP API 설계</td><td>8</td><td style="color:var(--normal)">3</td><td style="color:var(--warning)">5</td><td>0</td><td style="color:var(--primary);font-weight:700">7/10</td></tr>
+      <tr><td>DB 데이터베이스</td><td>3</td><td style="color:var(--normal)">1</td><td style="color:var(--warning)">2</td><td style="color:var(--normal)">0</td><td style="color:var(--normal);font-weight:700">7/10</td></tr>
+      <tr><td>AP API 설계</td><td>8</td><td style="color:var(--normal)">5</td><td style="color:var(--warning)">3</td><td>0</td><td style="color:var(--normal);font-weight:700">9/10 ✅</td></tr>
       <tr><td>MT 유지보수성</td><td>5</td><td style="color:var(--normal)">1</td><td style="color:var(--warning)">4</td><td style="color:var(--normal)">0</td><td style="color:var(--primary);font-weight:700">6/10</td></tr>
       <tr><td>PF 성능</td><td>6</td><td style="color:var(--normal)">1</td><td style="color:var(--warning)">5</td><td style="color:var(--normal)">0</td><td style="color:var(--primary);font-weight:700">6/10</td></tr>
     </tbody>
   </table>
 
   <!-- PO 조치 필요 항목 -->
-  <div class="s0-title" style="margin-top:24px;margin-bottom:8px;color:var(--normal)">✅ Danger 0건 — 전체 완료 (2026-04-13)</div>
+  <div class="s0-title" style="margin-top:24px;margin-bottom:8px;color:var(--normal)">✅ 해결 이력 (최신순)</div>
   <table>
-    <thead><tr><th>SAL ID</th><th>이슈</th><th>조치 내용</th><th>결과</th></tr></thead>
+    <thead><tr><th>SAL ID</th><th>이슈</th><th>조치 내용</th><th>결과</th><th>일자</th></tr></thead>
     <tbody>
-      <tr style="opacity:.6"><td><strong>S1DB3</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>match_kb_items anon EXECUTE 과잉 권한</s></td><td>20260413000002_fix_match_kb_items_anon.sql — REVOKE anon EXECUTE 완료</td><td><span class="badge status-Normal">Normal</span></td></tr>
-      <tr style="opacity:.6"><td><strong>S2SE6</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>/api/guest-chat service_role key 공개 엔드포인트 노출</s></td><td>RLS 정책 생성 + anon key 교체 완료 (2026-04-13)</td><td><span class="badge status-Normal">Normal</span></td></tr>
-      <tr style="opacity:.6"><td><strong>S2MT2</strong> <span class="badge verdict-Acceptable">✅ Acceptable</span></td><td><s>TypeScript any 228회 (createClient as any 패턴)</s></td><td>20개 파일 createClient as any 제거 + (supabase as any) 제거 → 85회로 63% 감소</td><td><span class="badge status-Warning">Warning</span></td></tr>
-      <tr style="opacity:.6"><td><strong>S3PF5</strong> <span class="badge verdict-Acceptable">✅ Acceptable</span></td><td><s>캐싱 전략 전무</s></td><td>/api/templates + /api/skills + /api/community/madang에 Cache-Control 추가</td><td><span class="badge status-Warning">Warning</span></td></tr>
+      <tr><td><strong>S1SE1</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>API 인증 미들웨어 부재</s></td><td>middleware.ts 루트 배포 — @supabase/ssr 기반 세션 갱신 + 6개 보호 경로</td><td><span class="badge status-Normal">Normal</span></td><td>4/15</td></tr>
+      <tr><td><strong>S1SE3</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>환경변수 노출 위험 (.env.example 부재)</s></td><td>.env.example 루트 생성 — 필수/선택 환경변수 템플릿</td><td><span class="badge status-Normal">Normal</span></td><td>4/15</td></tr>
+      <tr><td><strong>S1SE5</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>mcw_admin_uid() 이메일 하드코딩</s></td><td>profiles.is_admin 기반으로 변경 마이그레이션 생성</td><td><span class="badge status-Normal">Normal</span></td><td>4/15</td></tr>
+      <tr><td><strong>S2AP5</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>guest-chat Rate Limit 인메모리 한계</s></td><td>Upstash Redis 기반 rate-limiter.ts 전면 교체</td><td><span class="badge status-Normal">Normal</span></td><td>4/15</td></tr>
+      <tr><td><strong>S2AP6</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>guest-create Rate Limit 인메모리 한계</s></td><td>Upstash Redis 전환 (S2AP5와 동일 인프라)</td><td><span class="badge status-Normal">Normal</span></td><td>4/15</td></tr>
+      <tr style="opacity:.6"><td><strong>S1DB3</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>match_kb_items anon EXECUTE 과잉 권한</s></td><td>REVOKE anon EXECUTE 완료</td><td><span class="badge status-Normal">Normal</span></td><td>4/13</td></tr>
+      <tr style="opacity:.6"><td><strong>S2SE6</strong> <span class="badge status-Normal">✅ Pass</span></td><td><s>service_role key 공개 노출</s></td><td>RLS 정책 + anon key 교체</td><td><span class="badge status-Normal">Normal</span></td><td>4/13</td></tr>
+      <tr style="opacity:.6"><td><strong>S2MT2</strong> <span class="badge verdict-Acceptable">Acceptable</span></td><td><s>TypeScript any 228회</s></td><td>20개 파일 as any 제거 → 85회 (63%↓)</td><td><span class="badge status-Warning">Warning</span></td><td>4/13</td></tr>
+      <tr style="opacity:.6"><td><strong>S3PF5</strong> <span class="badge verdict-Acceptable">Acceptable</span></td><td><s>캐싱 전략 전무</s></td><td>3개 API에 Cache-Control 추가</td><td><span class="badge status-Warning">Warning</span></td><td>4/13</td></tr>
     </tbody>
   </table>
 
@@ -757,8 +762,8 @@ function showTab(id) {
 
 // Stage bars
 const stages = [
-  { name: 'S1 기초 (SE·AR·DB)', n:5, w:7, d:0, total:12 },
-  { name: 'S2 심층 (AP·MT·게스트)', n:5, w:9, d:0, total:14 },
+  { name: 'S1 기초 (SE·AR·DB)', n:8, w:4, d:0, total:12 },
+  { name: 'S2 심층 (AP·MT·게스트)', n:7, w:7, d:0, total:14 },
   { name: 'S3 성능 (PF)', n:1, w:5, d:0, total:6 },
 ];
 const barsEl = document.getElementById('stage-bars');
