@@ -31,6 +31,17 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser(token);
   if (!user || !user.email) return NextResponse.json({ error: '유효하지 않은 토큰' }, { status: 401 });
 
+  // OAuth 전용 사용자 가드 — 비밀번호가 없는 계정
+  const providers = (user.app_metadata?.providers as string[] | undefined) ?? [];
+  const hasPasswordProvider =
+    providers.includes('email') || user.app_metadata?.provider === 'email';
+  if (!hasPasswordProvider) {
+    return NextResponse.json(
+      { error: '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다. 소셜 제공자에서 관리해 주세요.' },
+      { status: 400 }
+    );
+  }
+
   const { current_password, new_password } = await req.json();
   if (!current_password || !new_password) {
     return NextResponse.json({ error: '현재 비밀번호와 새 비밀번호를 입력하세요.' }, { status: 400 });

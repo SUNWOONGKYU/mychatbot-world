@@ -19,11 +19,39 @@ export function SecurityTab() {
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
 
   const changePassword = async () => {
+    if (!currentPw) { alert('현재 비밀번호를 입력해주세요.'); return; }
     if (!newPw) { alert('새 비밀번호를 입력해주세요.'); return; }
     if (newPw.length < 6) { alert('비밀번호는 6자 이상이어야 합니다.'); return; }
     if (newPw !== newPwConfirm) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+    if (currentPw === newPw) { alert('새 비밀번호가 현재 비밀번호와 동일합니다.'); return; }
 
     try {
+      // 1) 현재 비밀번호 재인증 (OAuth 사용자는 email/password provider 아님)
+      const { data: userData } = await supabase.auth.getUser();
+      const email = userData?.user?.email;
+      const providers = (userData?.user?.app_metadata?.providers as string[] | undefined) ?? [];
+      const hasPasswordProvider =
+        providers.includes('email') || userData?.user?.app_metadata?.provider === 'email';
+
+      if (!email) {
+        alert('로그인 상태를 확인할 수 없습니다. 다시 로그인해 주세요.');
+        return;
+      }
+      if (!hasPasswordProvider) {
+        alert('소셜 로그인(Google/Kakao) 계정은 이 페이지에서 비밀번호를 변경할 수 없습니다.');
+        return;
+      }
+
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPw,
+      });
+      if (signInErr) {
+        alert('현재 비밀번호가 올바르지 않습니다.');
+        return;
+      }
+
+      // 2) 새 비밀번호로 업데이트
       const { error } = await supabase.auth.updateUser({ password: newPw });
       if (error) throw error;
       showToast('비밀번호가 안전하게 변경되었습니다.');

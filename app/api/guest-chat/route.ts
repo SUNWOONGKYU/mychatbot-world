@@ -55,6 +55,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
+  // 게스트 10회 한도 — IP+세션 기반 서버 카운터
+  const GUEST_LIMIT = 10;
+  const GUEST_WINDOW_MS = 24 * 60 * 60 * 1000; // 24h
+  const guestCheck = rateLimit(
+    req,
+    { limit: GUEST_LIMIT, windowMs: GUEST_WINDOW_MS },
+    'guest-chat-quota'
+  );
+  if (!guestCheck.allowed) {
+    return NextResponse.json(
+      {
+        reply: '체험 횟수(10회/일)를 모두 사용하셨습니다. 회원가입 후 무제한으로 이용하세요.',
+        quota_exceeded: true,
+        retry_after_sec: guestCheck.retryAfterSec,
+      },
+      { status: 429, headers: { 'Retry-After': String(guestCheck.retryAfterSec) } }
+    );
+  }
+
   let body: GuestChatRequest;
   try {
     body = await req.json();

@@ -49,6 +49,25 @@ export async function signInWithKakao(): Promise<void> {
 }
 
 /**
+ * Sign in with email and password
+ */
+export async function signInWithPassword(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) throw error
+  return data
+}
+
+/**
+ * Send password reset email
+ */
+export async function sendPasswordResetEmail(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/reset-password`,
+  })
+  if (error) throw error
+}
+
+/**
  * Sign out the current user
  * Clears the session from local storage and Supabase
  */
