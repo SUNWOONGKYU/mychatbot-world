@@ -4,10 +4,10 @@
 // AGPL 라이선스 격리 이유:
 //   unspeech는 AGPL-3.0 라이선스 오픈소스 TTS 엔진입니다.
 //   AGPL은 네트워크를 통해 서비스를 제공하는 경우에도 소스코드 공개 의무가 발생합니다.
-//   MCW 메인 코드베이스(MIT)와의 라이선스 오염을 방지하기 위해:
+//   CoCoBot 메인 코드베이스(MIT)와의 라이선스 오염을 방지하기 위해:
 //     1. unspeech는 별도 Docker 컨테이너로 격리 실행됩니다.
 //     2. MCW는 이 프록시 파일을 통해 HTTP API로만 통신합니다.
-//     3. unspeech 코드/바이너리는 MCW 저장소에 포함되지 않습니다.
+//     3. unspeech 코드/바이너리는 CoCoBot 저장소에 포함되지 않습니다.
 //
 // 엔드포인트: POST /api/External/tts-proxy
 // 요청 body:  { text: string, voice?: string, speed?: number }

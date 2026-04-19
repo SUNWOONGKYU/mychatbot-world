@@ -2,7 +2,7 @@
 @task S3F10
 @description 구봇구직 매칭 결과 페이지
   - URL 파라미터: ?job_id=일감ID
-  - 일감 정보 요약, 매칭된 챗봇 카드 목록 (매칭 점수 시각화)
+  - 일감 정보 요약, 매칭된 코코봇 카드 목록 (매칭 점수 시각화)
   - 알고리즘 설명 (접이식): skills 40%, rating 35%, salary 15%, category 10%
   - 결과 없으면 안내 메시지
 -->
@@ -11,7 +11,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>매칭 결과 — 구봇구직 | My Chatbot World</title>
+  <title>매칭 결과 — 구봇구직 | CoCoBot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
       <nav class="jd-header-nav">
         <a href="../../index.html" class="jd-nav-link">홈</a>
         <a href="index.html" class="jd-nav-link">구봇구직</a>
-        <a href="#" class="jd-nav-link">내 챗봇</a>
+        <a href="#" class="jd-nav-link">내 코코봇</a>
       </nav>
     </div>
   </header>
@@ -52,8 +52,8 @@
       <!-- 페이지 타이틀 -->
       <div style="margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap">
         <div>
-          <h1 style="font-size:1.5rem;font-weight:800;color:var(--text-base);margin-bottom:.375rem">챗봇 매칭 결과</h1>
-          <p style="font-size:.9375rem;color:var(--text-muted)">일감에 가장 적합한 챗봇을 AI가 추천해드립니다.</p>
+          <h1 style="font-size:1.5rem;font-weight:800;color:var(--text-base);margin-bottom:.375rem">코코봇 매칭 결과</h1>
+          <p style="font-size:.9375rem;color:var(--text-muted)">일감에 가장 적합한 코코봇을 AI가 추천해드립니다.</p>
         </div>
         <a href="index.html" style="display:inline-flex;align-items:center;gap:.375rem;padding:.5rem 1.125rem;border:1.5px solid var(--border);border-radius:var(--radius-full);font-size:.875rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
@@ -127,7 +127,7 @@
           </button>
           <div id="algoBody" hidden>
             <p class="jd-algo-desc">
-              AI 매칭 알고리즘은 4가지 요소를 종합 분석하여 최적의 챗봇을 추천합니다.
+              AI 매칭 알고리즘은 4가지 요소를 종합 분석하여 최적의 코코봇을 추천합니다.
               각 요소의 가중치는 아래와 같습니다.
             </p>
             <div class="jd-algo-factors" role="list" aria-label="매칭 요소별 가중치">
@@ -172,7 +172,7 @@
         </div>
 
         <!-- 매칭 카드 목록 -->
-        <div class="jd-match-list" id="matchList" aria-live="polite" aria-label="매칭된 챗봇 목록">
+        <div class="jd-match-list" id="matchList" aria-live="polite" aria-label="매칭된 코코봇 목록">
           <!-- JS 동적 렌더링 -->
         </div>
 
@@ -181,12 +181,12 @@
           <div class="jd-empty-icon" aria-hidden="true">🔍</div>
           <h2 class="jd-empty-title">매칭 결과가 없습니다</h2>
           <p class="jd-empty-desc">
-            현재 조건에 맞는 챗봇을 찾을 수 없습니다.<br>
-            일감 조건을 변경하거나 직접 챗봇을 검색해보세요.
+            현재 조건에 맞는 코코봇을 찾을 수 없습니다.<br>
+            일감 조건을 변경하거나 직접 코코봇을 검색해보세요.
           </p>
           <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem">
             <a href="index.html" style="display:inline-flex;align-items:center;gap:.375rem;padding:.625rem 1.375rem;background:var(--primary);color:#fff;border-radius:var(--radius-full);font-size:.875rem;font-weight:700;text-decoration:none">
-              챗봇 직접 찾기
+              코코봇 직접 찾기
             </a>
             <a href="index.html" style="display:inline-flex;align-items:center;gap:.375rem;padding:.625rem 1.375rem;background:transparent;color:var(--primary);border:1.5px solid var(--primary);border-radius:var(--radius-full);font-size:.875rem;font-weight:700;text-decoration:none">
               새 일감 등록

@@ -7,8 +7,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>스킬 상세 — My Chatbot World</title>
-  <meta name="description" content="스킬 상세 정보. My Chatbot World 스킬장터.">
+  <title>스킬 상세 — CoCoBot</title>
+  <meta name="description" content="스킬 상세 정보. CoCoBot 스킬장터.">
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../css/pages.css">
   <link rel="stylesheet" href="../../css/skills.css">
@@ -18,7 +18,7 @@
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="container navbar-inner">
-      <a href="../../index.html" class="navbar-logo"><span>My Chatbot World</span></a>
+      <a href="../../index.html" class="navbar-logo"><span>CoCoBot</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="메뉴">&#9776;</button>
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="../birth/index.html" class="nav-menu-item"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
@@ -81,7 +81,7 @@
         <!-- 시스템 프롬프트 -->
         <div class="sk-detail-section glass-card">
           <h2 class="sk-detail-section-title">스킬 동작 방식</h2>
-          <p class="sk-detail-prompt-note">이 스킬이 챗봇에게 부여하는 시스템 지시입니다.</p>
+          <p class="sk-detail-prompt-note">이 스킬이 코코봇에게 부여하는 시스템 지시입니다.</p>
           <blockquote class="sk-detail-prompt" id="detailPrompt"></blockquote>
         </div>
 
@@ -149,7 +149,7 @@
         <li><a href="../jobs/index.html">Jobs</a></li>
         <li><a href="../community/index.html">Community</a></li>
       </ul>
-      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
+      <p class="page-footer-copy">&copy; 2025–2026 CoCoBot. All rights reserved.</p>
     </div>
   </footer>
 
@@ -201,7 +201,7 @@
       }
 
       function showToast(msg) {
-        if (window.MCW && MCW.showToast) { MCW.showToast(msg); return; }
+        if (window.CoCoBot && CoCoBot.showToast) { CoCoBot.showToast(msg); return; }
         const el = document.getElementById('skillsToast');
         if (!el) return;
         el.textContent = msg;
@@ -237,7 +237,7 @@
       }
 
       function renderDetail(skill) {
-        document.title = `${skill.name} — My Chatbot World`;
+        document.title = `${skill.name} — CoCoBot`;
         document.getElementById('detailSkeleton').hidden = true;
         document.getElementById('detailContent').hidden = false;
 
@@ -286,7 +286,7 @@
           document.getElementById('detailError').hidden = false;
           return;
         }
-        const skills = (window.MCW && MCW.skills) ? MCW.skills : [];
+        const skills = (window.CoCoBot && CoCoBot.skills) ? CoCoBot.skills : [];
         const skill = skills.find(s => s.id === skillId);
         if (!skill) {
           document.getElementById('detailSkeleton').hidden = true;
@@ -304,7 +304,7 @@
       document.getElementById('modalConfirmBtn')?.addEventListener('click', () => {
         const m = document.getElementById('purchaseModal');
         const id = m?.dataset.skillId;
-        const skills = (window.MCW && MCW.skills) ? MCW.skills : [];
+        const skills = (window.CoCoBot && CoCoBot.skills) ? CoCoBot.skills : [];
         const skill = skills.find(s => s.id === id);
         if (skill) {
           installSkill(id);

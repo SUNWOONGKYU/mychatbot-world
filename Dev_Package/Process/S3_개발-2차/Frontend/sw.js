@@ -1,5 +1,5 @@
 // @task S3F6
-// Service Worker — MCW (My Chatbot World)
+// Service Worker — CoCoBot (CoCoBot)
 // 전략: 정적 자산 Cache First / API Network First
 
 const CACHE_NAME = 'mcw-cache-v1';

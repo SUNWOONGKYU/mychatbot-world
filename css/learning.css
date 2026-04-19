@@ -343,7 +343,7 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* 챗봇(사용자) 메시지 (우측) */
+/* 코코봇(사용자) 메시지 (우측) */
 .session-msg--chatbot {
   align-self: flex-end;
   flex-direction: row-reverse;

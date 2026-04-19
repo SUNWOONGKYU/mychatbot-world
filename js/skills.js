@@ -116,9 +116,33 @@
   /* ── 스킬 카드 HTML ── */
   function buildSkillCard(skill) {
     const installed = isInstalled(skill.id);
-    const priceLabel = skill.isFree ? '<span class="sk-price free">무료</span>' :
-      `<span class="sk-price paid">₩${(skill.price || 0).toLocaleString()}</span>`;
     const stars = buildStars(skill.rating || 0);
+
+    // 유료 스킬: 준비 중 배지 + 비활성 버튼
+    if (!skill.isFree) {
+      return `
+      <div class="sk-card sk-card--locked" data-skill-id="${skill.id}">
+        <div class="sk-card-link" aria-label="${skill.name}">
+          <div class="sk-card-top">
+            <span class="sk-icon">${skill.icon}</span>
+            <span class="sk-cat">${skill.category}</span>
+            <span class="sk-coming-soon">준비 중</span>
+          </div>
+          <h3 class="sk-name">${skill.name}</h3>
+          <p class="sk-desc">${skill.description}</p>
+          <div class="sk-meta">
+            <span class="sk-stars" aria-label="평점 ${skill.rating}">${stars} <span class="sk-rating">${(skill.rating || 0).toFixed(1)}</span></span>
+            <span class="sk-installs">${(skill.installs || 0).toLocaleString()}회 설치</span>
+          </div>
+        </div>
+        <div class="sk-card-footer">
+          <span class="sk-price paid">추후 출시</span>
+          <button class="sk-btn sk-btn--coming" disabled aria-label="준비 중">준비 중</button>
+        </div>
+      </div>`;
+    }
+
+    const priceLabel = '<span class="sk-price free">무료</span>';
     const btnClass = installed ? 'sk-btn sk-btn--remove' : 'sk-btn sk-btn--install';
     const btnLabel = installed ? '제거' : '설치';
 

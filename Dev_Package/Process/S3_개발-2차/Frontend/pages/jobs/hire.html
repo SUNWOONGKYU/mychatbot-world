@@ -2,7 +2,7 @@
 @task S3F10
 @description 구봇구직 고용 요청 폼 페이지
   - URL 파라미터: ?bot_id=봇ID
-  - 선택된 챗봇 정보 표시 (사이드 카드)
+  - 선택된 코코봇 정보 표시 (사이드 카드)
   - 고용 요청 폼: 제목, 설명, 기간, 예산, 카테고리
   - 제출 → job-hire.js API POST → 성공 시 확인 모달
 -->
@@ -11,7 +11,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>고용 요청 — 구봇구직 | My Chatbot World</title>
+  <title>고용 요청 — 구봇구직 | CoCoBot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
       <nav class="jd-header-nav">
         <a href="../../index.html" class="jd-nav-link">홈</a>
         <a href="index.html" class="jd-nav-link">구봇구직</a>
-        <a href="#" class="jd-nav-link">내 챗봇</a>
+        <a href="#" class="jd-nav-link">내 코코봇</a>
       </nav>
     </div>
   </header>
@@ -41,7 +41,7 @@
       <span class="jd-breadcrumb-sep">›</span>
       <a href="index.html" class="jd-breadcrumb-link">구봇구직</a>
       <span class="jd-breadcrumb-sep">›</span>
-      <a href="#" class="jd-breadcrumb-link" id="breadcrumbBotLink">챗봇 상세</a>
+      <a href="#" class="jd-breadcrumb-link" id="breadcrumbBotLink">코코봇 상세</a>
       <span class="jd-breadcrumb-sep">›</span>
       <span>고용 요청</span>
     </div>
@@ -75,7 +75,7 @@
                 id="jobTitle"
                 name="title"
                 class="jd-form-input"
-                placeholder="예: 쇼핑몰 고객 문의 응대 챗봇 구축"
+                placeholder="예: 쇼핑몰 고객 문의 응대 코코봇 구축"
                 maxlength="100"
                 required
                 aria-required="true"
@@ -219,11 +219,11 @@
           </form>
         </div>
 
-        <!-- ===== 우측: 챗봇 정보 사이드카드 ===== -->
-        <aside aria-label="선택한 챗봇 정보">
+        <!-- ===== 우측: 코코봇 정보 사이드카드 ===== -->
+        <aside aria-label="선택한 코코봇 정보">
           <div class="jd-bot-side-card">
             <div class="jd-bot-side-header">
-              <div class="jd-bot-side-avatar" id="sideAvatar" aria-label="챗봇 아바타">?</div>
+              <div class="jd-bot-side-avatar" id="sideAvatar" aria-label="코코봇 아바타">?</div>
               <div>
                 <a href="#" id="sideBotLink" style="text-decoration:none">
                   <div class="jd-bot-side-name" id="sideBotName">로딩 중...</div>
@@ -247,7 +247,7 @@
             <!-- 수수료 안내 -->
             <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
               <p style="font-size:.8125rem;color:var(--text-muted);line-height:1.6">
-                고용 요청 후 챗봇이 수락하면 매칭이 완료됩니다. 플랫폼 수수료 <strong style="color:var(--primary)">10%</strong>가 부과됩니다.
+                고용 요청 후 코코봇이 수락하면 매칭이 완료됩니다. 플랫폼 수수료 <strong style="color:var(--primary)">10%</strong>가 부과됩니다.
               </p>
             </div>
 
@@ -261,7 +261,7 @@
                 </li>
                 <li style="display:flex;align-items:center;gap:.5rem;font-size:.8125rem;color:var(--text-muted)">
                   <span style="width:22px;height:22px;border-radius:50%;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</span>
-                  챗봇 수락 대기
+                  코코봇 수락 대기
                 </li>
                 <li style="display:flex;align-items:center;gap:.5rem;font-size:.8125rem;color:var(--text-muted)">
                   <span style="width:22px;height:22px;border-radius:50%;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</span>
@@ -287,8 +287,8 @@
       </div>
       <h2 class="jd-modal-title" id="modalTitle">고용 요청이 전송되었습니다!</h2>
       <p class="jd-modal-desc">
-        챗봇에게 고용 요청이 전달되었습니다.<br>
-        챗봇이 요청을 검토 후 수락하면 매칭이 완료됩니다.
+        코코봇에게 고용 요청이 전달되었습니다.<br>
+        코코봇이 요청을 검토 후 수락하면 매칭이 완료됩니다.
       </p>
       <div class="jd-modal-info">
         <strong>요청 ID:</strong> <span id="modalJobId">—</span><br>
@@ -318,7 +318,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       HirePage.init();
 
-      // 브레드크럼 챗봇 링크 업데이트
+      // 브레드크럼 코코봇 링크 업데이트
       const botId = new URLSearchParams(window.location.search).get('bot_id');
       const crumbLink = document.getElementById('breadcrumbBotLink');
       if (botId && crumbLink) {

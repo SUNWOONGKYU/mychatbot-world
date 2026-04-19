@@ -77,10 +77,10 @@ function mockFetch(status, body) {
 // Mock 데이터
 // ---------------------------------------------------------------------------
 const MOCK_JOBS = [
-  { id: 'job-001', type: 'bot',   title: '고객 응대 챗봇',  category: 'customer-service', rating: 4.8, salary: 50000, skills: ['nlp', 'support'], popular: 320, createdAt: '2026-03-01' },
+  { id: 'job-001', type: 'bot',   title: '고객 응대 코코봇',  category: 'customer-service', rating: 4.8, salary: 50000, skills: ['nlp', 'support'], popular: 320, createdAt: '2026-03-01' },
   { id: 'job-002', type: 'bot',   title: '데이터 분석 봇',   category: 'analytics',        rating: 4.5, salary: 80000, skills: ['data', 'python'], popular: 210, createdAt: '2026-02-20' },
   { id: 'job-003', type: 'human', title: '프롬프트 엔지니어', category: 'engineering',      rating: 4.9, salary: 120000, skills: ['prompt', 'llm'], popular: 450, createdAt: '2026-03-04' },
-  { id: 'job-004', type: 'human', title: '챗봇 트레이너',     category: 'training',         rating: 4.2, salary: 60000, skills: ['training', 'qa'], popular: 150, createdAt: '2026-01-15' },
+  { id: 'job-004', type: 'human', title: '코코봇 트레이너',     category: 'training',         rating: 4.2, salary: 60000, skills: ['training', 'qa'], popular: 150, createdAt: '2026-01-15' },
   { id: 'job-005', type: 'bot',   title: '번역 보조 봇',      category: 'translation',      rating: 4.6, salary: 40000, skills: ['nlp', 'translation'], popular: 280, createdAt: '2026-02-28' },
 ];
 
@@ -278,9 +278,9 @@ describe('카테고리 필터링', () => {
 
 describe('검색 기능', () => {
   it('제목 키워드로 검색 시 일치하는 항목만 반환해야 한다', async () => {
-    const found = searchJobs(MOCK_JOBS, '챗봇');
+    const found = searchJobs(MOCK_JOBS, '코코봇');
     expect(found.length).toBeGreaterThan(0);
-    found.forEach((j) => expect(j.title).toContain('챗봇'));
+    found.forEach((j) => expect(j.title).toContain('코코봇'));
   });
 
   it('스킬 키워드로 검색 시 일치하는 항목 반환해야 한다', async () => {

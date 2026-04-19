@@ -9,8 +9,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learning (학습) — My Chatbot World</title>
-  <meta name="description" content="챗봇스쿨 커리큘럼 학습. 기초부터 마스터까지 단계별로 성장하세요. My Chatbot World.">
+  <title>Learning (학습) — CoCoBot</title>
+  <meta name="description" content="코코봇스쿨 커리큘럼 학습. 기초부터 마스터까지 단계별로 성장하세요. CoCoBot.">
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../css/pages.css">
   <link rel="stylesheet" href="../../css/learning.css">
@@ -21,7 +21,7 @@
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="container navbar-inner">
-      <a href="../../index.html" class="navbar-logo"><span>My Chatbot World</span></a>
+      <a href="../../index.html" class="navbar-logo"><span>CoCoBot</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="메뉴">&#9776;</button>
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="../birth/index.html" class="nav-menu-item"><span class="nav-en">Birth</span><span class="nav-ko">탄생</span></a></li>
@@ -41,10 +41,10 @@
     <div class="page-hero-bg"><div class="page-hero-orb"></div></div>
     <div class="page-hero-content">
       <span class="page-hero-badge">STEP 2 — LEARNING</span>
-      <h1 class="page-hero-title">챗봇 <span class="accent">학습</span></h1>
+      <h1 class="page-hero-title">코코봇 <span class="accent">학습</span></h1>
       <p class="page-hero-subtitle">
-        갓 태어난 챗봇은 아직 초보입니다.<br>
-        챗봇스쿨에서 체계적으로 배우고 성장합니다.
+        갓 태어난 코코봇은 아직 초보입니다.<br>
+        코코봇스쿨에서 체계적으로 배우고 성장합니다.
       </p>
 
       <!-- Stats in hero -->
@@ -110,7 +110,7 @@
         <li><a href="../jobs/index.html">Jobs</a></li>
         <li><a href="../community/index.html">Community</a></li>
       </ul>
-      <p class="page-footer-copy">&copy; 2025–2026 My Chatbot World. All rights reserved.</p>
+      <p class="page-footer-copy">&copy; 2025–2026 CoCoBot. All rights reserved.</p>
     </div>
   </footer>
 
@@ -161,7 +161,7 @@
         <textarea
           id="sessionInput"
           class="session-textarea"
-          placeholder="챗봇으로서 고객에게 답변을 입력하세요..."
+          placeholder="코코봇으로서 고객에게 답변을 입력하세요..."
           rows="3"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitSessionMessage();}"
         ></textarea>
@@ -184,7 +184,7 @@
       document.getElementById('navbarLinks')?.classList.toggle('open');
     });
     document.addEventListener('DOMContentLoaded', async () => {
-      if (typeof MCW !== 'undefined') await MCW.ready;
+      if (typeof CoCoBot !== 'undefined') await CoCoBot.ready;
       await initIndexPage();
     });
   </script>

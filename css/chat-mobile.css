@@ -36,8 +36,6 @@
     /* iOS 안전 영역 좌우 패딩 */
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
-    /* visualViewport JS가 height/top을 동적으로 조정할 때 부드럽게 */
-    will-change: height;
   }
 
   /* ── 헤더 ── */
@@ -112,7 +110,9 @@
     padding-bottom: max(var(--space-3), var(--safe-bottom));
     padding-left: calc(var(--space-3) + var(--safe-left));
     padding-right: calc(var(--space-3) + var(--safe-right));
-    /* flexbox 레이아웃에서 항상 최하단 유지 (sticky 불필요, flex 부모가 fixed) */
+    /* 키보드가 올라와도 입력창이 항상 visible */
+    position: sticky;
+    bottom: 0;
     z-index: 20;
     background: rgba(15, 15, 26, 0.98);
   }
