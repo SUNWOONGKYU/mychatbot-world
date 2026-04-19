@@ -1,10 +1,10 @@
 # My Chatbot World — Task Plan
 
 > **작성일**: 2026-03-31
-> **수정일**: 2026-04-12
-> **버전**: v3.5
+> **수정일**: 2026-04-20
+> **버전**: v4.0
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 81개 (v3.5 SMS DB/BA 신규 2개 추가 — S4DB4, S4BA8)
+> **총 Task 수**: 96개 (v4.0 S7 디자인 혁신 v3.0 신규 15개 추가 — DS 5 + FE 8 + TS 1 + DC 1)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -19,29 +19,30 @@
 | S2 | 핵심 기능 | 16 | ~40% (소급 3개 완료) |
 | S3 | 확장 기능 | 19 | ~50% (소급 8개 완료) |
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
-| S5 | 디자인 혁신 | 15 | ~27% (소급 DS 4개 완료) |
-| **합계** | | **77** | **~39%** |
+| S5 | 디자인 혁신 (v1) | 15 | ~27% (소급 DS 4개 완료) |
+| S7 | 디자인 혁신 v3.0 | 15 | 0% (MBO 승인됨, Pending) |
+| **합계** | | **92** | **~33%** |
 
 ---
 
 ## Area별 분포 (N×11 Matrix)
 
-| Area | S1 | S2 | S3 | S4 | S5 | 합계 |
-|------|:--:|:--:|:--:|:--:|:--:|:----:|
-| FE (Frontend) | 1 | 8 | 4 | 3 | 11 | 27 |
-| BA (Backend APIs) | 0 | 6 | 9 | 6 | 0 | 21 |
-| DB (Database) | 2 | 0 | 1 | 0 | 0 | 3 |
-| SC (Security) | 1 | 0 | 1 | 0 | 0 | 2 |
-| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 4 |
-| EX (External) | 1 | 1 | 2 | 0 | 0 | 4 |
-| TS (Testing) | 0 | 0 | 0 | 2 | 0 | 2 |
-| DV (DevOps) | 1 | 0 | 0 | 1 | 0 | 2 |
-| DS (Design) | 1 | 0 | 0 | 1 | 4 | 6 |
-| DC (Documentation) | 1 | 0 | 0 | 2 | 0 | 3 |
-| CS (Content System) | 1 | 0 | 2 | 0 | 0 | 3 |
-| **합계** | **12** | **16** | **19** | **15** | **15** | **77** |
+| Area | S1 | S2 | S3 | S4 | S5 | S7 | 합계 |
+|------|:--:|:--:|:--:|:--:|:--:|:--:|:----:|
+| FE (Frontend) | 1 | 8 | 4 | 3 | 11 | 8 | 35 |
+| BA (Backend APIs) | 0 | 6 | 9 | 6 | 0 | 0 | 21 |
+| DB (Database) | 2 | 0 | 1 | 0 | 0 | 0 | 3 |
+| SC (Security) | 1 | 0 | 1 | 0 | 0 | 0 | 2 |
+| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 0 | 4 |
+| EX (External) | 1 | 1 | 2 | 0 | 0 | 0 | 4 |
+| TS (Testing) | 0 | 0 | 0 | 2 | 0 | 1 | 3 |
+| DV (DevOps) | 1 | 0 | 0 | 1 | 0 | 0 | 2 |
+| DS (Design) | 1 | 0 | 0 | 1 | 4 | 5 | 11 |
+| DC (Documentation) | 1 | 0 | 0 | 2 | 0 | 1 | 4 |
+| CS (Content System) | 1 | 0 | 2 | 0 | 0 | 0 | 3 |
+| **합계** | **12** | **16** | **19** | **15** | **15** | **15** | **92** |
 
-> 참고: S2는 S2FE4~FE7을 포함하면 15개, S4는 DS1+DV1 합산으로 15개. S5는 DS 4개(기획 완료 소급) + FE 10개(신규, v3.1 재구성). 위 표는 실제 task 분류 기준.
+> 참고: S2는 S2FE4~FE7을 포함하면 15개, S4는 DS1+DV1 합산으로 15개. S5는 DS 4개(기획 완료 소급) + FE 10개(신규, v3.1 재구성). S7은 디자인 시스템 전면 개선 v3.0 (MBO 기반). 위 표는 실제 task 분류 기준.
 
 ---
 
@@ -260,6 +261,44 @@ S4 (개발 마무리)
 
 ---
 
+## S7 — 디자인 혁신 v3.0 (15 Tasks)
+
+> 목표: 세계 최고 수준(Linear/Vercel/Stripe/Arc/Raycast 급) 평가 획득. 컬러 시스템 재정비 + Primitive/Composite 컴포넌트 재구축 + 전 페이지 리디자인 + 접근성 확보.
+> MBO: "과정은 자유, 목표는 필달성, 품질 최고, 비용 합리적, 시간 적절" (2026-04-20 PO 승인)
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S7DS1 | 현행 디자인 진단 리포트 (MCW AS-IS) | DS | — | `ux-ui-designer-core` | Pending |
+| S7DS2 | 벤치마크 리서치 (Linear/Vercel/Stripe/Arc/Raycast) | DS | — | `ux-ui-designer-core` | Pending |
+| S7DS3 | Design Principles 5~7개 선언 | DS | S7DS1, S7DS2 | `ux-ui-designer-core` | Pending |
+| S7DS4 | Primitive 토큰 — OKLCH 팔레트 | DS | S7DS3 | `ux-ui-designer-core` | Pending |
+| S7DS5 | Semantic 토큰 — Light/Dark 대칭 | DS | S7DS4 | `ux-ui-designer-core` | Pending |
+| S7FE1 | Tailwind + globals.css 재구성 | FE | S7DS5 | `frontend-developer-core` | Pending |
+| S7FE2 | Primitive 컴포넌트 10종 (Form) | FE | S7FE1 | `frontend-developer-core` | Pending |
+| S7FE3 | Primitive 컴포넌트 8종 (Overlay/Nav) | FE | S7FE1 | `frontend-developer-core` | Pending |
+| S7FE4 | Composite 컴포넌트 9종 | FE | S7FE2, S7FE3 | `frontend-developer-core` | Pending |
+| S7FE5 | P0 리디자인 — Landing/Home/Login/Signup | FE | S7FE4 | `frontend-developer-core` | Pending |
+| S7FE6 | P1 리디자인 — Marketplace/Skills/Create/Bot | FE | S7FE5 | `frontend-developer-core` | Pending |
+| S7FE7 | P2 리디자인 — MyPage/Admin/Jobs/Community | FE | S7FE6 | `frontend-developer-core` | Pending |
+| S7FE8 | Motion 시스템 적용 | FE | S7FE4 | `frontend-developer-core` | Pending |
+| S7TS1 | 접근성 검증 (axe-core + Lighthouse) | TS | S7FE5, S7FE6, S7FE7 | `test-runner-core` | Pending |
+| S7DC1 | 최종 리포트 + DESIGN.md v2.0 | DC | S7TS1 | `documentation-writer-core` | Pending |
+
+### S7 KPI (MBO 목표서)
+
+| 지표 | 목표값 |
+|------|--------|
+| Lighthouse A11y 평균 | 95+ |
+| Lighthouse Performance 평균 | 85+ |
+| axe-core critical/serious 위반 | 0건 |
+| 하드코드 컬러 개수 | 0 |
+| Light/Dark 깨지는 페이지 | 0 |
+| Primitive 컴포넌트 수 | 18 |
+| Composite 컴포넌트 수 | 9 |
+| 리디자인 페이지 수 | 16+ |
+
+---
+
 ## 소급(Retroactive) Tasks 요약
 
 > 이미 구현된 기능을 SAL Grid에 등록한 Task. task_status = Completed.
@@ -300,4 +339,5 @@ S4 (개발 마무리)
 | v2.0 | 2026-03-31 | MCW 프로젝트 분석 기반 전체 Task Plan 작성 — 60개 Task, 4 Stages, 소급 21개 |
 | v3.0 | 2026-04-07 | S5 디자인 혁신 Stage 추가 — 12개 Task (DS 4개 소급완료 + FE 8개 신규) |
 | v3.1 | 2026-04-07 | S5 FE Task 재구성 — PO 확정 사항 반영 (4대 메뉴, 마이페이지 8탭, 관리자 대시보드 8섹션). FE 8개→10개. S5FE4(4대 메뉴 통합), S5FE6(마이페이지 탭1~4), S5FE7(관리자 섹션1~4), S5FE8(관리자 섹션5~8), S5FE9(게스트 모드), S5FE10(빌드+QA) 신규. 총 72개→74개. |
+| v4.0 | 2026-04-20 | **S7 디자인 혁신 v3.0** Stage 신설 — 15개 Task (DS 5 + FE 8 + TS 1 + DC 1). 세계 최고 수준 디자인 평가 획득 목표 (Linear/Vercel/Stripe/Arc/Raycast 벤치마크). MBO 목표서 기반 PO 승인 완료. 총 77개→92개. |
 | v3.2 | 2026-04-08 | S5FE12 추가 — 디자인 Quick Win 6개 (CSS 변수 튜닝: 보더 반투명, 그림자 다층화, letter-spacing 스케일, 퍼플 글로우 확장, OpenType). 벤치마크 분석(Vercel/Linear/Stripe/Notion/Supabase) 기반. 총 74개→75개. |
