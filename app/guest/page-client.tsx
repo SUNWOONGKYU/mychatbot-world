@@ -67,7 +67,7 @@ const HELPER_CATS: Category[] = [
 const CATEGORIES: Category[] = [...AVATAR_CATS, ...HELPER_CATS];
 
 const CATEGORY_NAMES: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.id, `${c.name} AI 코코봇`])
+  CATEGORIES.map((c) => [c.id, `${c.name} 코코봇`])
 );
 
 /* ─────────────────────────────────────────────────────────────
@@ -138,7 +138,7 @@ export default function GuestPageInner() {
   const handleSelectCategory = useCallback(async (cat: Category) => {
     if (loadingId) return;
 
-    const botName = CATEGORY_NAMES[cat.id] ?? '게스트 AI 코코봇';
+    const botName = CATEGORY_NAMES[cat.id] ?? '게스트 코코봇';
 
     setSelectedId(cat.id);
     setLoadingId(cat.id);
@@ -522,10 +522,10 @@ export default function GuestPageInner() {
         {/* ── 안내 배너 ─────────────────────────────────────────── */}
         <div className="guest-banner">
           <h1>
-            AI 코코봇 체험
+            코코봇 체험
           </h1>
           <p className="guest-banner-desc">
-            카테고리를 선택하면 바로 AI 코코봇과 대화할 수 있습니다
+            카테고리를 선택하면 바로 코코봇과 대화할 수 있습니다
           </p>
         </div>
 

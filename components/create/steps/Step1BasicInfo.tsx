@@ -96,7 +96,7 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
               style={{ ...formInput, flex: 1 }}
               value={botDesc}
               onChange={e => setBotDesc(e.target.value)}
-              placeholder="예: 나를 대신해 24시간 소통하는 AI 코코봇"
+              placeholder="예: 나를 대신해 24시간 소통하는 코코봇"
               maxLength={100}
             />
             <MicButton onResult={(text) => setBotDesc(botDesc + (botDesc ? ' ' : '') + text)} />

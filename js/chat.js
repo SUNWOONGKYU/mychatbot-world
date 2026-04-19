@@ -128,7 +128,7 @@ async function loadBotData() {
             chatBotData = {
                 botName: 'Bot',
                 username: 'bot',
-                personality: 'AI 코코봇입니다.',
+                personality: '코코봇입니다.',
                 greeting: '안녕하세요! 무엇이든 물어보세요.',
                 faqs: []
             };

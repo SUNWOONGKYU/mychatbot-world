@@ -140,7 +140,7 @@ export function BotsTab({ user }: { user: any }) {
             <h3 style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.75rem' }}>
               아직 생성된 코코봇이 없습니다
             </h3>
-            <p style={{ fontSize: '0.9rem', marginBottom: '2rem' }}>나만의 AI 코코봇을 생성하고 관리해 보세요.</p>
+            <p style={{ fontSize: '0.9rem', marginBottom: '2rem' }}>나만의 코코봇을 생성하고 관리해 보세요.</p>
             <button style={S.btnPrimary} onClick={() => router.push('/create')}>+ 새 코코봇 생성</button>
           </div>
         )}

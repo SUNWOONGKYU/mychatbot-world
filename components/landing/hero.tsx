@@ -55,7 +55,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             {/* 배지 */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm">
               <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-              <span className="font-medium">AI 코코봇 라이프사이클 플랫폼</span>
+              <span className="font-medium">코코봇 라이프사이클 플랫폼</span>
             </div>
 
             {/* 메인 헤드라인 — 원본 바닐라 카피 */}

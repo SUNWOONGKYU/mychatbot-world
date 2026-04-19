@@ -98,7 +98,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
   const toneDescription = toneGuide[tone] ?? '친근하고 자연스러운 말투로';
   const keywordContext = keywords.length > 0 ? `주요 키워드: ${keywords.join(', ')}` : '';
 
-  const systemPrompt = `당신은 AI 코코봇의 FAQ를 작성하는 전문가입니다.
+  const systemPrompt = `당신은 코코봇의 FAQ를 작성하는 전문가입니다.
 비즈니스 정보를 분석하여 고객이 가장 자주 묻는 질문 10개와 답변을 생성합니다.
 ${toneDescription} 작성하세요.
 

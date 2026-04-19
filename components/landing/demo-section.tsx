@@ -49,7 +49,7 @@ const LIFECYCLE_STEPS = [
     step: 'Birth',
     icon: '🌱',
     title: '5분 인터뷰로 탄생',
-    desc: '코딩 없이 5분 인터뷰만으로 맞춤형 AI 코코봇이 자동으로 생성됩니다.',
+    desc: '코딩 없이 5분 인터뷰만으로 맞춤형 코코봇이 자동으로 생성됩니다.',
   },
   {
     step: 'Skills',
@@ -147,7 +147,7 @@ export function DemoSection() {
                 color: 'rgb(var(--color-accent))',
               }}
             >
-              AI 코코봇 라이프사이클
+              코코봇 라이프사이클
             </span>
             <h2
               className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"

@@ -72,7 +72,7 @@ export async function generateMetadata({
 
   return {
     title: `코코봇 탄생 — CoCoBot`,
-    description: '새로운 AI 코코봇이 탄생했습니다!',
+    description: '새로운 코코봇이 탄생했습니다!',
   };
 }
 

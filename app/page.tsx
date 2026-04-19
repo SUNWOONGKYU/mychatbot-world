@@ -3,7 +3,7 @@
  * @route / (public)
  *
  * 섹션 순서 (바닐라 index.html 원본 기준):
- * 1. Hero — "당신의 AI 코코봇이 이 세상에 태어납니다" + CTA
+ * 1. Hero — "당신의 코코봇이 이 세상에 태어납니다" + CTA
  * 2. Journey — 코코봇의 여정 흐름도 (생성→스쿨→스킬→커뮤니티)
  * 3. STEP 1: Birth — 5단계 프로세스 + 배포 채널 + 10가지 직업
  * 4. WHY — 왜 이 10가지 직업인가 (4가지 공통점)
@@ -109,7 +109,7 @@ export default function LandingPage() {
                 🐣 STEP 1
               </span>
               <h2 className="mt-4 text-2xl font-bold sm:text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
-                생성 (Birth) — 5분 인터뷰, AI 코코봇 생성
+                생성 (Birth) — 5분 인터뷰, 코코봇 생성
               </h2>
               <p className="mt-2" style={{ color: 'rgb(var(--text-secondary))' }}>
                 기본정보 입력, 페르소나 설정, 음성 인터뷰 — 5분이면 당신만의 코코봇이 생성됩니다.
@@ -274,7 +274,7 @@ export default function LandingPage() {
         {/* ═══ SECTION 9: 하단 CTA ═══ */}
         <section className="py-16 sm:py-20" style={{ background: 'linear-gradient(135deg, rgb(var(--primary-900)), rgb(30 27 75))' }}>
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">당신의 AI 코코봇을 생성하세요</h2>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">당신의 코코봇을 생성하세요</h2>
             <p className="mt-4 text-base leading-relaxed text-white/80">
               5분 만에 생성되고, 코코봇스쿨에서 배우고, 스킬을 장착하고, 커뮤니티에서 성장합니다.<br />
               그래서 <strong className="text-white">당신을 대신해 24시간 활동합니다.</strong>
