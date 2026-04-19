@@ -12,7 +12,7 @@
 
 ## 배경 및 목적
 
-unspeech는 AGPL-3.0 라이선스 오픈소스 TTS 엔진이다. AGPL 특성상 서버 사이드에서 사용할 경우 전체 소스코드 공개 의무가 발생하므로, 격리된 Docker 컨테이너로 독립 배포하여 MCW 메인 코드베이스와 분리한다. MCW는 HTTP API로만 unspeech를 호출한다.
+unspeech는 AGPL-3.0 라이선스 오픈소스 TTS 엔진이다. AGPL 특성상 서버 사이드에서 사용할 경우 전체 소스코드 공개 의무가 발생하므로, 격리된 Docker 컨테이너로 독립 배포하여 CoCoBot 메인 코드베이스와 분리한다. MCW는 HTTP API로만 unspeech를 호출한다.
 
 ## 세부 작업 지시
 

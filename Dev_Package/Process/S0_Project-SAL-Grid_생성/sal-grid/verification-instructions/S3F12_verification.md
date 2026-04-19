@@ -33,8 +33,8 @@
 - [ ] 프리셋 원클릭 설치가 동작하는가
 
 ### 4. 통합 검증
-- [ ] `MCW.skills` 데이터와 정상 연동
-- [ ] `MCW.skillPresets` 데이터와 정상 연동
+- [ ] `CoCoBot.skills` 데이터와 정상 연동
+- [ ] `CoCoBot.skillPresets` 데이터와 정상 연동
 - [ ] navbar 링크가 모든 서브페이지에서 정상 작동
 - [ ] 다크 테마 (#10b981 accent) 일관성
 

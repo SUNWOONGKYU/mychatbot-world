@@ -1,11 +1,11 @@
-# TASK_PLAN.md — My Chatbot World SAL Grid
+# TASK_PLAN.md — CoCoBot SAL Grid
 
 ## 프로젝트 정보
 
 | 항목 | 값 |
 |------|---|
 | 프로젝트 ID | mychatbot-world |
-| 프로젝트명 | My Chatbot World — AI 챗봇 생성 플랫폼 |
+| 프로젝트명 | CoCoBot — AI 챗봇 생성 플랫폼 |
 | Method | Vanilla |
 | 생성일 | 2026-02-11 |
 | 최종 수정 | 2026-03-07 |
