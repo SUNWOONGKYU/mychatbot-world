@@ -21,8 +21,8 @@
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
-| S7 | 프로덕션 런칭 준비 MBO | 4 | 100% (4/4 완료) |
-| **합계** | | **91** | **~52%** |
+| S7 | 프로덕션 런칭 준비 MBO | 5 | 100% (5/5 완료) |
+| **합계** | | **92** | **~52%** |
 
 ---
 
@@ -205,10 +205,10 @@
 
 ---
 
-## S7 — 프로덕션 런칭 준비 MBO (4 Tasks)
+## S7 — 프로덕션 런칭 준비 MBO (5 Tasks)
 
-> 목표: 2026-04-20 MBO "프로덕션 완성도 극대화" — Security/Reliability/Data Integrity/Performance/Observability/UX·a11y/SEO/Infra/Documentation 9개 영역 일괄 감사 후 Critical·High 0 잔여, Medium ≥70% 해결.
-> **배경**: 컴팩션 직전 승인된 MBO 목표서 기반. Phase A(진단) → B(분류: Critical 2 / High 10 / Medium 9) → C(실행) → D(tsc 0 + next build 클린) → E(기록) 완료.
+> 목표: 2026-04-20 MBO "프로덕션 완성도 극대화" — Security/Reliability/Data Integrity/Performance/Observability/UX·a11y/SEO/Infra/Documentation 9개 영역 일괄 감사 후 Critical·High 0 잔여, Medium 100% 해결.
+> **배경**: 컴팩션 직전 승인된 MBO 목표서 기반. Phase A(진단) → B(분류: Critical 2 / High 10 / Medium 9) → C(실행) → D(tsc 0 + next build 클린) → E(기록) + 후속 M4·M6·M8 이월 처리 완료.
 
 | Task ID | Task명 | Area | Dependencies | Agent | Status |
 |---------|--------|------|-------------|-------|--------|
@@ -216,6 +216,7 @@
 | S7PROD2 | 프로덕션 UX/a11y 강화 — 옵티미스틱 롤백 + 키보드 접근성 + 모달 Escape (H5·H8·M7) | FE | — | `frontend-developer-core` | Completed |
 | S7PROD3 | 프로덕션 SEO/문서 — robots.ts/sitemap.ts/.env.example/README/metadata (H6·H7·H9·M5) | DC | — | `documentation-writer-core` | Completed |
 | S7PROD4 | 프로덕션 성능/운영 — 페이지네이션 + DB 인덱스 + 런타임 env 검증 (M2·M3·M9) | BI | — | `backend-developer-core` | Completed |
+| S7PROD5 | 후속 처리 — img→Image 5파일 + middleware matcher/rate-limit 확장 + radio a11y + health env audit (M4·M6·M8) | FE | S7PROD1~4 | `frontend-developer-core` | Completed |
 
 ---
 

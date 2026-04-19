@@ -13,6 +13,7 @@
 export const dynamic = 'force-dynamic';
 
 import { createClient } from '@supabase/supabase-js';
+import { checkServerEnv } from '@/lib/env';
 
 interface HealthChecks {
   env: 'ok' | 'missing';
@@ -49,6 +50,9 @@ export async function GET(): Promise<Response> {
   const envCheck: HealthChecks['env'] = missingEnvs.length === 0 ? 'ok' : 'missing';
   const supabaseCheck = await checkSupabase();
 
+  // lib/env.ts 스키마 기반 선택 env 경고 수집
+  const envAudit = checkServerEnv();
+
   const checks: HealthChecks = {
     env: envCheck,
     supabase: supabaseCheck,
@@ -65,6 +69,7 @@ export async function GET(): Promise<Response> {
       service: 'mychatbot-world',
       checks,
       ...(missingEnvs.length > 0 ? { missingEnvs } : {}),
+      ...(envAudit.warnings.length > 0 ? { warnings: envAudit.warnings } : {}),
     },
     { status: httpStatus },
   );

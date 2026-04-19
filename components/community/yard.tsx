@@ -15,6 +15,7 @@ import {
   FormEvent,
   useCallback,
 } from 'react';
+import Image from 'next/image';
 import { createClient } from '@supabase/supabase-js';
 import { subscribeToYard } from '@/lib/realtime-client';
 import type { YardMessage } from '@/lib/realtime-client';
@@ -42,10 +43,12 @@ function MessageBubble({
       {/* 아바타 */}
       {!isOwn && (
         message.author?.avatar_url ? (
-          <img
+          <Image
             src={message.author.avatar_url}
             alt={message.author.name}
-            className="w-7 h-7 rounded-full flex-shrink-0"
+            width={28}
+            height={28}
+            className="w-7 h-7 rounded-full flex-shrink-0 object-cover"
           />
         ) : (
           <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center

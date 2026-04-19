@@ -167,6 +167,7 @@ function StatusModal({ bot, onClose, onConfirm }: { bot: Bot; onClose: () => voi
             {(['active', 'inactive', 'suspended'] as BotStatus[]).map((s) => (
               <label
                 key={s}
+                htmlFor={`bot-status-${s}`}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.5rem',
                   cursor: 'pointer', padding: '0.625rem 1rem',
@@ -177,8 +178,27 @@ function StatusModal({ bot, onClose, onConfirm }: { bot: Bot; onClose: () => voi
                   fontSize: '0.875rem', fontWeight: selected === s ? 600 : 400,
                 }}
               >
-                <input type="radio" style={{ display: 'none' }} checked={selected === s} onChange={() => setSelected(s)} />
-                <span>{s === 'active' ? '✅' : s === 'inactive' ? '⏸️' : '🚫'}</span>
+                <input
+                  id={`bot-status-${s}`}
+                  type="radio"
+                  name="bot-status"
+                  value={s}
+                  checked={selected === s}
+                  onChange={() => setSelected(s)}
+                  aria-label={`${STATUS_LABELS[s]} 상태`}
+                  style={{
+                    position: 'absolute',
+                    width: 1,
+                    height: 1,
+                    padding: 0,
+                    margin: -1,
+                    overflow: 'hidden',
+                    clip: 'rect(0, 0, 0, 0)',
+                    whiteSpace: 'nowrap',
+                    border: 0,
+                  }}
+                />
+                <span aria-hidden="true">{s === 'active' ? '✅' : s === 'inactive' ? '⏸️' : '🚫'}</span>
                 {STATUS_LABELS[s]}
               </label>
             ))}

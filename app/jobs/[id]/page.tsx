@@ -17,6 +17,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // ── 타입 ─────────────────────────────────────────────────────
 
@@ -148,7 +149,7 @@ function MatchCard({ match, rank }: { match: MatchItem; rank: number }) {
         {/* 아바타 */}
         <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600 flex-shrink-0">
           {match.avatar_url ? (
-            <img src={match.avatar_url} alt={`${match.bot_name} 아바타`} className="w-full h-full object-cover rounded-xl" loading="lazy" />
+            <Image src={match.avatar_url} alt={`${match.bot_name} 아바타`} width={56} height={56} className="w-full h-full object-cover rounded-xl" loading="lazy" />
           ) : avatarChar}
         </div>
 

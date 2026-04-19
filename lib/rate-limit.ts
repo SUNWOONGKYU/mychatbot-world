@@ -37,6 +37,13 @@ export const AUDIO_RATE_LIMIT: RateLimitConfig = {
   windowMs: 60_000,
 };
 
+/** 공개 쓰기 엔드포인트용 설정 (커뮤니티/공개 봇 API) */
+export const PUBLIC_WRITE_RATE_LIMIT: RateLimitConfig = {
+  maxTokens: 30,   // 분당 최대 30회
+  refillRate: 0.5, // 초당 0.5 토큰 (≈ 30회/분)
+  windowMs: 60_000,
+};
+
 /** 오래된 버킷 정리 (메모리 누수 방지) */
 function cleanupStaleBuckets(windowMs: number): void {
   const now = Date.now();

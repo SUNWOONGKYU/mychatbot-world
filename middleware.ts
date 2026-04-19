@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { checkRateLimit, AI_RATE_LIMIT, AUDIO_RATE_LIMIT } from '@/lib/rate-limit';
+import { checkRateLimit, AI_RATE_LIMIT, AUDIO_RATE_LIMIT, PUBLIC_WRITE_RATE_LIMIT } from '@/lib/rate-limit';
 
 // 공개 경로 — 인증 불필요
 const PUBLIC_PATHS = [
@@ -20,6 +20,8 @@ const PUBLIC_PATHS = [
 // Rate limit 적용 경로 목록
 const AI_PATHS = ['/api/chat', '/api/ai/'];
 const AUDIO_PATHS = ['/api/tts', '/api/stt'];
+// 공개 쓰기 엔드포인트 — 일반 쓰기 rate-limit 적용 대상
+const PUBLIC_WRITE_PATHS = ['/api/community/', '/api/bots/public'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -30,9 +32,16 @@ export function middleware(request: NextRequest) {
 
   const isAiPath = AI_PATHS.some((p) => pathname.startsWith(p));
   const isAudioPath = AUDIO_PATHS.some((p) => pathname.startsWith(p));
+  const isPublicWritePath =
+    (request.method === 'POST' || request.method === 'PATCH' || request.method === 'DELETE') &&
+    PUBLIC_WRITE_PATHS.some((p) => pathname.startsWith(p));
 
-  if (isAiPath || isAudioPath) {
-    const config = isAudioPath ? AUDIO_RATE_LIMIT : AI_RATE_LIMIT;
+  if (isAiPath || isAudioPath || isPublicWritePath) {
+    const config = isAudioPath
+      ? AUDIO_RATE_LIMIT
+      : isPublicWritePath
+        ? PUBLIC_WRITE_RATE_LIMIT
+        : AI_RATE_LIMIT;
     const limited = checkRateLimit(`${ip}:${pathname}`, config);
     if (limited) {
       return NextResponse.json(
@@ -81,5 +90,7 @@ export const config = {
     '/api/ai/:path*',
     '/api/tts',
     '/api/stt',
+    '/api/community/:path*',
+    '/api/bots/public/:path*',
   ],
 };

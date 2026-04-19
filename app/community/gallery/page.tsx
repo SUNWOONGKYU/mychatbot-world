@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 // ── 타입 ────────────────────────────────────────────────────
@@ -73,11 +74,13 @@ function GalleryCard({ post }: { post: GalleryPost }) {
       )}
 
       {/* 이미지 */}
-      <img
+      <Image
         src={post.image_url}
         alt={post.title}
+        fill
+        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         style={{
-          width: '100%', height: '100%', objectFit: 'cover',
+          objectFit: 'cover',
           transition: 'transform 0.3s, opacity 0.2s',
           opacity: imgLoaded ? 1 : 0,
         }}

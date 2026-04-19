@@ -6,6 +6,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import clsx from 'clsx';
 
 interface UserProfile {
@@ -55,9 +56,11 @@ function AvatarDisplay({ profile }: { profile: UserProfile }) {
     ?? profile.email[0].toUpperCase();
   if (profile.avatar_url) {
     return (
-      <img
+      <Image
         src={profile.avatar_url}
         alt="프로필 사진"
+        width={128}
+        height={128}
         className="w-32 h-32 rounded-full object-cover border-2 border-[rgb(var(--color-primary)/0.3)]"
       />
     );
