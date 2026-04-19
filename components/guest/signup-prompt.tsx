@@ -4,7 +4,7 @@
  *
  * - 대화 10회 소진 후 표시
  * - 배경 오버레이 (클릭으로 닫기 가능)
- * - Google / Kakao 소셜 가입 링크
+ * - Google 소셜 가입 링크
  * - 로그인 링크 (기존 계정 보유자)
  * - ESC 키 닫기 지원
  * - 접근성: role="dialog", aria-modal, focus trap
@@ -198,22 +198,6 @@ export function SignupPrompt({ isOpen, onClose }: SignupPromptProps) {
             <GoogleIcon />
             Google로 시작하기 (무료)
           </Link>
-
-          {/* Secondary: Kakao */}
-          <Link
-            href="/auth/signup?provider=kakao"
-            className={clsx(
-              'flex items-center justify-center gap-2.5',
-              'w-full h-11 rounded-xl',
-              'text-[#191919] text-sm font-semibold',
-              'hover:brightness-95 transition-all duration-150',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FEE500] focus-visible:ring-offset-2',
-            )}
-            style={{ backgroundColor: '#FEE500' }}
-          >
-            <KakaoIcon />
-            카카오로 시작하기
-          </Link>
         </div>
 
         {/* 구분선 + 로그인 링크 */}
@@ -265,15 +249,3 @@ function GoogleIcon() {
   );
 }
 
-function KakaoIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M9 1C4.582 1 1 3.79 1 7.21c0 2.143 1.352 4.026 3.397 5.115L3.554 15.5a.25.25 0 0 0 .367.277L7.96 13.35A10.4 10.4 0 0 0 9 13.42c4.418 0 8-2.79 8-6.21S13.418 1 9 1z"
-        fill="#191919"
-      />
-    </svg>
-  );
-}
