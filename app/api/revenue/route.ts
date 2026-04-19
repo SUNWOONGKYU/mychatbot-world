@@ -138,7 +138,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       baseQuery = baseQuery.lte('created_at', `${to}T23:59:59.999Z`);
     }
 
-    const { data: rows, error: fetchError } = await baseQuery.order('created_at', { ascending: true });
+    // 페이지네이션 — 기본 1000건 상한 (집계 연산 대상)
+    const pageLimit = Math.min(5000, Math.max(1, parseInt(searchParams.get('limit') ?? '1000', 10)));
+    const pageOffset = Math.max(0, parseInt(searchParams.get('offset') ?? '0', 10));
+
+    const { data: rows, error: fetchError } = await baseQuery
+      .order('created_at', { ascending: true })
+      .range(pageOffset, pageOffset + pageLimit - 1);
 
     if (fetchError) {
       console.error('[revenue GET] Supabase error:', fetchError.message);

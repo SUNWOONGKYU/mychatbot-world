@@ -66,11 +66,16 @@ export async function GET(req: NextRequest) {
 
     const supabase = getAdminSupabase();
 
-    // 스킬 목록 조회
+    // 스킬 목록 조회 — 페이지네이션 (기본 100건, 최대 500건)
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(500, Math.max(1, parseInt(searchParams.get('limit') ?? '100', 10)));
+    const offset = Math.max(0, parseInt(searchParams.get('offset') ?? '0', 10));
+
     const { data: skills, error: skillsError } = await (supabase as any)
       .from('mcw_skills')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (skillsError) {
       console.error('[GET /api/admin/skills] Skills query error:', skillsError.message);

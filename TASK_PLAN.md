@@ -21,7 +21,8 @@
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
-| **합계** | | **87** | **~50%** |
+| S7 | 프로덕션 런칭 준비 MBO | 4 | 100% (4/4 완료) |
+| **합계** | | **91** | **~52%** |
 
 ---
 
@@ -201,6 +202,20 @@
 | S6FE3 | 세그먼트별 error.tsx 바운더리 (/admin, /bot/[botId], /mypage) | FE | — | `frontend-developer-core` | Completed |
 | S6BA5 | skills/my N+1 쿼리 제거 (map+Promise.all → 단일 .in 쿼리) + 데드 코드 정리 | BA | — | `api-developer-core` | Completed |
 | S6BI2 | /api/health 실질적 헬스체크 고도화 (env + Supabase 검증 → 200/503 분기) | BI | — | `backend-developer-core` | Completed |
+
+---
+
+## S7 — 프로덕션 런칭 준비 MBO (4 Tasks)
+
+> 목표: 2026-04-20 MBO "프로덕션 완성도 극대화" — Security/Reliability/Data Integrity/Performance/Observability/UX·a11y/SEO/Infra/Documentation 9개 영역 일괄 감사 후 Critical·High 0 잔여, Medium ≥70% 해결.
+> **배경**: 컴팩션 직전 승인된 MBO 목표서 기반. Phase A(진단) → B(분류: Critical 2 / High 10 / Medium 9) → C(실행) → D(tsc 0 + next build 클린) → E(기록) 완료.
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S7PROD1 | 프로덕션 보안 강화 — 결제 상한/타임아웃/동시성 락/Rate-limit async (C1·C2·H1·H2·H3·H4·H10·M1) | SC | — | `security-specialist-core` | Completed |
+| S7PROD2 | 프로덕션 UX/a11y 강화 — 옵티미스틱 롤백 + 키보드 접근성 + 모달 Escape (H5·H8·M7) | FE | — | `frontend-developer-core` | Completed |
+| S7PROD3 | 프로덕션 SEO/문서 — robots.ts/sitemap.ts/.env.example/README/metadata (H6·H7·H9·M5) | DC | — | `documentation-writer-core` | Completed |
+| S7PROD4 | 프로덕션 성능/운영 — 페이지네이션 + DB 인덱스 + 런타임 env 검증 (M2·M3·M9) | BI | — | `backend-developer-core` | Completed |
 
 ---
 
