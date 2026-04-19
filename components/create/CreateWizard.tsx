@@ -1,5 +1,5 @@
 /**
- * CreateWizard — Vanilla 원본 8단계 챗봇 생성 위저드 충실 전환
+ * CreateWizard — Vanilla 원본 8단계 코코봇 생성 위저드 충실 전환
  *
  * Step 1: 기본정보
  * Step 2: 대표 페르소나
@@ -181,7 +181,7 @@ export default function CreateWizard({ onComplete }: Props) {
         return;
       }
       if (draft.step > 1) {
-        if (confirm('이전에 작성 중이던 챗봇이 있습니다. 이어서 작성하시겠습니까?')) {
+        if (confirm('이전에 작성 중이던 코코봇이 있습니다. 이어서 작성하시겠습니까?')) {
           setData(draft.data || INITIAL_DATA);
           setStep(draft.step || 1);
         } else {

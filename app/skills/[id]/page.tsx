@@ -29,7 +29,7 @@ function useToast() {
 
 // ── 더미 리뷰 ────────────────────────────────────────────────────
 const DUMMY_REVIEWS = [
-  { id: '1', userName: '김민준', rating: 5, comment: '정말 유용합니다! 챗봇 운영이 훨씬 편해졌어요.', date: '2025-12-01' },
+  { id: '1', userName: '김민준', rating: 5, comment: '정말 유용합니다! 코코봇 운영이 훨씬 편해졌어요.', date: '2025-12-01' },
   { id: '2', userName: '이서연', rating: 4, comment: '설치가 간단하고 동작이 잘 됩니다. 추천해요.', date: '2025-11-28' },
   { id: '3', userName: '박지현', rating: 5, comment: '고객 응대 품질이 확실히 올라갔습니다.', date: '2025-11-15' },
 ];

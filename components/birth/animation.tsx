@@ -1,10 +1,10 @@
 /**
  * @task S2FE5 - Birth 페이지 React 전환
  * @file components/birth/animation.tsx
- * @description 챗봇 탄생 순서형 fade-in 애니메이션 컨테이너
+ * @description 코코봇 탄생 순서형 fade-in 애니메이션 컨테이너
  *
  * 애니메이션 순서:
- *  1) 챗봇 아이콘 fade-in (step 1, delay 0ms)
+ *  1) 코코봇 아이콘 fade-in (step 1, delay 0ms)
  *  2) "탄생했습니다!" 텍스트 (step 2, delay 400ms)
  *  3) URL 표시 (step 3, delay 800ms)
  *  4) QR코드 (step 4, delay 1200ms)

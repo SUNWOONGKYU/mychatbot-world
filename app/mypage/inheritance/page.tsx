@@ -321,7 +321,7 @@ export default function InheritancePage() {
           </div>
           <h1 className="text-2xl font-bold text-text-primary">피상속 설정</h1>
           <p className="text-sm text-text-secondary mt-1">
-            나의 계정이 비활성화될 경우 챗봇을 물려줄 피상속인을 지정하세요.
+            나의 계정이 비활성화될 경우 코코봇을 물려줄 피상속인을 지정하세요.
           </p>
         </div>
 
@@ -452,7 +452,7 @@ export default function InheritancePage() {
           <section className="bg-surface border border-border rounded-2xl p-6">
             <h2 className="font-bold text-text-primary mb-1">페르소나별 피상속 허용</h2>
             <p className="text-sm text-text-secondary mb-4">
-              피상속 시 이전될 챗봇 페르소나를 선택하세요.
+              피상속 시 이전될 코코봇 페르소나를 선택하세요.
             </p>
 
             <div className="space-y-2">
@@ -497,7 +497,7 @@ export default function InheritancePage() {
           <ul className="space-y-1.5 text-xs text-text-secondary">
             <li>• 피상속인은 한 명만 지정할 수 있습니다.</li>
             <li>• 피상속인이 동의를 수락해야 효력이 발생합니다.</li>
-            <li>• 계정 비활성 조건 충족 시 자동으로 챗봇 소유권이 이전됩니다.</li>
+            <li>• 계정 비활성 조건 충족 시 자동으로 코코봇 소유권이 이전됩니다.</li>
             <li>• 언제든지 피상속인 지정을 해제하거나 변경할 수 있습니다.</li>
           </ul>
         </section>

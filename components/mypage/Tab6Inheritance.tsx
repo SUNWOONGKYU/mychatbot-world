@@ -322,7 +322,7 @@ export default function Tab6Inheritance() {
 
           {data && data.personas.length === 0 && (
             <div className="text-center py-8 text-text-muted text-sm">
-              상속할 페르소나가 없습니다. 먼저 챗봇을 생성하세요.
+              상속할 페르소나가 없습니다. 먼저 코코봇을 생성하세요.
             </div>
           )}
         </>

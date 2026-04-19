@@ -1,5 +1,5 @@
 /**
- * @task S3BA1 — 게스트 챗봇 생성 API
+ * @task S3BA1 — 게스트 코코봇 생성 API
  * @description POST /api/guest-create — 인증 없이 게스트용 봇 ID 반환
  *
  * 요청: { botName: string, templateId: string }

@@ -1,7 +1,7 @@
 /**
  * @task S5FE6
- * @description 마이페이지 탭2 — 챗봇 관리
- * 내 챗봇 목록(카드뷰), 페르소나 관리, per-persona 툴 6종, 복제/내보내기/삭제
+ * @description 마이페이지 탭2 — 코코봇 관리
+ * 내 코코봇 목록(카드뷰), 페르소나 관리, per-persona 툴 6종, 복제/내보내기/삭제
  */
 'use client';
 
@@ -34,9 +34,9 @@ const TOOL_LIST: { id: ToolId; label: string; icon: string; desc: string }[] = [
   { id: 'chat-log',      label: '대화 로그',    icon: '💬', desc: '대화 기록 조회' },
   { id: 'kb',           label: 'KB 지식베이스', icon: '📚', desc: '지식 업로드/관리' },
   { id: 'skills',       label: '스킬 장착',     icon: '⚡', desc: '스킬 장착/해제' },
-  { id: 'chatbot-school',label: '챗봇스쿨',     icon: '🎓', desc: '학습 현황 확인' },
+  { id: 'chatbot-school',label: '코코봇스쿨',     icon: '🎓', desc: '학습 현황 확인' },
   { id: 'community',    label: '커뮤니티',      icon: '🌐', desc: '커뮤니티 활동 내역' },
-  { id: 'settings',     label: '챗봇 설정',     icon: '⚙️', desc: 'AI 모델/DM 보안 등' },
+  { id: 'settings',     label: '코코봇 설정',     icon: '⚙️', desc: 'AI 모델/DM 보안 등' },
 ];
 
 const DM_SECURITY_LEVELS = [
@@ -94,7 +94,7 @@ function UrlPanel({ url }: { url: string | null }) {
           </div>
         </>
       ) : (
-        <p className="text-sm text-[rgb(var(--text-muted))]">배포 URL이 없습니다. 챗봇을 배포해주세요.</p>
+        <p className="text-sm text-[rgb(var(--text-muted))]">배포 URL이 없습니다. 코코봇을 배포해주세요.</p>
       )}
     </div>
   );
@@ -250,7 +250,7 @@ function ToolPanel({ activeTool, onSelect }: { activeTool: ToolId | null; onSele
   );
 }
 
-// ── 하위 컴포넌트: 챗봇 설정 (DM 보안 + AI 모델) ───────────────────────
+// ── 하위 컴포넌트: 코코봇 설정 (DM 보안 + AI 모델) ───────────────────────
 
 function BotSettingsPanel() {
   const [dmLevel, setDmLevel] = useState(1);
@@ -511,7 +511,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-[rgb(var(--text-primary))]">
-          내 챗봇 ({bots.length})
+          내 코코봇 ({bots.length})
         </h2>
         <a
           href="/birth"
@@ -521,7 +521,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
             'hover:bg-[rgb(var(--color-primary-hover))] transition-colors',
           )}
         >
-          + 새 챗봇
+          + 새 코코봇
         </a>
       </div>
 
@@ -529,8 +529,8 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
       {bots.length === 0 ? (
         <div className="text-center py-16 text-[rgb(var(--text-muted))]">
           <p className="text-4xl mb-3">🤖</p>
-          <p className="font-medium">아직 챗봇이 없습니다.</p>
-          <p className="text-sm mt-1">새 챗봇을 만들어보세요!</p>
+          <p className="font-medium">아직 코코봇이 없습니다.</p>
+          <p className="text-sm mt-1">새 코코봇을 만들어보세요!</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
@@ -552,7 +552,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
           'text-sm text-[rgb(var(--text-secondary))] border border-dashed border-[rgb(var(--border))]',
           'hover:border-[rgb(var(--border-strong))] transition-colors',
         )}>
-          <span>JSON에서 챗봇 가져오기</span>
+          <span>JSON에서 코코봇 가져오기</span>
           <input type="file" accept=".json" className="hidden" />
         </label>
       </div>

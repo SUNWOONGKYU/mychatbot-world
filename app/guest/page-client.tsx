@@ -46,7 +46,7 @@ interface Category {
   desc: string;
 }
 
-// 아바타형 — 나를 대신하는 챗봇 (5개)
+// 아바타형 — 나를 대신하는 코코봇 (5개)
 const AVATAR_CATS: Category[] = [
   { id: 'restaurant',  templateId: 'guest_restaurant',  icon: '🍽️', name: '음식점',   desc: '메뉴·예약 안내' },
   { id: 'hospital',    templateId: 'guest_hospital',    icon: '🏥',  name: '병원',     desc: '진료·예약 안내' },
@@ -55,7 +55,7 @@ const AVATAR_CATS: Category[] = [
   { id: 'academy',     templateId: 'guest_academy',     icon: '🎓',  name: '학원',     desc: '수강·수업 안내' },
 ];
 
-// 도우미형 — 나를 도와주는 챗봇 (5개)
+// 도우미형 — 나를 도와주는 코코봇 (5개)
 const HELPER_CATS: Category[] = [
   { id: 'work',        templateId: 'guest_work',        icon: '📋',  name: '업무비서',  desc: '문서·보고서 작성' },
   { id: 'study',       templateId: 'guest_study',       icon: '📚',  name: '공부도우미', desc: '학습·과제 지원' },
@@ -67,7 +67,7 @@ const HELPER_CATS: Category[] = [
 const CATEGORIES: Category[] = [...AVATAR_CATS, ...HELPER_CATS];
 
 const CATEGORY_NAMES: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.id, `${c.name} AI 챗봇`])
+  CATEGORIES.map((c) => [c.id, `${c.name} AI 코코봇`])
 );
 
 /* ─────────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@ export default function GuestPageInner() {
   const [selectedId, setSelectedId]   = useState<string | null>(null);
   const [loadingId,  setLoadingId]    = useState<string | null>(null);
   const [isLoading,  setIsLoading]    = useState(false);
-  const [loadingText, setLoadingText] = useState('챗봇을 준비하는 중...');
+  const [loadingText, setLoadingText] = useState('코코봇을 준비하는 중...');
   const [toast,      setToast]        = useState<string | null>(null);
 
   /* 세션 초기화 (클라이언트 마운트 후) */
@@ -138,7 +138,7 @@ export default function GuestPageInner() {
   const handleSelectCategory = useCallback(async (cat: Category) => {
     if (loadingId) return;
 
-    const botName = CATEGORY_NAMES[cat.id] ?? '게스트 AI 챗봇';
+    const botName = CATEGORY_NAMES[cat.id] ?? '게스트 AI 코코봇';
 
     setSelectedId(cat.id);
     setLoadingId(cat.id);
@@ -511,7 +511,7 @@ export default function GuestPageInner() {
         {/* ── 헤더 ──────────────────────────────────────────────── */}
         <header className="guest-header">
           <Link href="/" className="guest-logo">
-            My Chatbot World
+            CoCoBot
           </Link>
           <div className="guest-header-actions">
             <Link href="/login" className="btn-login">로그인</Link>
@@ -522,17 +522,17 @@ export default function GuestPageInner() {
         {/* ── 안내 배너 ─────────────────────────────────────────── */}
         <div className="guest-banner">
           <h1>
-            AI 챗봇 체험
+            AI 코코봇 체험
           </h1>
           <p className="guest-banner-desc">
-            카테고리를 선택하면 바로 AI 챗봇과 대화할 수 있습니다
+            카테고리를 선택하면 바로 AI 코코봇과 대화할 수 있습니다
           </p>
         </div>
 
         {/* ── 메인 콘텐츠 ───────────────────────────────────────── */}
         <main className="guest-main">
-          {/* 아바타형 — 나를 대신하는 챗봇 */}
-          <p className="guest-section-label">아바타형 — 나를 대신하는 챗봇</p>
+          {/* 아바타형 — 나를 대신하는 코코봇 */}
+          <p className="guest-section-label">아바타형 — 나를 대신하는 코코봇</p>
           <CategoryGrid
             categories={AVATAR_CATS}
             selectedId={selectedId}
@@ -540,8 +540,8 @@ export default function GuestPageInner() {
             onSelect={handleSelectCategory}
           />
 
-          {/* 도우미형 — 나를 도와주는 챗봇 */}
-          <p className="guest-section-label" style={{ marginTop: '2rem' }}>도우미형 — 나를 도와주는 챗봇</p>
+          {/* 도우미형 — 나를 도와주는 코코봇 */}
+          <p className="guest-section-label" style={{ marginTop: '2rem' }}>도우미형 — 나를 도와주는 코코봇</p>
           <CategoryGrid
             categories={HELPER_CATS}
             selectedId={selectedId}

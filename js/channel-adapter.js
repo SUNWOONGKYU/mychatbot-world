@@ -138,8 +138,8 @@ window.WebChatAdapter = WebChatAdapter;
 window.TelegramAdapter = TelegramAdapter;
 window.ChannelManager = ChannelManager;
 
-// Register default webchat adapter with MCW
-if (typeof MCW !== 'undefined') {
-  MCW.channels = new ChannelManager();
-  MCW.channels.register(new WebChatAdapter());
+// Register default webchat adapter with CoCoBot
+if (typeof CoCoBot !== 'undefined') {
+  CoCoBot.channels = new ChannelManager();
+  CoCoBot.channels.register(new WebChatAdapter());
 }

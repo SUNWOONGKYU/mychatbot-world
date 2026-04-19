@@ -1,11 +1,11 @@
 /**
  * @page /privacy
- * @description My Chatbot World 개인정보처리방침
+ * @description CoCoBot 개인정보처리방침
  */
 
 export const metadata = {
-  title: '개인정보처리방침 | My Chatbot World',
-  description: 'My Chatbot World 개인정보처리방침',
+  title: '개인정보처리방침 | CoCoBot',
+  description: 'CoCoBot 개인정보처리방침',
 };
 
 export default function PrivacyPage() {
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
             borderRadius: '0 8px 8px 0',
           }}
         >
-          My Chatbot World(이하 &quot;회사&quot;)는 이용자의 개인정보를 소중히 여기며, 「개인정보 보호법」 및 관련 법령을 준수합니다.
+          CoCoBot(이하 &quot;회사&quot;)는 이용자의 개인정보를 소중히 여기며, 「개인정보 보호법」 및 관련 법령을 준수합니다.
           이 방침을 통해 회사가 수집하는 개인정보의 항목, 이용 목적, 보유 기간 및 이용자의 권리를 안내합니다.
         </p>
 
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
             headers={['목적', '상세 내용']}
             rows={[
               ['회원가입 및 관리', '회원 식별, 본인 확인, 서비스 부정이용 방지, 각종 고지 및 통지'],
-              ['서비스 제공', 'AI 챗봇 생성·배포·관리, 스킬 마켓플레이스 운영, 학습 데이터 관리'],
+              ['서비스 제공', 'AI 코코봇 생성·배포·관리, 스킬 마켓플레이스 운영, 학습 데이터 관리'],
               ['결제 및 정산', '크레딧 구매, 유료 서비스 결제, 스킬 판매 수익 정산'],
               ['고객 지원', '문의·민원 접수 및 처리, 분쟁 해결'],
               ['서비스 개선', '서비스 이용 통계 분석, 신규 기능 개발, 이용 환경 개선'],
@@ -89,7 +89,7 @@ export default function PrivacyPage() {
               ['회원가입 (선택)', '프로필 이미지, 소개글', '마이페이지 설정'],
               ['소셜 로그인', 'OAuth 제공 이메일, 이름, 프로필 이미지', 'Google/카카오 등 OAuth'],
               ['결제 정보', '결제 수단 정보 (카드번호 미저장, PG사 처리)', '결제 시 자동 수집'],
-              ['서비스 이용', '접속 로그, IP, 브라우저 정보, 쿠키, 챗봇 이용 기록', '서비스 이용 시 자동 수집'],
+              ['서비스 이용', '접속 로그, IP, 브라우저 정보, 쿠키, 코코봇 이용 기록', '서비스 이용 시 자동 수집'],
               ['고객 문의', '이름, 이메일, 연락처, 문의 내용', '고객센터 문의 양식'],
             ]}
           />

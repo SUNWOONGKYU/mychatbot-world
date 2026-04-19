@@ -42,7 +42,7 @@ export default function Step7Theme({ data, onNext, onBack }: Props) {
   return (
     <div>
       <h2 style={stepTitle}>테마를 선택하세요</h2>
-      <p style={stepDesc}>챗봇 페이지의 디자인 테마를 선택하세요</p>
+      <p style={stepDesc}>코코봇 페이지의 디자인 테마를 선택하세요</p>
 
       <div style={formCard}>
         {/* 다크/라이트 모드 */}
@@ -120,7 +120,7 @@ export default function Step7Theme({ data, onNext, onBack }: Props) {
           }}>
             {/* 헤더 */}
             <div style={{ padding: '12px 16px', fontWeight: 700, color: 'white', fontSize: '0.9rem', background: mainColor }}>
-              {data.botName || '챗봇 이름'}
+              {data.botName || '코코봇 이름'}
             </div>
             {/* 채팅 영역 */}
             <div style={{

@@ -3,9 +3,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'My Chatbot World',
-    short_name: 'MCW',
-    description: 'AI 챗봇을 만들고 공유하는 플랫폼 — My Chatbot World',
+    name: 'CoCoBot',
+    short_name: 'CoCoBot',
+    description: 'AI 코코봇을 만들고 공유하는 플랫폼 — CoCoBot',
     start_url: '/',
     display: 'standalone',
     background_color: '#0f172a',
@@ -38,7 +38,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: '봇 만들기',
         short_name: '새 봇',
-        description: '새로운 AI 챗봇을 만듭니다',
+        description: '새로운 AI 코코봇을 만듭니다',
         url: '/bots/new',
         icons: [{ src: '/icons/icon-96x96.png', sizes: '96x96' }],
       },

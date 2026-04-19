@@ -597,7 +597,7 @@ class CommunityPostDetail {
       loginPromptEl?.style && (loginPromptEl.style.display = '');
     }
 
-    document.title = `${p.title} — 봇카페 | My Chatbot World`;
+    document.title = `${p.title} — 봇카페 | CoCoBot`;
   }
 
   /** 댓글 목록 로드 & 트리 렌더 */
@@ -929,7 +929,7 @@ class CommunityWrite {
   updatePageTitle() {
     const titleEl = document.getElementById('writeFormTitle');
     if (titleEl) titleEl.textContent = this.isEdit ? '게시글 수정' : '새 글 작성';
-    document.title = `${this.isEdit ? '수정' : '글쓰기'} — 봇카페 | My Chatbot World`;
+    document.title = `${this.isEdit ? '수정' : '글쓰기'} — 봇카페 | CoCoBot`;
   }
 
   async loadCategories() {
@@ -941,7 +941,7 @@ class CommunityWrite {
       const defaultOpts = `
         <option value="">카테고리 선택</option>
         <option value="free">자유게시판</option>
-        <option value="showcase">챗봇 쇼케이스</option>
+        <option value="showcase">코코봇 쇼케이스</option>
         <option value="tip">팁 공유</option>
         <option value="qna">Q&A</option>`;
       selectEl.innerHTML = cats.length
@@ -951,7 +951,7 @@ class CommunityWrite {
       selectEl.innerHTML = `
         <option value="">카테고리 선택</option>
         <option value="free">자유게시판</option>
-        <option value="showcase">챗봇 쇼케이스</option>
+        <option value="showcase">코코봇 쇼케이스</option>
         <option value="tip">팁 공유</option>
         <option value="qna">Q&A</option>`;
     }
@@ -1129,7 +1129,7 @@ class CommunityGallery {
       this.posts = res.posts || res.data || [];
 
       if (!this.posts.length) {
-        grid.innerHTML = '<div class="posts-empty" style="grid-column:1/-1"><div class="empty-icon">🤖</div><p>아직 등록된 챗봇이 없습니다.</p></div>';
+        grid.innerHTML = '<div class="posts-empty" style="grid-column:1/-1"><div class="empty-icon">🤖</div><p>아직 등록된 코코봇이 없습니다.</p></div>';
         return;
       }
 

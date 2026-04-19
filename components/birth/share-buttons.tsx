@@ -20,7 +20,7 @@ import clsx from 'clsx';
 export interface ShareButtonsProps {
   /** 공유할 배포 URL */
   deployUrl: string;
-  /** 챗봇 이름 (카카오 공유 텍스트용) */
+  /** 코코봇 이름 (카카오 공유 텍스트용) */
   botName: string;
   /** 추가 className */
   className?: string;
@@ -44,7 +44,7 @@ function buildKakaoFallbackUrl(url: string, title: string): string {
  * ShareButtons — URL 복사 / 카카오 / 링크 열기 버튼 그룹
  *
  * @example
- * <ShareButtons deployUrl="https://..." botName="내 챗봇" />
+ * <ShareButtons deployUrl="https://..." botName="내 코코봇" />
  */
 export function ShareButtons({ deployUrl, botName, className }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
@@ -81,8 +81,8 @@ export function ShareButtons({ deployUrl, botName, className }: ShareButtonsProp
    * window.Kakao SDK가 로드되어 있으면 SDK 사용, 아니면 URL 폴백
    */
   const handleKakao = useCallback(() => {
-    const title = `${botName} — AI 챗봇`;
-    const description = 'My Chatbot World에서 만든 AI 챗봇입니다. 대화해 보세요!';
+    const title = `${botName} — AI 코코봇`;
+    const description = 'CoCoBot에서 만든 AI 코코봇입니다. 대화해 보세요!';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Kakao = (window as any).Kakao;
@@ -102,7 +102,7 @@ export function ShareButtons({ deployUrl, botName, className }: ShareButtonsProp
           },
           buttons: [
             {
-              title: '챗봇과 대화하기',
+              title: '코코봇과 대화하기',
               link: { mobileWebUrl: deployUrl, webUrl: deployUrl },
             },
           ],
@@ -180,7 +180,7 @@ export function ShareButtons({ deployUrl, botName, className }: ShareButtonsProp
           'hover:bg-surface-hover hover:border-border-strong active:scale-95',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         )}
-        aria-label="새 탭에서 챗봇 열기"
+        aria-label="새 탭에서 코코봇 열기"
       >
         <span className="text-base leading-none" aria-hidden="true">↗</span>
         <span>링크 열기</span>

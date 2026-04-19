@@ -52,7 +52,7 @@ const STORAGE_BUCKET = 'kb-files';
  *
  * Form Data 필드:
  * - file: 업로드할 파일 (필수)
- * - chatbot_id: 챗봇 ID (필수)
+ * - chatbot_id: 코코봇 ID (필수)
  * - auto_embed: 자동 임베딩 여부 ("true"/"false", 기본: "false")
  * - title: KB 제목 (선택, 미입력 시 파일명 사용)
  *
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }

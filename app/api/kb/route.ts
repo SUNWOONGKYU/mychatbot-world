@@ -3,7 +3,7 @@
  * @description Knowledge Base CRUD API
  *
  * Endpoints:
- * - GET  /api/kb          Knowledge Base 목록 조회 (챗봇 ID 필터)
+ * - GET  /api/kb          Knowledge Base 목록 조회 (코코봇 ID 필터)
  * - POST /api/kb          Knowledge Base 항목 등록
  * - DELETE /api/kb?id=xx  Knowledge Base 항목 삭제 (관련 임베딩 포함)
  *
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id, owner_id')
@@ -88,7 +88,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }
@@ -181,7 +181,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }

@@ -15,7 +15,7 @@ interface RevenueItem { enabled: boolean; price: string; }
 type RevenueSettings = Record<RevenueType, RevenueItem>;
 
 const ACTIVITIES: { id: RevenueType; icon: string; name: string; desc: string; priceLabel: string; placeholder: string }[] = [
-  { id: 'consulting', icon: '💬', name: '상담 중개', desc: '챗봇을 통한 유료 상담 연결', priceLabel: '상담 단가 (원/30분)', placeholder: '30000' },
+  { id: 'consulting', icon: '💬', name: '상담 중개', desc: '코코봇을 통한 유료 상담 연결', priceLabel: '상담 단가 (원/30분)', placeholder: '30000' },
   { id: 'reservation', icon: '📅', name: '예약 중개', desc: '서비스 예약 수수료 수익', priceLabel: '예약 단가 (원/건)', placeholder: '5000' },
   { id: 'referral', icon: '🎯', name: '추천 중개', desc: '제품/서비스 추천 커미션', priceLabel: '커미션 비율 (%)', placeholder: '10' },
   { id: 'content', icon: '📦', name: '콘텐츠 판매', desc: '디지털 자료 판매 연결', priceLabel: '결제 링크 (외부 결제 페이지)', placeholder: 'https://...' },
@@ -95,7 +95,7 @@ export function RevenueTab() {
         <div style={S.sectionHeader}>
           <h2 style={S.h2}>수익활동 중개 서비스</h2>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginTop: 4 }}>
-            My Chatbot World가 중개하며, 발생 수익의 20%가 수수료로 차감됩니다.
+            CoCoBot이 중개하며, 발생 수익의 20%가 수수료로 차감됩니다.
           </p>
         </div>
 

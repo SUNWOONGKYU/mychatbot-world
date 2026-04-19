@@ -27,9 +27,9 @@ function isAdminPath(pathname: string): boolean {
 }
 
 /**
- * Navbar — MCW 앱 내부 상단 네비게이션 바
+ * Navbar — CoCoBot 앱 내부 상단 네비게이션 바
  *
- * 구조: [MCW 로고] [4대 메뉴: Birth/Skills/Jobs/Community] [알림벨] [프로필→/mypage] [로그인/무료시작]
+ * 구조: [CoCoBot 로고] [4대 메뉴: Birth/Skills/Jobs/Community] [알림벨] [프로필→/mypage] [로그인/무료시작]
  * - 스크롤 시 배경 블러 처리
  * - 활성 메뉴 pathname 기반 하이라이트 (퍼플)
  * - 로그인 · 회원가입 · 게스트 · 어드민 페이지는 Navbar 숨김 (랜딩은 표시)
@@ -68,7 +68,7 @@ export function Navbar() {
         className="flex items-center shrink-0 select-none"
         aria-label="메인 화면으로 이동"
       >
-        <span className="text-lg font-extrabold tracking-tight text-primary">My Chatbot World</span>
+        <span className="text-lg font-extrabold tracking-tight text-primary">CoCoBot</span>
       </Link>
 
       {/* 서비스 메뉴 + 구분선 + My Page */}

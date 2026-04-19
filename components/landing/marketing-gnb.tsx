@@ -2,7 +2,7 @@
  * @task S5FE3 - 랜딩 페이지 리디자인
  * @component MarketingGNB
  * @description 랜딩 전용 마케팅 상단바 — app Navbar와 별도
- *              MCW 로고 + 스킬스토어/가격/커뮤니티/블로그 + 로그인/무료시작
+ *              CoCoBot 로고 + 스킬스토어/가격/커뮤니티/블로그 + 로그인/무료시작
  *              P4 와이어프레임 SECTION 0 (마케팅 상단 GNB) 기준
  */
 'use client';
@@ -55,7 +55,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           href="/"
           className="flex items-center gap-2 text-xl font-extrabold tracking-tight"
           style={{ color: 'rgb(var(--color-primary))' }}
-          aria-label="My Chatbot World 홈"
+          aria-label="CoCoBot 홈"
         >
           <span
             className="flex h-8 w-8 items-center justify-center rounded-lg text-sm text-white"
@@ -65,7 +65,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           >
             M
           </span>
-          <span>MCW</span>
+          <span>CoCoBot</span>
         </Link>
 
         {/* 데스크탑 내비 */}

@@ -68,7 +68,7 @@ const PRICE_MAX = 500000;
 // ── 데모 데이터 ──────────────────────────────────────────────
 
 const MOCK_ALL: SearchResult[] = [
-  { id: 'b1', name: '고객응대 도우미', category: 'customer-service', description: '24시간 고객 문의를 자동으로 처리하는 스마트 챗봇입니다.', emoji: '🤖', rating: 4.8, reviewCount: 1234, price: 29000, skills: ['NLP', '다국어', 'API연동'], isNew: false, type: 'bot' },
+  { id: 'b1', name: '고객응대 도우미', category: 'customer-service', description: '24시간 고객 문의를 자동으로 처리하는 스마트 코코봇입니다.', emoji: '🤖', rating: 4.8, reviewCount: 1234, price: 29000, skills: ['NLP', '다국어', 'API연동'], isNew: false, type: 'bot' },
   { id: 'b2', name: '영어 튜터봇', category: 'education', description: '개인 맞춤형 영어 학습 플랜을 제공하는 AI 튜터입니다.', emoji: '📚', rating: 4.6, reviewCount: 892, price: 19000, skills: ['교육', '언어학습', '퀴즈'], isNew: true, type: 'bot' },
   { id: 'b3', name: '마케팅 어시스턴트', category: 'marketing', description: 'SNS 콘텐츠와 광고 문구를 자동으로 생성해드립니다.', emoji: '📣', rating: 4.5, reviewCount: 567, price: 49000, skills: ['콘텐츠생성', 'SNS', '카피라이팅'], isNew: false, type: 'bot' },
   { id: 'b4', name: '코딩 도우미', category: 'development', description: '코드 리뷰, 디버깅, 문서화를 도와드립니다.', emoji: '💻', rating: 4.9, reviewCount: 2341, price: 39000, skills: ['코드리뷰', '디버깅', 'Git'], isNew: false, type: 'bot' },
@@ -335,7 +335,7 @@ function SearchContent() {
             <Link href="/jobs" className="text-white/40 hover:text-blue-400 text-sm transition-colors">
               ← 구봇구직
             </Link>
-            <h1 className="text-lg font-bold text-white">챗봇 검색</h1>
+            <h1 className="text-lg font-bold text-white">코코봇 검색</h1>
           </div>
 
           {/* 검색 폼 */}
@@ -350,7 +350,7 @@ function SearchContent() {
                 type="text"
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
-                placeholder="챗봇 이름, 기능, 카테고리 검색..."
+                placeholder="코코봇 이름, 기능, 카테고리 검색..."
                 autoComplete="off"
                 className="w-full pl-9 pr-4 py-2.5 bg-white/[0.08] border border-white/15 rounded-xl text-white placeholder-white/35 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/15 transition-all"
                 autoFocus
@@ -572,7 +572,7 @@ function SearchContent() {
           {!searched ? (
             <div className="text-center py-20 text-white/40">
               <p className="text-4xl mb-4">🔍</p>
-              <p className="text-sm">검색어를 입력하거나 필터를 설정해 챗봇을 찾아보세요.</p>
+              <p className="text-sm">검색어를 입력하거나 필터를 설정해 코코봇을 찾아보세요.</p>
             </div>
           ) : loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -583,7 +583,7 @@ function SearchContent() {
               <div className="text-5xl mb-4">😔</div>
               <h3 className="text-lg font-bold text-white mb-2">검색 결과가 없습니다</h3>
               <p className="text-white/50 text-sm mb-4">
-                {keyword ? `"${keyword}"에 대한 결과가 없습니다.` : '조건에 맞는 챗봇이 없습니다.'}
+                {keyword ? `"${keyword}"에 대한 결과가 없습니다.` : '조건에 맞는 코코봇이 없습니다.'}
                 <br />다른 검색어나 필터를 시도해보세요.
               </p>
               <button

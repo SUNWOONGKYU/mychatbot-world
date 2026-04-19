@@ -43,12 +43,12 @@ export function LandingFooter() {
 
         {/* 저작권 */}
         <p style={{ fontSize: '11px', color: 'rgb(255 255 255 / 0.6)', margin: 0 }}>
-          © 2026 My Chatbot World. All rights reserved.
+          © 2026 CoCoBot. All rights reserved.
         </p>
 
         {/* 특허 출원 */}
         <p style={{ fontSize: '10px', color: 'rgb(255 255 255 / 0.45)', margin: 0, lineHeight: 1.6 }}>
-          특허출원번호: 10-2026-0038658 | 멀티 페르소나와 감성·비용 조건 기반 멀티 AI 자동 라우팅을 구비한 AI 챗봇의 생성·학습·성장·수익활동·피상속으로 이어지는 라이프사이클 지원 시스템 및 방법
+          특허출원번호: 10-2026-0038658 | 멀티 페르소나와 감성·비용 조건 기반 멀티 AI 자동 라우팅을 구비한 AI 코코봇의 생성·학습·성장·수익활동·피상속으로 이어지는 라이프사이클 지원 시스템 및 방법
         </p>
 
         {/* 관리자 — 우측 하단 끝 */}

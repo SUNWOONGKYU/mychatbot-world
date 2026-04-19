@@ -98,7 +98,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
   const toneDescription = toneGuide[tone] ?? '친근하고 자연스러운 말투로';
   const keywordContext = keywords.length > 0 ? `주요 키워드: ${keywords.join(', ')}` : '';
 
-  const systemPrompt = `당신은 AI 챗봇의 FAQ를 작성하는 전문가입니다.
+  const systemPrompt = `당신은 AI 코코봇의 FAQ를 작성하는 전문가입니다.
 비즈니스 정보를 분석하여 고객이 가장 자주 묻는 질문 10개와 답변을 생성합니다.
 ${toneDescription} 작성하세요.
 
@@ -119,7 +119,7 @@ ${toneDescription} 작성하세요.
 - 한국어로 작성
 - 비즈니스 유형에 맞는 전문 용어 사용`;
 
-  const userPrompt = `챗봇 이름: ${name}
+  const userPrompt = `코코봇 이름: ${name}
 비즈니스 설명: ${description}
 비즈니스 유형: ${businessType}
 ${keywordContext}
@@ -176,7 +176,7 @@ ${keywordContext}
       },
       {
         question: '어떻게 연락할 수 있나요?',
-        answer: '이 챗봇을 통해 언제든지 문의해 주시면 빠르게 답변해 드리겠습니다.',
+        answer: '이 코코봇을 통해 언제든지 문의해 주시면 빠르게 답변해 드리겠습니다.',
       },
     ];
   }

@@ -2,7 +2,7 @@
  * @task S2FE3
  * @description 설정 화면 컴포넌트
  *
- * - 선택된 챗봇의 설정 조회/수정 (GET/PATCH /api/settings)
+ * - 선택된 코코봇의 설정 조회/수정 (GET/PATCH /api/settings)
  * - 설정 항목: 기본 감성 레벨(temperature), 기본 비용 레벨(model),
  *   언어(language), 인사말(greeting), 페르소나(persona)
  * - 자동 저장 (debounce 1초)
@@ -16,7 +16,7 @@ import type { Bot } from '@/types/bot';
 
 // ── 타입 정의 ─────────────────────────────────────────────────
 
-/** 챗봇 설정 */
+/** 코코봇 설정 */
 interface BotSettings {
   id?: string;
   chatbot_id: string;
@@ -90,7 +90,7 @@ function tempLabel(value: number): string {
 // ── SettingsPanel 컴포넌트 ────────────────────────────────────
 
 /**
- * SettingsPanel — 챗봇 설정 수정 UI
+ * SettingsPanel — 코코봇 설정 수정 UI
  * - 봇 선택 → 설정 로드
  * - 각 항목 수정 → 1초 debounce → 자동 저장 (PATCH /api/settings)
  */
@@ -216,7 +216,7 @@ export function SettingsPanel({ botId, bots, onSelectBot }: SettingsPanelProps) 
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <label htmlFor="settings-bot-select" className="text-sm font-medium text-text-secondary shrink-0">
-            챗봇:
+            코코봇:
           </label>
           <select
             id="settings-bot-select"
@@ -227,7 +227,7 @@ export function SettingsPanel({ botId, bots, onSelectBot }: SettingsPanelProps) 
               'text-text-primary focus:outline-none focus:ring-2 focus:ring-primary',
             )}
           >
-            {bots.length === 0 && <option value="" disabled>챗봇 없음</option>}
+            {bots.length === 0 && <option value="" disabled>코코봇 없음</option>}
             {bots.map((bot) => (
               <option key={bot.id} value={bot.id}>{bot.name}</option>
             ))}
@@ -254,7 +254,7 @@ export function SettingsPanel({ botId, bots, onSelectBot }: SettingsPanelProps) 
         </div>
       ) : !botId ? (
         <div className="flex items-center justify-center h-40 text-text-muted text-sm">
-          챗봇을 선택하면 설정이 표시됩니다.
+          코코봇을 선택하면 설정이 표시됩니다.
         </div>
       ) : (
         <div className="space-y-5">
@@ -264,7 +264,7 @@ export function SettingsPanel({ botId, bots, onSelectBot }: SettingsPanelProps) 
             <label className="block text-sm font-medium text-text-primary">
               인사말
             </label>
-            <p className="text-xs text-text-muted">챗봇이 대화를 시작할 때 표시하는 메시지</p>
+            <p className="text-xs text-text-muted">코코봇이 대화를 시작할 때 표시하는 메시지</p>
             <input
               type="text"
               value={settings.greeting}
@@ -280,7 +280,7 @@ export function SettingsPanel({ botId, bots, onSelectBot }: SettingsPanelProps) 
             <label className="block text-sm font-medium text-text-primary">
               페르소나 (시스템 프롬프트)
             </label>
-            <p className="text-xs text-text-muted">챗봇의 역할, 성격, 전문 분야를 정의합니다</p>
+            <p className="text-xs text-text-muted">코코봇의 역할, 성격, 전문 분야를 정의합니다</p>
             <textarea
               value={settings.persona}
               onChange={(e) => handleChange({ persona: e.target.value })}
@@ -394,7 +394,7 @@ export function SettingsPanel({ botId, bots, onSelectBot }: SettingsPanelProps) 
             <label className="block text-sm font-medium text-text-primary">
               답변 불가 메시지
             </label>
-            <p className="text-xs text-text-muted">챗봇이 답변하기 어려울 때 표시할 문구</p>
+            <p className="text-xs text-text-muted">코코봇이 답변하기 어려울 때 표시할 문구</p>
             <input
               type="text"
               value={settings.fallback_message}

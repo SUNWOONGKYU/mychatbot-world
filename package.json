@@ -2,7 +2,7 @@
     "name": "mychatbot-world",
     "version": "1.0.0",
     "type": "module",
-    "description": "My Chatbot World - AI 챗봇 생성 플랫폼",
+    "description": "CoCoBot - AI 코코봇 생성 플랫폼",
     "dependencies": {
         "@supabase/supabase-js": "^2.39.0",
         "@supabase/ssr": "^0.5.2",

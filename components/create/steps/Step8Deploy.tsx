@@ -1,7 +1,7 @@
 /**
  * Step 8: 배포
  * - 배포 채널 선택 (웹, 카카오톡, 텔레그램)
- * - 챗봇 URL 복사
+ * - 코코봇 URL 복사
  * - QR 코드 표시 + 다운로드
  * - 온보딩 카드 3종 (대화하기, FAQ 추가, 스킬 장착)
  */
@@ -76,7 +76,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
       {/* 완료 축하 */}
       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
         <div style={{ fontSize: '4rem', marginBottom: '1.5rem', animation: 'bounce 1s ease infinite' }}>🎉</div>
-        <h2 style={stepTitle}>축하합니다! 챗봇이 완성되었습니다!</h2>
+        <h2 style={stepTitle}>축하합니다! 코코봇이 완성되었습니다!</h2>
       </div>
 
       {/* 배포 채널 선택 */}
@@ -130,7 +130,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
         {/* URL 복사 */}
         <div style={{ marginBottom: '1.5rem' }}>
           <label style={{ display: 'block', fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>
-            챗봇 URL:
+            코코봇 URL:
           </label>
           <div style={{ display: 'flex', gap: '8px' }}>
             <input
@@ -225,7 +225,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
             display: 'inline-block',
           }}
         >
-          챗봇과 대화하기
+          코코봇과 대화하기
         </a>
         <a
           href="/home"
@@ -252,9 +252,9 @@ export default function Step8Deploy({ data, onFinish }: Props) {
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
           {[
-            { icon: '💬', title: '지금 대화해보기', desc: '챗봇과 첫 대화', href: `/bot/${botUsername}`, color: '#7c3aed' },
+            { icon: '💬', title: '지금 대화해보기', desc: '코코봇과 첫 대화', href: `/bot/${botUsername}`, color: '#7c3aed' },
             { icon: '❓', title: 'FAQ 추가하기', desc: '자주 묻는 질문 관리', href: '/home', color: '#2563eb' },
-            { icon: '⚡', title: '스킬 장착하기', desc: '챗봇 능력 강화', href: '/home', color: '#16a34a' },
+            { icon: '⚡', title: '스킬 장착하기', desc: '코코봇 능력 강화', href: '/home', color: '#16a34a' },
           ].map((card) => (
             <a
               key={card.title}
@@ -279,7 +279,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
       </div>
 
       <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
-        마이페이지에서 지식베이스, 스킬, 챗봇 스쿨을 관리할 수 있습니다.
+        마이페이지에서 지식베이스, 스킬, 코코봇 스쿨을 관리할 수 있습니다.
       </p>
 
       <style>{`

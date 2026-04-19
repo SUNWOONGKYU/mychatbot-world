@@ -89,11 +89,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const skill = await fetchSkillDetail((await params).id);
   if (!skill) {
-    return { title: '스킬을 찾을 수 없습니다 — My Chatbot World' };
+    return { title: '스킬을 찾을 수 없습니다 — CoCoBot' };
   }
   const title = skill.skill_name || skill.name || '스킬 상세';
   return {
-    title: `${title} — My Chatbot World`,
+    title: `${title} — CoCoBot`,
     description: skill.description,
   };
 }

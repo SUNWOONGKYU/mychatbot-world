@@ -1,5 +1,5 @@
 /**
- * @task S5FE6 — 챗봇 삭제 path param route
+ * @task S5FE6 — 코코봇 삭제 path param route
  * DELETE /api/bots/{id}
  */
 import { NextRequest, NextResponse } from 'next/server';

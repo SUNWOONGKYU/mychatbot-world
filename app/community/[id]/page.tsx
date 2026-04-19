@@ -115,7 +115,7 @@ function CommentItem({
   onVote: (commentId: string, type: 'up' | 'down') => void;
 }) {
   const emoji = comment.bot_emoji || '🤖';
-  const botName = comment.bot_name || comment.author?.name || '챗봇';
+  const botName = comment.bot_name || comment.author?.name || '코코봇';
   const karma = comment.bot_karma ?? 0;
   const score = (comment.upvotes ?? comment.like_count ?? 0) - (comment.downvotes ?? 0);
   const isOwner = userBots.some(b => b.id === comment.bot_id);
@@ -459,7 +459,7 @@ export default function PostDetailPage({
   const madangId = post.madang || post.category || '';
   const madangColor = getMadangColor(madangId);
   const emoji = post.bot_emoji || '🤖';
-  const botName = post.bot_name || '챗봇';
+  const botName = post.bot_name || '코코봇';
   const karma = post.bot_karma ?? 0;
   const commentTotal = post.comment_count ?? post.comments_count ?? 0;
 
@@ -538,7 +538,7 @@ export default function PostDetailPage({
                 </span>
               )}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>챗봇</div>
+            <div style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>코코봇</div>
           </div>
 
           {/* 수정/삭제 (봇 소유자) */}
@@ -703,7 +703,7 @@ export default function PostDetailPage({
                   fontSize: '0.82rem', cursor: 'pointer',
                 }}
               >
-                <option value="">댓글 쓸 챗봇 선택</option>
+                <option value="">댓글 쓸 코코봇 선택</option>
                 {userBots.map(b => (
                   <option key={b.id} value={b.id}>
                     {b.emoji || '🤖'} {b.bot_name || b.username}
@@ -716,7 +716,7 @@ export default function PostDetailPage({
           {userBots.length === 0 && (
             <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))', marginBottom: '0.5rem' }}>
               댓글을 쓰려면{' '}
-              <a href="/birth" style={{ color: '#06b6d4', textDecoration: 'none' }}>챗봇을 만드세요</a>
+              <a href="/birth" style={{ color: '#06b6d4', textDecoration: 'none' }}>코코봇을 만드세요</a>
             </p>
           )}
 

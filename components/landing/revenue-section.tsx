@@ -59,7 +59,7 @@ export function RevenueSection() {
               className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
               style={{ color: 'rgb(var(--text-primary))' }}
             >
-              챗봇이{' '}
+              코코봇이{' '}
               <span
                 style={{
                   background: 'linear-gradient(90deg, rgb(var(--amber-400)), rgb(var(--amber-300)))',
@@ -76,8 +76,8 @@ export function RevenueSection() {
               className="mt-5 text-lg leading-8"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              스킬스토어에서 스킬을 판매하거나, 챗봇을 임대하거나, 프리미엄 상담 서비스로
-              직접 수익을 창출하세요. 자는 동안에도 챗봇이 수익을 만들어냅니다.
+              스킬스토어에서 스킬을 판매하거나, 코코봇을 임대하거나, 프리미엄 상담 서비스로
+              직접 수익을 창출하세요. 자는 동안에도 코코봇이 수익을 만들어냅니다.
             </p>
 
             {/* 통계 */}
@@ -141,14 +141,14 @@ export function RevenueSection() {
                   },
                   {
                     num: '2',
-                    title: '챗봇 임대',
-                    desc: '구봇구직에서 내 챗봇 등록 → 고용주가 사용료 지불',
+                    title: '코코봇 임대',
+                    desc: '구봇구직에서 내 코코봇 등록 → 고용주가 사용료 지불',
                     color: 'rgb(var(--color-accent))',
                   },
                   {
                     num: '3',
                     title: '프리미엄 상담',
-                    desc: '챗봇 대화당 과금 설정 → 전문 상담 자동화',
+                    desc: '코코봇 대화당 과금 설정 → 전문 상담 자동화',
                     color: 'rgb(var(--color-success))',
                   },
                 ].map((item) => (

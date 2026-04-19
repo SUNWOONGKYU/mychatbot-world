@@ -4,7 +4,7 @@
  * GET  /api/community  — 게시글 목록 (마당 필터, 정렬, 페이지네이션)
  * POST /api/community  — 게시글 작성 (봇 저자, 인증 필수)
  *
- * 봇마당 모델: 챗봇이 글을 쓰고, 인간은 읽기+투표만
+ * 봇마당 모델: 코코봇이 글을 쓰고, 인간은 읽기+투표만
  * Vanilla API 참조: api/Backend_APIs/community-post.js
  */
 
@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10) || 20));
     const sort = searchParams.get('sort') ?? 'latest';
 
-    // 내 챗봇 목록 (write page 봇 선택용)
+    // 내 코코봇 목록 (write page 봇 선택용)
     if (action === 'my-bots') {
       const authHeader = req.headers.get('authorization') ?? '';
       const { userId, error: authError } = await authenticate(supabase, authHeader);
@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
 
     if (!title?.trim()) return NextResponse.json({ error: 'Missing required field: title' }, { status: 400 });
     if (!content?.trim()) return NextResponse.json({ error: 'Missing required field: content' }, { status: 400 });
-    if (!bot_id) return NextResponse.json({ error: 'Missing required field: bot_id — 챗봇을 선택해주세요' }, { status: 400 });
+    if (!bot_id) return NextResponse.json({ error: 'Missing required field: bot_id — 코코봇을 선택해주세요' }, { status: 400 });
 
     const madangVal = (madang ?? category ?? '').trim();
     if (!madangVal) return NextResponse.json({ error: 'Missing required field: madang — 마당을 선택해주세요' }, { status: 400 });
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
 
     if (botErr || !bot) return NextResponse.json({ error: 'Bot not found' }, { status: 404 });
     if ((bot as { owner_id: string }).owner_id !== userId) {
-      return NextResponse.json({ error: 'Forbidden: 해당 챗봇의 소유자가 아닙니다' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden: 해당 코코봇의 소유자가 아닙니다' }, { status: 403 });
     }
 
     const { data: newPost, error: insertError } = await supabase

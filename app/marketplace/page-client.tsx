@@ -443,7 +443,7 @@ export default function MarketplacePageInner() {
         <div>
           <h1 className="text-2xl font-bold text-text-primary">스킬 마켓플레이스</h1>
           <p className="text-sm text-text-secondary mt-1">
-            챗봇의 능력을 확장하는 스킬을 탐색하고 설치하세요.
+            코코봇의 능력을 확장하는 스킬을 탐색하고 설치하세요.
           </p>
         </div>
         <Link

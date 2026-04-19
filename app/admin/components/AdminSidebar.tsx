@@ -1,5 +1,5 @@
 // @task S5FE7 - 관리자 사이드바 컴포넌트 (섹션1~4)
-// @task S5FE8 - 섹션5~8 활성화 (챗봇/스킬/구봇구직/커뮤니티 disabled 제거)
+// @task S5FE8 - 섹션5~8 활성화 (코코봇/스킬/구봇구직/커뮤니티 disabled 제거)
 'use client';
 
 import type { AdminSection, BadgeCounts } from '../page';
@@ -38,7 +38,7 @@ export default function AdminSidebar({
       badge: badges.payments,
       badgeColor: 'danger',
     },
-    { id: 'bots', label: '챗봇 관리', icon: '🤖' },
+    { id: 'bots', label: '코코봇 관리', icon: '🤖' },
     {
       id: 'skills',
       label: '스킬 관리',
@@ -82,7 +82,7 @@ export default function AdminSidebar({
           letterSpacing: '-0.02em',
         }}
       >
-        MCW Admin
+        CoCoBot Admin
       </div>
 
       {/* 네비게이션 */}

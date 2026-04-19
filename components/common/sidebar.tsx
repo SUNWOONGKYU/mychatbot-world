@@ -18,7 +18,7 @@ interface NavSection {
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    title: '내 챗봇',
+    title: '내 코코봇',
     items: [
       { label: '홈',          href: '/home',             icon: '🏠' },
       { label: '봇 만들기',   href: '/create',           icon: '＋' },
@@ -74,7 +74,7 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
       {/* Logo */}
       <div className="flex items-center h-header px-5 border-b border-border shrink-0">
         <span className="text-xl font-bold tracking-tight text-primary select-none">
-          MCW
+          CoCoBot
         </span>
       </div>
 

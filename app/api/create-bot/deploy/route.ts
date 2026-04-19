@@ -39,7 +39,7 @@ interface DeployResponse {
 
 /**
  * POST /api/create-bot/deploy
- * 챗봇 배포 URL을 생성하고 QR코드를 발급한다.
+ * 코코봇 배포 URL을 생성하고 QR코드를 발급한다.
  */
 export async function POST(request: NextRequest): Promise<NextResponse<DeployResponse>> {
   // ── 1. 인증 검증 ────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<DeployRes
 
   if (botError || !bot) {
     return NextResponse.json(
-      { success: false, error: '챗봇을 찾을 수 없습니다.' },
+      { success: false, error: '코코봇을 찾을 수 없습니다.' },
       { status: 404 }
     );
   }
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<DeployRes
   // owner_id는 TEXT (Supabase auth UUID 또는 'admin')
   if (bot.owner_id !== userId && bot.owner_id !== 'admin') {
     return NextResponse.json(
-      { success: false, error: '이 챗봇에 대한 권한이 없습니다.' },
+      { success: false, error: '이 코코봇에 대한 권한이 없습니다.' },
       { status: 403 }
     );
   }

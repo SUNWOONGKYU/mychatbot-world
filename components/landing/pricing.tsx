@@ -31,11 +31,11 @@ const PRICING_TIERS: PricingTier[] = [
     tagline: '무료',
     description: '개인 실험과 학습용. 핵심 기능을 무제한 무료로.',
     features: [
-      '챗봇 1개',
+      '코코봇 1개',
       '월 200회 대화',
       '기본 템플릿 5종',
       '커뮤니티 지원',
-      '챗봇 위젯 임베드',
+      '코코봇 위젯 임베드',
     ],
     ctaLabel: '무료로 시작',
     ctaHref: '/create',
@@ -49,7 +49,7 @@ const PRICING_TIERS: PricingTier[] = [
     priceSuffix: '/월',
     description: '소규모 비즈니스와 1인 사업자에게 최적.',
     features: [
-      '챗봇 5개',
+      '코코봇 5개',
       '월 2,000회 대화',
       '전체 템플릿 50종+',
       '지식베이스 연동 (10MB)',
@@ -69,7 +69,7 @@ const PRICING_TIERS: PricingTier[] = [
     priceSuffix: '/월',
     description: '팀 · 에이전시 · 전문가를 위한 무제한 플랜.',
     features: [
-      '챗봇 무제한',
+      '코코봇 무제한',
       '대화 무제한',
       '전체 템플릿 + 커스텀',
       '지식베이스 무제한',

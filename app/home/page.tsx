@@ -2,7 +2,7 @@
 
 /**
  * Home Dashboard — Vanilla → React 충실 전환
- * Tabs: 회원정보 | 챗봇관리 | 유료스킬 | 수익활동 | 크레딧&결제 | 보안설정
+ * Tabs: 회원정보 | 코코봇관리 | 유료스킬 | 수익활동 | 크레딧&결제 | 보안설정
  */
 
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -25,7 +25,7 @@ interface NavItem { id: TabId; icon: string; label: string; }
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'profile',        icon: '👤', label: '회원 정보 관리'   },
-  { id: 'bots',           icon: '🤖', label: '챗봇 및 운영 관리' },
+  { id: 'bots',           icon: '🤖', label: '코코봇 및 운영 관리' },
   { id: 'premium-skills', icon: '💎', label: '유료 스킬 설정'   },
   { id: 'revenue',        icon: '💰', label: '수익활동 관리'    },
   { id: 'credits',        icon: '🪙', label: '크레딧 & 결제'   },

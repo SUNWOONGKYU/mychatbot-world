@@ -1,8 +1,8 @@
 /* ============================================
-   My Chatbot World - Common Utilities
+   CoCoBot - Common Utilities
    ============================================ */
 
-const MCW = {
+const CoCoBot = {
   // ─── Supabase Config (single source of truth) ───
   // Anon key is public (RLS enforced) — safe to expose in client code
   SB_URL: 'https://gybgkehtonqhosuutoxx.supabase.co',
@@ -37,7 +37,7 @@ const MCW = {
       return JSON.parse(localStorage.getItem(`mcw_conv_${botId}`) || '[]');
     },
     getSkill(skillId) {
-      return MCW.skills.find(s => s.id === skillId);
+      return CoCoBot.skills.find(s => s.id === skillId);
     },
     // Per-persona storage helpers
     getPersonaSkills(botId, personaId) {
@@ -59,10 +59,10 @@ const MCW = {
     async init() {
       if (this._supabase) return this._user;
 
-      const url = MCW.SB_URL;
-      const key = MCW.SB_KEY;
+      const url = CoCoBot.SB_URL;
+      const key = CoCoBot.SB_KEY;
       if (!url || !key || typeof supabase === 'undefined') {
-        console.warn('[MCW.auth] Supabase not available');
+        console.warn('[CoCoBot.auth] Supabase not available');
         return null;
       }
 
@@ -73,7 +73,7 @@ const MCW = {
       // onAuthStateChange를 getUser() 이전에 등록 — PASSWORD_RECOVERY 이벤트 놓치지 않도록
       this._supabase.auth.onAuthStateChange((_event, session) => {
         if (session?.user) {
-          this._user = MCW.auth._toUserObj(session.user);
+          this._user = CoCoBot.auth._toUserObj(session.user);
         } else {
           this._user = null;
         }
@@ -86,7 +86,7 @@ const MCW = {
       // Restore session — getUser() validates against server (not just local cache)
       const { data: { user: serverUser } } = await this._supabase.auth.getUser();
       if (serverUser) {
-        this._user = MCW.auth._toUserObj(serverUser);
+        this._user = CoCoBot.auth._toUserObj(serverUser);
       }
 
       return this._user;
@@ -110,20 +110,20 @@ const MCW = {
   // ─── User Management (Supabase Auth) ───
   user: {
     getCurrentUser() {
-      return MCW.auth._user;
+      return CoCoBot.auth._user;
     },
 
     async login(email, password) {
-      const client = MCW.auth.getClient();
+      const client = CoCoBot.auth.getClient();
       if (!client) throw new Error('Auth not initialized');
       const { data, error } = await client.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      MCW.auth._user = MCW.auth._toUserObj(data.user);
-      return MCW.auth._user;
+      CoCoBot.auth._user = CoCoBot.auth._toUserObj(data.user);
+      return CoCoBot.auth._user;
     },
 
     async signup(email, password, name) {
-      const client = MCW.auth.getClient();
+      const client = CoCoBot.auth.getClient();
       if (!client) throw new Error('Auth not initialized');
       const { data, error } = await client.auth.signUp({
         email,
@@ -135,30 +135,30 @@ const MCW = {
       });
       if (error) throw error;
       if (data.session) {
-        MCW.auth._user = MCW.auth._toUserObj(data.user);
+        CoCoBot.auth._user = CoCoBot.auth._toUserObj(data.user);
       }
       return { user: data.user, session: data.session };
     },
 
     async logout() {
-      const client = MCW.auth.getClient();
+      const client = CoCoBot.auth.getClient();
       if (client) await client.auth.signOut();
-      MCW.auth._user = null;
+      CoCoBot.auth._user = null;
     },
 
     async saveUser(updates) {
-      const client = MCW.auth.getClient();
+      const client = CoCoBot.auth.getClient();
       if (!client) throw new Error('Auth not initialized');
       const { data, error } = await client.auth.updateUser({
         data: { name: updates.name }
       });
       if (error) throw error;
-      MCW.auth._user = MCW.auth._toUserObj(data.user);
-      return MCW.auth._user;
+      CoCoBot.auth._user = CoCoBot.auth._toUserObj(data.user);
+      return CoCoBot.auth._user;
     },
 
     async resetPassword(email) {
-      const client = MCW.auth.getClient();
+      const client = CoCoBot.auth.getClient();
       if (!client) throw new Error('Auth not initialized');
       const { error } = await client.auth.resetPasswordForEmail(email, {
         redirectTo: 'https://mychatbot.world/pages/reset-password.html'
@@ -167,7 +167,7 @@ const MCW = {
     },
 
     async updatePassword(newPassword) {
-      const client = MCW.auth.getClient();
+      const client = CoCoBot.auth.getClient();
       if (!client) throw new Error('Auth not initialized');
       const { error } = await client.auth.updateUser({ password: newPassword });
       if (error) throw error;
@@ -184,7 +184,7 @@ const MCW = {
       });
       if (changed) {
         localStorage.setItem('mcw_bots', JSON.stringify(bots));
-        console.log("[MCW] Bots claimed for user:", id);
+        console.log("[CoCoBot] Bots claimed for user:", id);
       }
     }
   },
@@ -231,7 +231,7 @@ const MCW = {
       systemPrompt: '대화 종료 시 만족도 조사를 제안하세요. "오늘 상담이 도움이 되셨나요? 1-5점으로 알려주세요."',
       isFree: true, installs: 1234, rating: 4.5 },
     { id: 'coupon', name: '쿠폰 발급', icon: '🎫', category: '비즈니스', description: '자동 쿠폰 생성, 유효기간 설정',
-      systemPrompt: '쿠폰 요청 시 "쿠폰 코드: MCW-{랜덤6자리} (유효기간: 30일)"를 안내하세요. 랜덤 영문+숫자 6자리를 생성하세요.',
+      systemPrompt: '쿠폰 요청 시 "쿠폰 코드: CoCoBot-{랜덤6자리} (유효기간: 30일)"를 안내하세요. 랜덤 영문+숫자 6자리를 생성하세요.',
       isFree: true, installs: 876, rating: 4.3 },
     { id: 'lead-collect', name: '리드 수집', icon: '📧', category: '비즈니스', description: '연락처 수집, CRM 연동',
       systemPrompt: '상담 중 자연스럽게 연락처를 수집하세요. 강요하지 말고 "더 자세한 안내를 원하시면 연락처를 남겨주세요"로 유도하세요.',
@@ -372,38 +372,38 @@ const MCW = {
 };
 
 // Make globally available
-window.MCW = MCW;
+window.CoCoBot = CoCoBot;
 
-// ─── MCW.ready: 모든 페이지가 await 가능한 Promise ───
-MCW.ready = (async () => {
+// ─── CoCoBot.ready: 모든 페이지가 await 가능한 Promise ───
+CoCoBot.ready = (async () => {
   try {
-    const user = await MCW.auth.init();
-    if (user) MCW.user.claimAnonymousBots(user.id);
+    const user = await CoCoBot.auth.init();
+    if (user) CoCoBot.user.claimAnonymousBots(user.id);
     return user;
   } catch (e) {
-    console.warn('[MCW.ready] init error:', e);
+    console.warn('[CoCoBot.ready] init error:', e);
     return null;
   }
 })();
 
-// ─── Skill catalog sync: merge server-side index.json into MCW.skills ───
-MCW.syncSkills = async () => {
+// ─── Skill catalog sync: merge server-side index.json into CoCoBot.skills ───
+CoCoBot.syncSkills = async () => {
   try {
     const res = await fetch('/api/skills');
     if (!res.ok) return;
     const catalog = await res.json();
     if (!Array.isArray(catalog)) return;
     for (const remote of catalog) {
-      const local = MCW.skills.find(s => s.id === remote.id);
+      const local = CoCoBot.skills.find(s => s.id === remote.id);
       if (local) {
         if (remote.description) local.description = remote.description;
         if (remote.installs) local.installs = remote.installs;
         if (remote.rating) local.rating = remote.rating;
       } else {
-        MCW.skills.push(remote);
+        CoCoBot.skills.push(remote);
       }
     }
   } catch (e) {
-    console.warn('[MCW] skill sync skipped:', e.message);
+    console.warn('[CoCoBot] skill sync skipped:', e.message);
   }
 };

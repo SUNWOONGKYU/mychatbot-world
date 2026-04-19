@@ -1,11 +1,11 @@
-# Design System — My Chatbot World (MCW)
+# Design System — CoCoBot (CoCoBot)
 
-> AI 코딩 에이전트가 이 파일을 읽고 MCW의 디자인 시스템에 맞는 일관된 UI를 생성합니다.
+> AI 코딩 에이전트가 이 파일을 읽고 CoCoBot의 디자인 시스템에 맞는 일관된 UI를 생성합니다.
 > 모든 페이지, 컴포넌트, 스타일은 이 문서를 따라야 합니다.
 
 ## 1. Visual Theme & Atmosphere
 
-MCW는 AI 챗봇 생성·공유·수익화 플랫폼이다. 디자인은 **다크 모드 퍼스트**이되, 라이트 모드를 완벽히 지원한다. 전체적인 인상은 "기술적이면서도 친근한" — Linear의 정밀한 다크 UI와 Stripe의 프리미엄 수익 UI를 결합한 느낌이다.
+CoCoBot는 AI 챗봇 생성·공유·수익화 플랫폼이다. 디자인은 **다크 모드 퍼스트**이되, 라이트 모드를 완벽히 지원한다. 전체적인 인상은 "기술적이면서도 친근한" — Linear의 정밀한 다크 UI와 Stripe의 프리미엄 수익 UI를 결합한 느낌이다.
 
 Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 상징한다. Accent 색상은 **앰버 골드(`#F59E0B`)** — 수익/가치/보상을 강조한다. 이 두 색상은 명확히 역할이 분리되어 있다: 퍼플은 브랜드·인터랙션·CTA, 앰버는 수익·크레딧·가치 지표.
 
@@ -165,7 +165,7 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 - Height: `64px` (`--header-height`)
 - Background: `rgb(var(--bg-surface))` — 스크롤 시 `backdrop-blur-md`
 - Border-bottom: `1px solid rgb(var(--border))`
-- 로고: "MCW" 텍스트 (`font-extrabold`, `text-primary`)
+- 로고: "CoCoBot" 텍스트 (`font-extrabold`, `text-primary`)
 - 4대 메뉴: Birth / Skills / Jobs / Community
 - 활성 메뉴: `text-primary` 색상, 밑줄 또는 퍼플 하이라이트
 - 비활성: `text-text-muted`

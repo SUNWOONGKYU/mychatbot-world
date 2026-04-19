@@ -202,7 +202,7 @@ export default function MarketplaceUploadPage() {
       newErrors.price = '올바른 가격을 입력해주세요 (0 이상).';
     }
     if (!formData.botId.trim()) {
-      newErrors.botId = '챗봇 ID를 입력해주세요.';
+      newErrors.botId = '코코봇 ID를 입력해주세요.';
     }
 
     setErrors(newErrors);
@@ -332,11 +332,11 @@ export default function MarketplaceUploadPage() {
         </div>
       )}
 
-      {/* 챗봇 ID 안내 */}
+      {/* 코코봇 ID 안내 */}
       <div className="flex items-start gap-2 p-3.5 rounded-lg bg-primary/5 border border-primary/20 text-sm text-primary/80">
         <span className="flex-shrink-0 mt-0.5">ℹ</span>
         <span>
-          스킬은 특정 챗봇과 연결됩니다. 마이페이지에서 봇 ID를 확인하세요.
+          스킬은 특정 코코봇과 연결됩니다. 마이페이지에서 봇 ID를 확인하세요.
         </span>
       </div>
 
@@ -447,11 +447,11 @@ export default function MarketplaceUploadPage() {
           {/* 구분선 */}
           <hr className="border-border" />
 
-          {/* 챗봇 ID */}
+          {/* 코코봇 ID */}
           <FormField
-            label="챗봇 ID"
+            label="코코봇 ID"
             required
-            hint="연결할 챗봇의 ID를 입력하세요. 마이페이지에서 확인할 수 있습니다."
+            hint="연결할 코코봇의 ID를 입력하세요. 마이페이지에서 확인할 수 있습니다."
             error={errors.botId}
           >
             <input

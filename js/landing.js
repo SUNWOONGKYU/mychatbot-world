@@ -20,7 +20,7 @@ function initNavbar() {
 function renderSkills() {
   const grid = document.getElementById('skillsGrid');
   if (!grid) return;
-  const skills = MCW.skills.slice(0, 3);
+  const skills = CoCoBot.skills.slice(0, 3);
   grid.innerHTML = skills.map(s => `
     <div class="skill-card">
       <div class="skill-header">

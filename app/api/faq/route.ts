@@ -3,7 +3,7 @@
  * @description FAQ CRUD API
  *
  * Endpoints:
- * - GET    /api/faq?botId={id}  챗봇 FAQ 목록 조회
+ * - GET    /api/faq?botId={id}  코코봇 FAQ 목록 조회
  * - POST   /api/faq             새 FAQ 항목 추가
  *
  * 인증: Supabase Auth 세션 필수
@@ -43,7 +43,7 @@ interface CreateFaqBody {
 // ────────────────────────────────────────────────────────────────
 
 /**
- * 챗봇 FAQ 목록 조회
+ * 코코봇 FAQ 목록 조회
  * @param request - botId 쿼리 파라미터 필수
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {

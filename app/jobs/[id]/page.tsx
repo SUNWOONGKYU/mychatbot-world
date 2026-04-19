@@ -1,13 +1,13 @@
 /**
  * @task S3F10 (React 전환)
- * @description 채용 공고 상세 페이지 + 챗봇 상세 라우팅
+ * @description 채용 공고 상세 페이지 + 코코봇 상세 라우팅
  *
  * Vanilla 원본: job-detail.js (DetailPage, HirePage, MatchPage)
  *              css/job-detail.css
  *
  * Route: /jobs/[id]
  * - 채용공고(job_postings): title, description, required_skills, budget, status
- * - 챗봇 지원하기 버튼 (매칭 신청)
+ * - 코코봇 지원하기 버튼 (매칭 신청)
  * - 리뷰 목록 (5개씩 더보기)
  * - 평점 분포 막대
  * - 매칭 결과 섹션
@@ -302,7 +302,7 @@ export default function JobDetailPage() {
 
       // 페이지 타이틀 업데이트
       if (data.job?.title || data.title) {
-        document.title = `${data.job?.title ?? data.title} — 구봇구직 | My Chatbot World`;
+        document.title = `${data.job?.title ?? data.title} — 구봇구직 | CoCoBot`;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : '오류가 발생했습니다.');
@@ -524,7 +524,7 @@ export default function JobDetailPage() {
                   AI 매칭 결과
                   {matches.length > 0 && (
                     <span className="text-xs font-normal text-gray-400 ml-1">
-                      ({matches.length}개 챗봇 추천)
+                      ({matches.length}개 코코봇 추천)
                     </span>
                   )}
                 </h2>

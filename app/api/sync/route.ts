@@ -7,7 +7,7 @@
  * - POST /api/sync                동기화 실행
  *
  * 동기화 범위:
- * 1. 챗봇 설정 (bot_settings) → 클라우드 메타데이터 갱신
+ * 1. 코코봇 설정 (bot_settings) → 클라우드 메타데이터 갱신
  * 2. KB 임베딩 미완료 항목 → 자동 임베딩 트리거
  * 3. 동기화 로그 기록 (sync_logs 테이블)
  *
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }
@@ -222,7 +222,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const startedAt = new Date();
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -232,7 +232,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }

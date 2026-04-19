@@ -1,7 +1,7 @@
 /**
  * @task S5FE11
- * @description 마이페이지 탭5 — 챗봇 운영 관리 (구직/구봇/수익/통계)
- * 구직(내 챗봇 올리기), 구봇(다른 챗봇 고용), 수익 관리, 운영 통계
+ * @description 마이페이지 탭5 — 코코봇 운영 관리 (구직/구봇/수익/통계)
+ * 구직(내 코코봇 올리기), 구봇(다른 코코봇 고용), 수익 관리, 운영 통계
  */
 'use client';
 
@@ -74,8 +74,8 @@ function formatDate(iso: string): string {
 // ── 서브탭 네비게이션 ────────────────────────────────────────
 
 const SUB_TABS: { id: SubTab; label: string }[] = [
-  { id: 'job',     label: '구직 (내 챗봇 올리기)' },
-  { id: 'hired',   label: '구봇 (다른 챗봇 고용)' },
+  { id: 'job',     label: '구직 (내 코코봇 올리기)' },
+  { id: 'hired',   label: '구봇 (다른 코코봇 고용)' },
   { id: 'revenue', label: '수익 관리' },
   { id: 'stats',   label: '운영 통계' },
 ];
@@ -97,7 +97,7 @@ function JobTab() {
           setPostings(
             raw.map((j: any) => ({
               id: j.id,
-              bot_name: j.bot_name ?? j.title ?? '챗봇',
+              bot_name: j.bot_name ?? j.title ?? '코코봇',
               title: j.title ?? '(제목 없음)',
               status: j.status === 'open' ? 'active' : 'closed',
               applicants: j.applicant_count ?? j.applicants ?? 0,
@@ -117,7 +117,7 @@ function JobTab() {
       {/* 새 공고 등록 버튼 */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-text-secondary">
-          내 챗봇을 구봇구직에 등록하고 수익을 창출하세요.
+          내 코코봇을 구봇구직에 등록하고 수익을 창출하세요.
         </p>
         <button
           className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
@@ -131,7 +131,7 @@ function JobTab() {
       ) : postings.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-10 text-center">
           <p className="text-text-muted text-sm">등록된 공고가 없습니다.</p>
-          <p className="text-text-muted text-xs mt-1">내 챗봇을 구봇구직에 올려보세요!</p>
+          <p className="text-text-muted text-xs mt-1">내 코코봇을 구봇구직에 올려보세요!</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -205,7 +205,7 @@ function HiredTab() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <p className="text-sm text-text-secondary">
-          고용한 챗봇 목록과 계약/성과를 관리합니다.
+          고용한 코코봇 목록과 계약/성과를 관리합니다.
         </p>
         <a
           href="/jobs"
@@ -219,7 +219,7 @@ function HiredTab() {
         <div className="text-center text-text-muted py-8 text-sm">불러오는 중...</div>
       ) : bots.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-10 text-center">
-          <p className="text-text-muted text-sm">고용한 챗봇이 없습니다.</p>
+          <p className="text-text-muted text-sm">고용한 코코봇이 없습니다.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -570,7 +570,7 @@ export default function Tab5Operations() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-text-primary mb-5">챗봇 운영 관리</h2>
+      <h2 className="text-xl font-bold text-text-primary mb-5">코코봇 운영 관리</h2>
 
       {/* 서브탭 */}
       <div className="flex flex-wrap gap-1 mb-6 p-1 bg-bg-muted rounded-xl border border-border">

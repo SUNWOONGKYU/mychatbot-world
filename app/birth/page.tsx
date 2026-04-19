@@ -1,7 +1,7 @@
 /**
  * @task S2FE5 - Birth 페이지 React 전환
  * @file app/birth/page.tsx
- * @description 챗봇 생성 완료 탄생 애니메이션 페이지
+ * @description 코코봇 생성 완료 탄생 애니메이션 페이지
  *
  * URL: /birth?botId={id}
  * - botId로 /api/bots/{id} 조회
@@ -68,16 +68,16 @@ export async function generateMetadata({
   searchParams,
 }: BirthPageProps): Promise<Metadata> {
   const { botId } = await searchParams;
-  if (!botId) return { title: '챗봇 탄생 — My Chatbot World' };
+  if (!botId) return { title: '코코봇 탄생 — CoCoBot' };
 
   return {
-    title: `챗봇 탄생 — My Chatbot World`,
-    description: '새로운 AI 챗봇이 탄생했습니다!',
+    title: `코코봇 탄생 — CoCoBot`,
+    description: '새로운 AI 코코봇이 탄생했습니다!',
   };
 }
 
 /**
- * BirthPage — 챗봇 탄생 완료 페이지 (Server Component)
+ * BirthPage — 코코봇 탄생 완료 페이지 (Server Component)
  *
  * 1. searchParams에서 botId 추출
  * 2. botId 없으면 /home 리디렉트

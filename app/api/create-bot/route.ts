@@ -1,6 +1,6 @@
 /**
  * @task S2BA1
- * @description 챗봇 생성 메인 오케스트레이션 API
+ * @description 코코봇 생성 메인 오케스트레이션 API
  *
  * POST /api/create-bot
  * Request: { name, description, audioUrl? }
@@ -26,11 +26,11 @@ import { createOpenAI } from '@xsai/providers';
 
 // ── 타입 정의 ─────────────────────────────────────────────────────────────────
 
-/** 챗봇 생성 요청 바디 */
+/** 코코봇 생성 요청 바디 */
 interface CreateBotRequest {
-  /** 챗봇 이름 (필수, 1~100자) */
+  /** 코코봇 이름 (필수, 1~100자) */
   name: string;
-  /** 챗봇 설명 (필수, 1~2000자) */
+  /** 코코봇 설명 (필수, 1~2000자) */
   description: string;
   /** 오디오 파일 URL (선택 — TTS 음성 사전 녹음 파일) */
   audioUrl?: string;
@@ -66,7 +66,7 @@ interface CreateBotData {
 // ── 내부 헬퍼: AI 분석 ────────────────────────────────────────────────────────
 
 /**
- * 챗봇 이름·설명을 AI로 분석하여 비즈니스 유형·톤·키워드를 추출한다.
+ * 코코봇 이름·설명을 AI로 분석하여 비즈니스 유형·톤·키워드를 추출한다.
  * @internal
  */
 async function analyzeWithAI(
@@ -77,7 +77,7 @@ async function analyzeWithAI(
   const openai = createOpenAI({ apiKey });
 
   const systemPrompt = `당신은 비즈니스 분석 전문가입니다.
-챗봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
+코코봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
 다른 텍스트나 마크다운 없이 순수 JSON만 반환하세요.
 
 응답 형식:
@@ -86,7 +86,7 @@ async function analyzeWithAI(
   "tone": "톤앤매너 (friendly | professional | casual | authoritative | warm 중 하나)",
   "keywords": ["키워드1", "키워드2", "키워드3"],
   "suggestedEmoji": "단일 이모지",
-  "suggestedGreeting": "챗봇의 첫 인사말 (한국어, 50자 이내)"
+  "suggestedGreeting": "코코봇의 첫 인사말 (한국어, 50자 이내)"
 }`;
 
   const result = await generateText({
@@ -95,7 +95,7 @@ async function analyzeWithAI(
       { role: 'system', content: systemPrompt },
       {
         role: 'user',
-        content: `챗봇 이름: ${name}\n설명: ${description}\n\n위 정보를 분석하여 JSON으로 응답해주세요.`,
+        content: `코코봇 이름: ${name}\n설명: ${description}\n\n위 정보를 분석하여 JSON으로 응답해주세요.`,
       },
     ],
     temperature: 0.3,
@@ -109,7 +109,7 @@ async function analyzeWithAI(
     keywords: Array.isArray(parsed.keywords) ? parsed.keywords.slice(0, 5) : [],
     suggestedEmoji: parsed.suggestedEmoji ?? '🤖',
     suggestedGreeting:
-      parsed.suggestedGreeting ?? `안녕하세요! ${name} 챗봇입니다. 무엇을 도와드릴까요?`,
+      parsed.suggestedGreeting ?? `안녕하세요! ${name} 코코봇입니다. 무엇을 도와드릴까요?`,
   };
 }
 
@@ -139,7 +139,7 @@ async function generateFaqsWithAI(
   const keywordContext =
     analysis.keywords.length > 0 ? `주요 키워드: ${analysis.keywords.join(', ')}` : '';
 
-  const systemPrompt = `당신은 AI 챗봇의 FAQ를 작성하는 전문가입니다.
+  const systemPrompt = `당신은 AI 코코봇의 FAQ를 작성하는 전문가입니다.
 비즈니스 정보를 분석하여 고객이 자주 묻는 질문 10개와 답변을 생성합니다.
 ${toneDescription} 작성하세요.
 반드시 순수 JSON 배열로만 응답하세요.
@@ -161,7 +161,7 @@ ${toneDescription} 작성하세요.
       { role: 'system', content: systemPrompt },
       {
         role: 'user',
-        content: `챗봇 이름: ${name}\n비즈니스 설명: ${description}\n비즈니스 유형: ${analysis.businessType}\n${keywordContext}\n\nFAQ 10개를 생성해주세요.`,
+        content: `코코봇 이름: ${name}\n비즈니스 설명: ${description}\n비즈니스 유형: ${analysis.businessType}\n${keywordContext}\n\nFAQ 10개를 생성해주세요.`,
       },
     ],
     temperature: 0.7,
@@ -216,7 +216,7 @@ function generateSlug(name: string, suffix: string): string {
 
 /**
  * POST /api/create-bot
- * 챗봇 생성 전체 파이프라인을 오케스트레이션한다.
+ * 코코봇 생성 전체 파이프라인을 오케스트레이션한다.
  *
  * @example
  * // Request
@@ -256,14 +256,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   if (!name?.trim()) {
     return NextResponse.json(
-      { success: false, error: '챗봇 이름(name)은 필수 항목입니다.' },
+      { success: false, error: '코코봇 이름(name)은 필수 항목입니다.' },
       { status: 400 }
     );
   }
 
   if (!description?.trim()) {
     return NextResponse.json(
-      { success: false, error: '챗봇 설명(description)은 필수 항목입니다.' },
+      { success: false, error: '코코봇 설명(description)은 필수 항목입니다.' },
       { status: 400 }
     );
   }
@@ -303,7 +303,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       tone: 'friendly',
       keywords: [],
       suggestedEmoji: '🤖',
-      suggestedGreeting: `안녕하세요! ${name} 챗봇입니다. 무엇을 도와드릴까요?`,
+      suggestedGreeting: `안녕하세요! ${name} 코코봇입니다. 무엇을 도와드릴까요?`,
     };
   }
 
@@ -341,7 +341,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: `챗봇 등록에 실패했습니다: ${botInsertError.message}`,
+        error: `코코봇 등록에 실패했습니다: ${botInsertError.message}`,
       },
       { status: 500 }
     );

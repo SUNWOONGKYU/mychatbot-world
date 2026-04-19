@@ -145,7 +145,7 @@ export function SignupPrompt({ isOpen, onClose }: SignupPromptProps) {
             id="signup-prompt-desc"
             className="text-sm text-text-secondary leading-relaxed"
           >
-            회원가입하면 <strong className="text-text-primary font-semibold">나만의 챗봇</strong>을 직접 만들고,{' '}
+            회원가입하면 <strong className="text-text-primary font-semibold">나만의 코코봇</strong>을 직접 만들고,{' '}
             <strong className="text-text-primary font-semibold">무제한</strong>으로 대화할 수 있어요.{' '}
             5분이면 충분해요!
           </p>
@@ -154,9 +154,9 @@ export function SignupPrompt({ isOpen, onClose }: SignupPromptProps) {
         {/* 혜택 목록 */}
         <ul className="space-y-2 text-sm text-text-secondary">
           {[
-            '나만의 챗봇 개성 설정 (이름, 성격, 전문 지식)',
+            '나만의 코코봇 개성 설정 (이름, 성격, 전문 지식)',
             '대화 히스토리 저장 & 이어보기',
-            '챗봇 링크 공유 — 누구나 체험 가능',
+            '코코봇 링크 공유 — 누구나 체험 가능',
           ].map((benefit) => (
             <li key={benefit} className="flex items-start gap-2.5">
               <svg

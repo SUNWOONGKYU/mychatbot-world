@@ -14,7 +14,7 @@
     showFreeOnly: false,
   };
 
-  /* ── 카테고리 목록 (MCW.skills의 category 값 기반) ── */
+  /* ── 카테고리 목록 (CoCoBot.skills의 category 값 기반) ── */
   const CATEGORIES = ['전체', '분석', '보안', '관리', '지식', 'UI', '비즈니스', '연동'];
 
   /* ── 현재 봇 ID 조회 ── */
@@ -226,7 +226,7 @@
 
   /* ── 프리셋 설치 ── */
   function installPreset(presetKey) {
-    const preset = (window.MCW && MCW.skillPresets) ? MCW.skillPresets[presetKey] : null;
+    const preset = (window.CoCoBot && CoCoBot.skillPresets) ? CoCoBot.skillPresets[presetKey] : null;
     if (!preset) return;
     let count = 0;
     preset.skills.forEach(id => {
@@ -264,8 +264,8 @@
 
   /* ── Toast ── */
   function showToast(msg) {
-    if (window.MCW && MCW.showToast) {
-      MCW.showToast(msg);
+    if (window.CoCoBot && CoCoBot.showToast) {
+      CoCoBot.showToast(msg);
       return;
     }
     const el = document.getElementById('skillsToast');
@@ -278,8 +278,8 @@
 
   /* ── 초기화 ── */
   function init() {
-    // MCW.skills 로드 대기
-    const skills = (window.MCW && MCW.skills) ? MCW.skills : [];
+    // CoCoBot.skills 로드 대기
+    const skills = (window.CoCoBot && CoCoBot.skills) ? CoCoBot.skills : [];
     state.allSkills = skills;
 
     renderCategoryChips();

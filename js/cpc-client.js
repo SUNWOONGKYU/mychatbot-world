@@ -11,7 +11,7 @@ let _cpcSelectedId = localStorage.getItem('cpc_selected_platoon') || 'mychatbot-
 let _cpcTrackedCmds = [];       // 추적 중인 명령 [{id, status, text}]
 let _cpcPollTimer = null;        // 폴링 타이머
 const CPC_POLL_INTERVAL = 3000;  // 3초 폴링
-let _cpcLeaderPollTimer = null;  // CC→챗봇 메시지 폴링 타이머
+let _cpcLeaderPollTimer = null;  // CC→코코봇 메시지 폴링 타이머
 let _cpcLastLeaderCmdId = '';    // 마지막으로 표시한 CC 메시지 ID
 
 // --- 마크다운 제거 유틸 ---
@@ -291,7 +291,7 @@ async function cpcRefreshPlatoonStatus() {
     }
 }
 
-// --- CC→챗봇 메시지 수신 폴링 (source=platoon_leader) ---
+// --- CC→코코봇 메시지 수신 폴링 (source=platoon_leader) ---
 function cpcStartLeaderPolling() {
     if (_cpcLeaderPollTimer) return;
     _cpcLeaderPollTimer = setInterval(cpcPollLeaderMessages, 5000); // 5초마다
@@ -458,7 +458,7 @@ async function cpcShowBar() {
     cpcRefreshPlatoonStatus();
     // 기존 추적 중인 명령이 있으면 폴링 시작
     if (_cpcTrackedCmds.length > 0) cpcStartPolling();
-    // CC→챗봇 메시지 폴링 시작
+    // CC→코코봇 메시지 폴링 시작
     cpcStartLeaderPolling();
     autonomousInit();
 }

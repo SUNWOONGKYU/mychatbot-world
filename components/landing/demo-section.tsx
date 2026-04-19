@@ -1,7 +1,7 @@
 /**
  * @task S5FE3 - 랜딩 페이지 리디자인
  * @component DemoSection
- * @description 라이프사이클 소개 + 인터랙티브 챗봇 데모 통합 섹션
+ * @description 라이프사이클 소개 + 인터랙티브 코코봇 데모 통합 섹션
  *              Birth → Skills → Jobs → Community 4단계 + 실시간 채팅 체험
  *              P4 와이어프레임 SECTION 3 (데모) 기준
  */
@@ -18,11 +18,11 @@ interface ChatMessage {
 const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   {
     trigger: '안녕',
-    response: '안녕하세요! 저는 MCW 데모 챗봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
+    response: '안녕하세요! 저는 CoCoBot 데모봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
   },
   {
     trigger: '수익',
-    response: '수익형 챗봇은 구독 서비스, 프리미엄 상담, 스킬 판매 등 다양한 방식으로 수익을 만들 수 있어요. 초기 크리에이터들이 월 평균 ₩15만원부터 수익을 만들고 있습니다!',
+    response: '수익형 코코봇은 구독 서비스, 프리미엄 상담, 스킬 판매 등 다양한 방식으로 수익을 만들 수 있어요. 초기 크리에이터들이 월 평균 ₩15만원부터 수익을 만들고 있습니다!',
   },
   {
     trigger: '스킬',
@@ -30,7 +30,7 @@ const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   },
   {
     trigger: '만들기',
-    response: '챗봇 만들기는 5분이면 충분해요! ①유형 선택 → ②5분 인터뷰 → ③AI 분석 → ④배포 순서로 진행됩니다. 코딩은 전혀 필요 없어요!',
+    response: '코코봇 만들기는 5분이면 충분해요! ①유형 선택 → ②5분 인터뷰 → ③AI 분석 → ④배포 순서로 진행됩니다. 코딩은 전혀 필요 없어요!',
   },
 ];
 
@@ -38,30 +38,30 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: 'init-1',
     role: 'bot',
-    text: 'My Chatbot World에 오신 것을 환영해요! 아래 버튼을 눌러 직접 대화해보세요 👋',
+    text: 'CoCoBot에 오신 것을 환영해요! 아래 버튼을 눌러 직접 대화해보세요 👋',
   },
 ];
 
-const QUICK_QUESTIONS = ['안녕하세요!', '수익은 얼마나?', '스킬은 뭐예요?', '챗봇 만들기'];
+const QUICK_QUESTIONS = ['안녕하세요!', '수익은 얼마나?', '스킬은 뭐예요?', '코코봇 만들기'];
 
 const LIFECYCLE_STEPS = [
   {
     step: 'Birth',
     icon: '🌱',
     title: '5분 인터뷰로 탄생',
-    desc: '코딩 없이 5분 인터뷰만으로 맞춤형 AI 챗봇이 자동으로 생성됩니다.',
+    desc: '코딩 없이 5분 인터뷰만으로 맞춤형 AI 코코봇이 자동으로 생성됩니다.',
   },
   {
     step: 'Skills',
     icon: '⚡',
     title: '스킬로 성장',
-    desc: '스킬스토어에서 기능을 장착하고 챗봇을 강화하세요. 200종+ 스킬 제공.',
+    desc: '스킬스토어에서 기능을 장착하고 코코봇을 강화하세요. 200종+ 스킬 제공.',
   },
   {
     step: 'Jobs',
     icon: '💼',
     title: '잡스로 활동',
-    desc: '챗봇을 채용하거나 임대해 수익을 창출. 비즈니스에 바로 투입 가능.',
+    desc: '코코봇을 채용하거나 임대해 수익을 창출. 비즈니스에 바로 투입 가능.',
   },
   {
     step: 'Community',
@@ -97,7 +97,7 @@ export function DemoSection() {
     );
     return (
       matched?.response ??
-      '좋은 질문이에요! 실제 챗봇을 만들면 더 스마트하게 답변할 수 있어요. 지금 무료로 시작해보세요!'
+      '좋은 질문이에요! 실제 코코봇을 만들면 더 스마트하게 답변할 수 있어요. 지금 무료로 시작해보세요!'
     );
   }
 
@@ -147,7 +147,7 @@ export function DemoSection() {
                 color: 'rgb(var(--color-accent))',
               }}
             >
-              AI 챗봇 라이프사이클
+              AI 코코봇 라이프사이클
             </span>
             <h2
               className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
@@ -159,7 +159,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              MCW는 챗봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
+              CoCoBot은 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
             </p>
           </div>
 
@@ -282,7 +282,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              5분 만에 만들 수 있는 MCW 챗봇을 직접 대화해보세요.
+              5분 만에 만들 수 있는 CoCoBot 데모봇과 직접 대화해보세요.
             </p>
           </div>
 
@@ -293,7 +293,7 @@ export function DemoSection() {
                 {[
                   {
                     step: '01',
-                    title: '챗봇 유형 선택',
+                    title: '코코봇 유형 선택',
                     desc: '의료봇, 법률봇, 쇼핑봇, 교육봇 등 내 목적에 맞는 유형을 선택합니다.',
                     color: 'rgb(var(--color-primary))',
                   },
@@ -386,7 +386,7 @@ export function DemoSection() {
               </div>
             </div>
 
-            {/* 우: 인터랙티브 챗봇 */}
+            {/* 우: 인터랙티브 코코봇 */}
             <div className="order-1 lg:order-2">
               <div
                 className="overflow-hidden rounded-3xl border shadow-2xl"
@@ -415,7 +415,7 @@ export function DemoSection() {
                       className="text-sm font-bold"
                       style={{ color: 'rgb(var(--text-primary))' }}
                     >
-                      MCW 데모 챗봇
+                      CoCoBot 데모 코코봇
                     </p>
                     <p className="text-xs text-green-500">● 온라인</p>
                   </div>
@@ -427,7 +427,7 @@ export function DemoSection() {
                         color: 'rgb(var(--color-primary))',
                       }}
                     >
-                      5분 완성 챗봇
+                      5분 완성 코코봇
                     </span>
                   </div>
                 </div>

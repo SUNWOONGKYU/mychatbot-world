@@ -1,6 +1,6 @@
 /**
  * @task S5M2
- * @description 챗봇 페르소나 관리 API
+ * @description 코코봇 페르소나 관리 API
  *
  * GET    /api/bots/[id]/personas  — 페르소나 목록 조회
  * POST   /api/bots/[id]/personas  — 페르소나 추가

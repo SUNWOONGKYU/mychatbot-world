@@ -283,7 +283,7 @@ export default function SectionDashboard({ adminKey, onBadgeChange }: SectionDas
   const kpiCards = stats
     ? [
         { label: '총 회원', value: fmtMoney(stats.totalUsers), sub: '명', color: '#818cf8' },
-        { label: '총 챗봇', value: fmtMoney(stats.totalBots), sub: '개', color: '#34d399' },
+        { label: '총 코코봇', value: fmtMoney(stats.totalBots), sub: '개', color: '#34d399' },
         {
           label: '총 매출',
           value: `₩${stats.totalRevenue >= 1000000 ? (stats.totalRevenue / 1000000).toFixed(1) + 'M' : fmtMoney(stats.totalRevenue)}`,
@@ -440,7 +440,7 @@ export default function SectionDashboard({ adminKey, onBadgeChange }: SectionDas
               {[
                 { color: 'success', text: '입금 승인 처리 완료 — 홍길동 ₩50,000', time: '방금 전' },
                 { color: 'primary', text: '신규 회원 가입 — user@example.com', time: '3분 전' },
-                { color: 'warning', text: '챗봇 생성 — "AI 영어 튜터"', time: '12분 전' },
+                { color: 'warning', text: '코코봇 생성 — "AI 영어 튜터"', time: '12분 전' },
                 { color: 'success', text: '무통장 입금 신청 — 이철수 ₩100,000', time: '28분 전' },
                 { color: 'danger', text: '신고 접수 — 게시글 #1245', time: '1시간 전' },
               ].map((item, i) => (

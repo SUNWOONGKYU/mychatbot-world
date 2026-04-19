@@ -1,5 +1,5 @@
 // @task S5FE8
-// @description 섹션5 — 챗봇 관리 (전체 목록/검색/상태변경/신고처리/데모보기)
+// @description 섹션5 — 코코봇 관리 (전체 목록/검색/상태변경/신고처리/데모보기)
 
 'use client';
 
@@ -58,7 +58,7 @@ function mockBots(): Bot[] {
   ];
 }
 
-// ── 챗봇 데모 모달 ────────────────────────────────────────────────────────────
+// ── 코코봇 데모 모달 ────────────────────────────────────────────────────────────
 
 function DemoModal({ bot, onClose }: { bot: Bot; onClose: () => void }) {
   const [messages, setMessages] = useState<DemoMessage[]>([
@@ -233,7 +233,7 @@ export default function SectionBots({ adminKey }: Props) {
     <section className="admin-section">
       {/* 헤더 */}
       <div className="admin-section-header">
-        <h2 className="admin-section-title">🤖 챗봇 관리</h2>
+        <h2 className="admin-section-title">🤖 코코봇 관리</h2>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <span className="abadge abadge--muted">{bots.length} 전체</span>
           <span className="abadge abadge--green">{bots.filter((b) => b.status === 'active').length} 활성</span>

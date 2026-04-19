@@ -1,5 +1,5 @@
 /* ============================================
-   My Chatbot World - My Page Logic (home.js)
+   CoCoBot - My Page Logic (home.js)
    Per-persona management structure
    ============================================ */
 
@@ -37,11 +37,11 @@ const HomePage = (() => {
 
   // ─── Init ───
   async function init() {
-    if (typeof MCW === 'undefined') return;
+    if (typeof CoCoBot === 'undefined') return;
 
-    await MCW.ready;
+    await CoCoBot.ready;
 
-    const user = MCW.user.getCurrentUser();
+    const user = CoCoBot.user.getCurrentUser();
     if (!user) {
       location.href = '../login.html';
       return;
@@ -52,16 +52,16 @@ const HomePage = (() => {
     const dateEl = document.getElementById('userJoinedDisplay');
     if (idEl) idEl.textContent = user.email || user.id;
     if (nameEl) nameEl.value = user.name || '';
-    if (dateEl) dateEl.textContent = user.created_at ? MCW.formatDate(user.created_at) : '-';
+    if (dateEl) dateEl.textContent = user.created_at ? CoCoBot.formatDate(user.created_at) : '-';
 
     // 클라우드에서 봇 로드 → localStorage에 머지
     if (typeof StorageManager !== 'undefined' && StorageManager.loadUserBotsFromCloud) {
       try {
         const cloudBots = await StorageManager.loadUserBotsFromCloud(user.id);
         for (const cb of cloudBots) {
-          const existing = MCW.storage.getBot(cb.id);
+          const existing = CoCoBot.storage.getBot(cb.id);
           if (!existing) {
-            MCW.storage.saveBot(cb);
+            CoCoBot.storage.saveBot(cb);
           }
         }
       } catch (e) { console.warn('[Home] cloud bot load failed:', e); }
@@ -78,8 +78,8 @@ const HomePage = (() => {
     const container = document.getElementById('botListContainer');
     if (!container) return;
 
-    const user = MCW.user.getCurrentUser();
-    const allBots = MCW.storage.getBots();
+    const user = CoCoBot.user.getCurrentUser();
+    const allBots = CoCoBot.storage.getBots();
     // 내 봇만 필터 (정확히 내 ownerId만)
     const bots = user
       ? allBots.filter(b => b.ownerId === user.id)
@@ -97,9 +97,9 @@ const HomePage = (() => {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🤖</div>
-          <h3>아직 생성된 챗봇이 없습니다</h3>
-          <p>나만의 AI 챗봇을 생성하고 관리해 보세요.</p>
-          <button class="btn btn-primary" onclick="location.href='../create/index.html'">+ 새 챗봇 생성</button>
+          <h3>아직 생성된 코코봇이 없습니다</h3>
+          <p>나만의 AI 코코봇을 생성하고 관리해 보세요.</p>
+          <button class="btn btn-primary" onclick="location.href='../create/index.html'">+ 새 코코봇 생성</button>
         </div>`;
       return;
     }
@@ -142,14 +142,14 @@ const HomePage = (() => {
   function clearDraft() {
     if (!confirm('작성 중인 초안을 삭제하시겠습니까?')) return;
     sessionStorage.removeItem('mcw_create_draft');
-    MCW.showToast('초안이 삭제되었습니다.');
+    CoCoBot.showToast('초안이 삭제되었습니다.');
     renderBotList();
   }
 
   function renderBotCard(bot) {
     const name = bot.botName || '이름없는 봇';
     const desc = bot.botDesc || '';
-    const date = bot.created_at ? MCW.formatDate(bot.created_at) : '';
+    const date = bot.created_at ? CoCoBot.formatDate(bot.created_at) : '';
     const id = bot.id;
     const personas = bot.personas || [];
     const botUrl = `../bot/index.html?id=${id}`;
@@ -237,7 +237,7 @@ const HomePage = (() => {
             <span class="tool-icon">🧩</span> 스킬 관리
           </button>
           <button class="tool-btn" data-tool="school" onclick="HomePage.openTool('${botId}','${pId}','school')">
-            <span class="tool-icon">🎓</span> 챗봇 스쿨
+            <span class="tool-icon">🎓</span> 코코봇 스쿨
           </button>
           <button class="tool-btn" data-tool="community" onclick="HomePage.openTool('${botId}','${pId}','community')">
             <span class="tool-icon">💬</span> 커뮤니티
@@ -267,7 +267,7 @@ const HomePage = (() => {
     }
 
     botSettingsOpen[botId] = true;
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot) return;
 
     panel.innerHTML = `
@@ -306,7 +306,7 @@ const HomePage = (() => {
             <div style="display:flex;gap:8px;align-items:center;">
               <input class="form-control-dark" id="settings-pairing-${botId}" value="${escAttr(bot.pairingCode || '')}" readonly style="flex:1;">
               <button class="btn-sm-dark" onclick="HomePage.generatePairingCode('${botId}')">생성</button>
-              <button class="btn-sm-dark" onclick="navigator.clipboard.writeText(document.getElementById('settings-pairing-${botId}').value);MCW.showToast('코드 복사됨')">복사</button>
+              <button class="btn-sm-dark" onclick="navigator.clipboard.writeText(document.getElementById('settings-pairing-${botId}').value);CoCoBot.showToast('코드 복사됨')">복사</button>
             </div>
           </div>
         </div>
@@ -316,7 +316,7 @@ const HomePage = (() => {
       <div class="delete-bot-zone">
         <h4>봇 삭제</h4>
         <p>이 작업은 되돌릴 수 없습니다. 봇과 관련된 모든 데이터가 삭제됩니다.</p>
-        <button class="btn-danger" onclick="HomePage.deleteBot('${botId}', '${escAttr(bot.botName || '')}')">이 챗봇 삭제하기</button>
+        <button class="btn-danger" onclick="HomePage.deleteBot('${botId}', '${escAttr(bot.botName || '')}')">이 코코봇 삭제하기</button>
       </div>
     `;
     panel.classList.add('open');
@@ -346,7 +346,7 @@ const HomePage = (() => {
       b.classList.toggle('active', b.dataset.tool === tool);
     });
 
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot) return;
     const persona = (bot.personas || []).find(p => p.id === personaId);
     if (!persona) return;
@@ -381,7 +381,7 @@ const HomePage = (() => {
       messagesHtml = recent.map(msg => `
         <div class="log-msg ${msg.role}">
           <div>${escHtml(msg.content)}</div>
-          <div class="log-msg-time">${msg.timestamp ? MCW.timeAgo(msg.timestamp) : ''}</div>
+          <div class="log-msg-time">${msg.timestamp ? CoCoBot.timeAgo(msg.timestamp) : ''}</div>
         </div>
       `).join('');
     }
@@ -468,7 +468,7 @@ const HomePage = (() => {
       <div class="kb-section">
         <div class="kb-section-title"><span>텍스트 지식</span></div>
         <textarea class="form-control-dark" rows="4"
-          placeholder="챗봇이 알아야 할 정보를 자유롭게 입력하세요..."
+          placeholder="코코봇이 알아야 할 정보를 자유롭게 입력하세요..."
           oninput="HomePage.updateFreeText('${botId}', '${personaId}', this.value)">${escHtml(kb.freeText || '')}</textarea>
       </div>
 
@@ -562,7 +562,7 @@ const HomePage = (() => {
 
       // 서버 API로 전송 (임베딩 생성 — 비동기, 실패해도 계속)
       try {
-        const user = MCW.user.getCurrentUser();
+        const user = CoCoBot.user.getCurrentUser();
         const jwt = user?.accessToken || '';
         await fetch('/api/obsidian', {
           method: 'POST',
@@ -693,10 +693,10 @@ const HomePage = (() => {
         el.classList.add('show');
         setTimeout(() => el.classList.remove('show'), 2000);
       }
-      MCW.showToast('지식베이스가 저장되었습니다.');
+      CoCoBot.showToast('지식베이스가 저장되었습니다.');
     } catch (e) {
       console.error('[KB] save failed:', e);
-      MCW.showToast('저장에 실패했습니다.');
+      CoCoBot.showToast('저장에 실패했습니다.');
     }
   }
 
@@ -709,7 +709,7 @@ const HomePage = (() => {
     const filter = skillFilter[key] || 'all';
 
     const installed = getPersonaSkills(bot.id, persona.id);
-    const allSkills = MCW.skills || [];
+    const allSkills = CoCoBot.skills || [];
     const installedIds = new Set(installed.map(s => s.id));
 
     const categories = ['all', ...new Set(allSkills.map(s => s.category))];
@@ -723,7 +723,7 @@ const HomePage = (() => {
     const installedHtml = installed.length === 0
       ? '<div style="color:rgba(255,255,255,0.3);font-size:0.8rem;padding:1rem 0;">설치된 스킬이 없습니다.</div>'
       : installed.map(s => {
-          const full = MCW.storage.getSkill(s.id) || s;
+          const full = CoCoBot.storage.getSkill(s.id) || s;
           return `
             <div class="skill-card">
               <div class="skill-card-icon">${full.icon || '🧩'}</div>
@@ -758,8 +758,8 @@ const HomePage = (() => {
 
     // Skill Presets banner
     let presetHtml = '';
-    if (installed.length === 0 && MCW.skillPresets) {
-      const presetChips = Object.entries(MCW.skillPresets).map(([k, v]) =>
+    if (installed.length === 0 && CoCoBot.skillPresets) {
+      const presetChips = Object.entries(CoCoBot.skillPresets).map(([k, v]) =>
         `<button class="category-chip" onclick="HomePage.applySkillPreset('${bot.id}', '${persona.id}', '${k}')">${v.label}</button>`
       ).join('');
       presetHtml = `
@@ -787,14 +787,14 @@ const HomePage = (() => {
   }
 
   function applySkillPreset(botId, personaId, presetKey) {
-    const preset = MCW.skillPresets && MCW.skillPresets[presetKey];
+    const preset = CoCoBot.skillPresets && CoCoBot.skillPresets[presetKey];
     if (!preset) return;
     const skillIds = preset.skills || [];
     const skills = getPersonaSkills(botId, personaId);
     let added = 0;
     for (const sid of skillIds) {
       if (skills.find(s => s.id === sid)) continue;
-      const full = (MCW.skills || []).find(s => s.id === sid);
+      const full = (CoCoBot.skills || []).find(s => s.id === sid);
       if (full) {
         skills.push({ ...full, installed_at: new Date().toISOString() });
         added++;
@@ -802,15 +802,15 @@ const HomePage = (() => {
     }
     if (added > 0) {
       savePersonaSkills(botId, personaId, skills);
-      MCW.showToast(`"${preset.label}" 프리셋 (${added}개 스킬) 설치 완료`);
+      CoCoBot.showToast(`"${preset.label}" 프리셋 (${added}개 스킬) 설치 완료`);
       reopenTool(botId, personaId, 'skills');
     } else {
-      MCW.showToast('이미 모든 프리셋 스킬이 설치되어 있습니다.');
+      CoCoBot.showToast('이미 모든 프리셋 스킬이 설치되어 있습니다.');
     }
   }
 
   function installSkill(botId, personaId, skillId) {
-    const skill = MCW.skills.find(s => s.id === skillId);
+    const skill = CoCoBot.skills.find(s => s.id === skillId);
     if (!skill) return;
 
     const skills = getPersonaSkills(botId, personaId);
@@ -819,14 +819,14 @@ const HomePage = (() => {
       savePersonaSkills(botId, personaId, skills);
     }
 
-    MCW.showToast(`"${skill.name}" 스킬이 설치되었습니다.`);
+    CoCoBot.showToast(`"${skill.name}" 스킬이 설치되었습니다.`);
     reopenTool(botId, personaId, 'skills');
   }
 
   function uninstallSkill(botId, personaId, skillId) {
     const skills = getPersonaSkills(botId, personaId).filter(s => s.id !== skillId);
     savePersonaSkills(botId, personaId, skills);
-    MCW.showToast('스킬이 제거되었습니다.');
+    CoCoBot.showToast('스킬이 제거되었습니다.');
     reopenTool(botId, personaId, 'skills');
   }
 
@@ -840,7 +840,7 @@ const HomePage = (() => {
   function reopenTool(botId, personaId, tool) {
     const key = `${botId}_${personaId}`;
     const panel = document.getElementById(`panel-${key}`);
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!panel || !bot) return;
     const persona = (bot.personas || []).find(p => p.id === personaId);
     if (!persona) return;
@@ -922,7 +922,7 @@ const HomePage = (() => {
           <div class="activity-icon">${a.icon || '💬'}</div>
           <div class="activity-content">
             <div class="activity-text">${escHtml(a.text || '')}</div>
-            <div class="activity-time">${a.timestamp ? MCW.timeAgo(a.timestamp) : ''}</div>
+            <div class="activity-time">${a.timestamp ? CoCoBot.timeAgo(a.timestamp) : ''}</div>
           </div>
         </div>
       `).join('');
@@ -1005,7 +1005,7 @@ const HomePage = (() => {
   }
 
   function savePersonaSettings(botId, personaId) {
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot) return;
     const persona = (bot.personas || []).find(p => p.id === personaId);
     if (!persona) return;
@@ -1025,8 +1025,8 @@ const HomePage = (() => {
     if (iqSlider) persona.iqEq = parseInt(iqSlider.value);
     if (greetingEl) persona.greeting = greetingEl.value.trim();
 
-    MCW.storage.saveBot(bot);
-    MCW.showToast('페르소나 설정이 저장되었습니다.');
+    CoCoBot.storage.saveBot(bot);
+    CoCoBot.showToast('페르소나 설정이 저장되었습니다.');
     renderBotList();
     // Re-open persona settings after list refresh
     setTimeout(() => openTool(botId, personaId, 'psettings'), 50);
@@ -1037,11 +1037,11 @@ const HomePage = (() => {
   // PERSONA CRUD
   // ═══════════════════════════════════════════════
   function addPersona(botId) {
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot) return;
     if (!bot.personas) bot.personas = [];
     if (bot.personas.length >= 10) {
-      MCW.showToast('페르소나는 최대 10개까지 설정 가능합니다.');
+      CoCoBot.showToast('페르소나는 최대 10개까지 설정 가능합니다.');
       return;
     }
 
@@ -1137,9 +1137,9 @@ const HomePage = (() => {
       persona.faqs = generatePersonaDefaultFaqs(persona);
 
       bot.personas.push(persona);
-      MCW.storage.saveBot(bot);
+      CoCoBot.storage.saveBot(bot);
       overlay.remove();
-      MCW.showToast('페르소나가 추가되었습니다.');
+      CoCoBot.showToast('페르소나가 추가되었습니다.');
       renderBotList();
     };
   }
@@ -1169,7 +1169,7 @@ const HomePage = (() => {
   }
 
   function removePersona(botId, personaId) {
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot || !bot.personas) return;
 
     const idx = bot.personas.findIndex(p => p.id === personaId);
@@ -1179,8 +1179,8 @@ const HomePage = (() => {
     if (!confirm(`"${name}" 페르소나를 삭제하시겠습니까?`)) return;
 
     bot.personas.splice(idx, 1);
-    MCW.storage.saveBot(bot);
-    MCW.showToast('페르소나가 삭제되었습니다.');
+    CoCoBot.storage.saveBot(bot);
+    CoCoBot.showToast('페르소나가 삭제되었습니다.');
     renderBotList();
   }
 
@@ -1189,7 +1189,7 @@ const HomePage = (() => {
   // BOT CRUD
   // ═══════════════════════════════════════════════
   function saveBotInfo(botId) {
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot) return;
 
     const nameEl = document.getElementById(`settings-name-${botId}`);
@@ -1198,16 +1198,16 @@ const HomePage = (() => {
     if (nameEl) bot.botName = nameEl.value.trim();
     if (descEl) bot.botDesc = descEl.value.trim();
 
-    MCW.storage.saveBot(bot);
-    MCW.showToast('봇 정보가 저장되었습니다.');
+    CoCoBot.storage.saveBot(bot);
+    CoCoBot.showToast('봇 정보가 저장되었습니다.');
     renderBotList();
   }
 
   function deleteBot(botId, botName) {
-    if (!confirm(`정말 "${botName}" 챗봇을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`정말 "${botName}" 코코봇을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
 
-    MCW.storage.deleteBot(botId);
-    MCW.showToast('챗봇이 삭제되었습니다.');
+    CoCoBot.storage.deleteBot(botId);
+    CoCoBot.showToast('코코봇이 삭제되었습니다.');
     renderBotList();
 
     // 클라우드(Supabase)에서도 삭제 — 없으면 새로고침 시 부활함
@@ -1236,7 +1236,7 @@ const HomePage = (() => {
   }
 
   function saveDmPolicy(botId) {
-    const bot = MCW.storage.getBot(botId);
+    const bot = CoCoBot.storage.getBot(botId);
     if (!bot) return;
 
     const policyEl = document.getElementById(`settings-dm-${botId}`);
@@ -1250,8 +1250,8 @@ const HomePage = (() => {
     const pairingEl = document.getElementById(`settings-pairing-${botId}`);
     if (pairingEl && pairingEl.value) bot.pairingCode = pairingEl.value;
 
-    MCW.storage.saveBot(bot);
-    MCW.showToast('DM 보안 정책이 저장되었습니다.');
+    CoCoBot.storage.saveBot(bot);
+    CoCoBot.showToast('DM 보안 정책이 저장되었습니다.');
   }
 
   // ─── Helpers ───
@@ -1290,15 +1290,15 @@ const HomePage = (() => {
   }
 
   async function updateProfile() {
-    const user = MCW.user.getCurrentUser();
+    const user = CoCoBot.user.getCurrentUser();
     if (!user) return;
     const nameEl = document.getElementById('userNameInput');
     if (!nameEl) return;
     try {
-      await MCW.user.saveUser({ name: nameEl.value });
-      MCW.showToast('프로필이 저장되었습니다.');
+      await CoCoBot.user.saveUser({ name: nameEl.value });
+      CoCoBot.showToast('프로필이 저장되었습니다.');
     } catch (e) {
-      MCW.showToast('프로필 저장에 실패했습니다.');
+      CoCoBot.showToast('프로필 저장에 실패했습니다.');
     }
   }
 
@@ -1311,8 +1311,8 @@ const HomePage = (() => {
     if (next !== confirmVal) return alert('새 비밀번호가 일치하지 않습니다.');
 
     try {
-      await MCW.user.updatePassword(next);
-      MCW.showToast('비밀번호가 변경되었습니다.');
+      await CoCoBot.user.updatePassword(next);
+      CoCoBot.showToast('비밀번호가 변경되었습니다.');
       if (document.getElementById('currentPw')) document.getElementById('currentPw').value = '';
       if (document.getElementById('newPw')) document.getElementById('newPw').value = '';
       if (document.getElementById('newPwConfirm')) document.getElementById('newPwConfirm').value = '';
@@ -1323,7 +1323,7 @@ const HomePage = (() => {
 
   async function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-      await MCW.user.logout();
+      await CoCoBot.user.logout();
       window.location.href = '../login.html';
     }
   }
@@ -1338,7 +1338,7 @@ const HomePage = (() => {
       return;
     }
     const fullUrl = window.location.origin + '/' + botUrl.replace(/^\.\.\//, '');
-    const qrSrc = MCW.getQRCodeURL(fullUrl, 200);
+    const qrSrc = CoCoBot.getQRCodeURL(fullUrl, 200);
     el.innerHTML = `<img src="${qrSrc}" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">`;
   }
 
@@ -1348,10 +1348,10 @@ const HomePage = (() => {
     inputEl.select();
     try {
       navigator.clipboard.writeText(inputEl.value);
-      MCW.showToast('URL이 복사되었습니다.');
+      CoCoBot.showToast('URL이 복사되었습니다.');
     } catch {
       document.execCommand('copy');
-      MCW.showToast('URL이 복사되었습니다.');
+      CoCoBot.showToast('URL이 복사되었습니다.');
     }
   }
 

@@ -5,7 +5,7 @@
  * URL: /bot/faq?botId={id}
  *
  * - Supabase 인증 필수 (미인증 시 /login 리다이렉트)
- * - botId 쿼리 파라미터로 챗봇 FAQ 목록 조회
+ * - botId 쿼리 파라미터로 코코봇 FAQ 목록 조회
  * - FaqManager 컴포넌트 렌더링
  */
 
@@ -59,7 +59,7 @@ export default async function FaqPage({ searchParams }: PageProps) {
     );
   }
 
-  // ── 3. 챗봇 정보 조회 ─────────────────────────────────────────
+  // ── 3. 코코봇 정보 조회 ─────────────────────────────────────────
   const { data: chatbot } = await supabase
     .from('chatbots')
     .select('id, name, description')
@@ -94,7 +94,7 @@ export default async function FaqPage({ searchParams }: PageProps) {
                 {chatbot.name}
               </a>
             ) : (
-              <span>챗봇</span>
+              <span>코코봇</span>
             )}
             <span>/</span>
             <span className="text-text-primary font-medium">FAQ 관리</span>

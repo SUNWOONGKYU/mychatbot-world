@@ -186,14 +186,14 @@ var SUNNY_DATA_VERSION = 'v17.0';
 // 페이지 로드 시 실제 SunnyBot 생성/업데이트 + 유저 연결
 (async function autoInitSunnyBot() {
   if (typeof window === 'undefined') return;
-  if (typeof MCW === 'undefined' || !MCW.storage || !MCW.storage.getBots || !MCW.storage.saveBot) return;
+  if (typeof CoCoBot === 'undefined' || !CoCoBot.storage || !CoCoBot.storage.getBots || !CoCoBot.storage.saveBot) return;
 
   // auth init 완료 대기
-  if (MCW.ready) await MCW.ready;
+  if (CoCoBot.ready) await CoCoBot.ready;
 
   try {
     var storedVersion = localStorage.getItem('mcw_sunny_data_version');
-    var bots = MCW.storage.getBots();
+    var bots = CoCoBot.storage.getBots();
     var existingIndex = bots.findIndex(function(b) {
       return b.id === 'sunny-official' || b.username === 'sunny';
     });
@@ -202,8 +202,8 @@ var SUNNY_DATA_VERSION = 'v17.0';
     var SUNNY_OWNER_EMAIL = 'wksun999@gmail.com';
     var currentUser = null;
     var ownerId = 'anonymous';
-    if (MCW.user && MCW.user.getCurrentUser) {
-      currentUser = MCW.user.getCurrentUser();
+    if (CoCoBot.user && CoCoBot.user.getCurrentUser) {
+      currentUser = CoCoBot.user.getCurrentUser();
       if (currentUser) ownerId = currentUser.id;
     }
 
@@ -220,7 +220,7 @@ var SUNNY_DATA_VERSION = 'v17.0';
         created: Date.now(),
         likes: 0,
       });
-      MCW.storage.saveBot(initialBot);
+      CoCoBot.storage.saveBot(initialBot);
       // Supabase에도 동기화
       if (typeof StorageManager !== 'undefined' && StorageManager.syncBotToCloud) {
         StorageManager.syncBotToCloud(initialBot).catch(function(e) { console.warn('[SunnyBot] cloud sync failed:', e); });
@@ -253,7 +253,7 @@ var SUNNY_DATA_VERSION = 'v17.0';
       }
 
       if (needUpdate) {
-        MCW.storage.saveBot(existing);
+        CoCoBot.storage.saveBot(existing);
         // Supabase에도 동기화
         if (typeof StorageManager !== 'undefined' && StorageManager.syncBotToCloud) {
           StorageManager.syncBotToCloud(existing).catch(function(e) { console.warn('[SunnyBot] cloud sync failed:', e); });

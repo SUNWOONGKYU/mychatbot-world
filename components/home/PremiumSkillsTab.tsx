@@ -120,7 +120,7 @@ export function PremiumSkillsTab() {
         </div>
 
         <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', marginBottom: '1rem' }}>
-          Ready Player Me를 통해 나만의 3D 아바타를 생성하고 챗봇에 적용합니다.
+          Ready Player Me를 통해 나만의 3D 아바타를 생성하고 코코봇에 적용합니다.
         </p>
 
         <div style={{ marginBottom: '1rem' }}>

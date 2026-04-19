@@ -2,7 +2,7 @@
 
 /**
  * @page /customer-service
- * @description My Chatbot World 고객센터
+ * @description CoCoBot 고객센터
  */
 
 import { useState } from 'react';

@@ -99,7 +99,7 @@ const VOICE_PACKS = [
     id: 'vp-basic',
     emoji: '🎙️',
     name: '기본 AI 음성 팩',
-    description: '남성·여성 2종 AI 음성, 챗봇 응답 TTS 지원',
+    description: '남성·여성 2종 AI 음성, 코코봇 응답 TTS 지원',
     price: 15000,
   },
   {
@@ -123,7 +123,7 @@ const AVATAR_PACKS = [
     id: 'ap-basic',
     emoji: '🖼️',
     name: '기본 아바타 팩',
-    description: '다양한 스타일 챗봇 아바타 이미지 10종',
+    description: '다양한 스타일 코코봇 아바타 이미지 10종',
     price: 15000,
   },
   {
@@ -561,7 +561,7 @@ export default function Tab7Credits() {
         <div>
           <h3 className="font-semibold text-text-primary">전문 분야별 페르소나 템플릿</h3>
           <p className="text-xs text-text-muted mt-1">
-            전문가 수준의 챗봇 페르소나 세트를 구매해 즉시 적용하세요. 팩당 30,000원 · 일회성 구매
+            전문가 수준의 코코봇 페르소나 세트를 구매해 즉시 적용하세요. 팩당 30,000원 · 일회성 구매
           </p>
         </div>
 
@@ -663,7 +663,7 @@ export default function Tab7Credits() {
         <div>
           <h3 className="font-semibold text-text-primary">음성 & 아바타 팩</h3>
           <p className="text-xs text-text-muted mt-1">
-            내 챗봇에 AI 음성과 고유 아바타를 장착하세요. 일회성 구매 · 영구 사용
+            내 코코봇에 AI 음성과 고유 아바타를 장착하세요. 일회성 구매 · 영구 사용
           </p>
         </div>
 
