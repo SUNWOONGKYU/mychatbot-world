@@ -181,15 +181,19 @@
 
 ---
 
-## S6 — 사용자 플로우 E2E 보강 (2 Tasks)
+## S6 — 사용자 플로우 E2E 보강 + 프로덕션 블로커 해결 (6 Tasks)
 
-> 목표: 바닐라→React 전환 과정에서 페이지 간 연결고리 누락 방지. 회원가입/로그인/결제/봇생성 핵심 플로우를 사용자 관점에서 실사용 검증.
-> **배경 (2026-04-20)**: `/login` 페이지에 이메일/비번 로그인 폼이 누락되고 `/signup` 진입 링크도 없었던 사고(사용자 "회원가입 기능이 없다" 제보) 재발 방지.
+> 목표: 바닐라→React 전환 과정에서 페이지 간 연결고리 누락 방지. 회원가입/로그인/결제/봇생성 핵심 플로우를 사용자 관점에서 실사용 검증. 프로덕션 블로커 전수조사·해결.
+> **배경 (2026-04-20)**: `/login` 페이지에 이메일/비번 로그인 폼이 누락되고 `/signup` 진입 링크도 없었던 사고(사용자 "회원가입 기능이 없다" 제보) 재발 방지. 추가로 63개 TS 에러·미구현 엔드포인트·mock 데이터 블로커 발견·수정.
 
 | Task ID | Task명 | Area | Dependencies | Agent | Status |
 |---------|--------|------|-------------|-------|--------|
 | S6FE1 | 로그인 페이지 이메일/비번 폼 + 회원가입/비번찾기 진입로 복원 | FE | S1SC1, S4GA1 | `frontend-developer-core` | Completed |
 | S6QA1 | 핵심 사용자 플로우 E2E 점검 (가입→로그인→봇생성→결제→상속) | QA | S6FE1 | `qa-specialist` | Pending |
+| S6BI1 | @upstash/redis 의존성 설치 + TS 타입 미스매치 일괄 해결 (ReturnType<typeof createClient> → any) | BI | — | `backend-developer-core` | Completed |
+| S6BA1 | inheritance/skills/my 런타임 에러 수정 (getUserByEmail→listUsers, description→metadata.description) | BA | S6BI1 | `api-developer-core` | Completed |
+| S6FE2 | Tab5Operations HiredTab mock → /api/operations/hired-bots 실 연동 | FE | — | `frontend-developer-core` | Completed |
+| S6BA2 | 고객센터 문의 저장 API 신설 (POST /api/customer-service) + 폼 연동 | BA | — | `api-developer-core` | Completed |
 
 ---
 

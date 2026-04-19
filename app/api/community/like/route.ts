@@ -21,7 +21,7 @@ function getSupabase() {
   return createClient(url, key);
 }
 
-async function authenticate(supabase: ReturnType<typeof createClient>, authHeader: string) {
+async function authenticate(supabase: any, authHeader: string) {
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
   if (!token) return { userId: null as null, error: 'Unauthorized: missing Bearer token' };
   const { data, error } = await supabase.auth.getUser(token);
@@ -36,7 +36,7 @@ function targetTable(targetType: string): string | null {
 }
 
 async function syncVoteCounts(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   targetType: string,
   targetId: string,
 ): Promise<void> {

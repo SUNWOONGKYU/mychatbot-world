@@ -186,19 +186,46 @@ function HiredTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data — API 연동 시 /api/operations/hired-bots
-    setBots([
-      {
-        id: '1',
-        bot_name: '배송조회봇',
-        owner: 'user123@example.com',
-        contract_until: '2026-06-30T00:00:00Z',
-        price_per_unit: 500,
-        performance_score: 4.7,
-        cost_total: 125000,
-      },
-    ]);
-    setLoading(false);
+    let aborted = false;
+    (async () => {
+      try {
+        const { supabase } = await import('@/lib/supabase');
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        if (!token) {
+          if (!aborted) {
+            setBots([]);
+            setLoading(false);
+          }
+          return;
+        }
+
+        const res = await fetch('/api/operations/hired-bots', {
+          headers: { authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          if (!aborted) {
+            setBots([]);
+            setLoading(false);
+          }
+          return;
+        }
+        const json = await res.json();
+        if (!aborted) {
+          setBots(Array.isArray(json.hired_bots) ? json.hired_bots : []);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.warn('[HiredTab] fetch failed:', err);
+        if (!aborted) {
+          setBots([]);
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      aborted = true;
+    };
   }, []);
 
   return (

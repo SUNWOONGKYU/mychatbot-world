@@ -84,7 +84,7 @@ async function loadSkillMeta(skillId: string): Promise<SkillDefMeta | null> {
     name: data.name,
     icon: data.metadata?.icon ?? '',
     category: data.metadata?.category ?? '',
-    description: data.description ?? '',
+    description: data.metadata?.description ?? '',
     type: data.metadata?.type ?? 'prompt',
     isFree: data.metadata?.isFree ?? (Number(data.price) === 0),
     price: Number(data.price) ?? 0,

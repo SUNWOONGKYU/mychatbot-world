@@ -46,7 +46,7 @@ function getSupabase() {
 }
 
 async function authenticate(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   authHeader: string | null,
 ): Promise<{ userId: string | null; error: string | null }> {
   if (!authHeader) return { userId: null, error: 'Unauthorized: missing Authorization header' };

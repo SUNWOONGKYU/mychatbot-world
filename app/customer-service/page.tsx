@@ -42,19 +42,31 @@ export default function CustomerServicePage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.type || !form.name || !form.email || !form.subject || !form.content) {
       alert('필수 항목을 모두 입력해 주세요.');
       return;
     }
     setSubmitting(true);
-    // TODO: Supabase 연동
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      const res = await fetch('/api/customer-service', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(json?.error ?? '문의 접수에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        return;
+      }
       alert('문의가 접수되었습니다.\n영업일 기준 1~2일 내에 답변 드리겠습니다.');
       setForm({ type: '', name: '', email: '', phone: '', subject: '', content: '' });
-    }, 600);
+    } catch {
+      alert('네트워크 오류로 문의를 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (

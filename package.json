@@ -2,10 +2,11 @@
     "name": "mychatbot-world",
     "version": "1.0.0",
     "type": "module",
-    "description": "My Chatbot World - AI 챗봇 생성 플랫폼",
+    "description": "My Chatbot World - AI 코코봇 생성 플랫폼",
     "dependencies": {
         "@supabase/ssr": "^0.5.2",
         "@supabase/supabase-js": "^2.39.0",
+        "@upstash/redis": "^1.37.0",
         "@vercel/analytics": "^1.6.1",
         "@xsai/generate-text": "latest",
         "@xsai/providers": "latest",

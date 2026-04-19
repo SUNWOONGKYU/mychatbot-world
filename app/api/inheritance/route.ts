@@ -29,7 +29,7 @@ function getSupabase() {
 }
 
 async function authenticate(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   authHeader: string | null
 ): Promise<{ userId: string | null; userEmail: string | null; error: string | null }> {
   if (!authHeader) {
@@ -223,8 +223,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { data: heirUserResult } = await supabase.auth.admin.getUserByEmail(heirEmail);
-  const heirUser = heirUserResult?.user ? { id: heirUserResult.user.id } : null;
+  // Supabase Admin API는 getUserByEmail을 제공하지 않음 → listUsers로 이메일 매칭
+  const { data: usersList } = await supabase.auth.admin.listUsers();
+  const heirUserRecord = usersList?.users?.find(
+    (u: { email?: string | null }) => u.email?.toLowerCase() === heirEmail.toLowerCase()
+  );
+  const heirUser = heirUserRecord ? { id: heirUserRecord.id } : null;
 
   const now = new Date().toISOString();
 
