@@ -12,6 +12,7 @@ export const dynamic = 'force-dynamic';
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/lib/rate-limiter';
 
 // ── Supabase ─────────────────────────────────────────────────────────────────
 
@@ -157,6 +158,15 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // 스팸/어뷰즈 방지: 시간당 20회/IP
+    const rl = rateLimit(req, { limit: 20, windowMs: 3_600_000 }, 'community:post');
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: '게시글 작성 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.' },
+        { status: 429, headers: { 'Retry-After': String(rl.retryAfterSec) } },
+      );
+    }
+
     const supabase = getSupabase();
     const authHeader = req.headers.get('authorization') ?? '';
     const { userId, error: authError } = await authenticate(supabase, authHeader);
