@@ -4,7 +4,7 @@
 > **수정일**: 2026-04-12
 > **버전**: v4.1
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 86개 (v4.4 Round 4 — skills/my N+1 쿼리 제거)
+> **총 Task 수**: 87개 (v4.5 Round 5 — health check 고도화)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -20,8 +20,8 @@
 | S3 | 확장 기능 | 19 | ~50% (소급 8개 완료) |
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
-| S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 10 | 90% (9/10 완료, S6QA1 Pending) |
-| **합계** | | **86** | **~49%** |
+| S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
+| **합계** | | **87** | **~50%** |
 
 ---
 
@@ -33,7 +33,7 @@
 | BA (Backend APIs) | 0 | 6 | 9 | 6 | 0 | 5 | 26 |
 | DB (Database) | 2 | 0 | 1 | 0 | 0 | 0 | 3 |
 | SC (Security) | 1 | 0 | 1 | 0 | 0 | 0 | 2 |
-| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 1 | 5 |
+| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 2 | 6 |
 | EX (External) | 1 | 1 | 2 | 0 | 0 | 0 | 4 |
 | TS (Testing) | 0 | 0 | 0 | 2 | 0 | 0 | 2 |
 | DV (DevOps) | 1 | 0 | 0 | 1 | 0 | 0 | 2 |
@@ -41,7 +41,7 @@
 | DC (Documentation) | 1 | 0 | 0 | 2 | 0 | 0 | 3 |
 | CS (Content System) | 1 | 0 | 2 | 0 | 0 | 0 | 3 |
 | QA (Quality Assurance) | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
-| **합계** | **12** | **16** | **19** | **15** | **15** | **10** | **86** |
+| **합계** | **12** | **16** | **19** | **15** | **15** | **11** | **87** |
 
 > 참고: S2는 S2FE4~FE7을 포함하면 15개, S4는 DS1+DV1 합산으로 15개. S5는 DS 4개(기획 완료 소급) + FE 10개(신규, v3.1 재구성). 위 표는 실제 task 분류 기준.
 
@@ -183,7 +183,7 @@
 
 ---
 
-## S6 — 사용자 플로우 E2E 보강 + 프로덕션 블로커 해결 (10 Tasks)
+## S6 — 사용자 플로우 E2E 보강 + 프로덕션 블로커 해결 (11 Tasks)
 
 > 목표: 바닐라→React 전환 과정에서 페이지 간 연결고리 누락 방지. 회원가입/로그인/결제/봇생성 핵심 플로우를 사용자 관점에서 실사용 검증. 프로덕션 블로커 전수조사·해결.
 > **배경 (2026-04-20)**: `/login` 페이지에 이메일/비번 로그인 폼이 누락되고 `/signup` 진입 링크도 없었던 사고(사용자 "회원가입 기능이 없다" 제보) 재발 방지. 추가로 63개 TS 에러·미구현 엔드포인트·mock 데이터 블로커 발견·수정.
@@ -200,6 +200,7 @@
 | S6BA4 | 공개 API CORS 헤더 + OPTIONS preflight (bots/public) | BA | — | `api-developer-core` | Completed |
 | S6FE3 | 세그먼트별 error.tsx 바운더리 (/admin, /bot/[botId], /mypage) | FE | — | `frontend-developer-core` | Completed |
 | S6BA5 | skills/my N+1 쿼리 제거 (map+Promise.all → 단일 .in 쿼리) + 데드 코드 정리 | BA | — | `api-developer-core` | Completed |
+| S6BI2 | /api/health 실질적 헬스체크 고도화 (env + Supabase 검증 → 200/503 분기) | BI | — | `backend-developer-core` | Completed |
 
 ---
 
@@ -325,3 +326,4 @@ S4 (개발 마무리)
 | v4.2 | 2026-04-20 | 프로덕션 블로커 Round 2 — Explore agent 20개 후보 스캔, 수동 검증 결과 오탐(admin middleware / chat/stream credit / JSON catch) 제외 후 검증된 2건 수정. S6BA3: chat/stream message 10,000자 상한(DoS/토큰 폭주 방어), community POST rate-limit 20/h per IP(스팸 방어). S6 6→7 Tasks. 총 82개→83개. |
 | v4.3 | 2026-04-20 | 프로덕션 블로커 Round 3 — 에러 바운더리·CORS 보강. S6BA4: /api/bots/public CORS 헤더 + OPTIONS preflight(외부 임베드/위젯 허용). S6FE3: /admin·/bot/[botId]·/mypage 세그먼트별 error.tsx 추가(글로벌 에러로 전파 방지, digest 노출). .single() 잔존 리스크 검증 결과 PGRST116 핸들링 완비 확인 — 스킵. S6 7→9 Tasks. 총 83개→85개. |
 | v4.4 | 2026-04-20 | 프로덕션 블로커 Round 4 — 성능 이슈 수정. S6BA5: GET /api/skills/my N+1 쿼리(installations.map(loadSkillMeta) → 단일 .in) 제거, 쿼리 수 installations+2 → 3 고정. 데드 코드 loadSkillMeta 헬퍼 삭제. payment idempotency는 pending+admin approval 플로우로 실질 위험 낮아 스킵. S6 9→10 Tasks. 총 85개→86개. |
+| v4.5 | 2026-04-20 | 프로덕션 블로커 Round 5 — 운영 가시성 강화. S6BI2: /api/health 단순 {status:'ok'} → REQUIRED_ENVS 누락 검사 + Supabase count head 경량 쿼리 검증 → 정상 200 / 실패 503 + checks 상세 + missingEnvs 노출. 로드밸런서·uptime 서비스가 DB 장애/설정 누락을 정확히 감지 가능. S6 10→11 Tasks. 총 86개→87개. |
