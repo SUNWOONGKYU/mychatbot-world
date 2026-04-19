@@ -2,9 +2,9 @@
 
 > **작성일**: 2026-03-31
 > **수정일**: 2026-04-12
-> **버전**: v3.4
+> **버전**: v4.1
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 77개 (v3.3 Critical 유지보수성 이슈 2건 추가)
+> **총 Task 수**: 82개 (v4.1 프로덕션 블로커 해결 4건 추가)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -20,26 +20,28 @@
 | S3 | 확장 기능 | 19 | ~50% (소급 8개 완료) |
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
-| **합계** | | **77** | **~39%** |
+| S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 6 | 83% (5/6 완료, S6QA1 Pending) |
+| **합계** | | **82** | **~45%** |
 
 ---
 
 ## Area별 분포 (N×11 Matrix)
 
-| Area | S1 | S2 | S3 | S4 | S5 | 합계 |
-|------|:--:|:--:|:--:|:--:|:--:|:----:|
-| FE (Frontend) | 1 | 8 | 4 | 3 | 11 | 27 |
-| BA (Backend APIs) | 0 | 6 | 9 | 6 | 0 | 21 |
-| DB (Database) | 2 | 0 | 1 | 0 | 0 | 3 |
-| SC (Security) | 1 | 0 | 1 | 0 | 0 | 2 |
-| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 4 |
-| EX (External) | 1 | 1 | 2 | 0 | 0 | 4 |
-| TS (Testing) | 0 | 0 | 0 | 2 | 0 | 2 |
-| DV (DevOps) | 1 | 0 | 0 | 1 | 0 | 2 |
-| DS (Design) | 1 | 0 | 0 | 1 | 4 | 6 |
-| DC (Documentation) | 1 | 0 | 0 | 2 | 0 | 3 |
-| CS (Content System) | 1 | 0 | 2 | 0 | 0 | 3 |
-| **합계** | **12** | **16** | **19** | **15** | **15** | **77** |
+| Area | S1 | S2 | S3 | S4 | S5 | S6 | 합계 |
+|------|:--:|:--:|:--:|:--:|:--:|:--:|:----:|
+| FE (Frontend) | 1 | 8 | 4 | 3 | 11 | 2 | 29 |
+| BA (Backend APIs) | 0 | 6 | 9 | 6 | 0 | 2 | 23 |
+| DB (Database) | 2 | 0 | 1 | 0 | 0 | 0 | 3 |
+| SC (Security) | 1 | 0 | 1 | 0 | 0 | 0 | 2 |
+| BI (Backend Infra) | 3 | 1 | 0 | 0 | 0 | 1 | 5 |
+| EX (External) | 1 | 1 | 2 | 0 | 0 | 0 | 4 |
+| TS (Testing) | 0 | 0 | 0 | 2 | 0 | 0 | 2 |
+| DV (DevOps) | 1 | 0 | 0 | 1 | 0 | 0 | 2 |
+| DS (Design) | 1 | 0 | 0 | 1 | 4 | 0 | 6 |
+| DC (Documentation) | 1 | 0 | 0 | 2 | 0 | 0 | 3 |
+| CS (Content System) | 1 | 0 | 2 | 0 | 0 | 0 | 3 |
+| QA (Quality Assurance) | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
+| **합계** | **12** | **16** | **19** | **15** | **15** | **6** | **82** |
 
 > 참고: S2는 S2FE4~FE7을 포함하면 15개, S4는 DS1+DV1 합산으로 15개. S5는 DS 4개(기획 완료 소급) + FE 10개(신규, v3.1 재구성). 위 표는 실제 task 분류 기준.
 
@@ -315,3 +317,4 @@ S4 (개발 마무리)
 | v3.3 | 2026-04-11 | S5FE1~10+FE11 완료 처리 — 디자인 혁신 FE Task 전체 Completed. S5FE11 TASK_PLAN.md 등록(마이페이지 탭5~8). S5 Stage Gate AI Verified (35/35). 크레딧 차감 시스템(S2BA5) 통합 기록. 총 75개→76개. |
 | v4.0 | 2026-04-20 | S6 Stage 신설 (사용자 플로우 E2E 보강). S6FE1(로그인 페이지 이메일/비번 폼 + 회원가입/비번찾기 진입로 복원) Completed, S6QA1(핵심 사용자 플로우 E2E 점검) Pending 추가. 배경: `/login` 페이지에서 이메일 로그인 폼과 `/signup` 진입 링크가 누락되어 사용자가 "회원가입 기능이 없다"고 오인한 사고. 바닐라→React 전환 시 페이지 간 연결고리 누락 재발 방지. S1SC1 상태 Pending→Completed 교정. 총 76개→78개. |
 | v3.4 | 2026-04-12 | 모바일 반응형 긴급 수정(버그픽스) — S5FE2: navbar.tsx 서비스 메뉴 hidden md:flex(모바일 오버플로우 해결)+로그인 버튼 숨김+회원가입 축약, mobile-nav.tsx 드로어 max-w-[85vw] 추가. S5FE6: home/page.tsx 260px 고정 사이드바→isMobile 기반 오버레이 슬라이드 전환, 모바일 햄버거 메뉴+탭명 헤더 추가. Supabase Auth 설정: site_url=https://mychatbot.world, uri_allow_list 2개 등록. Google Cloud Console OAuth redirect URI 등록 완료. 총 76개 유지(버그픽스). |
+| v4.1 | 2026-04-20 | 프로덕션 블로커 전수조사 일괄 해결 — S6BI1(@upstash/redis 설치 + Supabase 타입 미스매치 13개 API 일괄 수정) Completed, S6BA1(inheritance getUserByEmail→listUsers, skills/my description→metadata.description) Completed, S6FE2(Tab5Operations HiredTab mock→/api/operations/hired-bots 실 연동) Completed, S6BA2(POST /api/customer-service 신설 + 폼 연동 + 42P01 폴백) Completed. 검증: tsc --noEmit 63→0 errors, next build 클린. S6 Stage 2→6 Tasks. 총 78개→82개. commit 16cf88b. |
