@@ -5,8 +5,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>게스트 체험 — My Chatbot World</title>
-  <meta name="description" content="회원가입 없이 AI 챗봇을 무료로 체험해보세요. 직업 카테고리를 선택하면 바로 시작할 수 있습니다.">
+  <title>게스트 체험 — CoCoBot World</title>
+  <meta name="description" content="회원가입 없이 AI 코코봇을 무료로 체험해보세요. 직업 카테고리를 선택하면 바로 시작할 수 있습니다.">
   <link rel="stylesheet" href="../../css/styles.css">
   <style>
     /* ===== 게스트 체험 페이지 전용 스타일 ===== */
@@ -332,7 +332,7 @@
 
   <!-- 헤더 -->
   <header class="guest-header">
-    <a href="/" class="guest-header-logo">My Chatbot World</a>
+    <a href="/" class="guest-header-logo">CoCoBot World</a>
     <div class="guest-header-actions">
       <a href="../login.html" class="btn-login">로그인</a>
       <a href="../signup.html" class="btn-signup">회원가입</a>
@@ -342,21 +342,21 @@
   <!-- 안내 배너 -->
   <div class="guest-banner">
     <span class="guest-banner-badge">무료 체험</span>
-    <h1>회원가입 없이<br>AI 챗봇 체험</h1>
-    <p>직업 카테고리를 선택하면<br>바로 AI 챗봇과 대화할 수 있습니다</p>
+    <h1>회원가입 없이<br>AI 코코봇 체험</h1>
+    <p>직업 카테고리를 선택하면<br>바로 AI 코코봇과 대화할 수 있습니다</p>
     <p class="guest-banner-note">최대 10개 메시지 · 개인정보 불필요 · 즉시 시작</p>
   </div>
 
   <!-- 메인 콘텐츠 -->
   <main class="guest-main">
-    <p class="guest-section-title">어떤 분야의 AI 챗봇을 체험하시겠습니까?</p>
+    <p class="guest-section-title">어떤 분야의 AI 코코봇을 체험하시겠습니까?</p>
 
     <div class="category-grid" id="categoryGrid">
 
       <div class="category-card" data-category="lawyer" data-template="guest_lawyer" onclick="selectCategory(this)">
         <span class="category-icon">⚖️</span>
         <div class="category-name">변호사</div>
-        <div class="category-desc">법률 상담 AI 챗봇</div>
+        <div class="category-desc">법률 상담 AI 코코봇</div>
       </div>
 
       <div class="category-card" data-category="restaurant" data-template="guest_restaurant" onclick="selectCategory(this)">
@@ -419,7 +419,7 @@
   <!-- 로딩 오버레이 -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <p class="loading-text" id="loadingText">챗봇을 준비하는 중...</p>
+    <p class="loading-text" id="loadingText">코코봇을 준비하는 중...</p>
   </div>
 
   <!-- 에러 토스트 -->
@@ -428,16 +428,16 @@
   <script>
     // ===== 카테고리 이름 매핑 =====
     const CATEGORY_NAMES = {
-      lawyer: '변호사 AI 챗봇',
-      restaurant: '음식점 AI 챗봇',
-      realestate: '부동산 AI 챗봇',
-      hospital: '병원 AI 챗봇',
-      academy: '학원 AI 챗봇',
-      salon: '미용실 AI 챗봇',
-      cafe: '카페 AI 챗봇',
-      gym: '헬스장 AI 챗봇',
-      studio: '스튜디오 AI 챗봇',
-      retail: '소매점 AI 챗봇'
+      lawyer: '변호사 AI 코코봇',
+      restaurant: '음식점 AI 코코봇',
+      realestate: '부동산 AI 코코봇',
+      hospital: '병원 AI 코코봇',
+      academy: '학원 AI 코코봇',
+      salon: '미용실 AI 코코봇',
+      cafe: '카페 AI 코코봇',
+      gym: '헬스장 AI 코코봇',
+      studio: '스튜디오 AI 코코봇',
+      retail: '소매점 AI 코코봇'
     };
 
     function showToast(msg, duration = 4000) {
@@ -447,7 +447,7 @@
       setTimeout(() => toast.classList.remove('visible'), duration);
     }
 
-    function setLoading(visible, text = '챗봇을 준비하는 중...') {
+    function setLoading(visible, text = '코코봇을 준비하는 중...') {
       const overlay = document.getElementById('loadingOverlay');
       document.getElementById('loadingText').textContent = text;
       overlay.classList.toggle('visible', visible);
@@ -456,7 +456,7 @@
     async function selectCategory(card) {
       const category = card.dataset.category;
       const templateId = card.dataset.template;
-      const botName = CATEGORY_NAMES[category] || '게스트 AI 챗봇';
+      const botName = CATEGORY_NAMES[category] || '게스트 AI 코코봇';
 
       // 카드 선택 상태
       document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));

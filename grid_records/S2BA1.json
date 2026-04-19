@@ -1,0 +1,34 @@
+{
+  "task_id": "S2BA1",
+  "task_name": "Create API 강화 (AI 분석 → FAQ 자동생성 → 배포 URL+QR)",
+  "stage": 2,
+  "area": "BA",
+  "level": 1,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1DB1",
+    "S1SC1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S2BA1_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "priority": "High",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S2BA1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
+  "comprehensive_verification": {},
+  "fix_instructions": "",
+  "notes": "",
+  "remarks": ""
+}

@@ -1,19 +1,49 @@
 /**
  * @task S1SC1
  * @description Login page
- * Social login buttons for Google and Kakao.
+ * Email/password login + Social login (Google, Kakao) + signup/reset-password links.
  * Uses design system Tailwind tokens (bg-bg-base, text-text-primary, etc.)
  */
 
 'use client'
 
-import { useState } from 'react'
-import { signInWithGoogle, signInWithKakao } from '@/lib/auth'
+import { useState, FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { signInWithEmail, signInWithGoogle, signInWithKakao } from '@/lib/auth'
 
 export default function LoginPage() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loadingEmail, setLoadingEmail] = useState(false)
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [loadingKakao, setLoadingKakao] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const isLoading = loadingEmail || loadingGoogle || loadingKakao
+
+  const handleEmailLogin = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!email.trim() || !password) {
+      setError('이메일과 비밀번호를 모두 입력해 주세요.')
+      return
+    }
+    try {
+      setLoadingEmail(true)
+      setError(null)
+      await signInWithEmail(email, password)
+      router.replace('/')
+    } catch (err: any) {
+      const msg = err?.message ?? ''
+      if (msg.toLowerCase().includes('invalid login credentials')) {
+        setError('이메일 또는 비밀번호가 올바르지 않습니다.')
+      } else {
+        setError(msg || '로그인에 실패했습니다. 다시 시도해 주세요.')
+      }
+      setLoadingEmail(false)
+    }
+  }
 
   const handleGoogleLogin = async () => {
     try {
@@ -39,26 +69,71 @@ export default function LoginPage() {
     }
   }
 
-  const isLoading = loadingGoogle || loadingKakao
-
   return (
-    <main className="min-h-screen flex items-center justify-center bg-bg-base px-4">
+    <main className="min-h-screen flex items-center justify-center bg-bg-base px-4 py-8">
       <div className="w-full max-w-sm">
         {/* Logo / Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">CoCoBot World</a>
           <h1 className="text-2xl font-bold text-text-primary mb-2">로그인</h1>
           <p className="text-sm text-text-secondary">
-            소셜 계정으로 빠르게 시작하세요
+            나의 코코봇 세계로 입장하세요
           </p>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-lg bg-error-subtle border border-error-border px-4 py-3">
-            <p className="text-sm text-error-text">{error}</p>
+          <div className="mb-5 rounded-lg bg-error/10 border border-error/20 px-4 py-3" role="alert">
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
+
+        {/* Email/Password form */}
+        <form onSubmit={handleEmailLogin} noValidate className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-medium text-text-secondary">이메일</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="이메일 주소를 입력하세요"
+              autoComplete="email"
+              disabled={isLoading}
+              className="w-full px-3.5 py-2.5 rounded-lg text-sm bg-bg-subtle border border-border-default text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors disabled:opacity-50"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-sm font-medium text-text-secondary">비밀번호</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력하세요"
+              autoComplete="current-password"
+              disabled={isLoading}
+              className="w-full px-3.5 py-2.5 rounded-lg text-sm bg-bg-subtle border border-border-default text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors disabled:opacity-50"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="mt-1 w-full h-11 rounded-lg text-sm font-semibold bg-primary text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-busy={loadingEmail}
+          >
+            {loadingEmail ? <><LoadingSpinner /> 로그인 중...</> : '로그인'}
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="my-5 flex items-center gap-3" aria-hidden="true">
+          <span className="h-px flex-1 bg-border-default" />
+          <span className="text-xs text-text-muted">또는</span>
+          <span className="h-px flex-1 bg-border-default" />
+        </div>
 
         {/* Social login buttons */}
         <div className="flex flex-col gap-3">
@@ -67,23 +142,10 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="
-              flex items-center justify-center gap-3
-              w-full h-12 rounded-lg
-              bg-white border border-border-default
-              text-text-primary text-sm font-medium
-              hover:bg-bg-subtle
-              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-              transition-colors duration-150
-            "
+            className="flex items-center justify-center gap-3 w-full h-12 rounded-lg bg-white border border-border-default text-text-primary text-sm font-medium hover:bg-bg-subtle focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             aria-busy={loadingGoogle}
           >
-            {loadingGoogle ? (
-              <LoadingSpinner />
-            ) : (
-              <GoogleIcon />
-            )}
+            {loadingGoogle ? <LoadingSpinner /> : <GoogleIcon />}
             {loadingGoogle ? '로그인 중...' : 'Google로 로그인'}
           </button>
 
@@ -92,29 +154,30 @@ export default function LoginPage() {
             type="button"
             onClick={handleKakaoLogin}
             disabled={isLoading}
-            className="
-              flex items-center justify-center gap-3
-              w-full h-12 rounded-lg
-              text-[#191919] text-sm font-medium
-              hover:brightness-95
-              focus:outline-none focus:ring-2 focus:ring-[#FEE500] focus:ring-offset-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-              transition-all duration-150
-            "
+            className="flex items-center justify-center gap-3 w-full h-12 rounded-lg text-[#191919] text-sm font-medium hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-[#FEE500] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
             style={{ backgroundColor: '#FEE500' }}
             aria-busy={loadingKakao}
           >
-            {loadingKakao ? (
-              <LoadingSpinner color="#191919" />
-            ) : (
-              <KakaoIcon />
-            )}
+            {loadingKakao ? <LoadingSpinner color="#191919" /> : <KakaoIcon />}
             {loadingKakao ? '로그인 중...' : '카카오로 로그인'}
           </button>
         </div>
 
+        {/* Signup + reset password links */}
+        <div className="mt-6 flex flex-col items-center gap-2 text-sm">
+          <p className="text-text-secondary">
+            계정이 없으신가요?{' '}
+            <Link href="/signup" className="font-semibold text-primary hover:underline">
+              회원가입
+            </Link>
+          </p>
+          <Link href="/reset-password" className="text-xs text-text-muted hover:text-text-secondary transition-colors">
+            비밀번호를 잊으셨나요?
+          </Link>
+        </div>
+
         {/* Footer */}
-        <p className="mt-8 text-center text-xs text-text-tertiary" style={{ whiteSpace: 'nowrap' }}>
+        <p className="mt-6 text-center text-xs text-text-tertiary">
           로그인하면 <a href="/terms" className="underline hover:text-text-secondary">이용약관</a> 및 <a href="/privacy" className="underline hover:text-text-secondary">개인정보처리방침</a>에 동의한 것으로 간주합니다.
         </p>
       </div>

@@ -2,7 +2,7 @@
 /**
  * Community Madang API - Vercel Serverless Function
  * GET /api/Backend_APIs/community-madang               — 마당 목록 (post_count 포함)
- * GET /api/Backend_APIs/community-madang?popular_bots  — 인기 챗봇 top 5 (karma 기준)
+ * GET /api/Backend_APIs/community-madang?popular_bots  — 인기 코코봇 top 5 (karma 기준)
  * GET /api/Backend_APIs/community-madang?id=xxx        — 마당 단건 조회
  *
  * community_madangs 테이블 사용 (동적 마당 목록)
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
   try {
     const { id, popular_bots } = req.query;
 
-    // 인기 챗봇 top 5
+    // 인기 코코봇 top 5
     if (popular_bots !== undefined) {
       const { data: bots, error } = await supabase
         .from('mcw_bots')

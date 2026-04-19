@@ -1,7 +1,7 @@
 /**
  * @task S4T4
  * @description 회귀 테스트 — 기존 핵심 API 안정성 검증
- *   - 인증(Google OAuth callback), 챗봇 목록, 대화, 사용자 프로필, 봇 생성
+ *   - 인증(Google OAuth callback), 코코봇 목록, 대화, 사용자 프로필, 봇 생성
  */
 
 const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3000';
@@ -98,9 +98,9 @@ describe('Regression — Chatbot List API', () => {
   });
 
   // -------------------------------------------------------------------------
-  // 3. 챗봇 목록 조회
+  // 3. 코코봇 목록 조회
   // -------------------------------------------------------------------------
-  test('GET /Backend_APIs/chatbot-list — 챗봇 목록 반환 (200)', async () => {
+  test('GET /Backend_APIs/chatbot-list — 코코봇 목록 반환 (200)', async () => {
     const mockBots = [
       {
         id: 'bot-001',
@@ -136,7 +136,7 @@ describe('Regression — Chatbot List API', () => {
   });
 
   // -------------------------------------------------------------------------
-  // 4. 챗봇 목록 — 인증 없을 때 401
+  // 4. 코코봇 목록 — 인증 없을 때 401
   // -------------------------------------------------------------------------
   test('GET /Backend_APIs/chatbot-list — 인증 없을 때 401', async () => {
     global.fetch = mockFetch(401, { success: false, error: 'Unauthorized' });

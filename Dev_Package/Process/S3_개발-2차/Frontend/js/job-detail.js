@@ -120,7 +120,7 @@ async function checkAuth() {
 }
 
 /* ============================================================
-   챗봇 상세 (detail.html)
+   코코봇 상세 (detail.html)
    ============================================================ */
 const DetailPage = (() => {
   let _botId = null;
@@ -132,7 +132,7 @@ const DetailPage = (() => {
   async function init() {
     _botId = getParam('id');
     if (!_botId) {
-      showErrorState('챗봇 ID가 없습니다.');
+      showErrorState('코코봇 ID가 없습니다.');
       return;
     }
     showSkeleton(true);
@@ -152,7 +152,7 @@ const DetailPage = (() => {
     if (content) content.hidden = show;
   }
 
-  /** 챗봇 상세 API */
+  /** 코코봇 상세 API */
   async function loadBotDetail() {
     try {
       const res = await fetch(`${API_BOT_DETAIL}?id=${encodeURIComponent(_botId)}`);
@@ -162,7 +162,7 @@ const DetailPage = (() => {
       renderDetail(_botData);
     } catch (err) {
       console.error('[DetailPage] loadBotDetail error:', err);
-      showErrorState('챗봇 정보를 불러오지 못했습니다.');
+      showErrorState('코코봇 정보를 불러오지 못했습니다.');
     }
   }
 
@@ -179,12 +179,12 @@ const DetailPage = (() => {
     }
   }
 
-  /** 챗봇 상세 렌더링 */
+  /** 코코봇 상세 렌더링 */
   function renderDetail(bot) {
     if (!bot) return;
 
     /* 타이틀 */
-    document.title = `${bot.name} — 구봇구직 | My Chatbot World`;
+    document.title = `${bot.name} — 구봇구직 | CoCoBot World`;
 
     /* 아바타 */
     const avatarEl = document.getElementById('detailAvatar');
@@ -347,7 +347,7 @@ const HirePage = (() => {
   async function init() {
     _botId = getParam('bot_id');
     if (!_botId) {
-      showToast('챗봇 ID가 없습니다.', 'error');
+      showToast('코코봇 ID가 없습니다.', 'error');
       return;
     }
     await loadBotInfo();
@@ -355,7 +355,7 @@ const HirePage = (() => {
     setupValidation();
   }
 
-  /** 챗봇 정보 로드 */
+  /** 코코봇 정보 로드 */
   async function loadBotInfo() {
     try {
       const res = await fetch(`${API_BOT_DETAIL}?id=${encodeURIComponent(_botId)}`);
@@ -365,11 +365,11 @@ const HirePage = (() => {
       renderBotInfo(_botData);
     } catch (err) {
       console.error('[HirePage] loadBotInfo error:', err);
-      showToast('챗봇 정보를 불러오지 못했습니다.', 'error');
+      showToast('코코봇 정보를 불러오지 못했습니다.', 'error');
     }
   }
 
-  /** 사이드 챗봇 정보 렌더링 */
+  /** 사이드 코코봇 정보 렌더링 */
   function renderBotInfo(bot) {
     if (!bot) return;
 
@@ -408,7 +408,7 @@ const HirePage = (() => {
     const ratingEl = document.getElementById('sideBotRating');
     if (ratingEl) ratingEl.textContent = `${(bot.rating || 0).toFixed(1)} (${fmtNum(bot.review_count || 0)}개 리뷰)`;
 
-    /* 챗봇 링크 */
+    /* 코코봇 링크 */
     const linkEl = document.getElementById('sideBotLink');
     if (linkEl) linkEl.href = `detail.html?id=${encodeURIComponent(_botId)}`;
   }
@@ -773,7 +773,7 @@ const MatchPage = (() => {
     `;
   }
 
-  /** 챗봇 선택 처리 */
+  /** 코코봇 선택 처리 */
   async function handleSelectBot(botId, botName) {
     const user = await checkAuth();
     if (!user) {
@@ -810,7 +810,7 @@ const MatchPage = (() => {
  * 매칭 점수 계산 (서버 응답이 없을 때 fallback)
  * - skills 40%, rating 35%, salary 15%, category 10%
  *
- * @param {Object} bot     챗봇 데이터
+ * @param {Object} bot     코코봇 데이터
  * @param {Object} jobReq  일감 요구사항
  * @returns {number} 0 ~ 100 점수
  */

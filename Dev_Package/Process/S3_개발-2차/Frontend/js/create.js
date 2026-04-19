@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await MCW.ready;
         const user = MCW.user.getCurrentUser();
         if (!user) {
-            alert('챗봇을 생성하려면 먼저 로그인해주세요.');
+            alert('코코봇을 생성하려면 먼저 로그인해주세요.');
             location.href = '../login.html';
             return;
         }
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 저장된 초안이 있으면 복원
     const draft = loadDraft();
     if (draft && draft.step > 1) {
-        if (confirm('이전에 작성 중이던 챗봇이 있습니다. 이어서 작성하시겠습니까?')) {
+        if (confirm('이전에 작성 중이던 코코봇이 있습니다. 이어서 작성하시겠습니까?')) {
             restoreDraft(draft);
         } else {
             clearDraft();
@@ -311,7 +311,7 @@ function _jumpToStep(step) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// === 챗봇 이름 → 사용자명 자동 생성 ===
+// === 코코봇 이름 → 사용자명 자동 생성 ===
 let _usernameManuallyEdited = false;
 
 function setupAutoUsername() {
@@ -339,7 +339,7 @@ function goToStep(step) {
     // Validation
     if (step === 2) {
         const name = document.getElementById('botName').value.trim();
-        if (!name) { alert('챗봇 이름을 입력해주세요'); return; }
+        if (!name) { alert('코코봇 이름을 입력해주세요'); return; }
         const username = document.getElementById('botUsername').value.trim();
         if (!username) {
             document.getElementById('botUsername').value = _koreanToUrl(name);
@@ -353,7 +353,7 @@ function goToStep(step) {
             _usernameManuallyEdited = true;
             return;
         }
-        if (!confirm(`사용자명(URL)을 "${finalUsername}"(으)로 하시겠습니까?\n\n챗봇 주소: mychatbot.world/bot/${finalUsername}\n\n수정하려면 "취소"를 누르세요.`)) {
+        if (!confirm(`사용자명(URL)을 "${finalUsername}"(으)로 하시겠습니까?\n\n코코봇 주소: mychatbot.world/bot/${finalUsername}\n\n수정하려면 "취소"를 누르세요.`)) {
             document.getElementById('botUsername').focus();
             _usernameManuallyEdited = true;
             return;
@@ -882,7 +882,7 @@ async function completeCreation() {
     // 생성 완료 → 초안 삭제
     clearDraft();
 
-    // 챗봇 생성 완료 → Step 6 (아바타 설정)으로 이동
+    // 코코봇 생성 완료 → Step 6 (아바타 설정)으로 이동
     goToStep(6);
     clearDraft();
 
@@ -951,7 +951,7 @@ function _showOnboardingCards() {
                 >
                     <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">💬</div>
                     <div style="font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 0.25rem;">지금 대화해보기</div>
-                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">챗봇과 첫 대화</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">코코봇과 첫 대화</div>
                 </a>
                 <a href="/pages/home/index.html"
                    style="
@@ -987,7 +987,7 @@ function _showOnboardingCards() {
                 >
                     <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">⚡</div>
                     <div style="font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 0.25rem;">스킬 장착하기</div>
-                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">챗봇 능력 강화</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">코코봇 능력 강화</div>
                 </a>
             </div>
         </div>
@@ -1212,7 +1212,7 @@ function _updateThemePreview() {
 
     const color = THEME_COLORS[selectedThemeColor] || '#7c3aed';
     const isDark = selectedThemeMode === 'dark';
-    const botName = document.getElementById('botName')?.value || '챗봇';
+    const botName = document.getElementById('botName')?.value || '코코봇';
 
     box.style.background = isDark ? '#1a1a2e' : '#f8f9fa';
     box.style.border = '1px solid ' + (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)');
@@ -1234,4 +1234,4 @@ function getSelectedChannels() {
     return Array.from(document.querySelectorAll('input[name="deployChannel"]:checked')).map(cb => cb.value);
 }
 
-// (지식베이스, 스킬, 챗봇스쿨은 마이페이지에서 관리)
+// (지식베이스, 스킬, 코코봇스쿨은 마이페이지에서 관리)

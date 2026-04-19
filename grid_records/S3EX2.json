@@ -1,0 +1,29 @@
+{
+  "task_id": "S3EX2",
+  "task_name": "CPC 원격 실행 연동 (소급)",
+  "stage": 3,
+  "area": "EX",
+  "level": 2,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1BI2"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3EX2_instruction.md",
+  "task_agent": "backend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "js/cpc-client.js, api/cpc-proxy.js, cpc-agent-server/",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S3EX2_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": "",
+  "notes": ""
+}

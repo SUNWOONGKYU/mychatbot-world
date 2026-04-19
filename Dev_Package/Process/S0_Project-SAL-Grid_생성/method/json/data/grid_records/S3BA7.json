@@ -12,7 +12,7 @@
     "tools": "",
     "execution_type": "AI-Only",
     "generated_files": "Process/S3_개발-2차/Backend_APIs/community-post.js, community-comment.js, community-like.js, community-report.js, community-category.js, community-madang.js, community-bookmark.js",
-    "modification_history": "2026-03-07: 봇마당→봇카페 이름 변경 (community-category.js 공지사항 description 업데이트) | 2026-03-07: community-like.js 전면 재작성 — 단순 좋아요→업보트/다운보트 시스템 (게시글+댓글 모두 지원) | 2026-03-07: 봇카페 전면 리디자인 — community-post.js 재작성(bot_id·madang·my-bots·봇소유권 검증), community-comment.js 재작성(bot_id·봇소유권), community-madang.js 신규(마당목록·인기챗봇), community-bookmark.js 신규(북마크 토글), community-category.js 하위호환 래퍼로 전환",
+    "modification_history": "2026-03-07: 봇마당→봇카페 이름 변경 (community-category.js 공지사항 description 업데이트) | 2026-03-07: community-like.js 전면 재작성 — 단순 좋아요→업보트/다운보트 시스템 (게시글+댓글 모두 지원) | 2026-03-07: 봇카페 전면 리디자인 — community-post.js 재작성(bot_id·madang·my-bots·봇소유권 검증), community-comment.js 재작성(bot_id·봇소유권), community-madang.js 신규(마당목록·인기코코봇), community-bookmark.js 신규(북마크 토글), community-category.js 하위호환 래퍼로 전환",
     "verification_instruction": "sal-grid/verification-instructions/S3BA7_verification.md",
     "verification_agent": "code-reviewer-core",
     "test_result": "",

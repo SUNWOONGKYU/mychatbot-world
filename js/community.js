@@ -473,7 +473,7 @@ class CommunityWrite {
       wrap.innerHTML = `
         <div class="no-bots-notice">
           <span>아직 코코봇이 없습니다.</span>
-          <a href="../birth/index.html" class="btn-primary btn-sm">코코봇 생성</a>
+          <a href="../birth/index.html" class="btn-primary btn-sm">코코봇 만들기</a>
         </div>`;
       const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) submitBtn.disabled = true;

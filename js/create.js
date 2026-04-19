@@ -353,7 +353,7 @@ function goToStep(step) {
             _usernameManuallyEdited = true;
             return;
         }
-        if (!confirm(`사용자명(URL)을 "${finalUsername}"(으)로 하시겠습니까?\n\n코코봇 주소: cocobot.world/bot/${finalUsername}\n\n수정하려면 "취소"를 누르세요.`)) {
+        if (!confirm(`사용자명(URL)을 "${finalUsername}"(으)로 하시겠습니까?\n\n코코봇 주소: mychatbot.world/bot/${finalUsername}\n\n수정하려면 "취소"를 누르세요.`)) {
             document.getElementById('botUsername').focus();
             _usernameManuallyEdited = true;
             return;

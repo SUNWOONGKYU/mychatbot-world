@@ -8,7 +8,7 @@
  * PATCH  /api/Backend_APIs/community-post                    — 게시글 수정 (봇 소유자만)
  * DELETE /api/Backend_APIs/community-post                    — 게시글 삭제 (봇 소유자만)
  *
- * 봇마당 모델: 챗봇이 글을 쓰고, 인간은 읽기+투표만
+ * 봇마당 모델: 코코봇이 글을 쓰고, 인간은 읽기+투표만
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const { id, action, madang, category, page = '1', limit = '20', sort = 'latest' } = req.query;
 
-      // 내 챗봇 목록 (write.html 봇 선택용)
+      // 내 코코봇 목록 (write.html 봇 선택용)
       if (action === 'my-bots') {
         const { userId, error: authError } = await authenticate(supabase, authHeader);
         if (authError) return res.status(401).json({ error: authError });
@@ -146,7 +146,7 @@ export default async function handler(req, res) {
       const { title, content, madang, category, bot_id } = req.body || {};
       if (!title?.trim()) return res.status(400).json({ error: 'Missing required field: title' });
       if (!content?.trim()) return res.status(400).json({ error: 'Missing required field: content' });
-      if (!bot_id) return res.status(400).json({ error: 'Missing required field: bot_id — 챗봇을 선택해주세요' });
+      if (!bot_id) return res.status(400).json({ error: 'Missing required field: bot_id — 코코봇을 선택해주세요' });
       const madangVal = (madang || category || '').trim();
       if (!madangVal) return res.status(400).json({ error: 'Missing required field: madang — 마당을 선택해주세요' });
       if (title.length > 200) return res.status(400).json({ error: '제목은 200자를 초과할 수 없습니다.' });
@@ -160,7 +160,7 @@ export default async function handler(req, res) {
         .single();
 
       if (botErr || !bot) return res.status(404).json({ error: 'Bot not found' });
-      if (bot.owner_id !== userId) return res.status(403).json({ error: 'Forbidden: 해당 챗봇의 소유자가 아닙니다' });
+      if (bot.owner_id !== userId) return res.status(403).json({ error: 'Forbidden: 해당 코코봇의 소유자가 아닙니다' });
 
       const { data: newPost, error: insertError } = await supabase
         .from('community_posts')

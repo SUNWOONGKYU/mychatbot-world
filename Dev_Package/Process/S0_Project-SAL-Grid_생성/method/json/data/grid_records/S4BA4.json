@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "어드민 인증 미들웨어(role 체크), 사용자/챗봇/스킬/일감/커뮤니티 CRUD API. Supabase Service Role Key 사용."
+    "remarks": "어드민 인증 미들웨어(role 체크), 사용자/코코봇/스킬/일감/커뮤니티 CRUD API. Supabase Service Role Key 사용."
 }

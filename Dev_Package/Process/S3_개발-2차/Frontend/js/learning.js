@@ -2,7 +2,7 @@
 // @task S3F14
 /**
  * learning.js — Learning 페이지 전용 로직
- * My Chatbot World | S3F8, S3F14
+ * CoCoBot World | S3F8, S3F14
  *
  * 담당:
  *  - Supabase Auth 사용자 로그인 상태 확인
@@ -25,10 +25,10 @@ const CURRICULUM_DATA = [
     title: '기초 과정',
     titleEn: 'Basic Course',
     icon: '📘',
-    desc: '인사, 자기소개, 기본 FAQ 응답 능력을 키웁니다. 챗봇의 첫 걸음을 시작하세요.',
+    desc: '인사, 자기소개, 기본 FAQ 응답 능력을 키웁니다. 코코봇의 첫 걸음을 시작하세요.',
     modules: [
-      { id: 'b-01', title: '챗봇 기본 인사', desc: '자연스러운 인사말과 환영 메시지를 학습합니다.', duration: '15분', topics: ['인사', '환영', '소개'] },
-      { id: 'b-02', title: '자기소개 학습', desc: '챗봇의 역할과 능력을 명확하게 소개하는 법을 배웁니다.', duration: '20분', topics: ['자기소개', '역할', '서비스'] },
+      { id: 'b-01', title: '코코봇 기본 인사', desc: '자연스러운 인사말과 환영 메시지를 학습합니다.', duration: '15분', topics: ['인사', '환영', '소개'] },
+      { id: 'b-02', title: '자기소개 학습', desc: '코코봇의 역할과 능력을 명확하게 소개하는 법을 배웁니다.', duration: '20분', topics: ['자기소개', '역할', '서비스'] },
       { id: 'b-03', title: '기본 FAQ 응답', desc: '자주 묻는 질문에 일관되고 정확하게 답하는 방법을 훈련합니다.', duration: '30분', topics: ['FAQ', '정확성', '일관성'] },
       { id: 'b-04', title: '대화 흐름 제어', desc: '대화가 엉키지 않도록 흐름을 유지하는 기술을 익힙니다.', duration: '25분', topics: ['흐름제어', '대화관리'] },
     ],
@@ -76,7 +76,7 @@ const CURRICULUM_DATA = [
     title: '마스터 과정',
     titleEn: 'Master Course',
     icon: '📙',
-    desc: '경험 많은 AI 전문가가 초보 챗봇을 1:1 코칭해 대화 품질을 최정상으로 끌어올립니다.',
+    desc: '경험 많은 AI 전문가가 초보 코코봇을 1:1 코칭해 대화 품질을 최정상으로 끌어올립니다.',
     modules: [
       { id: 'm-01', title: 'AI 멘토링 세션 1', desc: '대화 품질 종합 점검 및 맞춤 피드백을 받습니다.', duration: '60분', topics: ['멘토링', '종합점검'] },
       { id: 'm-02', title: '엣지케이스 마스터', desc: '예외 상황과 극단적 케이스를 완벽히 처리합니다.', duration: '50분', topics: ['엣지케이스', '예외처리'] },
@@ -640,13 +640,13 @@ function renderCertificateCard(user) {
       <div class="cert-watermark">★</div>
       <div class="cert-header">
         <div class="cert-logo">MY CHATBOT WORLD</div>
-        <div class="cert-title">챗봇스쿨 수료증</div>
+        <div class="cert-title">코코봇스쿨 수료증</div>
         <div class="cert-subtitle">Certificate of Completion — Chatbot School</div>
       </div>
       <div class="cert-body">
         <p class="cert-intro">이 증서는 다음 학습자가</p>
         <div class="cert-name">${escapeHtml(name)}</div>
-        <div class="cert-course">챗봇스쿨 전 과정 (기초 · 심화 · 실전 · 마스터)</div>
+        <div class="cert-course">코코봇스쿨 전 과정 (기초 · 심화 · 실전 · 마스터)</div>
         <div class="cert-detail">을 성공적으로 이수하였음을 인증합니다.</div>
       </div>
       <div class="cert-footer">
@@ -656,7 +656,7 @@ function renderCertificateCard(user) {
         </div>
         <div class="cert-meta-item">
           <span class="cert-meta-label">발급기관</span>
-          <span class="cert-meta-value">My Chatbot World</span>
+          <span class="cert-meta-value">CoCoBot World</span>
         </div>
         <div class="cert-meta-item">
           <span class="cert-meta-label">등급</span>
@@ -739,7 +739,7 @@ async function startModule(curriculumId, moduleId, stepIndex) {
 async function _fetchAndShowAIOpening(botId, scenarioId) {
   // school-session API 호출: step 0 초기화
   // 첫 발화는 시나리오 JSON의 steps[0].userPrompt 를 직접 보여준다 (API 없이)
-  // API는 userMessage(챗봇 응답)을 평가하는 구조이므로,
+  // API는 userMessage(코코봇 응답)을 평가하는 구조이므로,
   // 첫 고객 발화는 시나리오 JSON 정보가 없어도 힌트에서 알려주므로
   // 더미 userMessage로 API 호출 후 nextHint로 첫 발화를 유도한다.
   const sess = ScenarioSession.get();
@@ -784,7 +784,7 @@ async function _fetchAndShowAIOpening(botId, scenarioId) {
 }
 
 /**
- * 사용자가 챗봇 응답을 제출했을 때 처리 [S3F14]
+ * 사용자가 코코봇 응답을 제출했을 때 처리 [S3F14]
  */
 async function submitSessionMessage() {
   const sess = ScenarioSession.get();
@@ -1021,7 +1021,7 @@ function _appendModalMessage(role, text) {
   if (role === 'customer') {
     div.innerHTML = `<span class="msg-label">고객</span><div class="msg-bubble">${_safeHtml(text)}</div>`;
   } else if (role === 'chatbot') {
-    div.innerHTML = `<div class="msg-bubble">${_safeHtml(text)}</div><span class="msg-label">챗봇(나)</span>`;
+    div.innerHTML = `<div class="msg-bubble">${_safeHtml(text)}</div><span class="msg-label">코코봇(나)</span>`;
   } else {
     // system
     div.innerHTML = `<div class="msg-system">${text}</div>`;
@@ -1123,8 +1123,8 @@ async function shareCert() {
   if (navigator.share) {
     try {
       await navigator.share({
-        title: '챗봇스쿨 수료증',
-        text: 'My Chatbot World 챗봇스쿨 전 과정을 수료했습니다!',
+        title: '코코봇스쿨 수료증',
+        text: 'CoCoBot World 코코봇스쿨 전 과정을 수료했습니다!',
         url: window.location.href,
       });
     } catch {}

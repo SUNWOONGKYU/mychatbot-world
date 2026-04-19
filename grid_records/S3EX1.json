@@ -1,0 +1,29 @@
+{
+  "task_id": "S3EX1",
+  "task_name": "Obsidian 연동 (소급)",
+  "stage": 3,
+  "area": "EX",
+  "level": 1,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1EX1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3EX1_instruction.md",
+  "task_agent": "backend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "api/obsidian.js",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S3EX1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": "",
+  "notes": ""
+}

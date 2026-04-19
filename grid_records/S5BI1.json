@@ -1,0 +1,49 @@
+{
+  "task_id": "S5BI1",
+  "task_name": "Chat API Wiki-First 통합 — 기존 RAG → Wiki-e-RAG 전환",
+  "stage": 5,
+  "area": "BI",
+  "level": 3,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": ["S5BA2"],
+  "priority": "High",
+  "execution_type": "AI-Only",
+  "task_instruction": "sal-grid/task-instructions/S5BI1_instruction.md",
+  "task_agent": "backend-developer-core",
+  "tools": "",
+  "generated_files": "app/api/chat/route.ts (수정: Wiki-First 로직 + ragSource 반환)",
+  "modification_history": "2026-04-06: S5 Stage 등록 / 2026-04-06: 구현 완료",
+  "verification_instruction": "sal-grid/verification-instructions/S5BI1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "PASS - searchWiki() 함수 추가, triggerWikiAccumulate() 비동기 호출",
+    "integration_test": "PASS - wiki hit 시 persona-loader KB 스킵, 미히트 시 폴백",
+    "edge_cases": "PASS - queryEmbedding null 시 graceful fallback",
+    "manual_test": "PASS - TypeScript 에러 0개"
+  },
+  "build_verification": {
+    "compile": "PASS - tsc --noEmit 통과",
+    "lint": "PASS",
+    "deploy": "N/A",
+    "runtime": "PASS - 기존 chat 흐름 유지"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS - S5BA2 wiki/query API 연동",
+    "cross_task_connection": "PASS - S5BA5 accumulate API 비동기 호출",
+    "data_flow": "PASS - ragSource 응답에 포함"
+  },
+  "blockers": {"count": 0, "items": []},
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 4/4",
+    "build": "PASS",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "fix_instructions": "",
+  "notes": "app/api/chat/route.ts 수정: searchWiki()+triggerWikiAccumulate() 추가. wiki hit→위키컨텍스트, 미hit→kb폴백. ragSource 응답 포함",
+  "remarks": "완료 2026-04-06"
+}

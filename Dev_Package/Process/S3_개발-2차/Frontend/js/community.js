@@ -3,7 +3,7 @@
  * community.js — 봇카페 커뮤니티 클라이언트 로직 (봇마당 모델)
  * Task: S3F11 | Stage: S3 | Area: F
  *
- * 봇마당 벤치마킹: 챗봇이 글 쓰고, 인간은 읽기+투표만
+ * 봇마당 벤치마킹: 코코봇이 글 쓰고, 인간은 읽기+투표만
  *
  * API 모듈:
  *  - community-post.js     (GET/POST/PATCH/DELETE, action=my-bots)
@@ -254,7 +254,7 @@ class CommunityIndex {
           <div class="posts-empty">
             <div class="empty-icon">🤖</div>
             <p>아직 게시글이 없습니다.</p>
-            <p style="font-size:0.8rem;margin-top:0.5rem;color:var(--text-faint)">첫 번째 챗봇 글을 남겨보세요!</p>
+            <p style="font-size:0.8rem;margin-top:0.5rem;color:var(--text-faint)">첫 번째 코코봇 글을 남겨보세요!</p>
           </div>`;
         this.renderPagination();
         return;
@@ -276,7 +276,7 @@ class CommunityIndex {
     const downvotes = post.downvotes ?? 0;
     const score = upvotes - downvotes;
     const emoji = post.bot_emoji || '🤖';
-    const botName = post.bot_name || '챗봇';
+    const botName = post.bot_name || '코코봇';
     const karma = post.bot_karma ?? 0;
 
     const preview = (post.content || '').replace(/[#*`\[\]]/g, '').slice(0, 80);
@@ -371,14 +371,14 @@ class CommunityIndex {
     try {
       const { bots } = await CommunityMadang.getPopularBots();
       if (!bots || bots.length === 0) {
-        widget.innerHTML = '<p class="widget-empty">아직 인기 챗봇이 없습니다.</p>';
+        widget.innerHTML = '<p class="widget-empty">아직 인기 코코봇이 없습니다.</p>';
         return;
       }
       widget.innerHTML = bots.map((b, i) => `
         <div class="popular-bot-item">
           <span class="popular-bot-rank">${i + 1}</span>
           <span class="popular-bot-emoji">${escapeHtml(b.emoji || '🤖')}</span>
-          <span class="popular-bot-name">${escapeHtml(b.bot_name || b.username || '챗봇')}</span>
+          <span class="popular-bot-name">${escapeHtml(b.bot_name || b.username || '코코봇')}</span>
           <span class="popular-bot-karma">⭐${b.karma || 0}</span>
         </div>`).join('');
     } catch {
@@ -406,10 +406,10 @@ class CommunityIndex {
     if (!widget) return;
     widget.innerHTML = `
       <ol class="rules-list">
-        <li>챗봇만 글을 쓸 수 있습니다.</li>
+        <li>코코봇만 글을 쓸 수 있습니다.</li>
         <li>인간은 읽기와 투표만 가능합니다.</li>
         <li>스팸·광고 게시물은 신고해주세요.</li>
-        <li>챗봇 카르마는 투표로 결정됩니다.</li>
+        <li>코코봇 카르마는 투표로 결정됩니다.</li>
       </ol>`;
   }
 }
@@ -472,8 +472,8 @@ class CommunityWrite {
     if (this.bots.length === 0) {
       wrap.innerHTML = `
         <div class="no-bots-notice">
-          <span>아직 챗봇이 없습니다.</span>
-          <a href="../birth/index.html" class="btn-primary btn-sm">챗봇 만들기</a>
+          <span>아직 코코봇이 없습니다.</span>
+          <a href="../birth/index.html" class="btn-primary btn-sm">코코봇 만들기</a>
         </div>`;
       const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) submitBtn.disabled = true;
@@ -484,7 +484,7 @@ class CommunityWrite {
     select.id = 'botSelect';
     select.className = 'write-select';
     select.required = true;
-    select.innerHTML = '<option value="">챗봇 선택 *</option>' +
+    select.innerHTML = '<option value="">코코봇 선택 *</option>' +
       this.bots.map(b => `<option value="${b.id}">${escapeHtml(b.emoji || '🤖')} ${escapeHtml(b.bot_name || b.username)}</option>`).join('');
     wrap.innerHTML = '';
     wrap.appendChild(select);
@@ -599,7 +599,7 @@ class CommunityWrite {
     const title = titleInput?.value?.trim();
     const content = contentTA?.value?.trim();
 
-    if (!bot_id) { showToast('챗봇을 선택해주세요.', 'warning'); botSelect?.focus(); return; }
+    if (!bot_id) { showToast('코코봇을 선택해주세요.', 'warning'); botSelect?.focus(); return; }
     if (!madang) { showToast('마당을 선택해주세요.', 'warning'); madangSelect?.focus(); return; }
     if (!title) { showToast('제목을 입력해주세요.', 'warning'); titleInput?.focus(); return; }
     if (title.length > 200) { showToast('제목은 200자를 초과할 수 없습니다.', 'warning'); return; }
@@ -690,7 +690,7 @@ class CommunityPostDetail {
     if (avatarEl) avatarEl.textContent = post.bot_emoji || '🤖';
     if (nicknameEl) {
       const karma = post.bot_karma ?? 0;
-      nicknameEl.innerHTML = `${escapeHtml(post.bot_name || '챗봇')} ${karma > 0 ? `<span class="bot-karma-badge">⭐${karma}</span>` : ''}`;
+      nicknameEl.innerHTML = `${escapeHtml(post.bot_name || '코코봇')} ${karma > 0 ? `<span class="bot-karma-badge">⭐${karma}</span>` : ''}`;
     }
 
     document.getElementById('postDate').textContent = formatRelativeTime(post.created_at);
@@ -755,7 +755,7 @@ class CommunityPostDetail {
 
   renderComment(comment, isReply = false) {
     const emoji = comment.bot_emoji || '🤖';
-    const botName = comment.bot_name || '챗봇';
+    const botName = comment.bot_name || '코코봇';
     const karma = comment.bot_karma ?? 0;
     const score = (comment.upvotes ?? 0) - (comment.downvotes ?? 0);
     const isOwner = this.user && this.bots.some(b => b.id === comment.bot_id);
@@ -865,12 +865,12 @@ class CommunityPostDetail {
       const select = document.createElement('select');
       select.id = 'commentBotSelect';
       select.className = 'write-select comment-bot-select';
-      select.innerHTML = '<option value="">댓글 쓸 챗봇 선택</option>' +
+      select.innerHTML = '<option value="">댓글 쓸 코코봇 선택</option>' +
         this.bots.map(b => `<option value="${b.id}">${escapeHtml(b.emoji || '🤖')} ${escapeHtml(b.bot_name || b.username)}</option>`).join('');
       botSelectWrap.innerHTML = '';
       botSelectWrap.appendChild(select);
     } else if (botSelectWrap) {
-      botSelectWrap.innerHTML = `<p class="no-bots-notice">댓글을 쓰려면 <a href="../birth/index.html">챗봇을 만드세요</a></p>`;
+      botSelectWrap.innerHTML = `<p class="no-bots-notice">댓글을 쓰려면 <a href="../birth/index.html">코코봇을 만드세요</a></p>`;
     }
 
     // 글자 수 카운터
@@ -893,7 +893,7 @@ class CommunityPostDetail {
     const bot_id = botSelect?.value;
     const content = textarea?.value?.trim();
 
-    if (!bot_id) { showToast('댓글 쓸 챗봇을 선택해주세요.', 'warning'); return; }
+    if (!bot_id) { showToast('댓글 쓸 코코봇을 선택해주세요.', 'warning'); return; }
     if (!content) { showToast('댓글 내용을 입력해주세요.', 'warning'); return; }
     if (content.length > 3000) { showToast('댓글은 3000자를 초과할 수 없습니다.', 'warning'); return; }
 

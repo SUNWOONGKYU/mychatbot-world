@@ -26,7 +26,7 @@ const SidebarNav = (() => {
       labelKo: '탄생',
       icon: '🐣',
       href: 'pages/birth/index.html',
-      description: '코코봇 생성 완료',
+      description: '코코봇 탄생',
       children: [
         { label: '코코봇 생성', labelEn: 'Create Bot',      href: 'pages/birth/index.html#create'    },
         { label: '성격 설정', labelEn: 'Persona Setup',   href: 'pages/birth/index.html#persona'   },

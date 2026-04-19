@@ -1,0 +1,33 @@
+{
+  "task_id": "S2BA4",
+  "task_name": "챗봇 생성 API (소급)",
+  "stage": 2,
+  "area": "BA",
+  "level": 4,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1DB1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S2BA4_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "priority": "High",
+  "generated_files": "api/create-bot.js, api/guest-create.js",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S2BA4_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
+  "comprehensive_verification": {},
+  "fix_instructions": "",
+  "notes": "",
+  "remarks": ""
+}

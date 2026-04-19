@@ -1,6 +1,6 @@
 {
     "task_id": "S4F6",
-    "task_name": "어드민 사용자/챗봇 관리 UI",
+    "task_name": "어드민 사용자/코코봇 관리 UI",
     "stage": 4,
     "area": "F",
     "task_status": "Completed",
@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "사용자 목록/상세/정지/삭제, 챗봇 목록/상세/비활성화/삭제, 신고 접수 관리."
+    "remarks": "사용자 목록/상세/정지/삭제, 코코봇 목록/상세/비활성화/삭제, 신고 접수 관리."
 }

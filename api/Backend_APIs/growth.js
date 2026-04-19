@@ -3,7 +3,7 @@
  * Growth Metrics & Level API - Vercel Serverless Function
  * GET /api/Backend_APIs/growth?botId=xxx
  *
- * 챗봇 성장 지표 및 레벨 계산 API
+ * 코코봇 성장 지표 및 레벨 계산 API
  * - bot_growth 테이블에서 해당 봇의 성장 데이터 조회
  * - 경험치 = (총 대화 수 × 10) + (FAQ 등록 수 × 5) + (긍정 피드백 수 × 2)
  * - 레벨 1: 0-99 exp, 레벨 2: 100-299 exp, 레벨 3: 300+ exp

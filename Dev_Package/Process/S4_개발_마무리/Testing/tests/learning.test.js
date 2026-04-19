@@ -92,7 +92,7 @@ const MOCK_CURRICULUM = {
       order: 1,
       locked: false,
       lessons: [
-        { id: 'b-1', title: '챗봇이란?', duration: 10 },
+        { id: 'b-1', title: '코코봇이란?', duration: 10 },
         { id: 'b-2', title: '프롬프트 기초', duration: 15 },
       ],
     },
@@ -112,7 +112,7 @@ const MOCK_CURRICULUM = {
       order: 3,
       locked: true,
       lessons: [
-        { id: 'p-1', title: '실전 챗봇 구축', duration: 30 },
+        { id: 'p-1', title: '실전 코코봇 구축', duration: 30 },
         { id: 'p-2', title: '배포 및 운영', duration: 20 },
       ],
     },

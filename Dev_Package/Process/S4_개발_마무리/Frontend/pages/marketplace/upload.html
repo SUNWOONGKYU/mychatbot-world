@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>스킬 업로드 — My Chatbot World</title>
+  <title>스킬 업로드 — CoCoBot World</title>
   <meta name="description" content="나만의 스킬을 마켓플레이스에 업로드하세요.">
   <style>
     /* ===== 리셋 & 기본 ===== */
@@ -489,7 +489,7 @@
   <aside class="sidebar" id="sidebar">
     <a href="../../index.html" class="sidebar-brand">
       <span class="sidebar-nav-icon">&#9733;</span>
-      My Chatbot World
+      CoCoBot World
     </a>
     <nav>
       <ul class="sidebar-nav">
@@ -502,7 +502,7 @@
         <li class="sidebar-nav-item">
           <a href="../bot/index.html">
             <span class="sidebar-nav-icon">&#129302;</span>
-            내 챗봇
+            내 코코봇
           </a>
         </li>
         <li class="sidebar-nav-item active">
@@ -553,8 +553,8 @@
     <div class="bot-id-info">
       <span>&#8505;</span>
       <span>
-        스킬은 특정 챗봇과 연결됩니다.
-        아래에서 연결할 챗봇 ID를 입력하거나, 마이페이지에서 봇 ID를 확인하세요.
+        스킬은 특정 코코봇과 연결됩니다.
+        아래에서 연결할 코코봇 ID를 입력하거나, 마이페이지에서 봇 ID를 확인하세요.
       </span>
     </div>
 
@@ -641,7 +641,7 @@
         <!-- 봇 ID -->
         <div class="form-group">
           <label class="form-label" for="botId">
-            챗봇 ID<span class="required">*</span>
+            코코봇 ID<span class="required">*</span>
           </label>
           <input
             type="text"
@@ -651,8 +651,8 @@
             placeholder="예: bot_abc123"
             autocomplete="off"
           />
-          <div class="form-hint">연결할 챗봇의 ID를 입력하세요. 마이페이지에서 확인할 수 있습니다.</div>
-          <div class="field-error" id="botIdError">챗봇 ID를 입력해주세요.</div>
+          <div class="form-hint">연결할 코코봇의 ID를 입력하세요. 마이페이지에서 확인할 수 있습니다.</div>
+          <div class="field-error" id="botIdError">코코봇 ID를 입력해주세요.</div>
         </div>
 
         <!-- 액션 버튼 -->
@@ -738,7 +738,7 @@
       }
 
       if (!data.botId.trim()) {
-        setFieldError('botId', 'botIdError', '챗봇 ID를 입력해주세요.');
+        setFieldError('botId', 'botIdError', '코코봇 ID를 입력해주세요.');
         valid = false;
       } else {
         setFieldError('botId', 'botIdError', '');

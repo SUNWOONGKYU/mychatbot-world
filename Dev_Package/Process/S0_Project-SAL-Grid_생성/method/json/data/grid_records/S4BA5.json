@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "대시보드 통계 API: 총 사용자/챗봇/매출, 일별/주별/월별 추이, 인기 스킬/챗봇 순위."
+    "remarks": "대시보드 통계 API: 총 사용자/코코봇/매출, 일별/주별/월별 추이, 인기 스킬/코코봇 순위."
 }

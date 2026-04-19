@@ -1,0 +1,39 @@
+{
+  "task_id": "S4FE4",
+  "task_name": "faq.html CSS/JS 경로 수정",
+  "stage": 4,
+  "area": "FE",
+  "level": 4,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S3FE2"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S4FE4_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "pages/bot/faq.html",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S4FE4_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {
+    "compile": "PASS — static HTML, no compile step",
+    "lint": "PASS — path pattern matches pages/bot/index.html (../../css/, ../../js/)",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {},
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": "pages/bot/faq.html의 CSS/JS 경로가 ../../../../(4단계 상위)로 잘못 설정되어 있었음. ../../(2단계)로 3곳 수정 — css/styles.css, css/chat.css, js/faq-manage.js. pages/bot/index.html 경로 패턴과 일치 확인 완료.",
+  "notes": ""
+}

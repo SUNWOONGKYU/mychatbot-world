@@ -20,5 +20,5 @@
   "integration_verification": "검색 기능 작동 확인",
   "blockers": "",
   "comprehensive_verification": "",
-  "remarks": "키워드 검색, 날짜 필터, 챗봇별 필터"
+  "remarks": "키워드 검색, 날짜 필터, 코코봇별 필터"
 }

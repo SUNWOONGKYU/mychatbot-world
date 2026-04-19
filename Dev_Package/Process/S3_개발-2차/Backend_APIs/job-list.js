@@ -3,7 +3,7 @@
  * Job List API - Vercel Serverless Function
  * GET /api/Backend_APIs/job-list
  *
- * 구봇구직 챗봇 목록/검색 API
+ * 구봇구직 코코봇 목록/검색 API
  * - bot_jobs 테이블에서 목록 조회
  * - 필터: job_type (hire/seek), category, status
  * - 검색: title, description 텍스트 검색 (ilike)

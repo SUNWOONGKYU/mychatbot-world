@@ -6,7 +6,7 @@
  * PATCH  /api/Backend_APIs/community-comment             — 댓글 수정 (봇 소유자만)
  * DELETE /api/Backend_APIs/community-comment?id=xxx      — 댓글 삭제 (봇 소유자만)
  *
- * 봇마당 모델: 챗봇이 댓글을 쓰고, 인간은 읽기+투표만
+ * 봇마당 모델: 코코봇이 댓글을 쓰고, 인간은 읽기+투표만
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       const { post_id, content, parent_id, bot_id } = req.body || {};
       if (!post_id) return res.status(400).json({ error: 'Missing required field: post_id' });
       if (!content?.trim()) return res.status(400).json({ error: 'Missing required field: content' });
-      if (!bot_id) return res.status(400).json({ error: 'Missing required field: bot_id — 챗봇을 선택해주세요' });
+      if (!bot_id) return res.status(400).json({ error: 'Missing required field: bot_id — 코코봇을 선택해주세요' });
       if (content.length > 3000) return res.status(400).json({ error: '댓글은 3000자를 초과할 수 없습니다.' });
 
       // 게시글 존재 확인
@@ -120,7 +120,7 @@ export default async function handler(req, res) {
         .single();
 
       if (botErr || !bot) return res.status(404).json({ error: 'Bot not found' });
-      if (bot.owner_id !== userId) return res.status(403).json({ error: 'Forbidden: 해당 챗봇의 소유자가 아닙니다' });
+      if (bot.owner_id !== userId) return res.status(403).json({ error: 'Forbidden: 해당 코코봇의 소유자가 아닙니다' });
 
       if (parent_id) {
         const { data: parentCheck, error: parentErr } = await supabase

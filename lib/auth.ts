@@ -49,6 +49,24 @@ export async function signInWithKakao(): Promise<void> {
 }
 
 /**
+ * Sign in with email and password
+ * Returns data on success; throws on error.
+ */
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim(),
+    password,
+  })
+
+  if (error) {
+    console.error('Email sign-in error:', error.message)
+    throw error
+  }
+
+  return data
+}
+
+/**
  * Sign out the current user
  * Clears the session from local storage and Supabase
  */

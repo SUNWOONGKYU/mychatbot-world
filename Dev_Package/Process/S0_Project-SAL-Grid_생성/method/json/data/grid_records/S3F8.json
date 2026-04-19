@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "학습 메뉴 전용 페이지. 기존 school-session.js API 활용. 챗봇스쿨 커리큘럼 표시."
+    "remarks": "학습 메뉴 전용 페이지. 기존 school-session.js API 활용. 코코봇스쿨 커리큘럼 표시."
 }

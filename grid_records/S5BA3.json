@@ -1,0 +1,50 @@
+{
+  "task_id": "S5BA3",
+  "task_name": "Wiki Accumulate API — 좋은 답변 → 위키 재저장",
+  "stage": 5,
+  "area": "BA",
+  "level": 3,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S5BA2"
+  ],
+  "priority": "Medium",
+  "execution_type": "AI-Only",
+  "task_instruction": "sal-grid/task-instructions/S5BA3_instruction.md",
+  "task_agent": "backend-developer-core",
+  "tools": "",
+  "generated_files": "app/api/wiki/accumulate/route.ts, SAL_Grid_Dev_Suite/Process/S5_Wiki-e-RAG/Backend_APIs/wiki/accumulate/route.ts",
+  "modification_history": "2026-04-06: Phase 2 구현 완료 | 2026-04-12(review-evaluate): lib/chat/credits.ts — subscription_balance 동기 차감 구현. 0-row-update 동시성 감지(concurrent depletion). grantWelcomeCredits subscription_balance:30000 추가. 에러코드 구분(23505). 트랜잭션 로그 console.warn 추가.",
+  "verification_instruction": "sal-grid/verification-instructions/S5BA3_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "PASS: TypeScript 타입 체크 통과",
+    "integration_test": "PASS: Supabase 연결 확인",
+    "edge_cases": "PASS: 인증/권한 검증 포함",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS: tsc --noEmit 에러 없음",
+    "lint": "N/A",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 3/4 통과",
+    "build": "PASS",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "fix_instructions": "",
+  "notes": "POST /api/wiki/accumulate: 답변 품질 평가(>0.7) → FAQ 위키 생성/업데이트 → view_count 증가 → 임베딩 재생성. 신규: app/api/wiki/accumulate/route.ts",
+  "remarks": ""
+}

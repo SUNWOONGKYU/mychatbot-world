@@ -1,7 +1,7 @@
 ﻿{
     "execution_type":  "AI-Only",
     "task_status":  "Completed",
-    "task_name":  "챗봇 생성 API",
+    "task_name":  "코코봇 생성 API",
     "task_instruction":  "sal-grid/task-instructions/S2BA1_instruction.md",
     "verification_agent":  "code-reviewer",
     "task_progress":  100,

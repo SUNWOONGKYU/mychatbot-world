@@ -37,3 +37,6 @@ test-results/
 # Python cache
 __pycache__/
 cpc-agent-server/__pycache__/
+
+# SAL-DA diagnostic reports
+sal_da_*.html

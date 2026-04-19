@@ -3,7 +3,7 @@
  * School Session API - Vercel Serverless Function
  * POST /api/Backend_APIs/school-session
  *
- * 챗봇스쿨 세션 API: 시나리오 기반 학습 세션 처리
+ * 코코봇스쿨 세션 API: 시나리오 기반 학습 세션 처리
  * - 시나리오 JSON 로드 → 컨텍스트 구성
  * - OpenAI/OpenRouter API로 시나리오 기반 AI 응답 생성
  * - 세션 진행률 추적 (현재 step / 전체 steps)
@@ -50,7 +50,7 @@ function buildScenarioSystemPrompt(scenario, currentStep) {
   const step = scenario.steps[currentStep] || scenario.steps[scenario.steps.length - 1];
   const expectedTopics = (step.expectedTopics || []).join(', ');
 
-  return `당신은 챗봇 훈련 시뮬레이터입니다. 아래 시나리오를 기반으로 고객 역할을 맡아 대화를 진행하세요.
+  return `당신은 코코봇 훈련 시뮬레이터입니다. 아래 시나리오를 기반으로 고객 역할을 맡아 대화를 진행하세요.
 
 [시나리오 정보]
 - 시나리오: ${scenario.scenarioName}
@@ -59,7 +59,7 @@ function buildScenarioSystemPrompt(scenario, currentStep) {
 - 이 단계의 기대 주제: ${expectedTopics}
 
 [진행 규칙]
-- 사용자(챗봇)의 응답에 대해 고객으로서 자연스럽게 반응하세요
+- 사용자(코코봇)의 응답에 대해 고객으로서 자연스럽게 반응하세요
 - 응답이 기대 주제(${expectedTopics})를 잘 다루고 있으면 긍정적으로 반응하고 다음 자연스러운 질문이나 반응을 이어가세요
 - 응답이 기대 주제에서 벗어나거나 부족하다면, 고객으로서 실망하거나 다시 묻는 식으로 반응하세요
 - 응답은 1~3문장으로 간결하게 유지하세요
@@ -251,10 +251,10 @@ export default async function handler(req, res) {
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      // 현재 단계의 고객 질문을 user로, 챗봇 응답을 평가하는 구조
+      // 현재 단계의 고객 질문을 user로, 코코봇 응답을 평가하는 구조
       { role: 'user', content: `[고객 발화] ${currentStepData.userPrompt}` },
-      { role: 'assistant', content: '[챗봇이 답변하려 합니다. 아래 실제 챗봇 응답을 평가해주세요]' },
-      { role: 'user', content: `[챗봇 응답] ${userMessage}\n\n위 챗봇 응답에 대해 고객 입장에서 자연스럽게 반응해주세요.` },
+      { role: 'assistant', content: '[코코봇이 답변하려 합니다. 아래 실제 코코봇 응답을 평가해주세요]' },
+      { role: 'user', content: `[코코봇 응답] ${userMessage}\n\n위 코코봇 응답에 대해 고객 입장에서 자연스럽게 반응해주세요.` },
     ];
 
     // ── AI 응답 생성 ──

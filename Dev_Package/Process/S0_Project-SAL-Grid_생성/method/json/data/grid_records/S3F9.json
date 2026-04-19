@@ -1,6 +1,6 @@
 {
     "task_id": "S3F9",
-    "task_name": "Jobs(구봇구직) 챗봇 목록/탐색 페이지",
+    "task_name": "Jobs(구봇구직) 코코봇 목록/탐색 페이지",
     "stage": 3,
     "area": "F",
     "task_status": "Completed",
@@ -20,5 +20,5 @@
     "integration_verification": "",
     "blockers": "",
     "comprehensive_verification": "",
-    "remarks": "구봇구직(구인구직 wordplay: 求봇求職). 챗봇 목록 카드, 검색/필터, 카테고리별 탐색."
+    "remarks": "구봇구직(구인구직 wordplay: 求봇求職). 코코봇 목록 카드, 검색/필터, 카테고리별 탐색."
 }
