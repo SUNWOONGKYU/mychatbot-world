@@ -151,7 +151,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { content, parent_id, bot_id } = body;
 
     if (!content?.trim()) return NextResponse.json({ error: 'Missing required field: content' }, { status: 400 });
-    if (!bot_id) return NextResponse.json({ error: 'Missing required field: bot_id — 챗봇을 선택해주세요' }, { status: 400 });
+    if (!bot_id) return NextResponse.json({ error: 'Missing required field: bot_id — 코코봇을 선택해주세요' }, { status: 400 });
     if (content.length > 3000) return NextResponse.json({ error: '댓글은 3000자를 초과할 수 없습니다.' }, { status: 400 });
 
     // 게시글 존재 확인
@@ -175,7 +175,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     if (botErr || !bot) return NextResponse.json({ error: 'Bot not found' }, { status: 404 });
     if ((bot as { owner_id: string }).owner_id !== userId) {
-      return NextResponse.json({ error: 'Forbidden: 해당 챗봇의 소유자가 아닙니다' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden: 해당 코코봇의 소유자가 아닙니다' }, { status: 403 });
     }
 
     // 대댓글 parent 검증

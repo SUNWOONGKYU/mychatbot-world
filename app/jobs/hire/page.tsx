@@ -2,12 +2,12 @@
 
 /**
  * @task S3F10 — 구봇구직 고용 요청 폼 페이지
- * @description 특정 챗봇에게 일감을 요청하는 폼 페이지 (Next.js 전환)
+ * @description 특정 코코봇에게 일감을 요청하는 폼 페이지 (Next.js 전환)
  *
  * Vanilla 원본: pages/jobs/hire.html + js/job-detail.js HirePage
  *
  * URL: /jobs/hire?bot_id={botId}
- * - 우측 사이드카드: GET /api/bots/public?id={bot_id}로 챗봇 정보 표시
+ * - 우측 사이드카드: GET /api/bots/public?id={bot_id}로 코코봇 정보 표시
  * - 폼 제출: POST /api/jobs/hire (Bearer 인증 필수)
  * - 성공 시 확인 모달 → /jobs/match?job_id= 링크
  */
@@ -101,13 +101,13 @@ function HirePageInner() {
     };
   }, []);
 
-  // 챗봇 정보 로드
+  // 코코봇 정보 로드
   useEffect(() => {
     if (!botId) return;
     setBotLoading(true);
     fetch(`/api/bots/public?id=${encodeURIComponent(botId)}`)
       .then(r => {
-        if (!r.ok) throw new Error(`챗봇 정보 로드 실패 (HTTP ${r.status})`);
+        if (!r.ok) throw new Error(`코코봇 정보 로드 실패 (HTTP ${r.status})`);
         return r.json();
       })
       .then((d: { bot?: BotInfo; data?: BotInfo } & BotInfo) => {
@@ -151,7 +151,7 @@ function HirePageInner() {
     }
 
     if (!botId) {
-      showToast('챗봇 정보가 없습니다. URL을 확인해주세요.');
+      showToast('코코봇 정보가 없습니다. URL을 확인해주세요.');
       return;
     }
 
@@ -227,7 +227,7 @@ function HirePageInner() {
           <span>›</span>
           <Link href="/jobs" style={{ color: '#64748b', textDecoration: 'none' }}>구봇구직</Link>
           <span>›</span>
-          {botId && <><Link href={`/jobs/${botId}`} style={{ color: '#64748b', textDecoration: 'none' }}>챗봇 상세</Link><span>›</span></>}
+          {botId && <><Link href={`/jobs/${botId}`} style={{ color: '#64748b', textDecoration: 'none' }}>코코봇 상세</Link><span>›</span></>}
           <span>고용 요청</span>
         </div>
       </nav>
@@ -247,7 +247,7 @@ function HirePageInner() {
 
             {/* 일감 제목 */}
             <FormGroup label="일감 제목" required error={errors.title}>
-              <input {...field('title')} maxLength={100} placeholder="예: 쇼핑몰 고객 문의 응대 챗봇 구축" style={inputStyle(!!errors.title)} />
+              <input {...field('title')} maxLength={100} placeholder="예: 쇼핑몰 고객 문의 응대 코코봇 구축" style={inputStyle(!!errors.title)} />
               <span style={hintStyle}>최대 100자까지 입력 가능합니다.</span>
             </FormGroup>
 
@@ -320,7 +320,7 @@ function HirePageInner() {
             </button>
           </form>
 
-          {/* 우: 챗봇 사이드카드 */}
+          {/* 우: 코코봇 사이드카드 */}
           <aside>
             <div style={{ background: '#fff', borderRadius: '1rem', border: '1px solid #e2e8f0', padding: '1.5rem', position: 'sticky', top: 80 }}>
               {botLoading ? (
@@ -358,13 +358,13 @@ function HirePageInner() {
                   </div>
 
                   <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', fontSize: '0.8125rem', color: '#64748b', lineHeight: 1.6 }}>
-                    고용 요청 후 챗봇이 수락하면 매칭이 완료됩니다. 플랫폼 수수료 <strong style={{ color: '#6366f1' }}>10%</strong>가 부과됩니다.
+                    고용 요청 후 코코봇이 수락하면 매칭이 완료됩니다. 플랫폼 수수료 <strong style={{ color: '#6366f1' }}>10%</strong>가 부과됩니다.
                   </div>
 
                   <div style={{ marginTop: '1rem' }}>
                     <h3 style={{ fontSize: '0.8125rem', fontWeight: 700, marginBottom: '0.625rem' }}>진행 프로세스</h3>
                     <ol style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {[['1', '#6366f1', '#fff', '요청서 작성 & 전송'], ['2', '#ede9fe', '#6366f1', '챗봇 수락 대기'], ['3', '#ede9fe', '#6366f1', '매칭 완료 & 시작']].map(([n, bg, col, label]) => (
+                      {[['1', '#6366f1', '#fff', '요청서 작성 & 전송'], ['2', '#ede9fe', '#6366f1', '코코봇 수락 대기'], ['3', '#ede9fe', '#6366f1', '매칭 완료 & 시작']].map(([n, bg, col, label]) => (
                         <li key={n} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: '#64748b' }}>
                           <span style={{ width: 22, height: 22, borderRadius: '50%', background: bg, color: col, fontWeight: 700, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n}</span>
                           {label}
@@ -389,7 +389,7 @@ function HirePageInner() {
             </div>
             <h2 style={{ fontSize: '1.375rem', fontWeight: 800, marginBottom: '0.625rem' }}>고용 요청이 전송되었습니다!</h2>
             <p style={{ fontSize: '0.9375rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-              챗봇에게 고용 요청이 전달되었습니다.<br />챗봇이 요청을 검토 후 수락하면 매칭이 완료됩니다.
+              코코봇에게 고용 요청이 전달되었습니다.<br />코코봇이 요청을 검토 후 수락하면 매칭이 완료됩니다.
             </p>
             {successJobId && (
               <div style={{ background: '#f8fafc', borderRadius: '0.75rem', padding: '0.875rem 1rem', marginBottom: '1.5rem', fontSize: '0.875rem', color: '#475569', textAlign: 'left' }}>

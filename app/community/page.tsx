@@ -311,7 +311,7 @@ function CommunityInner() {
     }
   }, []);
 
-  // ── 인기 챗봇 로드 ─────────────────────────────────────
+  // ── 인기 코코봇 로드 ─────────────────────────────────────
 
   const loadPopularBots = useCallback(async () => {
     try {
@@ -552,7 +552,7 @@ function CommunityInner() {
         <aside style={{ position: 'sticky', top: '5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}
           className="community-sidebar-right"
         >
-          {/* 인기 챗봇 */}
+          {/* 인기 코코봇 */}
           <div style={{
             background: 'rgb(var(--bg-surface-hover) / 0.5)',
             border: '1px solid rgb(var(--border))',

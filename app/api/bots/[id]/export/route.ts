@@ -1,9 +1,9 @@
 /**
  * @task S2BA3
- * @description 챗봇 JSON 내보내기 API
+ * @description 코코봇 JSON 내보내기 API
  *
  * Endpoints:
- * - GET /api/bots/{id}/export  챗봇 설정을 JSON으로 내보내기
+ * - GET /api/bots/{id}/export  코코봇 설정을 JSON으로 내보내기
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .single();
 
   if (error || !bot) {
-    return NextResponse.json({ error: '챗봇을 찾을 수 없습니다.' }, { status: 404 });
+    return NextResponse.json({ error: '코코봇을 찾을 수 없습니다.' }, { status: 404 });
   }
 
   const exportData = {

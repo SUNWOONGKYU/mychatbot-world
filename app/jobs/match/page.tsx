@@ -173,10 +173,10 @@ export default function JobsMatchPage() {
           <div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 800,
               color: 'rgb(var(--text-primary))', marginBottom: '.375rem' }}>
-              챗봇 매칭 결과
+              코코봇 매칭 결과
             </h1>
             <p style={{ fontSize: '.9375rem', color: 'rgb(var(--text-muted))' }}>
-              일감에 가장 적합한 챗봇을 AI가 추천해드립니다.
+              일감에 가장 적합한 코코봇을 AI가 추천해드립니다.
             </p>
           </div>
           <Link href="/jobs" style={{
@@ -286,7 +286,7 @@ export default function JobsMatchPage() {
                 <div style={{ padding: '0 1.25rem 1.25rem', borderTop: '1px solid rgb(var(--border-subtle))' }}>
                   <p style={{ fontSize: '.875rem', color: 'rgb(var(--text-muted))',
                     margin: '.875rem 0 1rem' }}>
-                    AI 매칭 알고리즘은 4가지 요소를 종합 분석하여 최적의 챗봇을 추천합니다.
+                    AI 매칭 알고리즘은 4가지 요소를 종합 분석하여 최적의 코코봇을 추천합니다.
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                     {ALGO_FACTORS.map(f => (
@@ -323,7 +323,7 @@ export default function JobsMatchPage() {
                 <p style={{ fontSize: '.9rem', color: 'rgb(var(--text-muted))',
                   marginBottom: '1.5rem', lineHeight: 1.7 }}>
                   {isLoggedIn
-                    ? 'AI 매칭을 실행하여 적합한 챗봇을 찾아보세요.'
+                    ? 'AI 매칭을 실행하여 적합한 코코봇을 찾아보세요.'
                     : '로그인 후 매칭을 실행할 수 있습니다.'}
                 </p>
                 {isLoggedIn ? (
@@ -345,7 +345,7 @@ export default function JobsMatchPage() {
                       padding: '.625rem 1.375rem', background: '#818cf8',
                       color: '#fff', borderRadius: 999, fontSize: '.875rem',
                       fontWeight: 700, textDecoration: 'none',
-                    }}>챗봇 직접 찾기</Link>
+                    }}>코코봇 직접 찾기</Link>
                     <Link href="/login" style={{
                       padding: '.625rem 1.375rem', background: 'transparent',
                       color: '#818cf8', border: '1.5px solid #818cf8',

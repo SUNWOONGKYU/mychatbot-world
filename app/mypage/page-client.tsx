@@ -13,7 +13,7 @@
  *
  * APIs:
  *   /api/auth/me            — 프로필 조회
- *   /api/bots               — 내 챗봇 목록
+ *   /api/bots               — 내 코코봇 목록
  *   /api/skills/my          — 내 스킬 목록
  *   /api/credits            — 크레딧 잔액
  */

@@ -1,6 +1,6 @@
 /**
  * @task S3FE1 — 게스트 채팅 페이지
- * @description /guest/chat — 게스트 모드 AI 챗봇 대화 화면
+ * @description /guest/chat — 게스트 모드 AI 코코봇 대화 화면
  *
  * localStorage에서 botId / botName / category를 읽어 GuestChat 컴포넌트 렌더링
  * 10회 한도 초과 시 회원가입 유도 모달 표시

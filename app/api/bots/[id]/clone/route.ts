@@ -1,6 +1,6 @@
 /**
  * @task S4BA4
- * @description 챗봇 복제 API
+ * @description 코코봇 복제 API
  *
  * POST /api/bots/[id]/clone — 원본 봇을 복제하여 새 봇 생성
  *

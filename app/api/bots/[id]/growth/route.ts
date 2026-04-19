@@ -1,6 +1,6 @@
 /**
  * @task S3BA5 (React 전환)
- * @description 챗봇 성장 지표 & 레벨 API
+ * @description 코코봇 성장 지표 & 레벨 API
  *
  * Vanilla 원본: api/Backend_APIs/growth.js
  *

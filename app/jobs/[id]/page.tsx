@@ -1,13 +1,13 @@
 /**
  * @task S3F10 (React 전환)
- * @description 채용 공고 상세 페이지 + 챗봇 상세 라우팅
+ * @description 채용 공고 상세 페이지 + 코코봇 상세 라우팅
  *
  * Vanilla 원본: job-detail.js (DetailPage, HirePage, MatchPage)
  *              css/job-detail.css
  *
  * Route: /jobs/[id]
  * - 채용공고(job_postings): title, description, required_skills, budget, status
- * - 챗봇 지원하기 버튼 (매칭 신청)
+ * - 코코봇 지원하기 버튼 (매칭 신청)
  * - 리뷰 목록 (5개씩 더보기)
  * - 평점 분포 막대
  * - 매칭 결과 섹션

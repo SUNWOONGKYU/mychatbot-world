@@ -2,7 +2,7 @@
 
 /**
  * Home Dashboard — Vanilla → React 충실 전환
- * Tabs: 회원정보 | 챗봇관리 | 유료스킬 | 수익활동 | 크레딧&결제 | 보안설정
+ * Tabs: 회원정보 | 코코봇관리 | 유료스킬 | 수익활동 | 크레딧&결제 | 보안설정
  */
 
 import { useEffect, useState, useRef, useCallback } from 'react';

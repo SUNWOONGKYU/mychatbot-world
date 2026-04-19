@@ -1,5 +1,5 @@
 /**
- * CreateWizard — Vanilla 원본 8단계 챗봇 생성 위저드 충실 전환
+ * CreateWizard — Vanilla 원본 8단계 코코봇 생성 위저드 충실 전환
  *
  * Step 1: 기본정보
  * Step 2: 대표 페르소나

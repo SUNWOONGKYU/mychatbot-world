@@ -38,7 +38,7 @@ export interface AnalyzeResult {
 
 /**
  * POST /api/create-bot/analyze
- * 챗봇 이름과 설명을 AI로 분석하여 비즈니스 유형·톤앤매너를 추출한다.
+ * 코코봇 이름과 설명을 AI로 분석하여 비즈니스 유형·톤앤매너를 추출한다.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // ── 1. 인증 검증 ────────────────────────────────────────────────────────────
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const systemPrompt = `당신은 비즈니스 분석 전문가입니다.
-챗봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
+코코봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
 다른 텍스트나 마크다운 없이 순수 JSON만 반환하세요.
 
 응답 형식:
@@ -108,10 +108,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   "tone": "톤앤매너 (friendly | professional | casual | authoritative | warm 중 하나)",
   "keywords": ["키워드1", "키워드2", "키워드3"],
   "suggestedEmoji": "단일 이모지",
-  "suggestedGreeting": "챗봇의 첫 인사말 (한국어, 50자 이내)"
+  "suggestedGreeting": "코코봇의 첫 인사말 (한국어, 50자 이내)"
 }`;
 
-  const userPrompt = `챗봇 이름: ${name}
+  const userPrompt = `코코봇 이름: ${name}
 설명: ${description}
 
 위 정보를 분석하여 JSON으로 응답해주세요.`;
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       keywords: Array.isArray(parsed.keywords) ? parsed.keywords.slice(0, 5) : [],
       suggestedEmoji: parsed.suggestedEmoji ?? '🤖',
       suggestedGreeting:
-        parsed.suggestedGreeting ?? `안녕하세요! ${name} 챗봇입니다. 무엇을 도와드릴까요?`,
+        parsed.suggestedGreeting ?? `안녕하세요! ${name} 코코봇입니다. 무엇을 도와드릴까요?`,
     };
   } catch (aiError) {
     console.error('[analyze] AI 분석 오류:', aiError);
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       tone: 'friendly',
       keywords: [],
       suggestedEmoji: '🤖',
-      suggestedGreeting: `안녕하세요! ${name} 챗봇입니다. 무엇을 도와드릴까요?`,
+      suggestedGreeting: `안녕하세요! ${name} 코코봇입니다. 무엇을 도와드릴까요?`,
     };
   }
 

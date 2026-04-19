@@ -1,6 +1,6 @@
 /**
  * @task S5M6
- * @description GET /api/bots/[id]/chat-log — 챗봇 대화 이력 조회
+ * @description GET /api/bots/[id]/chat-log — 코코봇 대화 이력 조회
  * Bearer 토큰 인증, conversations 테이블 조회
  * 42P01 시 빈 배열 반환
  */
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .maybeSingle();
 
   if (!bot) {
-    return NextResponse.json({ error: '챗봇을 찾을 수 없습니다.' }, { status: 404 });
+    return NextResponse.json({ error: '코코봇을 찾을 수 없습니다.' }, { status: 404 });
   }
 
   // 대화 목록 조회

@@ -1,10 +1,10 @@
 /**
  * @task S2FE3
- * @description 챗봇 목록 조회/삭제 API
+ * @description 코코봇 목록 조회/삭제 API
  *
  * Endpoints:
- * - GET    /api/bots             로그인 사용자의 챗봇 목록 조회
- * - DELETE /api/bots?id={botId}  챗봇 삭제
+ * - GET    /api/bots             로그인 사용자의 코코봇 목록 조회
+ * - DELETE /api/bots?id={botId}  코코봇 삭제
  *
  * 테이블: mcw_bots (user_id, name, description, deploy_url, qr_svg, ...)
  * 인증: Bearer 토큰 필수
@@ -18,7 +18,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // ── 타입 정의 ─────────────────────────────────────────────────
 
-/** 챗봇 항목 */
+/** 코코봇 항목 */
 interface BotItem {
   id: string;
   owner_id: string;

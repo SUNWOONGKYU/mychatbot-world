@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       .eq('owner_id', user.id)
       .maybeSingle();
     if (!bot) {
-      return NextResponse.json({ error: '챗봇을 찾을 수 없거나 권한이 없습니다.' }, { status: 403 });
+      return NextResponse.json({ error: '코코봇을 찾을 수 없거나 권한이 없습니다.' }, { status: 403 });
     }
   }
 

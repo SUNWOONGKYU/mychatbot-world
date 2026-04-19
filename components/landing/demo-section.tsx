@@ -1,7 +1,7 @@
 /**
  * @task S5FE3 - 랜딩 페이지 리디자인
  * @component DemoSection
- * @description 라이프사이클 소개 + 인터랙티브 챗봇 데모 통합 섹션
+ * @description 라이프사이클 소개 + 인터랙티브 코코봇 데모 통합 섹션
  *              Birth → Skills → Jobs → Community 4단계 + 실시간 채팅 체험
  *              P4 와이어프레임 SECTION 3 (데모) 기준
  */
@@ -386,7 +386,7 @@ export function DemoSection() {
               </div>
             </div>
 
-            {/* 우: 인터랙티브 챗봇 */}
+            {/* 우: 인터랙티브 코코봇 */}
             <div className="order-1 lg:order-2">
               <div
                 className="overflow-hidden rounded-3xl border shadow-2xl"

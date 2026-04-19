@@ -1,6 +1,6 @@
 /**
  * @task S2FE1 / S4GA1
- * @description 챗봇 생성 위저드 스텝 컴포넌트
+ * @description 코코봇 생성 위저드 스텝 컴포넌트
  *
  * Step 0: 템플릿 선택 (신규 — S4GA1)
  * Step 1: 기본 정보 입력 (코코봇 이름, 설명)

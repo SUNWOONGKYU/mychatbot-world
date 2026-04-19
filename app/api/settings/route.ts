@@ -1,6 +1,6 @@
 /**
  * @task S2BA3 - Home API (KB 임베딩, 설정 저장, 클라우드 동기화)
- * @description 챗봇 설정 CRUD API
+ * @description 코코봇 설정 CRUD API
  *
  * Endpoints:
  * - GET    /api/settings?chatbot_id=xx  설정 조회
@@ -9,7 +9,7 @@
  * - DELETE /api/settings?chatbot_id=xx 설정 초기화 (기본값으로 리셋)
  *
  * bot_settings 테이블 필드:
- * - persona: 챗봇 성격/역할 프롬프트
+ * - persona: 코코봇 성격/역할 프롬프트
  * - greeting: 초기 인사말
  * - model: 사용 AI 모델 (gpt-4o, gpt-4o-mini 등)
  * - temperature: 창의성 (0.0 ~ 2.0)
@@ -44,7 +44,7 @@ const DEFAULT_SETTINGS: Omit<BotSettings, 'id' | 'chatbot_id' | 'created_at' | '
 // 타입 정의
 // ============================
 
-/** 챗봇 설정 */
+/** 코코봇 설정 */
 interface BotSettings {
   id: string;
   chatbot_id: string;
@@ -118,7 +118,7 @@ function validateSettings(
 // ============================
 
 /**
- * 챗봇 설정 조회
+ * 코코봇 설정 조회
  * @param request - 쿼리: chatbot_id (필수)
  * @returns BotSettings (없으면 기본값 반환)
  */
@@ -145,7 +145,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -155,7 +155,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }
@@ -207,7 +207,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 // ============================
 
 /**
- * 챗봇 설정 저장/업데이트 (Upsert)
+ * 코코봇 설정 저장/업데이트 (Upsert)
  * 설정이 없으면 생성, 있으면 업데이트
  *
  * @param request - JSON 바디: UpdateSettingsRequest
@@ -253,7 +253,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -263,7 +263,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }
@@ -313,7 +313,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 // ============================
 
 /**
- * 챗봇 설정 최초 생성 (기본값으로)
+ * 코코봇 설정 최초 생성 (기본값으로)
  * @param request - JSON 바디: { chatbot_id }
  * @returns 생성된 BotSettings
  */
@@ -347,7 +347,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -357,7 +357,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }
@@ -416,7 +416,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 // ============================
 
 /**
- * 챗봇 설정 기본값 초기화
+ * 코코봇 설정 기본값 초기화
  * 설정 레코드를 삭제하지 않고 기본값으로 되돌림
  *
  * @param request - 쿼리: chatbot_id (필수)
@@ -445,7 +445,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // 챗봇 소유권 확인
+    // 코코봇 소유권 확인
     const { data: chatbot, error: chatbotError } = await supabase
       .from('mcw_bots')
       .select('id')
@@ -455,7 +455,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     if (chatbotError || !chatbot) {
       return NextResponse.json(
-        { success: false, error: '챗봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
+        { success: false, error: '코코봇을 찾을 수 없거나 접근 권한이 없습니다.', data: null },
         { status: 403 }
       );
     }

@@ -2,7 +2,7 @@
  * @task S5M5
  * @description GET /api/operations/hired-bots
  *
- * 내가 고용한 챗봇 목록 조회 (구봇 탭)
+ * 내가 고용한 코코봇 목록 조회 (구봇 탭)
  * - job_postings + job_matches + mcw_bots (React 테이블) 우선
  * - 42P01 시 bot_jobs + job_applications + bots (vanilla 테이블) 시도
  * - 두 경우 모두 테이블 없으면 빈 배열 반환

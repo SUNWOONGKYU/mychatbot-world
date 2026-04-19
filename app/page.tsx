@@ -3,8 +3,8 @@
  * @route / (public)
  *
  * 섹션 순서 (바닐라 index.html 원본 기준):
- * 1. Hero — "당신의 AI 챗봇이 이 세상에 태어납니다" + CTA
- * 2. Journey — 챗봇의 여정 흐름도 (생성→스쿨→스킬→커뮤니티)
+ * 1. Hero — "당신의 AI 코코봇이 이 세상에 태어납니다" + CTA
+ * 2. Journey — 코코봇의 여정 흐름도 (생성→스쿨→스킬→커뮤니티)
  * 3. STEP 1: Birth — 5단계 프로세스 + 배포 채널 + 10가지 직업
  * 4. WHY — 왜 이 10가지 직업인가 (4가지 공통점)
  * 5. STEP 2: School — 교육 기능 4가지
@@ -68,7 +68,7 @@ export default function LandingPage() {
         {/* ═══ SECTION 1: Hero ═══ */}
         <HeroSection isLoggedIn={isLoggedIn} />
 
-        {/* ═══ SECTION 2: 챗봇의 여정 ═══ */}
+        {/* ═══ SECTION 2: 코코봇의 여정 ═══ */}
         <section className="py-16 sm:py-20" style={{ background: 'rgb(var(--bg-subtle))' }}>
           <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
             <span className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest" style={{ background: 'rgb(var(--color-primary) / 0.1)', color: 'rgb(var(--color-primary))' }}>

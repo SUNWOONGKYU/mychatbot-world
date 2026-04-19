@@ -1,5 +1,5 @@
 // @task S5FE8
-// @description 섹션5 — 챗봇 관리 (전체 목록/검색/상태변경/신고처리/데모보기)
+// @description 섹션5 — 코코봇 관리 (전체 목록/검색/상태변경/신고처리/데모보기)
 
 'use client';
 
@@ -58,7 +58,7 @@ function mockBots(): Bot[] {
   ];
 }
 
-// ── 챗봇 데모 모달 ────────────────────────────────────────────────────────────
+// ── 코코봇 데모 모달 ────────────────────────────────────────────────────────────
 
 function DemoModal({ bot, onClose }: { bot: Bot; onClose: () => void }) {
   const [messages, setMessages] = useState<DemoMessage[]>([

@@ -67,7 +67,7 @@ export function DeleteAccountSection() {
         위험 구역
       </h2>
       <p className="text-sm text-text-secondary mb-4">
-        계정을 삭제하면 모든 챗봇, 대화 내역, 크레딧이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+        계정을 삭제하면 모든 코코봇, 대화 내역, 크레딧이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
       </p>
 
       {!isOpen ? (

@@ -1,5 +1,5 @@
 // @task S5FE7 - 관리자 대시보드 메인 페이지 (섹션1~4)
-// @task S5FE8 - 관리자 대시보드 섹션5~8 (챗봇/스킬/구봇구직/커뮤니티) 추가
+// @task S5FE8 - 관리자 대시보드 섹션5~8 (코코봇/스킬/구봇구직/커뮤니티) 추가
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';

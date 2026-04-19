@@ -1,7 +1,7 @@
 /**
  * @task S5FE3 - 랜딩 페이지 리디자인
  * @component ChatbotTypes
- * @description 챗봇 유형 섹션 — 카테고리 카드 + hover 인터랙션
+ * @description 코코봇 유형 섹션 — 카테고리 카드 + hover 인터랙션
  *              P4 와이어프레임 SECTION 2 기준
  */
 'use client';
