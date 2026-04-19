@@ -22,6 +22,10 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const APP_SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'MyChatbot';
 
+// 네트워크 타임아웃 — OpenRouter 상류 스톨 시 무한 대기 방지
+const OPENROUTER_TIMEOUT_MS = 60_000;        // 비스트리밍 (TTFB + 완료)
+const OPENROUTER_STREAM_TIMEOUT_MS = 120_000; // 스트리밍 (전체 응답까지)
+
 // ============================
 // 내부 헬퍼
 // ============================
@@ -103,11 +107,26 @@ export async function chatCompletion(
     ...options,
   };
 
-  const response = await fetch(OPENROUTER_API_URL, {
-    method: 'POST',
-    headers: buildHeaders(apiKey),
-    body: JSON.stringify(requestBody),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(OPENROUTER_API_URL, {
+      method: 'POST',
+      headers: buildHeaders(apiKey),
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if ((err as Error).name === 'AbortError') {
+      throw new Error(`OpenRouter API timeout after ${OPENROUTER_TIMEOUT_MS}ms`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const errorMsg = await parseErrorResponse(response);
@@ -160,18 +179,33 @@ export async function chatCompletionStream(
     ...options,
   };
 
-  const response = await fetch(OPENROUTER_API_URL, {
-    method: 'POST',
-    headers: buildHeaders(apiKey),
-    body: JSON.stringify(requestBody),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_STREAM_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(OPENROUTER_API_URL, {
+      method: 'POST',
+      headers: buildHeaders(apiKey),
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if ((err as Error).name === 'AbortError') {
+      throw new Error(`OpenRouter stream timeout after ${OPENROUTER_STREAM_TIMEOUT_MS}ms`);
+    }
+    throw err;
+  }
 
   if (!response.ok) {
+    clearTimeout(timeoutId);
     const errorMsg = await parseErrorResponse(response);
     throw new Error(`OpenRouter API error: ${errorMsg}`);
   }
 
   if (!response.body) {
+    clearTimeout(timeoutId);
     throw new Error('OpenRouter API returned empty response body');
   }
 
@@ -184,6 +218,7 @@ export async function chatCompletionStream(
         const { done, value } = await upstreamReader.read();
 
         if (done) {
+          clearTimeout(timeoutId);
           controller.close();
           return;
         }
@@ -199,6 +234,7 @@ export async function chatCompletionStream(
         for (const line of lines) {
           // 스트림 종료 신호
           if (line === 'data: [DONE]') {
+            clearTimeout(timeoutId);
             controller.close();
             return;
           }
@@ -218,6 +254,7 @@ export async function chatCompletionStream(
 
             // finish_reason이 있으면 스트림 종료
             if (chunk.choices?.[0]?.finish_reason) {
+              clearTimeout(timeoutId);
               controller.close();
               return;
             }
@@ -229,6 +266,7 @@ export async function chatCompletionStream(
       }
     },
     cancel() {
+      clearTimeout(timeoutId);
       upstreamReader.cancel();
     },
   });

@@ -84,7 +84,18 @@ export function CreditsTab({ user }: { user: any }) {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
           {PACKAGES.map((pkg, i) => (
-            <div key={i} onClick={() => setSelectedPkg({ price: pkg.price, credits: pkg.credits })}
+            <div key={i}
+              role="radio"
+              aria-checked={selectedPkg?.price === pkg.price}
+              aria-label={`${pkg.credits.toLocaleString()} 크레딧 ${pkg.price.toLocaleString()}원`}
+              tabIndex={0}
+              onClick={() => setSelectedPkg({ price: pkg.price, credits: pkg.credits })}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedPkg({ price: pkg.price, credits: pkg.credits });
+                }
+              }}
               style={{
                 position: 'relative', background: 'rgba(255,255,255,0.03)',
                 border: `2px solid ${selectedPkg?.price === pkg.price ? '#6366f1' : pkg.popular ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.08)'}`,

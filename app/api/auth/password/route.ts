@@ -5,7 +5,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { rateLimit, RATE_PASSWORD } from '@/lib/rate-limiter';
+import { rateLimitAsync, RATE_PASSWORD } from '@/lib/rate-limiter';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +13,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function PATCH(req: NextRequest) {
-  // Rate Limiting: 시간당 10회 — 브루트포스 방지
-  const rl = rateLimit(req, RATE_PASSWORD, 'auth:password');
+  // Rate Limiting: 시간당 10회 — 브루트포스 방지 (Redis 기반 정확 측정)
+  const rl = await rateLimitAsync(req, RATE_PASSWORD, 'auth:password');
   if (!rl.allowed) {
     return NextResponse.json(
       { error: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.' },

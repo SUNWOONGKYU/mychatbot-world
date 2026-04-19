@@ -43,7 +43,18 @@ function mockSkills(): Skill[] {
 
 // ── 공식 스킬 등록 모달 ────────────────────────────────────────────────────────
 
+function useEscapeToClose(onClose: () => void) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+}
+
 function RegisterModal({ onClose, onRegister }: { onClose: () => void; onRegister: (s: Partial<Skill>) => void }) {
+  useEscapeToClose(onClose);
   const [form, setForm] = useState({ name: '', description: '', category: '', price: '0', prompt: '' });
 
   return (
@@ -101,6 +112,7 @@ function ReviewModal({ skill, onClose, onApprove, onReject }: {
   onApprove: () => void;
   onReject: (reason: string) => void;
 }) {
+  useEscapeToClose(onClose);
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
 
@@ -184,15 +196,22 @@ export default function SectionSkills({ adminKey, onBadgeChange }: Props) {
       .finally(() => setLoading(false));
   }, [adminKey]);
 
-  const handleRegister = (newSkill: Partial<Skill>) => {
-    fetch('/api/admin/skills', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
-      body: JSON.stringify({ name: newSkill.name, description: newSkill.description, category: newSkill.category, price: newSkill.price }),
-    }).catch(() => {/* ignore */});
-    setSkills((prev) => [{ id: `sk-${Date.now()}`, ...newSkill, install_count: 0, created_at: new Date().toISOString(), review_status: 'approved' } as Skill, ...prev]);
-    showToast(`스킬 "${newSkill.name}"이(가) 공식 등록되었습니다.`);
+  const handleRegister = async (newSkill: Partial<Skill>) => {
     setShowRegister(false);
+    try {
+      const res = await fetch('/api/admin/skills', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        body: JSON.stringify({ name: newSkill.name, description: newSkill.description, category: newSkill.category, price: newSkill.price }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const saved = await res.json().catch(() => null);
+      const record = (saved?.skill as Skill | undefined) ?? ({ id: `sk-${Date.now()}`, ...newSkill, install_count: 0, created_at: new Date().toISOString(), review_status: 'approved' } as Skill);
+      setSkills((prev) => [record, ...prev]);
+      showToast(`스킬 "${newSkill.name}"이(가) 공식 등록되었습니다.`);
+    } catch (err) {
+      showToast(`스킬 등록에 실패했습니다: ${(err as Error).message}`);
+    }
   };
 
   const handleApprove = (skill: Skill) => {
@@ -209,15 +228,24 @@ export default function SectionSkills({ adminKey, onBadgeChange }: Props) {
     onBadgeChange?.();
   };
 
-  const handleDelete = (skill: Skill) => {
+  const handleDelete = async (skill: Skill) => {
     if (!confirm(`스킬 "${skill.name}"을(를) 삭제하시겠습니까?`)) return;
-    fetch('/api/admin/skills', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
-      body: JSON.stringify({ skillId: skill.id, mode: 'soft' }),
-    }).catch(() => {/* ignore */});
+    const snapshot = skills;
+    // 낙관적 업데이트
     setSkills((prev) => prev.filter((s) => s.id !== skill.id));
-    showToast(`스킬 "${skill.name}"이(가) 삭제되었습니다.`);
+    try {
+      const res = await fetch('/api/admin/skills', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        body: JSON.stringify({ skillId: skill.id, mode: 'soft' }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      showToast(`스킬 "${skill.name}"이(가) 삭제되었습니다.`);
+    } catch (err) {
+      // 실패 시 롤백
+      setSkills(snapshot);
+      showToast(`스킬 삭제에 실패했습니다: ${(err as Error).message}`);
+    }
   };
 
   const pendingCount = skills.filter((s) => s.review_status === 'pending').length;

@@ -60,7 +60,18 @@ function mockBots(): Bot[] {
 
 // ── 코코봇 데모 모달 ────────────────────────────────────────────────────────────
 
+function useEscapeToClose(onClose: () => void) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+}
+
 function DemoModal({ bot, onClose }: { bot: Bot; onClose: () => void }) {
+  useEscapeToClose(onClose);
   const [messages, setMessages] = useState<DemoMessage[]>([
     { role: 'bot', content: `안녕하세요! 저는 "${bot.name}"입니다. 무엇을 도와드릴까요?` },
   ]);
@@ -139,6 +150,7 @@ function DemoModal({ bot, onClose }: { bot: Bot; onClose: () => void }) {
 // ── 상태 변경 모달 ────────────────────────────────────────────────────────────
 
 function StatusModal({ bot, onClose, onConfirm }: { bot: Bot; onClose: () => void; onConfirm: (s: BotStatus) => void }) {
+  useEscapeToClose(onClose);
   const [selected, setSelected] = useState<BotStatus>(bot.status);
 
   return (
@@ -205,15 +217,25 @@ export default function SectionBots({ adminKey }: Props) {
       .finally(() => setLoading(false));
   }, [adminKey]);
 
-  const handleStatusChange = (bot: Bot, newStatus: BotStatus) => {
-    fetch('/api/admin/bots', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
-      body: JSON.stringify({ botId: bot.id, status: newStatus }),
-    }).catch(() => {/* ignore */});
+  const handleStatusChange = async (bot: Bot, newStatus: BotStatus) => {
+    const prevStatus = bot.status;
+    // 낙관적 업데이트
     setBots((prev) => prev.map((b) => (b.id === bot.id ? { ...b, status: newStatus } : b)));
-    showToast(`"${bot.name}" 상태가 ${STATUS_LABELS[newStatus]}(으)로 변경되었습니다.`);
     setStatusBot(null);
+
+    try {
+      const res = await fetch('/api/admin/bots', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        body: JSON.stringify({ botId: bot.id, status: newStatus }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      showToast(`"${bot.name}" 상태가 ${STATUS_LABELS[newStatus]}(으)로 변경되었습니다.`);
+    } catch (err) {
+      // 실패 시 이전 상태로 롤백
+      setBots((prev) => prev.map((b) => (b.id === bot.id ? { ...b, status: prevStatus } : b)));
+      showToast(`상태 변경에 실패했습니다: ${(err as Error).message}`);
+    }
   };
 
   const filtered = bots.filter((b) => {

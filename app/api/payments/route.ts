@@ -17,7 +17,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { rateLimit, RATE_PAYMENTS } from '@/lib/rate-limiter';
+import { rateLimitAsync, RATE_PAYMENTS } from '@/lib/rate-limiter';
 
 // ── API 과금 유틸리티 ─────────────────────────────────────────────────────
 
@@ -90,9 +90,10 @@ interface PaginationMeta {
   totalPages: number;
 }
 
-// 허용 충전 금액 (UI 패키지와 일치: 30,000 / 50,000 / 100,000 + 직접 입력 최소 10,000)
+// 허용 충전 금액 (UI 패키지와 일치: 30,000 / 50,000 / 100,000 + 직접 입력 10,000~5,000,000)
 const ALLOWED_AMOUNTS = [30000, 50000, 100000] as const;
-const CUSTOM_MIN_AMOUNT = 10000; // 직접 입력 최소 금액
+const CUSTOM_MIN_AMOUNT = 10000;    // 직접 입력 최소 금액
+const CUSTOM_MAX_AMOUNT = 5_000_000; // 직접 입력 최대 금액 (무통장 결제 상한)
 
 // ── Supabase ──────────────────────────────────────────────────────────────
 
@@ -209,8 +210,8 @@ interface PaymentRequest {
  * Response: { paymentId, amount, status: 'pending', bankInfo, message, createdAt }
  */
 export async function POST(req: NextRequest) {
-  // Rate Limiting: 무통장 입금 요청은 분당 5회로 제한
-  const rl = rateLimit(req, RATE_PAYMENTS, 'payments:post');
+  // Rate Limiting: 무통장 입금 요청은 분당 5회로 제한 (Redis 기반 정확 측정)
+  const rl = await rateLimitAsync(req, RATE_PAYMENTS, 'payments:post');
   if (!rl.allowed) {
     return NextResponse.json({ error: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.' }, {
       status: 429,
@@ -236,13 +237,16 @@ export async function POST(req: NextRequest) {
 
     const { amount, depositor_name, description } = body;
 
-    // 패키지 금액이거나 직접 입력 최소 금액 이상이어야 함
+    // 패키지 금액이거나 직접 입력(min~max) 범위 내여야 함
     const isPackageAmount = (ALLOWED_AMOUNTS as readonly number[]).includes(amount);
-    const isValidCustomAmount = Number.isInteger(amount) && amount >= CUSTOM_MIN_AMOUNT;
+    const isValidCustomAmount =
+      Number.isInteger(amount) &&
+      amount >= CUSTOM_MIN_AMOUNT &&
+      amount <= CUSTOM_MAX_AMOUNT;
     if (!amount || (!isPackageAmount && !isValidCustomAmount)) {
       return NextResponse.json(
         {
-          error: `Invalid amount. Package values: ${ALLOWED_AMOUNTS.join(', ')} KRW, or custom minimum ${CUSTOM_MIN_AMOUNT.toLocaleString()} KRW.`,
+          error: `Invalid amount. Package values: ${ALLOWED_AMOUNTS.join(', ')} KRW, or custom ${CUSTOM_MIN_AMOUNT.toLocaleString()}~${CUSTOM_MAX_AMOUNT.toLocaleString()} KRW.`,
         },
         { status: 400 },
       );

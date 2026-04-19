@@ -11,6 +11,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimitAsync } from '@/lib/rate-limiter';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -20,7 +21,19 @@ function getSupabase() {
 
 const ALLOWED_TYPES = ['general', 'billing', 'technical', 'report', 'partnership', 'other'] as const;
 
+// 공개 폼이라 인증 불가 → IP 기반 제한으로 스팸 방지 (시간당 10회)
+const RATE_SUPPORT = { limit: 10, windowMs: 3_600_000 };
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // IP Rate Limit
+  const rl = await rateLimitAsync(req, RATE_SUPPORT, 'support:post');
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSec) } },
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();

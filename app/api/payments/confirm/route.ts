@@ -18,6 +18,10 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimitAsync } from '@/lib/rate-limiter';
+
+// user_id 별 크레딧 증가 직렬화 락 (동일 유저에 대한 동시 UPSERT race 방지)
+const CREDIT_ADD_LOCK = { limit: 1, windowMs: 3_000 };
 
 // ── 타입 ──────────────────────────────────────────────────────────────────
 
@@ -131,6 +135,15 @@ export async function PATCH(req: NextRequest) {
     }
 
     const { user_id: userId, amount } = payment;
+
+    // 동일 유저 동시 승인 직렬화 (balance SELECT→UPSERT race 완화)
+    const lock = await rateLimitAsync(req, CREDIT_ADD_LOCK, `credit-add:${userId}`);
+    if (!lock.allowed) {
+      return NextResponse.json(
+        { error: 'Another confirmation for this user is in progress. Retry shortly.' },
+        { status: 429, headers: { 'Retry-After': String(lock.retryAfterSec) } },
+      );
+    }
 
     // 2. mcw_payments.status → 'completed' 업데이트
     const { error: updatePaymentError } = await (supabase as any)

@@ -395,7 +395,16 @@ function WriteInner() {
           {/* 드래그앤드롭 업로드 영역 */}
           {images.length < 5 && (
             <div
+              role="button"
+              tabIndex={0}
+              aria-label={`이미지 업로드 영역, 현재 ${images.length}개 / 최대 5개`}
               onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
               onDragOver={e => { e.preventDefault(); (e.currentTarget as HTMLElement).style.borderColor = '#06b6d4'; (e.currentTarget as HTMLElement).style.background = 'rgba(6,182,212,0.05)'; }}
               onDragLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; (e.currentTarget as HTMLElement).style.background = 'rgb(var(--bg-surface-hover) / 0.3)'; }}
               onDrop={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; (e.currentTarget as HTMLElement).style.background = 'rgb(var(--bg-surface-hover) / 0.3)'; handleDrop(e); }}

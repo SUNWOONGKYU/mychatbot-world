@@ -15,6 +15,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { checkAndDeductCredits } from '@/lib/chat/credits';
+import { rateLimitAsync } from '@/lib/rate-limiter';
+
+// 동시 활성화(이중 차감) 방지용 Redis 락 — user+feature 단위로 5초간 1회 제한
+const ACTIVATE_LOCK = { limit: 1, windowMs: 5_000 };
 
 function getSupabaseServer() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -80,6 +84,16 @@ export async function POST(req: NextRequest) {
   }
 
   const metaKey = FEATURE_META_KEY[feature];
+
+  // 동시 요청 직렬화 (이중 차감 race window 최소화)
+  //   키: premium:{userId}:{feature} — 5초에 1회만 허용
+  const lock = await rateLimitAsync(req, ACTIVATE_LOCK, `premium:${userId}:${feature}`);
+  if (!lock.allowed) {
+    return NextResponse.json(
+      { error: '활성화가 이미 진행 중입니다. 잠시 후 다시 시도해주세요.' },
+      { status: 429, headers: { 'Retry-After': String(lock.retryAfterSec) } },
+    );
+  }
 
   // 이미 활성화된 경우
   if (user?.user_metadata?.[metaKey] === true) {
