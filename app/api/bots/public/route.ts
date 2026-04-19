@@ -15,6 +15,18 @@ import { NextRequest, NextResponse } from 'next/server';
 const DEFAULT_LIMIT = 12;
 const MAX_LIMIT = 100;
 
+// 공개 엔드포인트: 임베드/외부 위젯 호환을 위해 CORS 허용
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Max-Age': '86400',
+} as const;
+
+export function OPTIONS(): Response {
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
+
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -73,12 +85,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (error) {
       console.error('[bots/public GET] Supabase error:', error.message);
-      return NextResponse.json({ error: '봇 목록 조회에 실패했습니다.' }, { status: 500 });
+      return NextResponse.json({ error: '봇 목록 조회에 실패했습니다.' }, { status: 500, headers: CORS_HEADERS });
     }
 
-    return NextResponse.json({ bots: (data ?? []) as PublicBot[], total: count ?? 0 });
+    return NextResponse.json({ bots: (data ?? []) as PublicBot[], total: count ?? 0 }, { headers: CORS_HEADERS });
   } catch (err) {
     console.error('[bots/public GET] Unexpected error:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers: CORS_HEADERS });
   }
 }
