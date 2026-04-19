@@ -65,34 +65,6 @@ function getSupabaseUser(req: NextRequest) {
 }
 
 // ============================
-// 스킬 정의 로더 (단건)
-// ============================
-
-async function loadSkillMeta(skillId: string): Promise<SkillDefMeta | null> {
-  const supabase = getSupabaseServer();
-  const { data, error } = await supabase
-    .from('mcw_skills')
-    .select('name, price, metadata, is_active')
-    .eq('metadata->>legacy_id', skillId)
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (error || !data) return null;
-
-  return {
-    id: skillId,
-    name: data.name,
-    icon: data.metadata?.icon ?? '',
-    category: data.metadata?.category ?? '',
-    description: data.metadata?.description ?? '',
-    type: data.metadata?.type ?? 'prompt',
-    isFree: data.metadata?.isFree ?? (Number(data.price) === 0),
-    price: Number(data.price) ?? 0,
-    tags: data.metadata?.tags ?? [],
-  };
-}
-
-// ============================
 // GET /api/skills/my
 // ============================
 
@@ -155,13 +127,37 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // 스킬 메타데이터 병렬 로드
-    const metaResults = await Promise.all(
-      installations.map((inst: any) => loadSkillMeta(inst.skill_id))
-    );
+    // 스킬 메타데이터 일괄 로드 (N+1 방지: 기존 installations.map(loadSkillMeta) → 단일 .in 쿼리)
+    const { data: metaRows, error: metaError } = await supabase
+      .from('mcw_skills')
+      .select('name, price, metadata, is_active')
+      .in('metadata->>legacy_id', skillIds)
+      .eq('is_active', true);
+
+    if (metaError) {
+      console.error('[GET /api/skills/my] meta batch query error:', metaError);
+    }
+
+    // legacy_id → SkillDefMeta 맵
+    const metaMap: Record<string, SkillDefMeta> = {};
+    for (const row of metaRows ?? []) {
+      const legacyId = (row as any).metadata?.legacy_id;
+      if (!legacyId) continue;
+      metaMap[legacyId] = {
+        id: legacyId,
+        name: (row as any).name,
+        icon: (row as any).metadata?.icon ?? '',
+        category: (row as any).metadata?.category ?? '',
+        description: (row as any).metadata?.description ?? '',
+        type: (row as any).metadata?.type ?? 'prompt',
+        isFree: (row as any).metadata?.isFree ?? (Number((row as any).price) === 0),
+        price: Number((row as any).price) ?? 0,
+        tags: (row as any).metadata?.tags ?? [],
+      };
+    }
 
     // 최종 결과 조합
-    const skills: MySkillItem[] = installations.map((inst: any, idx: any) => {
+    const skills: MySkillItem[] = installations.map((inst: any) => {
       const stats = execMap[inst.skill_id] ?? { count: 0, lastUsed: null };
       return {
         installation_id: inst.id,
@@ -170,7 +166,7 @@ export async function GET(req: NextRequest) {
         status: inst.status,
         execution_count: stats.count,
         last_used_at: stats.lastUsed,
-        skill_meta: metaResults[idx],
+        skill_meta: metaMap[inst.skill_id] ?? null,
       };
     });
 
