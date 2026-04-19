@@ -14,6 +14,9 @@ import { redirect } from 'next/navigation';
 import { FaqManager } from '@/components/bot/faq-manager';
 import type { FaqRecord } from '@/app/api/faq/route';
 
+// 빌드 타임 env 없어도 프리렌더 오류 안 나도록 동적 렌더링
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   searchParams: Promise<{ botId?: string }>;
 }
