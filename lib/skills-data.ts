@@ -26,6 +26,10 @@ export const SKILL_CATEGORIES = ['전체', '분석', '보안', '관리', '지식
 
 export type SkillCategory = (typeof SKILL_CATEGORIES)[number];
 
+// 호환 shim — 이전 페이지들이 정적 import하던 SKILLS 배열.
+// 실제 데이터는 fetchSkillsFromAPI()로 런타임 로드됨.
+export const SKILLS: SkillItem[] = [];
+
 /**
  * /api/skills 엔드포인트에서 스킬 목록을 가져와 SkillItem[] 형태로 반환
  * (브라우저 전용 — SSR 환경에서는 직접 DB 쿼리 권장)

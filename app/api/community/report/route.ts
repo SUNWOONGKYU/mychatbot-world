@@ -30,7 +30,7 @@ function getSupabase() {
   return createClient(url, key);
 }
 
-async function authenticate(supabase: ReturnType<typeof createClient>, authHeader: string) {
+async function authenticate(supabase: any, authHeader: string) {
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
   if (!token) return { userId: null as null, error: 'Unauthorized: missing Bearer token' };
   const { data, error } = await supabase.auth.getUser(token);

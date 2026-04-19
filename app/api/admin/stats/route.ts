@@ -22,16 +22,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin, getAdminSupabase } from '@/lib/admin-auth';
 import { rateLimit, RATE_ADMIN } from '@/lib/rate-limiter';
 
-> {
-  const adminKey = process.env.ADMIN_API_KEY;
-  if (!adminKey) {
-    console.error('[admin/stats] ADMIN_API_KEY env var not set');
-    return { authorized: false };
-  }
-  const provided = req.headers.get('X-Admin-Key');
-  return { authorized: provided === adminKey };
-}
-
 // ── GET /api/admin/stats ──────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {

@@ -52,16 +52,6 @@ interface DeleteBody {
   mode?: 'soft' | 'hard';
 }
 
-> {
-  const adminKey = process.env.ADMIN_API_KEY;
-  if (!adminKey) {
-    console.error('[admin/skills] ADMIN_API_KEY env var not set');
-    return { authorized: false };
-  }
-  const provided = req.headers.get('X-Admin-Key');
-  return { authorized: provided === adminKey };
-}
-
 // ── GET /api/admin/skills ─────────────────────────────────────────────────
 
 /**

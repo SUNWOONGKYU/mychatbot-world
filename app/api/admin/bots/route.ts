@@ -33,16 +33,6 @@ interface PatchBody {
   status: BotStatus;
 }
 
-> {
-  const adminKey = process.env.ADMIN_API_KEY;
-  if (!adminKey) {
-    console.error('[admin/bots] ADMIN_API_KEY env var not set');
-    return { authorized: false };
-  }
-  const provided = req.headers.get('X-Admin-Key');
-  return { authorized: provided === adminKey };
-}
-
 // ── GET /api/admin/bots ───────────────────────────────────────────────────
 
 /**
