@@ -40,7 +40,7 @@ export interface DisplayProps
 const Display = React.forwardRef<HTMLHeadingElement, DisplayProps>(
   ({ className, size, as: Tag = 'h1', ...props }, ref) => (
     <Tag
-      ref={ref as React.Ref<HTMLHeadingElement & HTMLParagraphElement & HTMLSpanElement>}
+      ref={ref as React.Ref<any>}
       className={cn(displayVariants({ size, className }))}
       {...props}
     />
@@ -118,7 +118,7 @@ export interface TextProps
 const Text = React.forwardRef<HTMLElement, TextProps>(
   ({ className, variant, as: Tag = 'p', ...props }, ref) => (
     <Tag
-      ref={ref as React.Ref<HTMLElement>}
+      ref={ref as React.Ref<any>}
       className={cn(textVariants({ variant, className }))}
       {...props}
     />
