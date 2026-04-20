@@ -66,13 +66,25 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           />
         </Link>
 
-        {/* 데스크탑 내비 — Tailwind sm:flex 회귀 방지: 직접 inline media query */}
+        {/* 데스크탑 내비 — A방식: 퍼플 단일색 + 굵기/언더라인/glow (Navbar와 일관) */}
         <ul className="mcw-desktop-nav" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {NAV_LINKS.map((link) => (
             <li key={link.label}>
               <a
                 href={link.href}
-                className="text-neutral-900 transition-colors hover:text-brand-600 dark:text-neutral-50 dark:hover:text-brand-400"
+                className="relative inline-block px-2 py-1 text-sm transition-all duration-200"
+                style={{
+                  color: 'rgb(var(--text-secondary))',
+                  fontWeight: 500,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--color-primary))';
+                  e.currentTarget.style.fontWeight = '700';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.fontWeight = '500';
+                }}
               >
                 {link.label}
               </a>
@@ -101,9 +113,11 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           {isLoggedIn ? (
             <Link
               href="/home"
-              className="rounded-xl px-5 py-2 text-sm font-bold text-white transition-all hover:opacity-90"
+              className="rounded-xl px-5 py-2 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-px"
               style={{
-                background: 'linear-gradient(135deg, var(--interactive-primary), var(--accent-primary))',
+                background: 'rgb(var(--color-primary))',
+                boxShadow:
+                  '0 0 12px rgb(var(--color-primary) / 0.4), 0 4px 16px rgb(var(--color-primary) / 0.25)',
               }}
             >
               대시보드
@@ -112,17 +126,27 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
             <>
               <Link
                 href="/login"
-                className="text-sm font-semibold text-neutral-900 transition-colors hover:text-brand-600 dark:text-neutral-50 dark:hover:text-brand-400"
+                className="text-sm transition-all duration-200"
+                style={{
+                  color: 'rgb(var(--text-secondary))',
+                  fontWeight: 600,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--color-primary))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                }}
               >
                 로그인
               </Link>
               <Link
                 href="/create"
-                className="rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:shadow-lg"
+                className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-px"
                 style={{
-                  background:
-                    'linear-gradient(135deg, var(--interactive-primary), var(--accent-primary))',
-                  boxShadow: '0 4px 12px color-mix(in oklch, var(--interactive-primary) 35%, transparent)',
+                  background: 'rgb(var(--color-primary))',
+                  boxShadow:
+                    '0 0 12px rgb(var(--color-primary) / 0.4), 0 4px 16px rgb(var(--color-primary) / 0.25)',
                 }}
               >
                 무료로 시작하기
@@ -136,8 +160,12 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           {!isLoggedIn && (
             <Link
               href="/create"
-              className="rounded-lg px-4 py-2 text-sm font-bold text-white"
-              style={{ background: 'var(--interactive-primary)' }}
+              className="rounded-lg px-4 py-2 text-sm font-bold text-white transition-all duration-200"
+              style={{
+                background: 'rgb(var(--color-primary))',
+                boxShadow:
+                  '0 0 10px rgb(var(--color-primary) / 0.35), 0 2px 8px rgb(var(--color-primary) / 0.25)',
+              }}
             >
               시작하기
             </Link>
@@ -182,18 +210,21 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                 <a
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+                  className="block rounded-lg px-4 py-2.5 text-sm transition-all duration-200"
                   style={{
-                    color: 'var(--text-secondary)',
+                    color: 'rgb(var(--text-secondary))',
                     background: 'transparent',
+                    fontWeight: 500,
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'var(--surface-1)';
-                    (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
+                    const el = e.currentTarget as HTMLAnchorElement;
+                    el.style.color = 'rgb(var(--color-primary))';
+                    el.style.fontWeight = '700';
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                    (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-secondary)';
+                    const el = e.currentTarget as HTMLAnchorElement;
+                    el.style.color = 'rgb(var(--text-secondary))';
+                    el.style.fontWeight = '500';
                   }}
                 >
                   {link.label}
