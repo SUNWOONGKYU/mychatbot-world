@@ -149,3 +149,76 @@
 1. [ ] Q2: 배포 방향 (A/B/C)
 2. [ ] Q3: `/refund` 복구 경로 (Q2 결정에 종속)
 3. [ ] 분업 규칙 §6 승인 여부
+
+---
+
+## ⏱ UPDATE — 2026-04-20 20:15 KST (Session A 추가 갱신)
+
+초기 회신 이후 PO 지시로 Session A가 추가 작업 완료. **이 업데이트로 Session B 블로커 해소 목표**.
+
+### Session A 추가 커밋 (`fix/member-flow-audit`)
+
+```
+83f115b fix(landing): 헤더 메뉴 가시성 복원 + 히어로 정돈
+398d0c3 fix(tsconfig): cpc-agent-server, skill-market 타입체크 제외
+177a7d0 feat(brand): CoCoBot 공식 로고 시스템 전면 적용
+ef50bc7 fix(links): 404 해소 — /dashboard→/home, /blog·#pricing 제거
+```
+
+변경 영향:
+- `components/landing/marketing-gnb.tsx` — 메뉴 색상 수정 (`--text-secondary`→`--text-primary`), /blog 제거, /customer-service 추가
+- `components/landing/hero.tsx` — 서브카피 2번째 줄 삭제("소상공인…"), 스탯 카드 3개 삭제, SCROLL 인디케이터 삭제
+- `components/landing/footer.tsx` + `components/common/{navbar,header,sidebar,mobile-nav}.tsx` + `components/guest/guest-header.tsx` — BrandLogo 통합
+- `components/common/brand-logo.tsx` (신규) — 공식 로고 컴포넌트
+- `app/icon.svg` + `public/icons/icon-{96,192,512}x*.svg` — 파비콘/PWA 아이콘 브랜드화
+- `branding/logos/*.svg` — BRAND_DEFINITION.md §3.2 규칙으로 색상 정정
+- `tsconfig.json` — `cpc-agent-server`, `skill-market` exclude 추가 (Vercel 타입체크 통과)
+
+### 인프라 변경
+
+- **코드 루트 이전**: `C:\Dev\mychatbot-world` 는 이제 **실제 폴더** (Junction 아님). G:\내 드라이브 원본은 백업 상태로 보존.
+- Google Drive ghost 디렉토리 문제 해소 → Vercel 빌드 안정성 확보.
+
+### 현재 프로덕션
+
+- URL: `https://mychatbot.world`
+- HEAD: `83f115b`
+- 최근 배포: `dpl_5fCmYUAtPPGkfQWRRs6HYDKJ1Ri6` (READY, 19:33 KST) + 83f115b 자동 배포 (진행 중)
+
+### PO 결정 필요 항목 (우선순위)
+
+**제안 (Session A 관점)**:
+
+| 옵션 | 내용 | 장점 | 단점 |
+|------|------|------|------|
+| **A (권장)** | `main`의 S9 자산을 `fix/member-flow-audit` 로 **merge** | /refund·/api/health v2·S9 전량 확보 | 충돌 해결 필요 (hero/marketing-gnb/layout 중심) |
+| B | `fix/member-flow-audit` → `main` 으로 강제 동기화, Vercel 배포 브랜치를 main으로 전환 | 브랜치 정돈 | Session B 최근 작업 손실 위험 |
+| C | 현상 유지 (두 브랜치 병행) | 변동 無 | /refund 법적 리스크 지속, 분업 모호 |
+
+**Session A 권고: A**.
+- 실제 merge 작업: Session A가 담당 (이 환경에 전 히스토리 있음)
+- 충돌 중재: PO 가이드 필요 (hero 카피, /api/health 스키마 선택)
+- 예상 절차:
+  1. `git checkout fix/member-flow-audit && git merge origin/main`
+  2. 충돌 지점 5~10개 수동 해결 (hero.tsx, marketing-gnb.tsx, layout.tsx, page.tsx, api/health/route.ts, middleware.ts 추정)
+  3. 로컬 빌드 검증
+  4. Push → Vercel 자동 배포
+  5. PR `fix/member-flow-audit` → `main` 생성해 정식 동기화
+
+### Session B 블로커 해소 경로
+
+**Session B가 지금 할 수 있는 일**:
+- 로컬 작업이 미배포 상태라면: Session A merge 실행 후 자동으로 배포 반영됨 (추가 작업 불필요)
+- 긴급 배포가 필요한 개별 파일(예: `/refund`) 이 있다면 이 문서에 **긴급 배포 요청** 섹션 추가
+
+**Session A 대기 상태**: PO의 A/B/C 결정 + merge 진행 허가.
+
+---
+
+**PO 결재 대기 항목 (v2)**:
+1. [ ] **Q2 결정: A(merge) / B(강제 동기화) / C(현상유지) 중 선택**
+2. [ ] A 선택 시: merge 충돌 지점 카피 결정
+   - [ ] Hero H1: "AI Assistant 코코봇" vs "당신의 AI 코코봇"
+   - [ ] `/api/health`: v1 (env+supabase) vs v2 (db+redis+openrouter)
+   - [ ] Landing: Session A의 최신 히어로 vs main의 랜딩
+3. [ ] `/refund` 즉시 반영 여부 (법적 리스크)
