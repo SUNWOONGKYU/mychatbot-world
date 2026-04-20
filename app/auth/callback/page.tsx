@@ -29,7 +29,10 @@ export default function AuthCallbackPage() {
     async function run() {
       const url = new URL(window.location.href);
       const code = url.searchParams.get('code');
-      const errorDescription = url.searchParams.get('error_description');
+      const errorDescription =
+        url.searchParams.get('error_description') ??
+        new URLSearchParams(url.hash.replace(/^#/, '')).get('error_description');
+      const hashHasToken = url.hash.includes('access_token=');
 
       if (errorDescription) {
         setStatus('error');
@@ -37,38 +40,77 @@ export default function AuthCallbackPage() {
         return;
       }
 
-      // code 가 없는 경우(이메일 verify 후 Supabase 가 단순 redirect 만 할 때 포함)
-      // → 이메일 인증 완료 안내로 로그인 유도
-      if (!code) {
-        router.replace('/login?confirmed=1');
+      // 1) detectSessionInUrl(기본 true) 가 이미 URL hash / code 를 세션으로 처리했을 수 있음.
+      //    먼저 기존 세션을 조회해서 있으면 그것으로 분기.
+      {
+        const { data: first } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (first.session) {
+          const provider =
+            (first.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'email';
+          if (provider === 'email') {
+            await supabase.auth.signOut();
+            router.replace('/login?confirmed=1');
+          } else {
+            router.replace('/home');
+          }
+          return;
+        }
+      }
+
+      // 2) code 가 있으면 PKCE 교환 시도
+      if (code) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (cancelled) return;
+        if (error || !data.session) {
+          // eslint-disable-next-line no-console
+          console.error('[auth/callback] exchangeCodeForSession failed', error);
+          setStatus('error');
+          setErrMsg(error?.message ?? 'session=null');
+          return;
+        }
+        const provider =
+          (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'email';
+        if (provider === 'email') {
+          await supabase.auth.signOut();
+          router.replace('/login?confirmed=1');
+        } else {
+          router.replace('/home');
+        }
         return;
       }
 
-      // PKCE code 를 세션으로 명시 교환 (브라우저 자동 감지 타이밍 이슈 회피)
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-      if (cancelled) return;
-
-      if (error || !data.session) {
-        // 교환 실패: 대부분 이메일 인증 링크 재사용 / 만료 / code_verifier 없음
-        // 진단을 위해 에러 메시지를 화면에 노출 (이후 안정화되면 silent redirect 로 복귀)
-        // eslint-disable-next-line no-console
-        console.error('[auth/callback] exchangeCodeForSession failed', error);
-        setStatus('error');
-        setErrMsg(error?.message ?? 'session=null');
+      // 3) hash 에 access_token 이 있으나 아직 세션이 안 잡힌 경우 — 이벤트 대기
+      if (hashHasToken) {
+        const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+          if (cancelled) return;
+          if (session) {
+            sub.subscription.unsubscribe();
+            const provider =
+              (session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'email';
+            if (provider === 'email') {
+              supabase.auth.signOut().finally(() => router.replace('/login?confirmed=1'));
+            } else {
+              router.replace('/home');
+            }
+          } else if (event === 'SIGNED_OUT') {
+            sub.subscription.unsubscribe();
+            setStatus('error');
+            setErrMsg('hash token present but session not established');
+          }
+        });
+        // 5초 안에 이벤트가 오지 않으면 에러 표시
+        setTimeout(() => {
+          if (cancelled) return;
+          sub.subscription.unsubscribe();
+          setStatus((s) => (s === 'processing' ? 'error' : s));
+          setErrMsg((m) => m || 'onAuthStateChange timeout');
+        }, 5000);
         return;
       }
 
-      const provider =
-        (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'email';
-
-      if (provider === 'email') {
-        // 이메일 가입 경로 → 수동 로그인 정책 유지: 세션 종료 후 /login
-        await supabase.auth.signOut();
-        router.replace('/login?confirmed=1');
-      } else {
-        // OAuth (google 등) → 자동 로그인 상태로 /home 진입
-        router.replace('/home');
-      }
+      // 4) code 도 세션도 토큰도 없음 → 이메일 verify 단순 redirect 로 간주
+      router.replace('/login?confirmed=1');
     }
 
     run();
