@@ -2,15 +2,13 @@
  * @task S1SC1
  * @description Supabase Auth utility functions
  * Social login (Google, Kakao) + session management
+ *
+ * NOTE: 싱글턴 사용으로 통일.
+ * @supabase/ssr 의 createBrowserClient 는 code_verifier 등을 쿠키 기반으로 두고
+ * 앱의 다른 부분이 쓰는 기본 createClient (localStorage 기반) 와 저장소가 달라
+ * OAuth 콜백에서 PKCE 교환이 실패하는 문제가 있었음.
  */
-
-import { createBrowserClient } from '@supabase/ssr'
-
-// Create a Supabase client for use in Client Components
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import supabase from '@/lib/supabase'
 
 /**
  * Sign in with Google OAuth
