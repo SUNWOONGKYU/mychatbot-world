@@ -45,7 +45,7 @@ const SCHOOL_FEATURES = [
   { icon: '📤', title: '지식 업로드', desc: 'FAQ·문서(PDF/DOCX/TXT)·URL을 업로드하면 자동으로 분할·색인됩니다.' },
   { icon: '🔍', title: '의미 기반 검색', desc: '벡터 임베딩으로 단어가 달라도 질문 의도에 맞는 답을 찾아냅니다.' },
   { icon: '📚', title: '위키 자동 정리', desc: '축적된 지식을 카테고리·주제별 위키 문서로 자동 구조화합니다.' },
-  { icon: '🧠', title: 'RAG 답변 생성', desc: '코코봇이 자기 지식 베이스를 근거로 출처와 함께 정확히 답변합니다.' },
+  { icon: '💬', title: '질의응답 자동 학습', desc: '사용자와의 대화에서 좋은 답변을 자동 평가해 위키로 축적합니다.' },
 ];
 
 /* ── 커뮤니티 3기능 ──────────────────────────────── */
@@ -244,7 +244,7 @@ export default function LandingPage() {
                   key={s.num}
                   className={`relative mb-8 flex items-center sm:mb-10 ${i % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
                 >
-                  <div className={`flex-1 pl-20 sm:pl-0 ${i % 2 === 0 ? 'sm:pr-12 sm:text-right' : 'sm:pl-12'}`}>
+                  <div className={`flex-1 pl-20 ${i % 2 === 0 ? 'sm:pl-0 sm:pr-[calc(50%+40px)] sm:text-right' : 'sm:pl-[calc(50%+40px)] sm:pr-0'}`}>
                     <div
                       className="rounded-2xl p-5 text-left sm:inline-block sm:text-inherit"
                       style={{
@@ -259,7 +259,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   {/* 번호 동그라미 */}
-                  <div className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2">
+                  <div className="absolute left-0 z-10 sm:left-1/2 sm:-translate-x-1/2">
                     <span
                       className="relative flex h-16 w-16 items-center justify-center rounded-full text-lg font-black text-white"
                       style={{
