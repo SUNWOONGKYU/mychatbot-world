@@ -5,7 +5,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { WizardData, PersonaData } from '../CreateWizard';
+import type { WizardData, PersonaData, PersonaType } from '../CreateWizard';
 import { MicButton, stepTitle, stepDesc, formGroup, formLabel, formInput, StepActions } from '../ui';
 
 interface Props {
@@ -13,6 +13,34 @@ interface Props {
   onNext: (patch: Partial<WizardData>) => void;
   onBack: () => void;
 }
+
+// ── 6-preset 분류 (SVG 다이어그램과 동일) ──────────────────────────────────
+interface Preset {
+  id: string;
+  icon: string;
+  label: string;
+  suggestName: string;
+  suggestUserTitle: string;
+  suggestRole: string;
+}
+
+const AVATAR_PRESETS: Preset[] = [
+  { id: 'executive',    icon: '🏢', label: '기업경영자',    suggestName: '대표 비서',     suggestUserTitle: '고객님',   suggestRole: '회사 소개와 비전을 안내합니다.' },
+  { id: 'smallbiz',     icon: '🍱', label: '소상공인',      suggestName: '가게 안내',     suggestUserTitle: '손님',     suggestRole: '가게 메뉴·예약·문의를 안내합니다.' },
+  { id: 'professional', icon: '⚖️', label: '전문직 종사자', suggestName: '전문 상담',     suggestUserTitle: '의뢰인',   suggestRole: '전문 영역 상담과 업무 안내를 제공합니다.' },
+  { id: 'freelancer',   icon: '🎨', label: '프리랜서',      suggestName: '포트폴리오',    suggestUserTitle: '클라이언트', suggestRole: '작업물 소개와 협업 문의를 응대합니다.' },
+  { id: 'politician',   icon: '🗳️', label: '정치인',        suggestName: '의정 안내',     suggestUserTitle: '주민',     suggestRole: '공약·활동·민원을 안내합니다.' },
+  { id: 'other',        icon: '⚙️', label: '기타',          suggestName: '',              suggestUserTitle: '',         suggestRole: '' },
+];
+
+const HELPER_PRESETS: Preset[] = [
+  { id: 'work',     icon: '💼', label: '업무', suggestName: '업무 도우미', suggestUserTitle: '대표님',   suggestRole: '문서 작성과 업무 효율을 돕습니다.' },
+  { id: 'learning', icon: '📚', label: '학습', suggestName: '학습 코치',   suggestUserTitle: '학생',     suggestRole: '공부와 과제 수행을 지원합니다.' },
+  { id: 'creative', icon: '🎨', label: '창작', suggestName: '창작 파트너', suggestUserTitle: '작가님',   suggestRole: '아이디어와 글쓰기를 함께합니다.' },
+  { id: 'health',   icon: '💪', label: '건강', suggestName: '건강 코치',   suggestUserTitle: '회원님',   suggestRole: '운동·식단·건강 관리를 돕습니다.' },
+  { id: 'life',     icon: '🏠', label: '생활', suggestName: '생활 도우미', suggestUserTitle: '사용자',   suggestRole: '일상·민원·정보를 안내합니다.' },
+  { id: 'other',    icon: '⚙️', label: '기타', suggestName: '',            suggestUserTitle: '',         suggestRole: '' },
+];
 
 const SLIDER_PREVIEWS = [
   { max: 10, text: '힘드셨죠... 제가 도와드릴게요.' },
@@ -43,10 +71,30 @@ function getSliderPreview(val: number) {
 
 export default function Step2Persona({ data, onNext, onBack }: Props) {
   const [persona, setPersona] = useState<PersonaData>(data.persona);
+  const [presetOpen, setPresetOpen] = useState<boolean>(!persona.presetId);
+
+  const personaType: PersonaType = persona.type ?? 'avatar';
+  const presets = personaType === 'avatar' ? AVATAR_PRESETS : HELPER_PRESETS;
+  const currentPreset = presets.find(p => p.id === persona.presetId);
 
   const update = useCallback((patch: Partial<PersonaData>) => {
     setPersona(prev => ({ ...prev, ...patch }));
   }, []);
+
+  const setType = (type: PersonaType) => {
+    update({ type, presetId: undefined });
+    setPresetOpen(true);
+  };
+
+  const selectPreset = (p: Preset) => {
+    update({
+      presetId: p.id,
+      name: p.suggestName || persona.name,
+      userTitle: p.suggestUserTitle || persona.userTitle,
+      role: p.suggestRole || persona.role,
+    });
+    setPresetOpen(false);
+  };
 
   const handleNext = () => {
     if (!persona.name.trim()) { alert('대표 페르소나의 이름을 입력해주세요'); return; }
@@ -60,6 +108,91 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
         🎤 마이크 버튼으로 음성 입력 또는 직접 텍스트 입력이 가능합니다.<br />
         페르소나는 총 9개까지 추가할 수 있으며, 마이페이지에서 별도로 설정합니다.
       </p>
+
+      {/* ── 분류 토글 (아바타형 / 도우미형) ──────────────────────────── */}
+      <div style={{
+        display: 'flex', gap: '8px', padding: '4px',
+        background: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '12px', marginBottom: '1rem',
+      }}>
+        {(['avatar', 'helper'] as PersonaType[]).map(t => {
+          const active = personaType === t;
+          const label = t === 'avatar' ? '🧑 아바타형 — 나를 대신' : '🤖 도우미형 — 나를 도와';
+          return (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setType(t)}
+              style={{
+                flex: 1, padding: '10px 12px', borderRadius: '10px',
+                border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
+                background: active ? '#6366f1' : 'transparent',
+                color: active ? 'white' : 'rgba(255,255,255,0.6)',
+                transition: 'all 0.2s',
+              }}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Option C: 접힘형 6-preset 카드 ──────────────────────────── */}
+      <div style={{
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '12px', marginBottom: '1.5rem', overflow: 'hidden',
+      }}>
+        <button
+          type="button"
+          onClick={() => setPresetOpen(o => !o)}
+          aria-expanded={presetOpen}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '12px 16px', background: 'transparent', border: 'none', cursor: 'pointer',
+            color: 'white', fontSize: '0.9rem', fontWeight: 600, textAlign: 'left',
+          }}
+        >
+          <span>
+            {currentPreset
+              ? <>선택한 프리셋: <span style={{ color: '#a5b4fc' }}>{currentPreset.icon} {currentPreset.label}</span></>
+              : '프리셋을 선택하면 이름·호칭·역할이 자동 채워집니다'}
+          </span>
+          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>
+            {presetOpen ? '접기 ▲' : '펼치기 ▼'}
+          </span>
+        </button>
+
+        {presetOpen && (
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px',
+            padding: '0 12px 12px',
+          }}>
+            {presets.map(p => {
+              const active = persona.presetId === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => selectPreset(p)}
+                  style={{
+                    padding: '14px 8px', borderRadius: '10px', cursor: 'pointer',
+                    background: active ? 'rgba(99,102,241,0.25)' : 'rgba(0,0,0,0.2)',
+                    border: `1px solid ${active ? '#818cf8' : 'rgba(255,255,255,0.08)'}`,
+                    color: active ? 'white' : 'rgba(255,255,255,0.85)',
+                    fontSize: '0.8rem', fontWeight: 600, textAlign: 'center',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <div style={{ fontSize: '1.5rem', marginBottom: '4px', lineHeight: 1 }}>{p.icon}</div>
+                  <div>{p.label}</div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* 대표 페르소나 배지 */}
       <div style={{
@@ -94,8 +227,8 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
             fontWeight: 700,
             background: 'rgba(99,102,241,0.2)',
             color: '#a5b4fc',
-          }}>A형</span>
-          <span style={{ color: 'white', fontWeight: 700 }}>대면용 페르소나 1</span>
+          }}>{personaType === 'avatar' ? '아바타형' : '도우미형'}</span>
+          <span style={{ color: 'white', fontWeight: 700 }}>대표 페르소나</span>
         </div>
 
         {/* 페르소나 이름 */}

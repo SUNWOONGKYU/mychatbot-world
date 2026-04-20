@@ -11,8 +11,8 @@
   "task_agent": "frontend-developer-core",
   "tools": "",
   "execution_type": "AI-Only",
-  "generated_files": "SAL_Grid_Dev_Suite/Process/S5_디자인혁신/Frontend/app/guest/page-client.tsx, app/guest/page-client.tsx",
-  "modification_history": "2026-04-07: S5 디자인 시스템 CSS 변수 적용 — 하드코딩 컬러 → rgb(var(--token)), 배너 var(--gradient-primary), P3 카드 스펙(호버 글로우/radius-xl/shadow), 다크라이트 동시 지원 | 2026-04-09: 히어로 무료체험 배지·회원가입없이 삭제 + 카테고리 아바타형5+도우미형5 구조로 재구성",
+  "generated_files": "SAL_Grid_Dev_Suite/Process/S5_디자인혁신/Frontend/app/guest/page-client.tsx, app/guest/page-client.tsx, app/api/guest-create/route.ts",
+  "modification_history": "2026-04-07: S5 디자인 시스템 CSS 변수 적용 — 하드코딩 컬러 → rgb(var(--token)), 배너 var(--gradient-primary), P3 카드 스펙(호버 글로우/radius-xl/shadow), 다크라이트 동시 지원 | 2026-04-09: 히어로 무료체험 배지·회원가입없이 삭제 + 카테고리 아바타형5+도우미형5 구조로 재구성 | 2026-04-21: SVG 다이어그램(docs/cocobot-create-flow.svg)과 동일한 6+6 분류로 재정렬 — 아바타형(🏢기업경영자/🍱소상공인/⚖️전문직 종사자/🎨프리랜서/🗳️정치인/⚙️기타) + 도우미형(💼업무/📚학습/🎨창작/💪건강/🏠생활/⚙️기타). 배너 카피에 분류 기준 한 줄 추가. guest-create API TEMPLATE_BOT_MAP에 신 분류 12개 templateId 추가(기존 데모 봇 ID 재사용), 구 분류 호환성 유지.",
   "verification_instruction": "sal-grid/verification-instructions/S5FE9_verification.md",
   "verification_agent": "code-reviewer-core",
   "test_result": {

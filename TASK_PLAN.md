@@ -1,8 +1,8 @@
 # My Chatbot World — Task Plan
 
 > **작성일**: 2026-03-31
-> **수정일**: 2026-04-12
-> **버전**: v4.1
+> **수정일**: 2026-04-21
+> **버전**: v4.6
 > **프로젝트**: My Chatbot World (mychatbot.world)
 > **총 Task 수**: 87개 (v4.5 Round 5 — health check 고도화)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
@@ -342,3 +342,4 @@ S4 (개발 마무리)
 | v4.3 | 2026-04-20 | 프로덕션 블로커 Round 3 — 에러 바운더리·CORS 보강. S6BA4: /api/bots/public CORS 헤더 + OPTIONS preflight(외부 임베드/위젯 허용). S6FE3: /admin·/bot/[botId]·/mypage 세그먼트별 error.tsx 추가(글로벌 에러로 전파 방지, digest 노출). .single() 잔존 리스크 검증 결과 PGRST116 핸들링 완비 확인 — 스킵. S6 7→9 Tasks. 총 83개→85개. |
 | v4.4 | 2026-04-20 | 프로덕션 블로커 Round 4 — 성능 이슈 수정. S6BA5: GET /api/skills/my N+1 쿼리(installations.map(loadSkillMeta) → 단일 .in) 제거, 쿼리 수 installations+2 → 3 고정. 데드 코드 loadSkillMeta 헬퍼 삭제. payment idempotency는 pending+admin approval 플로우로 실질 위험 낮아 스킵. S6 9→10 Tasks. 총 85개→86개. |
 | v4.5 | 2026-04-20 | 프로덕션 블로커 Round 5 — 운영 가시성 강화. S6BI2: /api/health 단순 {status:'ok'} → REQUIRED_ENVS 누락 검사 + Supabase count head 경량 쿼리 검증 → 정상 200 / 실패 503 + checks 상세 + missingEnvs 노출. 로드밸런서·uptime 서비스가 DB 장애/설정 누락을 정확히 감지 가능. S6 10→11 Tasks. 총 86개→87개. |
+| v4.6 | 2026-04-21 | 위저드 페르소나 분류 + 게스트 페이지 정렬 (기존 Task 수정, 신규 Task 없음). **S2FE1**: app/create/page.tsx 인증 게이트 추가(미로그인 → /login?returnTo=/create), CreateWizard.tsx PersonaData에 type:'avatar'\|'helper'+presetId 필드, Step2Persona.tsx 분류 토글+Option C 접힘형 6-preset 카드(이름·호칭·역할 자동 채움). **S5FE9**: app/guest/page-client.tsx 카테고리 5+5 → SVG 다이어그램과 동일한 6+6 분류(아바타형: 🏢기업경영자/🍱소상공인/⚖️전문직 종사자/🎨프리랜서/🗳️정치인/⚙️기타, 도우미형: 💼업무/📚학습/🎨창작/💪건강/🏠생활/⚙️기타) + 배너 카피 분류 기준 한 줄 추가. app/api/guest-create/route.ts TEMPLATE_BOT_MAP에 신 분류 12개 templateId 추가(기존 데모 봇 ID 재사용), 구 분류 호환성 유지. 총 87개 유지. |

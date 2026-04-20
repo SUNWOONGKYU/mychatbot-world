@@ -12,7 +12,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limiter';
 
 // ── 사전 생성된 템플릿 봇 매핑 ─────────────────────────────────────────────
+// 신 분류(아바타형/도우미형 6+6) — 기존 데모 봇 ID 재사용
+// 구 분류(restaurant 등)는 호환성을 위해 유지
 const TEMPLATE_BOT_MAP: Record<string, string> = {
+  // 아바타형 (6) — 나를 대신
+  guest_avatar_executive:    'bot_mnv6cup1_8mh5ef',
+  guest_avatar_smallbiz:     'bot_mnv6d2za_37cyf2',
+  guest_avatar_professional: 'bot_mnv6d8iy_92pk8t',
+  guest_avatar_freelancer:   'bot_mnv6dgvo_l5y8bd',
+  guest_avatar_politician:   'bot_mnv6do4w_f9aya2',
+  guest_avatar_other:        'bot_mnv6dvuu_3dxrez',
+
+  // 도우미형 (6) — 나를 도와
+  guest_helper_work:     'bot_mnv6dvuu_3dxrez',
+  guest_helper_learning: 'bot_mnv6e2lg_7p1vtr',
+  guest_helper_creative: 'bot_mnv6efjr_w3l2ip',
+  guest_helper_health:   'bot_mnv6e9qx_0sv8tw',
+  guest_helper_life:     'bot_mnv6el6w_a9ru8n',
+  guest_helper_other:    'bot_mnv6dvuu_3dxrez',
+
+  // 구 분류 — 호환성 유지
   guest_restaurant: 'bot_mnv6cup1_8mh5ef',
   guest_hospital:   'bot_mnv6d2za_37cyf2',
   guest_lawyer:     'bot_mnv6d8iy_92pk8t',

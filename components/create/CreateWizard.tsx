@@ -24,12 +24,16 @@ import Step8Deploy from './steps/Step8Deploy';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────────
 
+export type PersonaType = 'avatar' | 'helper';
+
 export interface PersonaData {
   name: string;
   userTitle: string;
   role: string;
   iqEq: number;
   model: 'logic' | 'emotion' | 'fast' | 'creative';
+  type?: PersonaType;
+  presetId?: string;
 }
 
 export interface FaqItem {
@@ -74,6 +78,8 @@ const INITIAL_DATA: WizardData = {
     role: '',
     iqEq: 50,
     model: 'logic',
+    type: 'avatar',
+    presetId: undefined,
   },
   interviewText: '',
   greeting: '',
