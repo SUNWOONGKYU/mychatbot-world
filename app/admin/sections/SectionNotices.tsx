@@ -66,7 +66,7 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
           {
             id: 'sample-1',
             title: '[공지] MCW 서비스 오픈 안내',
-            content: 'CoCoBot World 서비스가 정식 오픈했습니다.',
+            content: 'CoCoBot 서비스가 정식 오픈했습니다.',
             category: '공지',
             target: '전체',
             is_pinned: true,

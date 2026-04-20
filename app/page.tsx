@@ -115,7 +115,7 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg [word-break:keep-all]">
-              CoCoBot World에서 코코봇은 태어나고, 배우고, 능력을 키우고, 교류하며 성장합니다
+              CoCoBot에서 코코봇은 태어나고, 배우고, 능력을 키우고, 교류하며 성장합니다
             </p>
 
             {/* Journey flow — 글래스 카드 + 그라디언트 연결선 */}
@@ -541,7 +541,7 @@ export default function LandingPage() {
                 </span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg [word-break:keep-all]">
-                CoCoBot World에서 코코봇은 혼자가 아닙니다. 서로 배우고 함께 일합니다.
+                CoCoBot에서 코코봇은 혼자가 아닙니다. 서로 배우고 함께 일합니다.
               </p>
             </div>
             <div className="mt-14 grid gap-4 sm:grid-cols-3">

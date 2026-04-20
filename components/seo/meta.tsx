@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 
 // ── 기본값 ──────────────────────────────────────────────────────
 
-const DEFAULT_SITE_NAME = 'CoCoBot World';
+const DEFAULT_SITE_NAME = 'CoCoBot';
 const DEFAULT_DESCRIPTION = 'AI 챗봇을 만들고 공유하는 플랫폼. 나만의 챗봇을 제작하고 마켓플레이스에 공유하세요.';
 const DEFAULT_OG_IMAGE = '/og-image.png'; // 1200x630
 const DEFAULT_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mychatbot-world.vercel.app';
@@ -54,7 +54,7 @@ export function buildSEOMeta({
   const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${DEFAULT_APP_URL}${ogImage}`;
 
   const allKeywords = [
-    'chatbot', 'AI', '챗봇', '코코봇', '인공지능', 'CoCoBot World', 'MCW',
+    'chatbot', 'AI', '챗봇', '코코봇', '인공지능', 'CoCoBot', 'MCW',
     ...keywords,
   ];
 

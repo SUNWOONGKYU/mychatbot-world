@@ -68,10 +68,10 @@ export async function generateMetadata({
   searchParams,
 }: BirthPageProps): Promise<Metadata> {
   const { botId } = await searchParams;
-  if (!botId) return { title: '코코봇 생성 완료 — CoCoBot World' };
+  if (!botId) return { title: '코코봇 생성 완료 — CoCoBot' };
 
   return {
-    title: `코코봇 생성 완료 — CoCoBot World`,
+    title: `코코봇 생성 완료 — CoCoBot`,
     description: '새로운 AI Assistant 코코봇이 생성되었습니다!',
   };
 }

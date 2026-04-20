@@ -68,7 +68,7 @@ export function Navbar() {
         className="flex items-center shrink-0 select-none"
         aria-label="메인 화면으로 이동"
       >
-        <span className="text-lg font-extrabold tracking-tight text-primary">CoCoBot World</span>
+        <span className="text-lg font-extrabold tracking-tight text-primary">CoCoBot</span>
       </Link>
 
       {/* 서비스 메뉴 + 구분선 + My Page */}

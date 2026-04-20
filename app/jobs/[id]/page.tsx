@@ -348,7 +348,7 @@ export default function JobDetailPage() {
 
       // 페이지 타이틀 업데이트
       if (data.job?.title || data.title) {
-        document.title = `${data.job?.title ?? data.title} — 구봇구직 | CoCoBot World`;
+        document.title = `${data.job?.title ?? data.title} — 구봇구직 | CoCoBot`;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : '오류가 발생했습니다.');

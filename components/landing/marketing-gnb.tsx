@@ -58,7 +58,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           href="/"
           className="group flex items-center gap-2.5 text-xl font-extrabold tracking-tight"
           style={{ color: 'var(--interactive-primary)' }}
-          aria-label="CoCoBot World 홈"
+          aria-label="CoCoBot 홈"
         >
           {/* 로고 마크 — 그라디언트 원 + 궤도 점 */}
           <span
@@ -86,15 +86,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
               }}
             />
           </span>
-          <span className="flex flex-col leading-none">
-            <span className="text-lg font-black tracking-tight">CoCoBot</span>
-            <span
-              className="text-[9px] font-semibold uppercase tracking-[0.2em]"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              World
-            </span>
-          </span>
+          <span className="text-lg font-black tracking-tight leading-none">CoCoBot</span>
         </Link>
 
         {/* 데스크탑 내비 */}

@@ -304,9 +304,9 @@ export default function SignupPage() {
             href="/"
             className="inline-block text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded-lg px-1"
             style={{ color: 'var(--interactive-primary)' }}
-            aria-label="CoCoBot World 홈으로"
+            aria-label="CoCoBot 홈으로"
           >
-            CoCoBot World
+            CoCoBot
           </Link>
           <h1 className="text-2xl font-bold text-text-primary mb-2">회원가입</h1>
           <p className="text-sm text-text-secondary">나의 코코봇 세계에 오신 것을 환영합니다</p>

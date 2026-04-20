@@ -6,8 +6,8 @@ import { Suspense } from 'react';
 import SkillsMarketPageInner from './page-client';
 
 export const metadata = {
-  title: 'Skills (스킬장터) — CoCoBot World',
-  description: '예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. CoCoBot World 스킬장터.',
+  title: 'Skills (스킬장터) — CoCoBot',
+  description: '예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요. CoCoBot 스킬장터.',
 };
 
 export default function SkillsMarketPage() {
