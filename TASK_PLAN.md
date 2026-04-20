@@ -22,7 +22,7 @@
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
 | S7 | 프로덕션 런칭 준비 MBO | 5 | 100% (5/5 완료) |
-| S8 | 프로덕션 완성도 100점 달성 MBO | 15 | 0% (0/15 Pending) |
+| S8 | 프로덕션 완성도 100점 달성 MBO | 15 | 100% (15/15 완료) |
 | **합계** | | **107** | **~45%** |
 
 ---
@@ -228,18 +228,18 @@
 
 | Task ID | Task명 | Area | Dependencies | Agent | Status |
 |---------|--------|------|-------------|-------|--------|
-| S8BI1 | Sentry 통합 (error + performance + source maps) | BI | — | `backend-developer-core` | Pending |
-| S8BI2 | Log Drain + 구조화 로그 (Axiom 또는 Vercel Log Drain) | BI | S8BI1 | `backend-developer-core` | Pending |
-| S8BI3 | UptimeRobot 외부 모니터링 + Slack/이메일 알림 | BI | — | `backend-developer-core` | Pending |
+| S8BI1 | Sentry 통합 (error + performance + source maps) | BI | — | `backend-developer-core` | Completed |
+| S8BI2 | Log Drain + 구조화 로그 (Axiom 또는 Vercel Log Drain) | BI | S8BI1 | `backend-developer-core` | Completed |
+| S8BI3 | UptimeRobot 외부 모니터링 + Slack/이메일 알림 | BI | — | `backend-developer-core` | Completed |
 | S8BA1 | 크레딧 증가/차감 atomic RPC (add_credits_tx/deduct_credits_tx) + confirm/admin/premium/chat 전환 | BA | — | `backend-architect` | Completed |
 | S8TS1 | Playwright E2E 5 플로우 + GitHub Actions CI | TS | — | `qa-specialist` | Completed |
 | S8SC1 | Supabase RLS 전 테이블 감사 + 누락 정책 보강 | SC | — | `security-specialist-core` | Completed |
-| S8SC2 | Supabase Auth MFA(TOTP) 활성화 + origin 검증 미들웨어 | SC | — | `security-specialist-core` | Pending |
+| S8SC2 | Supabase Auth MFA(TOTP) 활성화 + origin 검증 미들웨어 | SC | — | `security-specialist-core` | Completed |
 | S8SC3 | Secret rotation 정책서 + 3개월 캘린더 알림 | SC | — | `security-specialist-core` | Completed |
-| S8DV1 | Staging 환경 (Vercel preview + Supabase Branch DB) | DV | — | `devops-troubleshooter-core` | Pending |
-| S8DV2 | Supabase PITR 백업 복구 드릴 + 결과 문서화 | DV | S8DV1 | `devops-troubleshooter-core` | Pending |
-| S8FE1 | Lighthouse 실측 + 번들 분석 + 개선 후 재측정 (90+) | FE | — | `frontend-developer-core` | Pending |
-| S8FE2 | Axe 전수 감사 + WCAG AA 위반 0건 + CI 통합 | FE | — | `frontend-developer-core` | Pending |
+| S8DV1 | Staging 환경 (Vercel preview + Supabase Branch DB) | DV | — | `devops-troubleshooter-core` | Completed |
+| S8DV2 | Supabase PITR 백업 복구 드릴 + 결과 문서화 | DV | S8DV1 | `devops-troubleshooter-core` | Completed |
+| S8FE1 | Lighthouse 실측 + 번들 분석 + 개선 후 재측정 (90+) | FE | — | `frontend-developer-core` | Completed |
+| S8FE2 | Axe 전수 감사 + WCAG AA 위반 0건 + CI 통합 | FE | — | `frontend-developer-core` | Completed |
 | S8FE3 | JSON-LD 구조화 데이터 5+ 페이지 + 동적 OG 이미지 | FE | — | `frontend-developer-core` | Completed |
 | S8DC1 | OpenAPI 3.0 스펙 (33 엔드포인트) + Swagger UI | DC | — | `documentation-writer-core` | Completed |
 | S8DC2 | 운영 런북 (incident/backup/deploy/rollback/on-call) | DC | S8DV2 | `documentation-writer-core` | Completed |

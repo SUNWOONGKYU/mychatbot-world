@@ -1,0 +1,59 @@
+name: Lighthouse CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: '측정 대상 Base URL (생략 시 production)'
+        required: false
+        default: 'https://mychatbot.world'
+  schedule:
+    # 매주 월요일 01:00 UTC (KST 10:00) — 주간 성능 스냅샷
+    - cron: '0 1 * * 1'
+
+jobs:
+  lighthouse:
+    name: Lighthouse 실측 (desktop, 3 runs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Prepare lighthouserc (override target URL if provided)
+        if: ${{ github.event.inputs.target_url != '' }}
+        run: |
+          BASE="${{ github.event.inputs.target_url }}"
+          # Overwrite URLs in lighthouserc.json with the input base URL
+          node -e "
+            const fs = require('fs');
+            const c = JSON.parse(fs.readFileSync('lighthouserc.json','utf8'));
+            const paths = ['/', '/skills', '/community', '/support'];
+            c.ci.collect.url = paths.map(p => '${"$"}{process.env.BASE}'.replace(/\/$/, '') + p);
+            fs.writeFileSync('lighthouserc.json', JSON.stringify(c, null, 2));
+            console.log('URLs set to:', c.ci.collect.url);
+          "
+        env:
+          BASE: ${{ github.event.inputs.target_url }}
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 30

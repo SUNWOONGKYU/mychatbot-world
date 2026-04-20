@@ -21,6 +21,8 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.10.0",
+        "@playwright/test": "^1.51.1",
         "@types/node": "^22.0.0",
         "@types/qrcode": "^1.5.6",
         "@types/react": "^19.0.0",
@@ -41,6 +43,7 @@
         "test:unit:watch": "vitest tests/unit",
         "test:e2e": "playwright test",
         "test:e2e:ui": "playwright test --ui",
+        "test:a11y": "playwright test tests/e2e/a11y-audit.spec.ts",
         "gen:types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > lib/database.types.ts"
     }
 }
