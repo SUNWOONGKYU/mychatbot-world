@@ -111,9 +111,9 @@ export function Navbar() {
               href={item.href}
               aria-current={isActive ? 'page' : undefined}
               className={clsx(
-                'relative flex flex-col items-center px-4 py-2 rounded-md',
+                'relative flex flex-col items-center px-5 py-2.5 rounded-md',
                 'transition-all duration-200',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
               )}
               style={{
                 color: isActive
@@ -133,19 +133,19 @@ export function Navbar() {
               }}
             >
               <span
-                className="text-sm"
+                className="text-base"
                 style={{
-                  fontWeight: isActive ? 800 : 500,
+                  fontWeight: isActive ? 800 : 600,
                   letterSpacing: isActive ? '-0.01em' : '0',
                 }}
               >
                 {item.label}
               </span>
               <span
-                className="text-[10px]"
+                className="text-xs"
                 style={{
-                  fontWeight: isActive ? 600 : 400,
-                  opacity: isActive ? 0.9 : 0.7,
+                  fontWeight: isActive ? 600 : 500,
+                  opacity: isActive ? 0.95 : 0.8,
                 }}
               >
                 {item.labelKo}
