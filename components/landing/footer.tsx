@@ -5,6 +5,7 @@
  */
 
 import Link from 'next/link';
+import { BrandLogo } from '@/components/common/brand-logo';
 
 export function LandingFooter() {
   return (
@@ -16,6 +17,13 @@ export function LandingFooter() {
       }}
     >
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 flex flex-col items-center justify-center gap-4 text-center">
+        {/* 브랜드 워드마크 (다크 배경 — #F8FAFC) */}
+        <BrandLogo
+          variant="wordmark"
+          height={32}
+          style={{ color: '#F8FAFC' }}
+        />
+
         {/* 법적 링크 */}
         <div className="flex items-center gap-8">
           <Link

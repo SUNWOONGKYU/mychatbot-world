@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { BrandLogo } from '@/components/common/brand-logo';
 
 // 서비스 4메뉴
 const SERVICE_ITEMS = [
@@ -62,13 +63,13 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto grid h-16 items-center px-4 md:px-6" style={{ maxWidth: '1280px', gridTemplateColumns: '1fr auto 1fr' }}>
-      {/* 로고 — 바닐라 원본 */}
+      {/* 로고 — CoCoBot 공식 워드마크 */}
       <Link
         href="/"
         className="flex items-center shrink-0 select-none"
         aria-label="메인 화면으로 이동"
       >
-        <span className="text-lg font-extrabold tracking-tight text-primary">CoCoBot</span>
+        <BrandLogo variant="wordmark" height={28} style={{ color: 'var(--text-primary)' }} />
       </Link>
 
       {/* 서비스 메뉴 + 구분선 + My Page */}

@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="48" fill="#6366f1"/>
-  <text x="96" y="134.39999999999998" font-family="sans-serif" font-size="96" font-weight="bold" text-anchor="middle" fill="white">M</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192" role="img" aria-label="CoCoBot">
+  <title>CoCoBot</title>
+  <rect width="192" height="192" rx="40" ry="40" fill="#0F172A"/>
+  <text x="96" y="110" text-anchor="middle"
+        font-family="Pretendard, 'Pretendard Variable', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-weight="800" font-size="34" letter-spacing="-1">
+    <tspan fill="#F8FAFC">C</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#F8FAFC">C</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#F8FAFC">B</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#F8FAFC">t</tspan>
+  </text>
 </svg>

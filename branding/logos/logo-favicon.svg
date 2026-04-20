@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="32" height="32" role="img" aria-label="CoCoBot">
-  <title>CoCoBot</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="512" height="512" role="img" aria-label="CoCoBot favicon">
+  <title>CoCoBot Favicon</title>
   <rect x="0" y="0" width="200" height="200" rx="44" ry="44" fill="#0F172A"/>
   <text x="100" y="138" text-anchor="middle"
         font-family="Pretendard, 'Pretendard Variable', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, -apple-system, sans-serif"

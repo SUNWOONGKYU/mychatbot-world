@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { BrandLogo } from '@/components/common/brand-logo';
 
 interface NavItem {
   label: string;
@@ -71,11 +72,11 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
         'bg-surface border-r border-border',
       )}
     >
-      {/* Logo */}
+      {/* Logo — 공식 BrandLogo */}
       <div className="flex items-center h-header px-5 border-b border-border shrink-0">
-        <span className="text-xl font-bold tracking-tight text-primary select-none">
-          CoCoBot
-        </span>
+        <Link href="/" aria-label="CoCoBot 홈" className="select-none">
+          <BrandLogo variant="wordmark" height={28} style={{ color: 'var(--text-primary)' }} />
+        </Link>
       </div>
 
       {/* Nav */}

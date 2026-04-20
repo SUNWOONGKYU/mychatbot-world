@@ -1,8 +1,10 @@
 // @task S1FE1 - 공통 레이아웃 + 사이드바 컴포넌트 (React)
 'use client';
 
+import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { MobileNav } from '@/components/common/mobile-nav';
+import { BrandLogo } from '@/components/common/brand-logo';
 import clsx from 'clsx';
 
 /**
@@ -27,15 +29,10 @@ export function Header() {
         {/* Mobile hamburger — visible only on mobile */}
         <MobileNav />
 
-        {/* Title — always visible on desktop, hidden on mobile if hamburger takes space */}
-        <h1 className="text-base font-semibold text-text-primary tracking-tight hidden md:block select-none">
-          CoCoBot
-        </h1>
-
-        {/* Mobile title (shown next to hamburger) */}
-        <h1 className="text-base font-semibold text-text-primary tracking-tight md:hidden select-none">
-          CoCoBot
-        </h1>
+        {/* Brand wordmark — 공식 BrandLogo */}
+        <Link href="/" aria-label="CoCoBot 홈" className="select-none">
+          <BrandLogo variant="wordmark" height={24} style={{ color: 'var(--text-primary)' }} />
+        </Link>
       </div>
 
       {/* Right: ThemeToggle + avatar */}

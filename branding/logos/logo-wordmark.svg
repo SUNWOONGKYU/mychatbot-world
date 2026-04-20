@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 140" width="620" height="140" role="img" aria-label="CoCoBot">
+  <title>CoCoBot Wordmark</title>
+  <text x="310" y="105" text-anchor="middle"
+        font-family="Pretendard, 'Pretendard Variable', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-weight="800" font-size="108" letter-spacing="-3">
+    <tspan fill="#0F172A">C</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#0F172A">C</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#0F172A">B</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#0F172A">t</tspan>
+  </text>
+</svg>
