@@ -86,7 +86,7 @@ export default function BotChatPage() {
             personas = [{
               id: 'default',
               name: (raw.bot_name as string) || (raw.botName as string) || 'Bot',
-              role: (raw.personality as string) || 'AI Assistant',
+              role: (raw.personality as string) || 'AI 어시스턴트',
               model: 'logic',
               isVisible: true,
             }];
@@ -123,7 +123,7 @@ export default function BotChatPage() {
               found.personas = [{
                 id: 'default',
                 name: found.botName,
-                role: found.personality || 'AI Assistant',
+                role: found.personality || 'AI 어시스턴트',
                 model: 'logic',
                 isVisible: true,
               }];
@@ -139,13 +139,13 @@ export default function BotChatPage() {
         id: botId,
         botName: 'Bot',
         username: botId,
-        personality: 'AI Assistant 코코봇입니다.',
+        personality: 'AI 어시스턴트 코코봇입니다.',
         greeting: '안녕하세요! 무엇이든 물어보세요.',
         faqs: [],
         personas: [{
           id: 'default',
           name: 'AI 어시스턴트',
-          role: 'AI Assistant 코코봇입니다.',
+          role: 'AI 어시스턴트 코코봇입니다.',
           model: 'logic',
           isVisible: true,
           category: 'avatar',

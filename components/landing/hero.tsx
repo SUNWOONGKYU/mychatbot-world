@@ -92,7 +92,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
           {/* Display 헤드라인 */}
           <h1 className="text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl [word-break:keep-all]">
             <span className="block">
-              당신의 <span className="font-black">AI Assistant</span> 코코봇이
+              당신의 <span className="font-black">AI 어시스턴트</span> 코코봇이
             </span>
             <span className="block">
               이 세상에{' '}

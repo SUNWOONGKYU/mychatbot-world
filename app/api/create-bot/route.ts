@@ -141,7 +141,7 @@ async function generateFaqsWithAI(
   const keywordContext =
     analysis.keywords.length > 0 ? `주요 키워드: ${analysis.keywords.join(', ')}` : '';
 
-  const systemPrompt = `당신은 AI Assistant 코코봇의 FAQ를 작성하는 전문가입니다.
+  const systemPrompt = `당신은 AI 어시스턴트 코코봇의 FAQ를 작성하는 전문가입니다.
 비즈니스 정보를 분석하여 고객이 자주 묻는 질문 10개와 답변을 생성합니다.
 ${toneDescription} 작성하세요.
 반드시 순수 JSON 배열로만 응답하세요.

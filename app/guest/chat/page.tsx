@@ -1,6 +1,6 @@
 /**
  * @task S3FE1 — 게스트 채팅 페이지
- * @description /guest/chat — 게스트 모드 AI Assistant 코코봇 대화 화면
+ * @description /guest/chat — 게스트 모드 AI 어시스턴트 코코봇 대화 화면
  *
  * localStorage에서 botId / botName / category를 읽어 GuestChat 컴포넌트 렌더링
  * 10회 한도 초과 시 회원가입 유도 모달 표시
@@ -27,7 +27,7 @@ function lsGet(key: string): string | null {
 export default function GuestChatPage() {
   const router = useRouter();
   const [botId, setBotId]     = useState<string | null>(null);
-  const [botName, setBotName] = useState<string>('AI Assistant 코코봇');
+  const [botName, setBotName] = useState<string>('AI 어시스턴트 코코봇');
   const [showModal, setShowModal] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -221,7 +221,7 @@ export default function GuestChatPage() {
             <h2 className="gchat-modal-title">무료 체험 완료!</h2>
             <p className="gchat-modal-desc">
               10회 무료 체험을 모두 사용하셨어요.<br />
-              회원가입하면 <strong>나만의 AI Assistant 코코봇</strong>을 만들고<br />
+              회원가입하면 <strong>나만의 AI 어시스턴트 코코봇</strong>을 만들고<br />
               무제한으로 대화할 수 있어요.
             </p>
             <div className="gchat-modal-actions">
