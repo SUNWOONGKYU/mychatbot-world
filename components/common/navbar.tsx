@@ -8,12 +8,12 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { BrandLogo } from '@/components/common/brand-logo';
 
-// 서비스 4메뉴 — 각 메뉴별 고유 색상 (DESIGN.md 시맨틱 컬러 기반)
+// 서비스 4메뉴 — DESIGN.md 원칙에 따라 Primary 퍼플 단일색으로 통일
 const SERVICE_ITEMS = [
-  { label: 'Birth',     labelKo: '탄생',     href: '/create',    icon: '🐣', color: '#F59E0B' }, // Amber - 탄생/생성
-  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills',    icon: '🔧', color: '#7B6EFF' }, // Purple - 기술/AI
-  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs',      icon: '💼', color: '#3B82F6' }, // Blue - 비즈니스
-  { label: 'Community', labelKo: '봇카페',    href: '/community', icon: '🤝', color: '#10B981' }, // Green - 교류
+  { label: 'Birth',     labelKo: '탄생',     href: '/create' },
+  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills' },
+  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs' },
+  { label: 'Community', labelKo: '봇카페',    href: '/community' },
 ] as const;
 
 // Navbar 숨김 경로 — 로그인/회원가입/게스트/어드민은 별도 레이아웃
@@ -72,9 +72,9 @@ export function Navbar() {
         <BrandLogo variant="wordmark" height={28} style={{ color: 'var(--text-primary)' }} />
       </Link>
 
-      {/* 서비스 4메뉴 — 고유 색상 */}
+      {/* 서비스 4메뉴 — A방식: 단일 퍼플, active는 굵기+언더라인+glow */}
       <nav
-        className="items-center gap-1"
+        className="items-center gap-2"
         style={{ display: 'flex' }}
         aria-label="주 메뉴"
       >
@@ -86,36 +86,55 @@ export function Navbar() {
               href={item.href}
               aria-current={isActive ? 'page' : undefined}
               className={clsx(
-                'relative flex flex-col items-center px-3 py-1.5 rounded-lg',
-                'text-xs font-medium transition-all duration-200',
-                'focus-visible:outline-none focus-visible:ring-2',
+                'relative flex flex-col items-center px-4 py-2 rounded-md',
+                'transition-all duration-200',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
               )}
               style={{
-                color: isActive ? item.color : 'rgb(var(--text-secondary))',
-                background: isActive
-                  ? `color-mix(in oklch, ${item.color} 12%, transparent)`
-                  : 'transparent',
+                color: isActive
+                  ? 'rgb(var(--color-primary))'
+                  : 'rgb(var(--text-secondary))',
+                background: 'transparent',
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.color = item.color;
-                  e.currentTarget.style.background = `color-mix(in oklch, ${item.color} 8%, transparent)`;
+                  e.currentTarget.style.color = 'rgb(var(--color-primary))';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.color = 'rgb(var(--text-secondary))';
-                  e.currentTarget.style.background = 'transparent';
                 }
               }}
             >
-              <span className="text-sm font-bold">{item.label}</span>
-              <span className="text-[10px]" style={{ opacity: 0.75 }}>{item.labelKo}</span>
+              <span
+                className="text-sm"
+                style={{
+                  fontWeight: isActive ? 800 : 500,
+                  letterSpacing: isActive ? '-0.01em' : '0',
+                }}
+              >
+                {item.label}
+              </span>
+              <span
+                className="text-[10px]"
+                style={{
+                  fontWeight: isActive ? 600 : 400,
+                  opacity: isActive ? 0.9 : 0.7,
+                }}
+              >
+                {item.labelKo}
+              </span>
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full"
-                  style={{ background: item.color, boxShadow: `0 0 8px ${item.color}` }}
+                  className="absolute -bottom-px left-1/2 -translate-x-1/2 h-[2px] rounded-full"
+                  style={{
+                    width: '70%',
+                    background: 'rgb(var(--color-primary))',
+                    boxShadow:
+                      '0 0 10px rgb(var(--color-primary) / 0.7), 0 0 20px rgb(var(--color-primary) / 0.4)',
+                  }}
                 />
               )}
             </Link>
