@@ -66,9 +66,9 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
               background: 'linear-gradient(135deg, var(--interactive-primary), var(--accent-primary))',
             }}
           >
-            M
+            C
           </span>
-          <span>MCW</span>
+          <span>CoCoBot</span>
         </Link>
 
         {/* 데스크탑 내비 */}
