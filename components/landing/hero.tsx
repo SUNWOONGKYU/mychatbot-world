@@ -90,33 +90,38 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
           </div>
 
           {/* Display 헤드라인 */}
-          <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl [word-break:keep-all]">
-            당신의{' '}
-            <span className="font-black text-white">AI Assistant</span>{' '}
-            코코봇이 이 세상에{' '}
-            <br className="hidden sm:block" />
-            <span
-              className="relative inline-block"
-              style={{
-                background:
-                  'linear-gradient(90deg, oklch(0.85 0.18 85) 0%, oklch(0.78 0.22 50) 50%, oklch(0.70 0.25 25) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                backgroundSize: '200% auto',
-                animation: 'hero-shimmer 4s linear infinite',
-              }}
-            >
-              태어납니다
+          <h1 className="text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl [word-break:keep-all]">
+            <span className="block">
+              당신의 <span className="font-black">AI Assistant</span> 코코봇이
+            </span>
+            <span className="block">
+              이 세상에{' '}
+              <span
+                className="relative inline-block"
+                style={{
+                  background:
+                    'linear-gradient(90deg, oklch(0.85 0.18 85) 0%, oklch(0.78 0.22 50) 50%, oklch(0.70 0.25 25) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  backgroundSize: '200% auto',
+                  animation: 'hero-shimmer 4s linear infinite',
+                }}
+              >
+                태어납니다
+              </span>
             </span>
           </h1>
 
           {/* 서브카피 */}
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:text-xl xl:text-2xl [word-break:keep-all]">
-            인터뷰 5분이면 끝.{' '}
-            <span className="font-semibold text-white">나머지는 AI가 다 만들어 드립니다.</span>
-            <br className="hidden sm:block" />
-            소상공인부터 전문직, 정치인까지 어떤 직업이든 OK.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:text-xl [word-break:keep-all]">
+            <span className="block">
+              인터뷰 5분이면 끝.{' '}
+              <span className="font-semibold text-white">나머지는 AI가 다 만들어 드립니다.</span>
+            </span>
+            <span className="mt-1 block">
+              소상공인부터 전문직, 정치인까지 어떤 직업이든 OK.
+            </span>
           </p>
 
           {/* CTA 버튼 — 글로우 강화 */}
