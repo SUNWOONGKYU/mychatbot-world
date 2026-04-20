@@ -33,7 +33,14 @@ export function LandingFooter() {
             개인정보처리방침
           </Link>
           <Link
-            href="/customer-service"
+            href="/refund"
+            className="text-white transition-opacity hover:opacity-100"
+            style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9 }}
+          >
+            환불정책
+          </Link>
+          <Link
+            href="/support"
             className="text-white transition-opacity hover:opacity-100"
             style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9 }}
           >

@@ -1,11 +1,11 @@
 /**
  * @page /privacy
- * @description My Chatbot World 개인정보처리방침
+ * @description CoCoBot World 개인정보처리방침
  */
 
 export const metadata = {
-  title: '개인정보처리방침 | My Chatbot World',
-  description: 'My Chatbot World 개인정보처리방침',
+  title: '개인정보처리방침 | CoCoBot World',
+  description: 'CoCoBot World 개인정보처리방침',
 };
 
 export default function PrivacyPage() {
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           개인정보처리방침
         </h1>
         <p style={{ fontSize: '15px', color: 'rgb(255 255 255 / 0.7)' }}>
-          최종 업데이트: 2026년 4월 8일
+          최종 업데이트: 2026년 4월 20일
         </p>
       </div>
 
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
             borderRadius: '0 8px 8px 0',
           }}
         >
-          My Chatbot World(이하 &quot;회사&quot;)는 이용자의 개인정보를 소중히 여기며, 「개인정보 보호법」 및 관련 법령을 준수합니다.
+          CoCoBot World(이하 &quot;회사&quot;)는 이용자의 개인정보를 소중히 여기며, 「개인정보 보호법」 및 관련 법령을 준수합니다.
           이 방침을 통해 회사가 수집하는 개인정보의 항목, 이용 목적, 보유 기간 및 이용자의 권리를 안내합니다.
         </p>
 
@@ -138,11 +138,18 @@ export default function PrivacyPage() {
           <Table
             headers={['수탁 업체', '위탁 업무', '보유 기간']}
             rows={[
-              ['Supabase Inc.', '데이터베이스 호스팅 및 인증 서비스', '서비스 이용 기간'],
-              ['Vercel Inc.', '웹 서비스 호스팅', '서비스 이용 기간'],
+              ['Supabase Inc. (미국)', '데이터베이스 호스팅 및 인증(Auth) 서비스', '서비스 이용 기간'],
+              ['Vercel Inc. (미국)', '웹 서비스 호스팅 및 배포', '서비스 이용 기간'],
+              ['OpenRouter (미국)', 'AI 모델 응답 생성 (대화 내용 익명 전달, 프로필 미전송)', '요청 처리 시점 한정'],
+              ['Upstash Inc. (미국)', 'Redis 캐시 및 레이트 리밋 (IP/식별자만)', '최대 24시간'],
               ['결제 대행사 (PG사)', '결제 처리 및 무통장 입금 확인', '관련 법령에 따름'],
             ]}
           />
+          <p style={{ marginTop: '16px', fontSize: '13px' }}>
+            위 수탁사 중 일부는 미국 등 해외에 소재합니다. 개인정보는 암호화 전송되며,
+            각 수탁사는 GDPR/SOC 2 등 국제 표준 보안 요건을 준수합니다.
+            국외 이전을 원치 않는 이용자는 고객센터를 통해 탈퇴를 요청할 수 있습니다.
+          </p>
         </Section>
 
         <Section title="제6조 (이용자의 권리와 행사 방법)">
@@ -190,8 +197,10 @@ export default function PrivacyPage() {
             }}
           >
             <p><strong>개인정보 보호 책임자</strong></p>
-            <p style={{ marginTop: '8px' }}>이메일: privacy@mychatbotworld.com</p>
-            <p>고객센터: /customer-service</p>
+            <p style={{ marginTop: '8px' }}>성명: (대표자명 기재)</p>
+            <p>직책: 대표</p>
+            <p>이메일: privacy@mychatbot.world</p>
+            <p>고객센터: <a href="/support" style={{ color: 'rgb(var(--color-primary))' }}>/support</a></p>
           </div>
           <p style={{ marginTop: '16px' }}>
             기타 개인정보 침해에 관한 신고·상담은 개인정보보호위원회(privacy.go.kr), 한국인터넷진흥원
@@ -208,8 +217,9 @@ export default function PrivacyPage() {
             color: 'rgb(var(--text-muted))',
           }}
         >
-          <p>본 방침은 2026년 4월 8일부터 시행됩니다.</p>
-          <p style={{ marginTop: '4px' }}>문의: privacy@mychatbotworld.com</p>
+          <p>본 방침은 2026년 4월 20일부터 시행됩니다.</p>
+          <p style={{ marginTop: '4px' }}>이전 방침 시행일: 2026년 4월 8일</p>
+          <p style={{ marginTop: '4px' }}>문의: privacy@mychatbot.world</p>
         </div>
       </div>
     </div>

@@ -1,11 +1,11 @@
 /**
  * @page /terms
- * @description My Chatbot World 이용약관
+ * @description CoCoBot World 이용약관
  */
 
 export const metadata = {
-  title: '이용약관 | My Chatbot World',
-  description: 'My Chatbot World 서비스 이용약관',
+  title: '이용약관 | CoCoBot World',
+  description: 'CoCoBot World 서비스 이용약관',
 };
 
 export default function TermsPage() {
@@ -37,7 +37,7 @@ export default function TermsPage() {
           이용약관
         </h1>
         <p style={{ fontSize: '15px', color: 'rgb(255 255 255 / 0.7)' }}>
-          최종 업데이트: 2026년 4월 8일
+          최종 업데이트: 2026년 4월 20일
         </p>
       </div>
 
@@ -51,7 +51,7 @@ export default function TermsPage() {
       >
         <Section title="제1조 (목적)">
           <p>
-            이 약관은 My Chatbot World(이하 &quot;회사&quot;)가 운영하는 My Chatbot World 서비스(이하 &quot;서비스&quot;)의
+            이 약관은 CoCoBot World(이하 &quot;회사&quot;)가 운영하는 CoCoBot World 서비스(이하 &quot;서비스&quot;)의
             이용과 관련하여 회사와 이용자의 권리·의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
           </p>
         </Section>
@@ -146,21 +146,31 @@ export default function TermsPage() {
         <Section title="제6조 (크레딧 및 결제)">
           <ol>
             <li>
-              회원은 서비스 내 유료 기능 이용을 위해 크레딧을 구매할 수 있으며, 크레딧은 현금 환불이 불가합니다.
-              단, 관계 법령에서 정한 경우는 예외로 합니다.
+              회원은 서비스 내 유료 기능 이용을 위해 크레딧을 구매할 수 있습니다. 결제 수단은 신용카드, 계좌이체(무통장 입금), 기타 회사가 정한 수단을 이용할 수 있습니다.
+            </li>
+            <li>
+              크레딧은 디지털 콘텐츠의 성격을 가지며, 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 및 제18조에 따라 다음과 같이 청약철회(환불)가 가능합니다.
+              <ul>
+                <li><strong>구매 후 7일 이내 미사용 크레딧</strong>: 전액 환불 가능</li>
+                <li><strong>일부 사용 크레딧</strong>: 미사용 잔여분에 한해 환불 가능(결제 수수료 공제)</li>
+                <li><strong>이벤트·프로모션 무상 지급 크레딧</strong>: 환불 대상 아님</li>
+                <li><strong>AI 응답 생성 등 콘텐츠가 즉시 제공·소비된 경우</strong>: 해당 소비분 환불 불가</li>
+              </ul>
+            </li>
+            <li>
+              환불 신청은 고객센터(support@mychatbot.world) 또는 `/refund` 페이지를 통해 접수하며, 회사는 영업일 기준 3일 이내 처리합니다.
             </li>
             <li>
               크레딧의 유효기간은 구매일로부터 1년이며, 유효기간 내 미사용 크레딧은 소멸됩니다.
+              무상 지급 크레딧의 유효기간은 별도 고지에 따르며 통상 30일입니다.
             </li>
             <li>
-              결제는 신용카드, 계좌이체(무통장 입금), 기타 회사가 정한 결제 수단을 이용할 수 있습니다.
+              스킬 마켓플레이스 판매자는 회사가 정한 수수료 정책(기본 15%)에 따라 판매 수익을 정산받습니다.
+              정산 주기 및 최소 출금 금액은 Creator 대시보드에서 확인할 수 있습니다.
             </li>
             <li>
-              회원이 구매한 크레딧은 &quot;콘텐츠산업진흥법&quot; 및 관련 법령에 따라 구매 후 7일 이내 미사용 시 환불이 가능합니다.
-              단, 일부 사용한 경우 잔여분에 대한 환불 정책은 회사 고객센터를 통해 안내합니다.
-            </li>
-            <li>
-              스킬 마켓플레이스에서 판매자로 등록한 회원은 회사가 정한 수수료 정책에 따라 판매 수익을 정산받습니다.
+              결제 오류·중복 결제가 발생한 경우 회사는 즉시 확인 후 전액 환불합니다.
+              카드 결제 취소는 결제 PG사 정책에 따라 3~7 영업일 소요될 수 있습니다.
             </li>
           </ol>
         </Section>
@@ -228,8 +238,10 @@ export default function TermsPage() {
             color: 'rgb(var(--text-muted))',
           }}
         >
-          <p>본 약관은 2026년 4월 8일부터 시행됩니다.</p>
-          <p style={{ marginTop: '4px' }}>문의: support@mychatbotworld.com</p>
+          <p>본 약관은 2026년 4월 20일부터 시행됩니다.</p>
+          <p style={{ marginTop: '4px' }}>상호: CoCoBot World | 사업자등록번호: (등록 시 기재) | 대표자: (기재)</p>
+          <p style={{ marginTop: '4px' }}>통신판매업 신고번호: (신고 후 기재) | 주소: (기재)</p>
+          <p style={{ marginTop: '4px' }}>문의: support@mychatbot.world | 호스팅: Vercel Inc.</p>
         </div>
       </div>
     </div>
