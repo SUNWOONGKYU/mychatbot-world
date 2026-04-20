@@ -30,6 +30,7 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
   const [selectedVoice, setSelectedVoice] = useState(data.voice || 'fable');
   const [previewLabel, setPreviewLabel] = useState('미리듣기');
   const [isCreating, setIsCreating] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handlePreview = async () => {
@@ -62,9 +63,10 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
 
   const handleCreate = async () => {
     setIsCreating(true);
+    setErrorMsg('');
     try {
-      // 봇 생성 API 호출
-      const res = await fetch('/api/create-bot/deploy', {
+      // 봇 생성 API 호출 (실제 DB INSERT)
+      const res = await fetch('/api/create-bot', {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
@@ -76,38 +78,26 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
           faqs: data.faqs,
           voice: selectedVoice,
           interviewText: data.interviewText,
+          avatarEmoji: data.avatarEmoji,
         }),
       });
 
       const json = await res.json().catch(() => ({}));
 
-      if (res.ok && json.success && json.data) {
-        onNext({
-          voice: selectedVoice,
-          botId: json.data.botId ?? null,
-          deployUrl: json.data.deployUrl ?? null,
-          qrSvg: json.data.qrSvg ?? null,
-        });
-      } else {
-        // graceful degradation — Step 6으로 진행
-        const fallbackId = `bot-${Date.now()}`;
-        const fallbackUrl = `${window.location.origin}/bot/${data.botUsername || fallbackId}`;
-        onNext({
-          voice: selectedVoice,
-          botId: fallbackId,
-          deployUrl: fallbackUrl,
-          qrSvg: null,
-        });
+      if (!res.ok || !json.success || !json.data?.botId) {
+        const msg = json.error || `생성 실패 (HTTP ${res.status})`;
+        setErrorMsg(msg);
+        return;
       }
-    } catch {
-      const fallbackId = `bot-${Date.now()}`;
-      const fallbackUrl = `${window.location.origin}/bot/${data.botUsername || fallbackId}`;
+
       onNext({
         voice: selectedVoice,
-        botId: fallbackId,
-        deployUrl: fallbackUrl,
-        qrSvg: null,
+        botId: json.data.botId,
+        deployUrl: json.data.deployUrl ?? null,
+        qrSvg: json.data.qrSvg ?? null,
       });
+    } catch (e) {
+      setErrorMsg(e instanceof Error ? e.message : '네트워크 오류가 발생했습니다.');
     } finally {
       setIsCreating(false);
     }
@@ -174,6 +164,24 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
           {previewLabel}
         </button>
       </div>
+
+      {/* 에러 메시지 */}
+      {errorMsg && (
+        <div
+          role="alert"
+          style={{
+            marginTop: '1rem',
+            padding: '12px 16px',
+            background: 'rgba(239,68,68,0.1)',
+            border: '1px solid rgba(239,68,68,0.4)',
+            borderRadius: '10px',
+            color: '#fca5a5',
+            fontSize: '0.875rem',
+          }}
+        >
+          {errorMsg}
+        </div>
+      )}
 
       {/* 이전/생성 버튼 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginTop: '2rem' }}>
