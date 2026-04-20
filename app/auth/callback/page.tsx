@@ -38,11 +38,11 @@ export default function AuthCallbackPage() {
       const refreshToken = hashParams.get('refresh_token');
       const code = url.searchParams.get('code');
 
-      // (A) Implicit flow — hash 에 토큰이 들어있음 (Google/Kakao OAuth 응답)
+      // (A) Implicit flow — hash 에 access_token 이 있으면 정의상 OAuth 경로.
+      //     email 가입 사용자가 나중에 Google 로 로그인하는 경우 Supabase 가 계정을
+      //     링크하면서도 app_metadata.provider 를 'email' 로 유지하기도 하므로
+      //     provider 필드로 판정하지 않고 경로 자체(hash 도달)로 OAuth 판정.
       if (accessToken && refreshToken) {
-        // setSession 이 기존 세션을 덮어쓴다. signOut 선행호출 금지:
-        // signOut({scope:'local'}) 후 setSession 내부의 getUser 가
-        // "Auth session missing!" 을 던지는 문제가 확인됨.
         const { data, error } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
@@ -53,14 +53,7 @@ export default function AuthCallbackPage() {
           setErrMsg(error?.message ?? 'setSession returned null');
           return;
         }
-        const provider =
-          (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'unknown';
-        if (provider === 'email') {
-          await supabase.auth.signOut();
-          if (!cancelled) router.replace('/login?confirmed=1');
-        } else {
-          if (!cancelled) router.replace('/home');
-        }
+        if (!cancelled) router.replace('/home');
         return;
       }
 
