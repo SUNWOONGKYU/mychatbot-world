@@ -43,7 +43,7 @@ export function LandingFooter() {
 
         {/* 저작권 */}
         <p style={{ fontSize: '11px', color: 'rgb(255 255 255 / 0.6)', margin: 0 }}>
-          © 2026 CoCoBot World. All rights reserved.
+          © 2026 코코봇. All rights reserved.
         </p>
 
         {/* 특허 출원 */}

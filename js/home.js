@@ -1,5 +1,5 @@
 /* ============================================
-   CoCoBot World - My Page Logic (home.js)
+   코코봇 - My Page Logic (home.js)
    Per-persona management structure
    ============================================ */
 

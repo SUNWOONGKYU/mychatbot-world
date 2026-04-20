@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 import GuestPageInner from './page-client';
 
 export const metadata: Metadata = {
-  title: '게스트 체험 — CoCoBot World',
+  title: '게스트 체험 — 코코봇',
   description: '회원가입 없이 AI 챗봇을 무료로 체험해보세요. 직업 카테고리를 선택하면 바로 시작할 수 있습니다.',
 };
 

@@ -72,9 +72,9 @@ export default function LoginPage() {
             href="/"
             className="inline-block text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded-lg px-1"
             style={{ color: 'var(--interactive-primary)' }}
-            aria-label="CoCoBot World 홈으로"
+            aria-label="코코봇 홈으로"
           >
-            CoCoBot World
+            코코봇
           </Link>
           <h1 className="text-2xl font-bold text-text-primary mb-2">로그인</h1>
           <p className="text-sm text-text-secondary">

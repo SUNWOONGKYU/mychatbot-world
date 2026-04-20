@@ -1,5 +1,5 @@
 /* ============================================
-   CoCoBot World - Common Utilities
+   코코봇 - Common Utilities
    ============================================ */
 
 const MCW = {
