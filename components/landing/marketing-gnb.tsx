@@ -53,22 +53,48 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
         className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6"
         aria-label="마케팅 메인 내비게이션"
       >
-        {/* 로고 */}
+        {/* 로고 — 행성 모티프 (세상에 태어난다) */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl font-extrabold tracking-tight"
+          className="group flex items-center gap-2.5 text-xl font-extrabold tracking-tight"
           style={{ color: 'var(--interactive-primary)' }}
           aria-label="CoCoBot World 홈"
         >
+          {/* 로고 마크 — 그라디언트 원 + 궤도 점 */}
           <span
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-sm text-white"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full shadow-md transition-transform group-hover:scale-110"
             style={{
-              background: 'linear-gradient(135deg, var(--interactive-primary), var(--accent-primary))',
+              background: 'linear-gradient(135deg, oklch(0.55 0.27 285), oklch(0.72 0.22 50))',
+              boxShadow: '0 4px 12px color-mix(in oklch, oklch(0.55 0.27 285) 40%, transparent)',
             }}
+            aria-hidden="true"
           >
-            C
+            {/* 중앙 원 (얼굴) */}
+            <span
+              className="h-4 w-4 rounded-full"
+              style={{
+                background: 'white',
+                boxShadow: 'inset 0 -2px 4px color-mix(in oklch, oklch(0.55 0.27 285) 20%, transparent)',
+              }}
+            />
+            {/* 궤도 위성 점 */}
+            <span
+              className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full"
+              style={{
+                background: 'oklch(0.85 0.18 85)',
+                boxShadow: '0 0 8px oklch(0.85 0.18 85)',
+              }}
+            />
           </span>
-          <span>CoCoBot</span>
+          <span className="flex flex-col leading-none">
+            <span className="text-lg font-black tracking-tight">CoCoBot</span>
+            <span
+              className="text-[9px] font-semibold uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              World
+            </span>
+          </span>
         </Link>
 
         {/* 데스크탑 내비 */}

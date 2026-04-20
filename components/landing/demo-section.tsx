@@ -18,7 +18,7 @@ interface ChatMessage {
 const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   {
     trigger: '안녕',
-    response: '안녕하세요! 저는 MCW 데모 코코봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
+    response: '안녕하세요! 저는 CoCoBot 데모 코코봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
   },
   {
     trigger: '수익',
@@ -159,7 +159,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              MCW는 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
+              CoCoBot World는 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
             </p>
           </div>
 
@@ -282,7 +282,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              5분 만에 만들 수 있는 MCW 코코봇을 직접 대화해보세요.
+              5분 만에 만들 수 있는 CoCoBot 데모와 직접 대화해보세요.
             </p>
           </div>
 
@@ -415,7 +415,7 @@ export function DemoSection() {
                       className="text-sm font-bold"
                       style={{ color: 'rgb(var(--text-primary))' }}
                     >
-                      MCW 데모 코코봇
+                      CoCoBot 데모 코코봇
                     </p>
                     <p className="text-xs text-green-500">● 온라인</p>
                   </div>

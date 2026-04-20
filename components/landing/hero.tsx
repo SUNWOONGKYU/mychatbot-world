@@ -89,12 +89,12 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             <span className="font-medium tracking-wide">LIVE · 코코봇 라이프사이클 플랫폼</span>
           </div>
 
-          {/* Display 헤드라인 */}
-          <h1 className="text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl [word-break:keep-all]">
+          {/* Display 헤드라인 — 2줄 균형 배분 */}
+          <h1 className="text-3xl font-extrabold leading-[1.2] tracking-tight text-white sm:text-4xl lg:text-5xl [word-break:keep-all]">
             <span className="block">
-              당신의 <span className="font-black">AI 어시스턴트</span> 코코봇이
+              <span className="font-black">AI 어시스턴트 코코봇</span>이
             </span>
-            <span className="block">
+            <span className="block mt-1">
               이 세상에{' '}
               <span
                 className="relative inline-block"
