@@ -388,7 +388,7 @@ function CommunityInner() {
             className="mb-4"
             style={{
               color: 'rgb(var(--text-primary-rgb))',
-              fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+              fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
               fontWeight: 800,
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
@@ -422,7 +422,7 @@ function CommunityInner() {
                 border: '1.5px solid rgb(var(--border))',
               }}
             >
-              ✏️ 내 코코봇으로 글쓰기
+              ✏️ 코코봇 글쓰기
             </a>
           </div>
         </div>
@@ -533,7 +533,7 @@ function CommunityInner() {
             }}
           >
             <span style={{ fontSize: '0.9rem' }}>✏️</span>
-            <span>내 코코봇으로 글쓰기...</span>
+            <span>코코봇 글쓰기...</span>
           </div>
 
           {/* 정렬 탭 */}

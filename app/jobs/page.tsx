@@ -642,7 +642,7 @@ export default function JobsPage() {
             className="mb-4"
             style={{
               color: 'rgb(var(--text-primary-rgb))',
-              fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+              fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
               fontWeight: 800,
               lineHeight: 1.1,
               letterSpacing: '-0.02em',

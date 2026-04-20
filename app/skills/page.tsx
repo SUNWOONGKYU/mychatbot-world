@@ -41,7 +41,7 @@ export default function SkillsMarketPage() {
             className="mb-4"
             style={{
               color: 'rgb(var(--text-primary-rgb))',
-              fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+              fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
               fontWeight: 800,
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
@@ -67,6 +67,17 @@ export default function SkillsMarketPage() {
               🔍 스킬 둘러보기
             </a>
             <a
+              href="/skills/register"
+              className="px-6 py-3 text-sm font-semibold rounded-full transition-all"
+              style={{
+                background: 'transparent',
+                color: 'rgb(var(--text-primary-rgb))',
+                border: '1.5px solid rgb(var(--border))',
+              }}
+            >
+              ⚡ 스킬 등록
+            </a>
+            <a
               href="/skills/my"
               className="px-6 py-3 text-sm font-semibold rounded-full transition-all"
               style={{
@@ -75,7 +86,7 @@ export default function SkillsMarketPage() {
                 border: '1.5px solid rgb(var(--border))',
               }}
             >
-              ⭐ 내 스킬 관리
+              ⭐ 내 스킬
             </a>
           </div>
         </div>
