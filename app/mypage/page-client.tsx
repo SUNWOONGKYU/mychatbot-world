@@ -153,11 +153,11 @@ function TabNav({
   activeTab: TabId;
   onTabChange: (t: TabId) => void;
 }) {
-  // 모바일: 가로 스크롤 / 데스크톱(md+): 세로 사이드바
+  // 모바일(<640px): 가로 스크롤 / 데스크톱(sm+, ≥640px): 세로 사이드바
   return (
     <nav aria-label="마이페이지 탭 네비게이션">
       {/* 모바일 — 가로 스크롤 */}
-      <div className="md:hidden overflow-x-auto -mx-4 mb-6">
+      <div className="sm:hidden overflow-x-auto -mx-4 mb-6">
         <div
           role="tablist"
           aria-orientation="horizontal"
@@ -192,7 +192,7 @@ function TabNav({
         role="tablist"
         aria-orientation="vertical"
         className={clsx(
-          'hidden md:flex md:flex-col gap-1 p-2',
+          'hidden sm:flex sm:flex-col gap-1 p-2',
           'rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-1)]',
           'sticky top-4',
         )}
@@ -390,13 +390,13 @@ export default function MyPageClient() {
       {/* 프로필 헤더 */}
       {profile && <ProfileHeader profile={profile} credits={credits} />}
 
-      {/* 데스크톱: 사이드바(220px) + 콘텐츠  /  모바일: 가로탭 위, 콘텐츠 아래 */}
-      <div className="md:grid md:grid-cols-[220px_1fr] md:gap-6">
+      {/* 데스크톱(sm+): 사이드바(220px) + 콘텐츠  /  모바일: 가로탭 위, 콘텐츠 아래 */}
+      <div className="sm:grid sm:grid-cols-[220px_1fr] sm:gap-6">
         {/* 탭 네비게이션 */}
         <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* 탭 콘텐츠 패널 */}
-      <div className="min-w-0">
+        {/* 탭 콘텐츠 패널 */}
+        <div className="min-w-0">
         <div
           role="tabpanel"
           id={`tab-panel-profile`}
