@@ -1,7 +1,7 @@
 // @task S7FE4 — Composite: Badge
 // 기반: S7FE1 Semantic 토큰 + S7DS3 원칙 (Clarity First, Tokens Are Truth)
 // variant: neutral/brand/success/warning/danger/info
-// style: solid/subtle
+// tone: solid/subtle  (HTMLAttributes.style 충돌 회피를 위해 rename)
 // size: sm/md
 // - Primitive 직접 참조 금지 (state.xxx, text.xxx, border.xxx 토큰만 소비)
 
@@ -29,7 +29,7 @@ const badgeVariants = cva(
         danger:  '',
         info:    '',
       },
-      style: {
+      tone: {
         solid:  '',
         subtle: '',
       },
@@ -42,73 +42,73 @@ const badgeVariants = cva(
       /* ── neutral ── */
       {
         variant: 'neutral',
-        style:   'solid',
+        tone:    'solid',
         className: 'bg-surface-4 text-text-inverted border border-transparent',
       },
       {
         variant: 'neutral',
-        style:   'subtle',
+        tone:    'subtle',
         className: 'bg-surface-1 text-text-secondary border border-border-default',
       },
       /* ── brand ── */
       {
         variant: 'brand',
-        style:   'solid',
+        tone:    'solid',
         className: 'bg-interactive-primary text-text-inverted border border-transparent',
       },
       {
         variant: 'brand',
-        style:   'subtle',
+        tone:    'subtle',
         className: 'bg-interactive-secondary text-text-link border border-ring-focus',
       },
       /* ── success ── */
       {
         variant: 'success',
-        style:   'solid',
+        tone:    'solid',
         className: 'bg-state-success-fg text-text-inverted border border-transparent',
       },
       {
         variant: 'success',
-        style:   'subtle',
+        tone:    'subtle',
         className: 'bg-state-success-bg text-state-success-fg border border-state-success-border',
       },
       /* ── warning ── */
       {
         variant: 'warning',
-        style:   'solid',
+        tone:    'solid',
         className: 'bg-state-warning-fg text-text-inverted border border-transparent',
       },
       {
         variant: 'warning',
-        style:   'subtle',
+        tone:    'subtle',
         className: 'bg-state-warning-bg text-state-warning-fg border border-state-warning-border',
       },
       /* ── danger ── */
       {
         variant: 'danger',
-        style:   'solid',
+        tone:    'solid',
         className: 'bg-state-danger-fg text-text-inverted border border-transparent',
       },
       {
         variant: 'danger',
-        style:   'subtle',
+        tone:    'subtle',
         className: 'bg-state-danger-bg text-state-danger-fg border border-state-danger-border',
       },
       /* ── info ── */
       {
         variant: 'info',
-        style:   'solid',
+        tone:    'solid',
         className: 'bg-state-info-fg text-text-inverted border border-transparent',
       },
       {
         variant: 'info',
-        style:   'subtle',
+        tone:    'subtle',
         className: 'bg-state-info-bg text-state-info-fg border border-state-info-border',
       },
     ],
     defaultVariants: {
       variant: 'neutral',
-      style:   'subtle',
+      tone:    'subtle',
       size:    'md',
     },
   }
@@ -119,10 +119,10 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant, style, size, ...props }, ref) => (
+  ({ className, variant, tone, size, ...props }, ref) => (
     <span
       ref={ref}
-      className={cn(badgeVariants({ variant, style, size, className }))}
+      className={cn(badgeVariants({ variant, tone, size, className }))}
       {...props}
     />
   )

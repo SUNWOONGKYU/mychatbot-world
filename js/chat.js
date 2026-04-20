@@ -128,7 +128,7 @@ async function loadBotData() {
             chatBotData = {
                 botName: 'Bot',
                 username: 'bot',
-                personality: 'AI 어시스턴트 코코봇입니다.',
+                personality: 'AI Assistant 코코봇입니다.',
                 greeting: '안녕하세요! 무엇이든 물어보세요.',
                 faqs: []
             };
@@ -138,7 +138,7 @@ async function loadBotData() {
         chatBotData.personas = [{
             id: 'default',
             name: chatBotData.botName,
-            role: chatBotData.personality || 'AI 어시스턴트',
+            role: chatBotData.personality || 'AI Assistant',
             model: 'logic',
             isVisible: true
         }];

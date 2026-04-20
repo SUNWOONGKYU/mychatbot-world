@@ -87,7 +87,7 @@ function BirthTitle({ name }: { name: string }) {
         {name}
       </h1>
       <p className="text-sm text-text-secondary max-w-xs">
-        AI 어시스턴트 코코봇이 성공적으로 생성되었습니다.
+        AI Assistant 코코봇이 성공적으로 생성되었습니다.
         <br />아래 URL로 바로 대화할 수 있어요.
       </p>
     </div>

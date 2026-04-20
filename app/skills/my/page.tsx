@@ -61,7 +61,7 @@ function MySkillItem({ skill, active, onToggle, onRemove }: MySkillItemProps) {
             </p>
             <Badge
               variant={active ? 'success' : 'neutral'}
-              style="subtle"
+              tone="subtle"
               size="sm"
             >
               {active ? '활성' : '비활성'}
@@ -146,7 +146,7 @@ export default function MySkillsPage() {
         actions={
           installedSkills.length > 0 ? (
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <Badge variant="success" style="subtle" size="sm">
+              <Badge variant="success" tone="subtle" size="sm">
                 활성 {activeCount}개
               </Badge>
               <span className="text-text-tertiary">/ 총 {installedSkills.length}개</span>

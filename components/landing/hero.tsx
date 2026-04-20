@@ -92,7 +92,7 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
           {/* Display 헤드라인 — 2줄 균형 배분 */}
           <h1 className="text-3xl font-extrabold leading-[1.2] tracking-tight text-white sm:text-4xl lg:text-5xl [word-break:keep-all]">
             <span className="block">
-              <span className="font-black">AI 어시스턴트 코코봇</span>이
+              <span className="font-black">AI Assistant 코코봇</span>이
             </span>
             <span className="block mt-1">
               이 세상에{' '}

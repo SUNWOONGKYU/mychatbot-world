@@ -2,7 +2,7 @@
 {
   "name": "My Chatbot World",
   "short_name": "MCW",
-  "description": "5분 인터뷰로 나만의 AI 어시스턴트 코코봇을 생성하고 운영하세요.",
+  "description": "5분 인터뷰로 나만의 AI Assistant 코코봇을 생성하고 운영하세요.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

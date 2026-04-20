@@ -67,7 +67,7 @@ const HELPER_CATS: Category[] = [
 const CATEGORIES: Category[] = [...AVATAR_CATS, ...HELPER_CATS];
 
 const CATEGORY_NAMES: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.id, `${c.name} AI 어시스턴트 코코봇`])
+  CATEGORIES.map((c) => [c.id, `${c.name} AI Assistant 코코봇`])
 );
 
 /* ─────────────────────────────────────────────────────────────

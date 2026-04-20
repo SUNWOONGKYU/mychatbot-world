@@ -121,7 +121,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
           <h2 className="text-2xl font-bold text-text-primary [word-break:keep-all]">
             축하합니다! 코코봇 생성 완료!
           </h2>
-          <Badge variant="success" style="subtle" size="md">
+          <Badge variant="success" tone="subtle" size="md">
             배포 준비 완료
           </Badge>
         </div>

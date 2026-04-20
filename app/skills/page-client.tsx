@@ -154,7 +154,7 @@ function SkillCard({ skill, installed, onInstall, onRemove }: SkillCardProps) {
         <div className="flex flex-col gap-2.5" aria-label={skill.name}>
           <SkillCardBody skill={skill} stars={stars} installed={installed} />
           {!installed && (
-            <Badge variant="neutral" style="subtle" size="sm" className="self-start">
+            <Badge variant="neutral" tone="subtle" size="sm" className="self-start">
               COMING SOON
             </Badge>
           )}
@@ -165,7 +165,7 @@ function SkillCard({ skill, installed, onInstall, onRemove }: SkillCardProps) {
       <div className="flex items-center justify-between mt-auto pt-3 border-t border-border-subtle gap-2">
         <Badge
           variant={skill.isFree ? 'success' : 'warning'}
-          style="subtle"
+          tone="subtle"
           size="sm"
         >
           {skill.isFree ? '무료' : (installed ? `₩${(skill.price ?? 0).toLocaleString()}` : '유료')}
@@ -214,7 +214,7 @@ function SkillCardBody({ skill, stars, installed }: { skill: SkillItem; stars: s
         >
           {skill.icon}
         </span>
-        <Badge variant="brand" style="subtle" size="sm" className="shrink-0">
+        <Badge variant="brand" tone="subtle" size="sm" className="shrink-0">
           {skill.category}
         </Badge>
       </div>
@@ -223,7 +223,7 @@ function SkillCardBody({ skill, stars, installed }: { skill: SkillItem; stars: s
       <h3 className="text-[0.9375rem] font-bold text-text-primary leading-snug [word-break:keep-all]">
         {skill.name}
         {installed && (
-          <Badge variant="success" style="subtle" size="sm" className="ml-2">
+          <Badge variant="success" tone="subtle" size="sm" className="ml-2">
             설치됨
           </Badge>
         )}
@@ -347,7 +347,7 @@ export default function SkillsMarketPageInner() {
             <Link href="/skills/my" aria-label={`내 설치 스킬 보기 (${count}개)`}>
               내 스킬
               {count > 0 && (
-                <Badge variant="brand" style="solid" size="sm" className="ml-1">
+                <Badge variant="brand" tone="solid" size="sm" className="ml-1">
                   {count}
                 </Badge>
               )}
@@ -383,7 +383,7 @@ export default function SkillsMarketPageInner() {
                 <span className="text-sm font-semibold text-text-primary [word-break:keep-all]">
                   {preset.label}
                 </span>
-                <Badge variant="neutral" style="subtle" size="sm">
+                <Badge variant="neutral" tone="subtle" size="sm">
                   {preset.skills.length}개 스킬
                 </Badge>
               </button>

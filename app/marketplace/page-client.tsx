@@ -221,7 +221,7 @@ function SkillCard({ skill }: { skill: MarketplaceSkill }) {
         </div>
         <Badge
           variant={isFree ? 'success' : 'warning'}
-          style="subtle"
+          tone="subtle"
           size="sm"
         >
           {isFree ? '무료' : `${skill.price.toLocaleString()} 크레딧`}
@@ -241,7 +241,7 @@ function SkillCard({ skill }: { skill: MarketplaceSkill }) {
       {/* 하단: 카테고리 Badge + 설치수 + 설치 버튼 */}
       <div className="flex items-center justify-between mt-auto gap-2 pt-1 border-t border-border-subtle">
         <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-          <Badge variant="brand" style="subtle" size="sm" className="shrink-0">
+          <Badge variant="brand" tone="subtle" size="sm" className="shrink-0">
             {categoryLabel}
           </Badge>
           <span className="text-xs text-text-tertiary shrink-0">
@@ -616,7 +616,7 @@ export default function MarketplacePageInner() {
               >
                 필터
                 {activeFilterCount > 0 && (
-                  <Badge variant="brand" style="solid" size="sm" className="ml-1">
+                  <Badge variant="brand" tone="solid" size="sm" className="ml-1">
                     {activeFilterCount}
                   </Badge>
                 )}

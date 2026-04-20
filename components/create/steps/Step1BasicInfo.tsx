@@ -146,7 +146,7 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
               className={`${inputClass} flex-1`}
               value={botDesc}
               onChange={e => setBotDesc(e.target.value)}
-              placeholder="예: 나를 대신해 24시간 소통하는 AI 어시스턴트 코코봇"
+              placeholder="예: 나를 대신해 24시간 소통하는 AI Assistant 코코봇"
               maxLength={100}
             />
             <MicButton
