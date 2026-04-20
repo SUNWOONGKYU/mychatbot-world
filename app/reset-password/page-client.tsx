@@ -146,7 +146,9 @@ export default function ResetPasswordPageInner() {
       if (refreshToken) {
         supabase.auth
           .setSession({ access_token: hasAccessToken, refresh_token: refreshToken })
-          .catch(() => {});
+          .catch(() => {
+            setErrors({ general: '재설정 링크가 만료되었거나 이미 사용되었습니다. 이메일에서 새 링크를 요청해 주세요.' });
+          });
       }
     }
 
@@ -228,7 +230,21 @@ export default function ResetPasswordPageInner() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
 
       if (error) {
-        setErrors({ general: error.message || '비밀번호 변경에 실패했습니다.' });
+        const code = (error as any).code || '';
+        const msg = error.message || '';
+        let friendly = '비밀번호 변경에 실패했습니다.';
+        if (code === 'same_password' || /should be different/i.test(msg) || /same.*password/i.test(msg)) {
+          friendly = '이전과 동일한 비밀번호는 사용할 수 없습니다. 다른 비밀번호를 입력해 주세요.';
+          setErrors({ newPassword: friendly, general: friendly });
+        } else if (/session/i.test(msg) || /expired/i.test(msg)) {
+          friendly = '재설정 세션이 만료되었습니다. 이메일에서 다시 링크를 요청해 주세요.';
+          setErrors({ general: friendly });
+        } else if (/weak/i.test(msg) || /password.*short/i.test(msg)) {
+          friendly = '비밀번호가 너무 약합니다. 더 길고 복잡하게 설정해 주세요.';
+          setErrors({ newPassword: friendly });
+        } else {
+          setErrors({ general: friendly });
+        }
         return;
       }
 
