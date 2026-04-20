@@ -29,7 +29,6 @@ async function getSentry() {
   if (!ENABLED) return null;
   if (sentry) return sentry;
   try {
-    // @ts-expect-error 옵셔널 의존성 — 런타임에만 존재
     sentry = await import('@sentry/nextjs');
     return sentry;
   } catch {

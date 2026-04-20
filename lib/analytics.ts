@@ -20,7 +20,6 @@ async function getPosthog() {
   if (initPromise) return initPromise;
   initPromise = (async () => {
     try {
-      // @ts-expect-error 옵셔널 의존성
       const mod = await import('posthog-js');
       const client = mod.default ?? mod;
       client.init(KEY!, {

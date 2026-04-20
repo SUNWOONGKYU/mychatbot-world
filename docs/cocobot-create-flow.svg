@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1700" font-family="Pretendard, 'Apple SD Gothic Neo', sans-serif">
+  <!-- ─── Styles ─────────────────────────────────────────────── -->
+  <defs>
+    <style><![CDATA[
+      .title    { font-size:22px; font-weight:700; fill:#0f172a; }
+      .subtitle { font-size:13px; fill:#475569; }
+      .step     { font-size:15px; font-weight:700; fill:#ffffff; }
+      .label    { font-size:12px; fill:#0f172a; }
+      .small    { font-size:11px; fill:#475569; }
+      .tiny     { font-size:10px; fill:#64748b; }
+      .mono     { font-family:'JetBrains Mono', Consolas, monospace; font-size:11px; fill:#0f172a; }
+      .badge    { font-size:10px; font-weight:700; fill:#ffffff; }
+      .warn     { fill:#dc2626; font-weight:700; }
+      .good     { fill:#16a34a; font-weight:700; }
+      .pill     { font-size:11px; fill:#0f172a; }
+    ]]></style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef3c7"/><stop offset="1" stop-color="#fde68a"/>
+    </linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ─── Header ─────────────────────────────────────────────── -->
+  <rect x="0" y="0" width="1500" height="70" fill="#0f172a"/>
+  <text x="30" y="32" class="title" fill="#ffffff">CoCoBot 생성 위저드 — 전체 플로우 (v3, 2026-04-20)</text>
+  <text x="30" y="55" class="subtitle" fill="#cbd5e1">8단계 위저드 · 위저드 1 페르소나 · 마이페이지 추가(A형 5 + B형 5 한도) · 음성+텍스트 동시 입력 · 게스트 차단</text>
+
+  <!-- ─── Persistence rail (top) ─────────────────────────────── -->
+  <g transform="translate(30,90)">
+    <rect width="1440" height="60" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="20" y="25" class="label" font-weight="700">3-tier 영속화</text>
+    <text x="20" y="45" class="small">sessionStorage(`mcw_create_draft_v2`, 24h) → IndexedDB(임시 미디어) → Supabase(최종 저장: bots, personas, knowledge)</text>
+    <text x="1240" y="35" class="small">자동 저장 · 새로고침 복구</text>
+  </g>
+
+  <!-- ─── 8 Steps Row 1: 1-4 ─────────────────────────────────── -->
+  <!-- Step 1 -->
+  <g transform="translate(30,180)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">① 기본 정보</text>
+    <text x="14" y="60" class="label" font-weight="700">코코봇 이름 · 한 줄 소개 · URL</text>
+    <text x="14" y="80" class="small">• 음성(MicButton) + 텍스트 동시</text>
+    <text x="14" y="98" class="small">• koreanToUrl(한글→영문 자동)</text>
+    <text x="14" y="116" class="small">• 사용자명 중복체크 (TODO)</text>
+    <text x="14" y="138" class="mono">cocobot.world/bot/&lt;username&gt;</text>
+    <text x="14" y="158" class="tiny good">✓ 게스트 가능 (입력만)</text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(390,180)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">② 페르소나 선택 (1개 필수)</text>
+    <text x="14" y="60" class="label" font-weight="700">A형(외부용) 또는 B형(내부용) 1개</text>
+    <text x="14" y="80" class="small">• A형: 내 챗봇이 나 대신 타인의 질문에 응대</text>
+    <text x="14" y="98" class="small">• B형: 내 챗봇이 나의 업무·생활을 도움</text>
+    <text x="14" y="118" class="small">• 7-preset 접힘형 카드 (옵션 C)</text>
+    <text x="14" y="138" class="small">• AI 모델 + IQ↔EQ 슬라이더</text>
+    <text x="14" y="158" class="tiny warn">★ 위저드는 1개만 — 추가는 마이페이지 (A5+B5)</text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(750,180)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">③ 인터뷰</text>
+    <text x="14" y="60" class="label" font-weight="700">자기소개 (음성 + 텍스트 동시)</text>
+    <text x="14" y="80" class="small">• Web Speech API (ko-KR)</text>
+    <text x="14" y="98" class="small">• 3분 STT 타이머</text>
+    <text x="14" y="116" class="small">• 텍스트 2000자 카운터</text>
+    <text x="14" y="138" class="small">• 두 입력은 누적 → 같은 textarea</text>
+    <text x="14" y="158" class="tiny warn">현재 BUG: 탭 토글 (수정 예정)</text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(1110,180)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">④ AI 분석</text>
+    <text x="14" y="60" class="label" font-weight="700">인터뷰 → FAQ 자동 생성</text>
+    <text x="14" y="80" class="small">• OpenAI 분석 + 핵심 키워드 추출</text>
+    <text x="14" y="98" class="small">• 페르소나 타입별 기본 FAQ 시드</text>
+    <text x="14" y="116" class="small">• 사용자가 편집/추가 가능</text>
+    <text x="14" y="138" class="tiny good">✓ 게스트 가능</text>
+    <text x="14" y="158" class="tiny">→ knowledge 시드</text>
+  </g>
+
+  <!-- Arrows row 1 -->
+  <line x1="370" y1="265" x2="390" y2="265" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="730" y1="265" x2="750" y2="265" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1090" y1="265" x2="1110" y2="265" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Connector Row1 → Row2 -->
+  <path d="M1450,265 Q1480,265 1480,400 Q1480,560 1450,560 L1450,560" fill="none" stroke="#475569" stroke-width="2"/>
+  <path d="M1480,560 Q1480,560 1450,560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ─── 8 Steps Row 2: 5-8 ─────────────────────────────────── -->
+  <!-- Step 5 -->
+  <g transform="translate(1110,470)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">⑤ 코코봇 생성 (DB 저장)</text>
+    <text x="14" y="60" class="label" font-weight="700">실제 봇 레코드 생성</text>
+    <text x="14" y="80" class="small">• POST /api/create-bot/deploy (Bearer)</text>
+    <text x="14" y="98" class="small">• bots + personas + knowledge insert</text>
+    <text x="14" y="116" class="small">• 음성 옵션 6종 (alloy/echo/...)</text>
+    <text x="14" y="138" class="tiny warn">★ AUTH GATE: 미로그인 → 로그인 모달</text>
+    <text x="14" y="158" class="tiny">draft는 sessionStorage 보존</text>
+  </g>
+
+  <!-- Step 6 -->
+  <g transform="translate(750,470)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">⑥ 아바타</text>
+    <text x="14" y="60" class="label" font-weight="700">이미지 업로드 또는 AI 생성</text>
+    <text x="14" y="80" class="small">• 사진 업로드 (Storage)</text>
+    <text x="14" y="98" class="small">• 이모지 선택</text>
+    <text x="14" y="116" class="small">• AI 생성 (DALL·E)</text>
+    <text x="14" y="138" class="tiny">→ bots.avatar_url 업데이트</text>
+  </g>
+
+  <!-- Step 7 -->
+  <g transform="translate(390,470)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="url(#g1)"/>
+    <rect y="22" width="340" height="14" fill="url(#g1)"/>
+    <text x="14" y="24" class="step">⑦ 테마</text>
+    <text x="14" y="60" class="label" font-weight="700">대화창 색상/배경</text>
+    <text x="14" y="80" class="small">• 프리셋 + 커스텀 컬러</text>
+    <text x="14" y="98" class="small">• 채팅 버블 스타일</text>
+    <text x="14" y="138" class="tiny">→ bots.theme jsonb</text>
+  </g>
+
+  <!-- Step 8 -->
+  <g transform="translate(30,470)">
+    <rect width="340" height="170" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="340" height="36" rx="14" fill="#16a34a"/>
+    <rect y="22" width="340" height="14" fill="#16a34a"/>
+    <text x="14" y="24" class="step">⑧ 배포 🎉</text>
+    <text x="14" y="60" class="label" font-weight="700">URL · QR · 채널 선택</text>
+    <text x="14" y="80" class="small">• cocobot.world/bot/&lt;username&gt; 복사</text>
+    <text x="14" y="98" class="small">• QR 코드 (SVG/PNG)</text>
+    <text x="14" y="116" class="small">• 채널: 웹 / 카카오 / 텔레그램</text>
+    <text x="14" y="138" class="small">• 온보딩 카드: 대화/FAQ/스킬</text>
+    <text x="14" y="158" class="tiny good">→ 마이페이지 이동</text>
+  </g>
+
+  <!-- Arrows row 2 (right→left) -->
+  <line x1="1110" y1="555" x2="1090" y2="555" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="750" y1="555" x2="730" y2="555" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="390" y1="555" x2="370" y2="555" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ─── ZOOM A: Step 2 페르소나 선택 (Option C 접힘형 카드) ──── -->
+  <g transform="translate(30,690)">
+    <rect width="710" height="540" rx="14" fill="#fafaf9" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text x="20" y="30" class="title" font-size="18">🔍 ZOOM · Step 2 페르소나 선택 (옵션 C: 접힘형 카드)</text>
+    <text x="20" y="50" class="small">7가지 예시 = 패턴 가이드 (특허 정신: 사회적 역할 자유 분류). 기본 접힘 → 사용자가 펼칠 때만 노출.</text>
+
+    <!-- A형 -->
+    <g transform="translate(20,75)">
+      <rect width="330" height="430" rx="12" fill="url(#gA)" stroke="#f59e0b"/>
+      <text x="14" y="26" class="label" font-weight="700">A형 · 외부용 (대화 방향: 외부 → 나)</text>
+      <text x="14" y="44" class="small">"내 챗봇이 나 대신 타인의 질문에 응대"</text>
+      <text x="14" y="60" class="small">isPublic=true · 호칭 기본 "고객님"</text>
+
+      <!-- Collapsed bar -->
+      <g transform="translate(14,75)">
+        <rect width="302" height="36" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+        <text x="12" y="22" class="label">▶ 빠른 시작 템플릿 (선택사항)</text>
+        <text x="240" y="22" class="tiny">7개 펼치기</text>
+      </g>
+
+      <!-- Expanded grid (illustrative) -->
+      <g transform="translate(14,125)">
+        <text x="0" y="0" class="tiny">↓ 펼친 모습 (3×2 + 직접 입력)</text>
+        <!-- row1 -->
+        <g transform="translate(0,12)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">🏢</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">기업경영자</text>
+        </g>
+        <g transform="translate(102,12)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">🍱</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">소상공인</text>
+        </g>
+        <g transform="translate(204,12)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">⚖️</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">전문직</text>
+        </g>
+        <!-- row2 -->
+        <g transform="translate(0,80)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">🎨</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">프리랜서</text>
+        </g>
+        <g transform="translate(102,80)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">🗳️</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">공직자</text>
+        </g>
+        <g transform="translate(204,80)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">⚙️</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">기타</text>
+        </g>
+        <!-- 직접 입력 (full width) -->
+        <g transform="translate(0,150)">
+          <rect width="300" height="44" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-dasharray="3 3"/>
+          <text x="150" y="28" class="label" text-anchor="middle">✏️ 직접 입력 (자유 분류)</text>
+        </g>
+      </g>
+
+      <text x="14" y="395" class="tiny" font-style="italic">선택 → 이름·역할·키워드·기본 FAQ 자동 채움 (수정 가능)</text>
+      <text x="14" y="412" class="tiny" font-style="italic">미선택도 OK — 빈 폼으로 진행 가능</text>
+    </g>
+
+    <!-- B형 -->
+    <g transform="translate(360,75)">
+      <rect width="330" height="430" rx="12" fill="url(#gB)" stroke="#3b82f6"/>
+      <text x="14" y="26" class="label" font-weight="700">B형 · 내부용 (대화 방향: 내부 ↔ 나)</text>
+      <text x="14" y="44" class="small">"내 챗봇이 나의 업무·생활을 도움"</text>
+      <text x="14" y="60" class="small">isPublic=false · 호칭 기본 "님"</text>
+
+      <g transform="translate(14,75)">
+        <rect width="302" height="36" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+        <text x="12" y="22" class="label">▶ 빠른 시작 템플릿 (선택사항)</text>
+        <text x="240" y="22" class="tiny">7개 펼치기</text>
+      </g>
+
+      <g transform="translate(14,125)">
+        <text x="0" y="0" class="tiny">↓ 펼친 모습 (3×2 + 직접 입력)</text>
+        <g transform="translate(0,12)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">💼</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">업무</text>
+        </g>
+        <g transform="translate(102,12)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">📚</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">학습</text>
+        </g>
+        <g transform="translate(204,12)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">🎨</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">창작</text>
+        </g>
+        <g transform="translate(0,80)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">💪</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">건강</text>
+        </g>
+        <g transform="translate(102,80)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">🏠</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">생활</text>
+        </g>
+        <g transform="translate(204,80)">
+          <rect width="96" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+          <text x="48" y="25" class="pill" text-anchor="middle">⚙️</text>
+          <text x="48" y="46" class="tiny" text-anchor="middle">기타</text>
+        </g>
+        <g transform="translate(0,150)">
+          <rect width="300" height="44" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-dasharray="3 3"/>
+          <text x="150" y="28" class="label" text-anchor="middle">✏️ 직접 입력 (자유 분류)</text>
+        </g>
+      </g>
+
+      <text x="14" y="395" class="tiny" font-style="italic">선택 → 도우미 타입·시드 FAQ 자동 채움 (수정 가능)</text>
+      <text x="14" y="412" class="tiny" font-style="italic">미선택도 OK — 빈 폼으로 진행 가능</text>
+    </g>
+  </g>
+
+  <!-- ─── ZOOM B: Step 3 음성+텍스트 동시 입력 ───────────────── -->
+  <g transform="translate(760,690)">
+    <rect width="710" height="260" rx="14" fill="#fafaf9" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text x="20" y="30" class="title" font-size="18">🔍 ZOOM · Step 3 인터뷰 (음성 + 텍스트 동시)</text>
+    <text x="20" y="50" class="small">탭 토글 제거. 두 입력 모두 즉시 사용 가능, 결과는 같은 textarea에 누적.</text>
+
+    <g transform="translate(20,75)">
+      <rect width="670" height="160" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+      <!-- mic button -->
+      <g transform="translate(20,20)">
+        <circle cx="40" cy="40" r="36" fill="#ef4444"/>
+        <text x="40" y="48" font-size="32" text-anchor="middle">🎙️</text>
+        <text x="40" y="100" class="tiny" text-anchor="middle">3:00 타이머</text>
+      </g>
+      <!-- textarea -->
+      <g transform="translate(120,20)">
+        <rect width="530" height="120" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="14" y="28" class="small">자기소개 / 전문 분야 / 자주 듣는 질문...</text>
+        <text x="14" y="50" class="small" fill="#94a3b8">(음성 결과 자동 누적 + 직접 타이핑)</text>
+        <text x="514" y="110" class="tiny" text-anchor="end">0 / 2000자</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ─── ZOOM C: 마이페이지 페르소나 한도 ───────────────────── -->
+  <g transform="translate(760,970)">
+    <rect width="710" height="260" rx="14" fill="#fafaf9" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text x="20" y="30" class="title" font-size="18">🔍 ZOOM · 마이페이지 — 페르소나 추가 (위저드 이후)</text>
+    <text x="20" y="50" class="small">위저드는 1개만 생성. 추가는 마이페이지에서. 1인당 A형 5 + B형 5 = 최대 10개.</text>
+
+    <g transform="translate(20,75)">
+      <rect width="320" height="160" rx="10" fill="url(#gA)" stroke="#f59e0b"/>
+      <text x="14" y="26" class="label" font-weight="700">A형 슬롯 (최대 5)</text>
+      <g transform="translate(14,40)">
+        <rect width="60" height="60" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+        <text x="30" y="38" class="small" text-anchor="middle">✓</text>
+        <text x="30" y="55" class="tiny" text-anchor="middle">위저드</text>
+      </g>
+      <g transform="translate(80,40)">
+        <rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/>
+        <text x="30" y="42" class="small" text-anchor="middle">+</text>
+      </g>
+      <g transform="translate(146,40)"><rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/><text x="30" y="42" class="small" text-anchor="middle">+</text></g>
+      <g transform="translate(212,40)"><rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/><text x="30" y="42" class="small" text-anchor="middle">+</text></g>
+      <text x="14" y="125" class="tiny">예: 강의자 / 컨설턴트 / 셰프 / 의원 / 작가</text>
+      <text x="14" y="145" class="tiny" font-style="italic">각각 독립 URL · 독립 KB</text>
+    </g>
+
+    <g transform="translate(360,75)">
+      <rect width="320" height="160" rx="10" fill="url(#gB)" stroke="#3b82f6"/>
+      <text x="14" y="26" class="label" font-weight="700">B형 슬롯 (최대 5)</text>
+      <g transform="translate(14,40)">
+        <rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/>
+        <text x="30" y="42" class="small" text-anchor="middle">+</text>
+      </g>
+      <g transform="translate(80,40)"><rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/><text x="30" y="42" class="small" text-anchor="middle">+</text></g>
+      <g transform="translate(146,40)"><rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/><text x="30" y="42" class="small" text-anchor="middle">+</text></g>
+      <g transform="translate(212,40)"><rect width="60" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="3 3"/><text x="30" y="42" class="small" text-anchor="middle">+</text></g>
+      <text x="14" y="125" class="tiny">예: 업무 비서 / 학습 코치 / 창작 파트너</text>
+      <text x="14" y="145" class="tiny" font-style="italic">isPublic=false · 호칭 "님"</text>
+    </g>
+  </g>
+
+  <!-- ─── 범례 / 변경 사항 ──────────────────────────────────── -->
+  <g transform="translate(30,1260)">
+    <rect width="1440" height="170" rx="12" fill="#f0fdf4" stroke="#16a34a"/>
+    <text x="20" y="28" class="title" font-size="16" fill="#15803d">v3 변경 사항 (이전 v2 대비)</text>
+    <text x="20" y="56" class="label">• Step 2: 멀티 카드 → <tspan font-weight="700">단일 카드 + 7-preset 접힘형(옵션 C)</tspan> · 사용자명 강제 라디오 제거 → 모두 opt-in</text>
+    <text x="20" y="78" class="label">• A형 라벨: 🏢 기업경영자 / 🍱 소상공인 / ⚖️ 전문직 / 🎨 프리랜서 / 🗳️ 공직자 / ⚙️ 기타 / ✏️ 직접 입력 (단어형, 한 줄)</text>
+    <text x="20" y="100" class="label">• B형 라벨: 💼 업무 / 📚 학습 / 🎨 창작 / 💪 건강 / 🏠 생활 / ⚙️ 기타 / ✏️ 직접 입력</text>
+    <text x="20" y="122" class="label">• 한도: 위저드 = 1개 필수 / 마이페이지 추가 = A형 5 + B형 5 (총 10) · "타인이 나 대신 응대" 표현 → "내 챗봇이 나 대신 타인의 질문에 응대"</text>
+    <text x="20" y="144" class="label">• 게스트 흐름: Step 1~4 가능 / Step 5에서 AUTH GATE (로그인 모달) · draft는 sessionStorage 24h 보존</text>
+  </g>
+
+  <!-- ─── 게스트/인증 게이트 흐름 ───────────────────────────── -->
+  <g transform="translate(30,1450)">
+    <rect width="1440" height="220" rx="12" fill="#fef2f2" stroke="#fca5a5"/>
+    <text x="20" y="28" class="title" font-size="16" fill="#b91c1c">🚪 인증 게이트 (Step 5 진입 시)</text>
+
+    <!-- guest path -->
+    <g transform="translate(40,55)">
+      <rect width="200" height="60" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="100" y="26" class="label" text-anchor="middle">게스트 (미로그인)</text>
+      <text x="100" y="46" class="tiny" text-anchor="middle">Step 1~4 진행 OK</text>
+    </g>
+    <line x1="240" y1="85" x2="290" y2="85" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowR)"/>
+    <g transform="translate(290,55)">
+      <rect width="220" height="60" rx="10" fill="#fee2e2" stroke="#dc2626"/>
+      <text x="110" y="26" class="label warn" text-anchor="middle">Step 5 진입 → AUTH GATE</text>
+      <text x="110" y="46" class="tiny" text-anchor="middle">로그인 모달 표시</text>
+    </g>
+    <line x1="510" y1="85" x2="560" y2="85" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowR)"/>
+    <g transform="translate(560,55)">
+      <rect width="220" height="60" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="110" y="26" class="label" text-anchor="middle">로그인 / 회원가입</text>
+      <text x="110" y="46" class="tiny" text-anchor="middle">Supabase Auth (OAuth+Email)</text>
+    </g>
+    <line x1="780" y1="85" x2="830" y2="85" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow)"/>
+    <g transform="translate(830,55)">
+      <rect width="220" height="60" rx="10" fill="#dcfce7" stroke="#16a34a"/>
+      <text x="110" y="26" class="label good" text-anchor="middle">draft 복원 → Step 5 재개</text>
+      <text x="110" y="46" class="tiny" text-anchor="middle">sessionStorage 24h</text>
+    </g>
+    <line x1="1050" y1="85" x2="1100" y2="85" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow)"/>
+    <g transform="translate(1100,55)">
+      <rect width="300" height="60" rx="10" fill="#16a34a"/>
+      <text x="150" y="26" class="step" text-anchor="middle">코코봇 생성 완료 🎉</text>
+      <text x="150" y="46" class="tiny" text-anchor="middle" fill="#ffffff">→ Step 6,7,8 진행</text>
+    </g>
+
+    <text x="40" y="160" class="small">• 게스트 데모 봇 (10종, /api/guest-create) = 별도 트랙. 위저드와 독립.</text>
+    <text x="40" y="180" class="small">• 로그인 후 사용자명 중복 검사 1회 실행 → 충돌 시 -2, -3 제안.</text>
+    <text x="40" y="200" class="small">• Step 5 실패(네트워크/쿼터) 시 draft 유지 + 재시도 버튼 노출.</text>
+  </g>
+</svg>

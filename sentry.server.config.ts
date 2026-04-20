@@ -6,7 +6,6 @@
 const tryInit = async () => {
   if (!process.env.SENTRY_DSN) return;
   try {
-    // @ts-expect-error 옵셔널 의존성 — 런타임에만 존재
     const Sentry = await import('@sentry/nextjs');
     const { scrubPII } = await import('@/lib/observability/sentry');
     Sentry.init({
@@ -15,7 +14,7 @@ const tryInit = async () => {
       environment: process.env.VERCEL_ENV ?? 'development',
       tracesSampleRate: 0.1,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      beforeSend(event: any) {
+      beforeSend(event: any): any {
         return scrubPII(event as Record<string, unknown>);
       },
     });

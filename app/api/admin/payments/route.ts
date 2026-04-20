@@ -259,15 +259,6 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch current balance' }, { status: 500 });
     }
 
-    // 동일 유저에 대한 동시 승인 직렬화 (balance SELECT→UPSERT race 완화)
-    const lock = await rateLimitAsync(req, CREDIT_ADD_LOCK, `credit-add:${userId}`);
-    if (!lock.allowed) {
-      return NextResponse.json(
-        { error: 'Another approval for this user is in progress. Retry shortly.' },
-        { status: 429, headers: { 'Retry-After': String(lock.retryAfterSec) } },
-      );
-    }
-
     // 2. 크레딧 원자적 증가 (S8BA1 — add_credits_tx RPC: row lock + upsert + tx log 단일 TX)
     const { data: rpcData, error: rpcError } = await (supabase as any).rpc('add_credits_tx', {
       p_user_id: userId,

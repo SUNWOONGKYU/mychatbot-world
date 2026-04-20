@@ -6,7 +6,6 @@
 const tryInit = async () => {
   if (!process.env.SENTRY_DSN) return;
   try {
-    // @ts-expect-error 옵셔널 의존성 — 런타임에만 존재
     const Sentry = await import('@sentry/nextjs');
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
