@@ -116,12 +116,39 @@ export default function ResetPasswordPageInner() {
   useEffect(() => {
     // Next.js App Router에서는 hash를 직접 읽어야 함
     const hash = window.location.hash;
+    const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
     const code = searchParams?.get('code');
 
+    // 만료/거부 에러 먼저 확인 — 이전 재설정 링크를 나중에 클릭한 경우 등
+    const errorCode = hashParams.get('error_code') ?? searchParams?.get('error_code');
+    const errorDescription = hashParams.get('error_description') ?? searchParams?.get('error_description');
+    if (errorCode || errorDescription) {
+      const msg = decodeURIComponent(errorDescription || errorCode || '링크 오류');
+      const friendly =
+        errorCode === 'otp_expired'
+          ? '재설정 링크가 만료되었습니다. 아래에서 이메일을 다시 입력해 새 링크를 받아주세요.'
+          : msg;
+      setErrors({ general: friendly });
+      // 이메일 입력 모드로 유지
+      return;
+    }
+
+    const hasAccessToken = hashParams.get('access_token');
     const isRecovery =
-      hash.includes('type=recovery') ||
-      hash.includes('access_token') ||
+      hashParams.get('type') === 'recovery' ||
+      !!hasAccessToken ||
       !!code;
+
+    // hash 에 access_token 이 있으면 (recovery 링크) 세션을 명시 확립
+    // lib/supabase.ts 에서 detectSessionInUrl=false 이므로 수동 setSession 필요
+    if (hasAccessToken) {
+      const refreshToken = hashParams.get('refresh_token');
+      if (refreshToken) {
+        supabase.auth
+          .setSession({ access_token: hasAccessToken, refresh_token: refreshToken })
+          .catch(() => {});
+      }
+    }
 
     if (isRecovery) {
       setMode('reset');
