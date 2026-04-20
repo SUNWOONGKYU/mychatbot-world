@@ -511,7 +511,7 @@ export default function GuestPageInner() {
         {/* ── 헤더 ──────────────────────────────────────────────── */}
         <header className="guest-header">
           <Link href="/" className="guest-logo">
-            코코봇
+            CoCoBot World
           </Link>
           <div className="guest-header-actions">
             <Link href="/login" className="btn-login">로그인</Link>

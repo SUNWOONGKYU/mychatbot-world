@@ -53,7 +53,7 @@ export function GuestHeader({ remainingCount }: GuestHeaderProps) {
           MC
         </div>
         <span className="text-sm font-semibold text-text-primary tracking-tight hidden sm:inline">
-          코코봇
+          CoCoBot World
         </span>
       </div>
 

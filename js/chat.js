@@ -154,7 +154,7 @@ async function loadBotData() {
     }
     const nameEl = document.getElementById('chatBotName');
     if (nameEl) nameEl.textContent = chatBotData.botName;
-    document.title = `${chatBotData.botName} - 코코봇`;
+    document.title = `${chatBotData.botName} - CoCoBot World`;
 
     // 봇에 저장된 음성이 있으면 기본값으로 사용
     if (chatBotData.voice) {

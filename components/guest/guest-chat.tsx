@@ -99,7 +99,7 @@ export function GuestChat({ botId, onLimitReached }: GuestChatProps) {
       const welcome: ChatMessage = {
         id: genId(),
         role: 'bot',
-        content: '안녕하세요! 저는 코코봇 데모 코코봇이에요. 무엇이든 물어보세요. 회원가입 없이 10회까지 무료로 체험할 수 있어요.',
+        content: '안녕하세요! 저는 CoCoBot World 데모 코코봇이에요. 무엇이든 물어보세요. 회원가입 없이 10회까지 무료로 체험할 수 있어요.',
         createdAt: new Date().toISOString(),
       };
       setMessages([welcome]);

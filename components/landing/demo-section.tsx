@@ -38,7 +38,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: 'init-1',
     role: 'bot',
-    text: '코코봇에 오신 것을 환영해요! 아래 버튼을 눌러 직접 대화해보세요 👋',
+    text: 'CoCoBot World에 오신 것을 환영해요! 아래 버튼을 눌러 직접 대화해보세요 👋',
   },
 ];
 
@@ -159,7 +159,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              코코봇는 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
+              CoCoBot World는 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
             </p>
           </div>
 
