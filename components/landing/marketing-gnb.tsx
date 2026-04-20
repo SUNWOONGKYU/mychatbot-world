@@ -18,10 +18,10 @@ interface MarketingGNBProps {
 }
 
 const NAV_LINKS = [
-  { label: 'Birth',     href: '/create' },
-  { label: 'Skills',    href: '/skills' },
-  { label: 'Jobs',      href: '/jobs' },
-  { label: 'Community', href: '/community' },
+  { label: 'Birth',     labelKo: '탄생',      href: '/create' },
+  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills' },
+  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs' },
+  { label: 'Community', labelKo: '봇카페',    href: '/community' },
 ];
 
 export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
@@ -90,7 +90,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
             <li key={link.label}>
               <a
                 href={link.href}
-                className="relative inline-block px-2 py-1 text-sm transition-all duration-200"
+                className="relative flex flex-col items-center px-3 py-1 transition-all duration-200"
                 style={{
                   color: 'rgb(var(--text-secondary-rgb))',
                   fontWeight: 500,
@@ -104,7 +104,8 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                   e.currentTarget.style.fontWeight = '500';
                 }}
               >
-                {link.label}
+                <span className="text-sm leading-tight">{link.label}</span>
+                <span className="text-[10px] leading-tight" style={{ opacity: 0.7 }}>{link.labelKo}</span>
               </a>
             </li>
           ))}
@@ -282,7 +283,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                 <a
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-lg px-4 py-2.5 text-sm transition-all duration-200"
+                  className="block rounded-lg px-4 py-2.5 transition-all duration-200"
                   style={{
                     color: 'rgb(var(--text-secondary-rgb))',
                     background: 'transparent',
@@ -299,7 +300,8 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                     el.style.fontWeight = '500';
                   }}
                 >
-                  {link.label}
+                  <span className="text-sm">{link.label}</span>
+                  <span className="ml-2 text-xs" style={{ opacity: 0.7 }}>{link.labelKo}</span>
                 </a>
               </li>
             ))}
