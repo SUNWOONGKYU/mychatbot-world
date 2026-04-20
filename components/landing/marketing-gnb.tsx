@@ -91,7 +91,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                 href={link.href}
                 className="relative inline-block px-2 py-1 text-sm transition-all duration-200"
                 style={{
-                  color: 'rgb(var(--text-secondary))',
+                  color: 'rgb(var(--text-secondary-rgb))',
                   fontWeight: 500,
                 }}
                 onMouseEnter={(e) => {
@@ -99,7 +99,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                   e.currentTarget.style.fontWeight = '700';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary-rgb))';
                   e.currentTarget.style.fontWeight = '500';
                 }}
               >
@@ -117,14 +117,23 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
               type="button"
               aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border text-base transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border transition-colors"
               style={{
                 background: 'var(--surface-1)',
                 borderColor: 'var(--border-subtle)',
-                color: 'var(--text-secondary)',
+                color: 'rgb(var(--text-secondary-rgb))',
               }}
             >
-              {theme === 'dark' ? '☀' : '☽'}
+              {theme === 'dark' ? (
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path strokeLinecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+              )}
             </button>
           )}
           {isLoggedIn ? (
@@ -190,14 +199,14 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                 href="/login"
                 className="text-sm transition-all duration-200"
                 style={{
-                  color: 'rgb(var(--text-secondary))',
+                  color: 'rgb(var(--text-secondary-rgb))',
                   fontWeight: 600,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = 'rgb(var(--color-primary))';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary-rgb))';
                 }}
               >
                 로그인
@@ -274,7 +283,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                   onClick={() => setMobileOpen(false)}
                   className="block rounded-lg px-4 py-2.5 text-sm transition-all duration-200"
                   style={{
-                    color: 'rgb(var(--text-secondary))',
+                    color: 'rgb(var(--text-secondary-rgb))',
                     background: 'transparent',
                     fontWeight: 500,
                   }}
@@ -285,7 +294,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                   }}
                   onMouseLeave={(e) => {
                     const el = e.currentTarget as HTMLAnchorElement;
-                    el.style.color = 'rgb(var(--text-secondary))';
+                    el.style.color = 'rgb(var(--text-secondary-rgb))';
                     el.style.fontWeight = '500';
                   }}
                 >
