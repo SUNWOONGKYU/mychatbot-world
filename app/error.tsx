@@ -1,6 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
+import { captureException } from '@/lib/observability/sentry';
+
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    void captureException(error, {
+      tags: { component: 'app/error.tsx', digest: error.digest ?? 'none' },
+    });
+  }, [error]);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[rgb(var(--bg-base))]">
       <div className="text-center space-y-4 p-8">
