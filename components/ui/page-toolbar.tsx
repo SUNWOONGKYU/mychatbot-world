@@ -100,7 +100,7 @@ BreadcrumbItem.displayName = 'BreadcrumbItem';
    §3. PageToolbar
    ────────────────────────────────────────────────────────────────────── */
 
-export interface PageToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface PageToolbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   /** 페이지 제목 */
   title: React.ReactNode;
   /** breadcrumb 슬롯 — Breadcrumb 컴포넌트 권장 */
