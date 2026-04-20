@@ -17,7 +17,7 @@
 import { Suspense, useState, useEffect, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '@/lib/supabase';
 
 // ── 공통 UI ──────────────────────────────────────────────────────────────────
 
@@ -99,7 +99,6 @@ type PageMode = 'email' | 'reset' | 'email-sent' | 'reset-done';
 export default function ResetPasswordPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
   const [mode, setMode] = useState<PageMode>('email');
   const [email, setEmail] = useState('');
@@ -136,7 +135,7 @@ export default function ResetPasswordPageInner() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase, searchParams]);
+  }, [searchParams]);
 
   // ── Mode 1: 이메일 입력 → 재설정 링크 발송 ──────────────────────────────────
 

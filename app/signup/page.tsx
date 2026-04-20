@@ -11,7 +11,7 @@
 import { useState, useEffect, useId, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '@/lib/supabase';
 
 // ── Field 컴포넌트 — useId + aria-describedby 자동 연결 ───────────────────
 function Field({
@@ -121,10 +121,6 @@ function GoogleIcon() {
 // ── 페이지 컴포넌트 ────────────────────────────────────────────────────────
 export default function SignupPage() {
   const router = useRouter();
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -147,7 +143,7 @@ export default function SignupPage() {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) router.replace('/');
     });
-  }, [supabase, router]);
+  }, [router]);
 
   // ── 유효성 검사 ───────────────────────────────────────────────────────────
   function validate(): boolean {
@@ -219,12 +215,20 @@ export default function SignupPage() {
         const msg = error.message ?? '';
         if (
           msg.toLowerCase().includes('already registered') ||
-          msg.toLowerCase().includes('already exists')
+          msg.toLowerCase().includes('already exists') ||
+          msg.toLowerCase().includes('user already')
         ) {
           setErrors({ email: '이미 가입된 이메일입니다.' });
         } else {
           setErrors({ general: msg || '회원가입에 실패했습니다. 다시 시도해 주세요.' });
         }
+        return;
+      }
+
+      // Supabase email enumeration 보호: 중복 이메일은 성공처럼 응답하지만
+      // identities가 빈 배열로 반환됨 → 중복 계정 판별
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setErrors({ email: '이미 가입된 이메일입니다.' });
         return;
       }
 
@@ -451,6 +455,15 @@ export default function SignupPage() {
           >
             ← 홈으로 돌아가기
           </Link>
+        </p>
+
+        {/* 법적 동의 — 가입 시 암묵적 동의 (로그인 페이지와 동일 패턴) */}
+        <p className="mt-6 text-center text-xs text-text-tertiary [word-break:keep-all]">
+          가입하면{' '}
+          <Link href="/terms" className="underline hover:text-text-secondary transition-colors">이용약관</Link>
+          {' '}및{' '}
+          <Link href="/privacy" className="underline hover:text-text-secondary transition-colors">개인정보처리방침</Link>
+          에 동의한 것으로 간주합니다.
         </p>
       </div>
     </main>
