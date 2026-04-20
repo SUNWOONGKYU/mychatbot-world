@@ -96,9 +96,9 @@ const nextConfig = {
               process.env.NODE_ENV === 'development'
                 ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
                 : "script-src 'self' 'unsafe-inline'",
-              "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
               "img-src 'self' https: data: blob:",
-              "font-src 'self' data:",
+              "font-src 'self' data: https://cdn.jsdelivr.net",
               "connect-src 'self' https:",
               "media-src 'self' blob:",
               "frame-ancestors 'none'",
