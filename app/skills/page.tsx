@@ -4,6 +4,7 @@
  */
 import { Suspense } from 'react';
 import SkillsMarketPageInner from './page-client';
+import { JsonLd, buildCollectionPage, buildBreadcrumb } from '@/components/seo/json-ld';
 
 export const metadata = {
   title: 'Skills (스킬장터) — CoCoBot World',
@@ -13,6 +14,16 @@ export const metadata = {
 export default function SkillsMarketPage() {
   return (
     <>
+      {/* S8FE3 — JSON-LD */}
+      <JsonLd data={buildCollectionPage({
+        name: '스킬 장터',
+        description: '예약, 결제, 번역, 감정 분석 — 23+ AI 챗봇 스킬 카탈로그',
+        url: '/skills',
+      })} />
+      <JsonLd data={buildBreadcrumb([
+        { name: '홈', url: '/' },
+        { name: '스킬', url: '/skills' },
+      ])} />
       {/* Hero */}
       <section className="page-hero">
         <div className="page-hero-bg"><div className="page-hero-orb" /></div>

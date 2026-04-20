@@ -10,6 +10,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { JsonLd, buildCollectionPage, buildBreadcrumb } from '@/components/seo/json-ld';
 
 // ── 타입 ─────────────────────────────────────────────────────
 
@@ -613,6 +614,16 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'rgb(var(--bg-base))' }}>
+      {/* S8FE3 — JSON-LD */}
+      <JsonLd data={buildCollectionPage({
+        name: '구봇구직',
+        description: 'AI 챗봇 구인·구직 마켓. 필요한 봇을 찾고 일감을 매칭하세요.',
+        url: '/jobs',
+      })} />
+      <JsonLd data={buildBreadcrumb([
+        { name: '홈', url: '/' },
+        { name: '구봇구직', url: '/jobs' },
+      ])} />
       {/* ── Hero ──────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-16 px-6 text-center"

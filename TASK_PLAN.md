@@ -235,14 +235,14 @@
 | S8TS1 | Playwright E2E 5 플로우 + GitHub Actions CI | TS | — | `qa-specialist` | Completed |
 | S8SC1 | Supabase RLS 전 테이블 감사 + 누락 정책 보강 | SC | — | `security-specialist-core` | Completed |
 | S8SC2 | Supabase Auth MFA(TOTP) 활성화 + origin 검증 미들웨어 | SC | — | `security-specialist-core` | Pending |
-| S8SC3 | Secret rotation 정책서 + 3개월 캘린더 알림 | SC | — | `security-specialist-core` | Pending |
+| S8SC3 | Secret rotation 정책서 + 3개월 캘린더 알림 | SC | — | `security-specialist-core` | Completed |
 | S8DV1 | Staging 환경 (Vercel preview + Supabase Branch DB) | DV | — | `devops-troubleshooter-core` | Pending |
 | S8DV2 | Supabase PITR 백업 복구 드릴 + 결과 문서화 | DV | S8DV1 | `devops-troubleshooter-core` | Pending |
 | S8FE1 | Lighthouse 실측 + 번들 분석 + 개선 후 재측정 (90+) | FE | — | `frontend-developer-core` | Pending |
 | S8FE2 | Axe 전수 감사 + WCAG AA 위반 0건 + CI 통합 | FE | — | `frontend-developer-core` | Pending |
-| S8FE3 | JSON-LD 구조화 데이터 5+ 페이지 + 동적 OG 이미지 | FE | — | `frontend-developer-core` | Pending |
-| S8DC1 | OpenAPI 3.0 스펙 (33 엔드포인트) + Swagger UI | DC | — | `documentation-writer-core` | Pending |
-| S8DC2 | 운영 런북 (incident/backup/deploy/rollback/on-call) | DC | S8DV2 | `documentation-writer-core` | Pending |
+| S8FE3 | JSON-LD 구조화 데이터 5+ 페이지 + 동적 OG 이미지 | FE | — | `frontend-developer-core` | Completed |
+| S8DC1 | OpenAPI 3.0 스펙 (33 엔드포인트) + Swagger UI | DC | — | `documentation-writer-core` | Completed |
+| S8DC2 | 운영 런북 (incident/backup/deploy/rollback/on-call) | DC | S8DV2 | `documentation-writer-core` | Completed |
 
 ---
 

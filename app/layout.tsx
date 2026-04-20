@@ -19,6 +19,7 @@ import { ThemeProvider } from '@/lib/theme-provider';
 import { Navbar } from '@/components/common/navbar';
 import { MobileTabBar } from '@/components/common/mobile-tab-bar';
 import { buildSEOMeta } from '@/components/seo/meta';
+import { JsonLd, buildOrganization, buildWebSite } from '@/components/seo/json-ld';
 
 export const metadata: Metadata = buildSEOMeta({
   title: undefined, // 홈 — 서비스명만 표시
@@ -35,6 +36,9 @@ export default function RootLayout({
     // suppressHydrationWarning: next-themes가 서버/클라이언트 class 불일치를 피하기 위해 필수
     <html lang="ko" suppressHydrationWarning>
       <body className="bg-bg-base text-text-primary antialiased">
+        {/* S8FE3 — 사이트 공통 JSON-LD */}
+        <JsonLd data={buildOrganization()} />
+        <JsonLd data={buildWebSite()} />
         <ThemeProvider>
           {/*
             앱 셸 구조 (S5FE2):

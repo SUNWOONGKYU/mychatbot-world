@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react';
+import { JsonLd, buildContactPage, buildBreadcrumb } from '@/components/seo/json-ld';
 
 const INQUIRY_TYPES = [
   '일반 문의',
@@ -77,6 +78,12 @@ export default function CustomerServicePage() {
         color: 'rgb(var(--text-primary))',
       }}
     >
+      {/* S8FE3 — JSON-LD */}
+      <JsonLd data={buildContactPage()} />
+      <JsonLd data={buildBreadcrumb([
+        { name: '홈', url: '/' },
+        { name: '고객센터', url: '/customer-service' },
+      ])} />
       {/* 헤더 */}
       <div
         style={{

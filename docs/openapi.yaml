@@ -1,0 +1,559 @@
+# @task S8DC1
+# @description OpenAPI 3.0 스펙 — CoCoBot World (My Chatbot World) 공개 API
+#
+# 뷰어:
+#   Swagger UI: /api-docs (Next.js route, S8DC1)
+#   Redoc: npx @redocly/cli preview-docs docs/openapi.yaml
+#
+# 범위: 클라이언트/외부 통합에 노출되는 핵심 엔드포인트 33개. 관리자 전용(X-Admin-Key)
+#       및 내부 cron/webhook 은 범위 제외.
+
+openapi: 3.0.3
+
+info:
+  title: CoCoBot World API
+  version: 1.0.0
+  description: |
+    AI 챗봇 제작·공유 플랫폼의 REST API.
+
+    ## 인증
+    - 대부분 Bearer `<supabase_access_token>` 또는 `sb-access-token` 쿠키 사용
+    - 관리자 API: `X-Admin-Key: <ADMIN_API_KEY>` 헤더 (OpenAPI 노출 안 함)
+
+    ## 레이트 리밋
+    - POST/PATCH/DELETE 공개 쓰기: 30 req/min/IP (PUBLIC_WRITE_RATE_LIMIT)
+    - 로그인/인증: 5 req/min/IP
+    - 일반 사용자 API: 60 req/min/user
+    - Upstash Redis 기반 (fail-open 인메모리 폴백 보유)
+  contact:
+    name: CoCoBot World Support
+    url: https://mychatbot.world/customer-service
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://mychatbot.world
+    description: Production
+  - url: http://localhost:3000
+    description: Local dev
+
+tags:
+  - name: system
+    description: 헬스체크·시스템 상태
+  - name: auth
+    description: 인증·프로필
+  - name: bots
+    description: 챗봇 CRUD 및 공개 조회
+  - name: chat
+    description: 챗봇 대화
+  - name: credits
+    description: 크레딧 조회·이력
+  - name: payments
+    description: 결제
+  - name: community
+    description: 봇카페 (게시글/댓글/좋아요)
+  - name: skills
+    description: 스킬 장터
+  - name: jobs
+    description: 구봇구직
+  - name: support
+    description: 고객센터
+
+# ═══════════════════════════════════════════════════════════════════
+#  Security Schemes
+# ═══════════════════════════════════════════════════════════════════
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Supabase access_token
+
+  # ─── 재사용 스키마 ──────────────────────────────────────────────
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string, example: 'Unauthorized' }
+        details: { type: string, nullable: true }
+
+    Pagination:
+      type: object
+      properties:
+        total: { type: integer, example: 125 }
+        page: { type: integer, example: 1 }
+        totalPages: { type: integer, example: 7 }
+
+    HealthResponse:
+      type: object
+      required: [status, timestamp, service, checks]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        timestamp: { type: string, format: date-time }
+        service: { type: string, example: mychatbot-world }
+        checks:
+          type: object
+          properties:
+            env: { type: string, enum: [ok, missing] }
+            supabase: { type: string, enum: [ok, unreachable, skipped] }
+        missingEnvs:
+          type: array
+          items: { type: string }
+        warnings:
+          type: array
+          items: { type: string }
+
+    Bot:
+      type: object
+      required: [id, owner_id, name]
+      properties:
+        id: { type: string, format: uuid }
+        owner_id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        avatar_url: { type: string, format: uri, nullable: true }
+        emoji: { type: string, nullable: true }
+        category: { type: string, nullable: true }
+        is_public: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Credits:
+      type: object
+      properties:
+        balance: { type: number }
+        subscription_balance: { type: number }
+        total_purchased: { type: number }
+
+    Payment:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        user_id: { type: string }
+        amount: { type: number }
+        status:
+          type: string
+          enum: [pending, completed, cancelled, refunded]
+        payment_type: { type: string }
+        description: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        confirmed_at: { type: string, format: date-time, nullable: true }
+
+    Post:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        content: { type: string }
+        madang: { type: string, nullable: true }
+        like_count: { type: integer }
+        comment_count: { type: integer }
+        created_at: { type: string, format: date-time }
+
+security:
+  - bearerAuth: []
+  - {} # 익명 허용 엔드포인트도 있음
+
+# ═══════════════════════════════════════════════════════════════════
+#  Paths — 33 엔드포인트
+# ═══════════════════════════════════════════════════════════════════
+paths:
+  # ─── System ──────────────────────────────────────────────────────
+  /api/health:
+    get:
+      tags: [system]
+      summary: 헬스체크
+      security: []
+      responses:
+        '200':
+          description: 정상
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HealthResponse' }
+        '503':
+          description: Degraded (필수 env 누락 또는 Supabase 연결 실패)
+
+  # ─── Auth ────────────────────────────────────────────────────────
+  /api/auth/me:
+    get:
+      tags: [auth]
+      summary: 현재 사용자 정보
+      responses:
+        '200': { description: 프로필 }
+        '401': { description: Unauthorized }
+
+  /api/auth/me/avatar:
+    post:
+      tags: [auth]
+      summary: 아바타 업로드
+      responses:
+        '200': { description: 업로드 완료 }
+        '401': { description: Unauthorized }
+
+  /api/auth/password:
+    post:
+      tags: [auth]
+      summary: 비밀번호 변경
+      responses:
+        '200': { description: 변경 완료 }
+        '401': { description: Unauthorized }
+
+  /api/auth/welcome-credits:
+    post:
+      tags: [auth]
+      summary: 신규 가입 환영 크레딧 지급 (최초 1회, 30,000 CR)
+      responses:
+        '200': { description: 지급 여부 반환 }
+
+  # ─── Bots ────────────────────────────────────────────────────────
+  /api/bots:
+    get:
+      tags: [bots]
+      summary: 내 봇 목록
+      responses:
+        '200':
+          description: 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Bot' }
+    post:
+      tags: [bots]
+      summary: 봇 생성
+      responses:
+        '201': { description: 생성됨 }
+        '401': { description: Unauthorized }
+
+  /api/bots/public:
+    get:
+      tags: [bots]
+      summary: 공개 봇 목록 (/bots 페이지)
+      security: []
+      parameters:
+        - { in: query, name: category, schema: { type: string } }
+        - { in: query, name: q, schema: { type: string } }
+        - { in: query, name: page, schema: { type: integer, default: 1 } }
+        - { in: query, name: limit, schema: { type: integer, default: 20 } }
+      responses:
+        '200':
+          description: 공개 봇 리스트
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bots:
+                    type: array
+                    items: { $ref: '#/components/schemas/Bot' }
+                  pagination: { $ref: '#/components/schemas/Pagination' }
+
+  /api/bots/{id}:
+    get:
+      tags: [bots]
+      summary: 봇 상세
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: 봇 상세 }
+        '404': { description: Not found }
+    patch:
+      tags: [bots]
+      summary: 봇 수정 (소유자만)
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: 수정됨 }
+    delete:
+      tags: [bots]
+      summary: 봇 삭제 (소유자만)
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '204': { description: 삭제됨 }
+
+  /api/bots/{id}/clone:
+    post:
+      tags: [bots]
+      summary: 봇 복제
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '201': { description: 복제됨 }
+
+  /api/bots/{id}/export:
+    get:
+      tags: [bots]
+      summary: 봇 JSON 내보내기
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200':
+          description: JSON 파일
+          content:
+            application/json: {}
+
+  /api/bots/{id}/personas:
+    get:
+      tags: [bots]
+      summary: 봇의 페르소나 목록
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: 페르소나 목록 }
+
+  # ─── Chat ────────────────────────────────────────────────────────
+  /api/chat:
+    post:
+      tags: [chat]
+      summary: 봇 대화 (non-streaming)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [botId, message]
+              properties:
+                botId: { type: string }
+                message: { type: string }
+                conversationId: { type: string, nullable: true }
+      responses:
+        '200': { description: 응답 }
+        '402': { description: Insufficient credits }
+
+  /api/chat/stream:
+    post:
+      tags: [chat]
+      summary: 봇 대화 (SSE 스트리밍)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200':
+          description: text/event-stream
+
+  /api/guest-chat:
+    post:
+      tags: [chat]
+      summary: 게스트 대화 (하루 5회 제한)
+      security: []
+      responses:
+        '200': { description: 응답 }
+        '429': { description: Rate limited }
+
+  # ─── Credits ─────────────────────────────────────────────────────
+  /api/credits:
+    get:
+      tags: [credits]
+      summary: 크레딧 잔액
+      responses:
+        '200':
+          description: 잔액
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Credits' }
+
+  /api/credits/history:
+    get:
+      tags: [credits]
+      summary: 크레딧 사용 내역
+      parameters:
+        - { in: query, name: limit, schema: { type: integer, default: 50 } }
+      responses:
+        '200': { description: 내역 }
+
+  /api/credits/usage:
+    get:
+      tags: [credits]
+      summary: 크레딧 사용 통계 (대시보드)
+      responses:
+        '200': { description: 통계 }
+
+  # ─── Payments ────────────────────────────────────────────────────
+  /api/payments:
+    post:
+      tags: [payments]
+      summary: 결제 요청 생성 (무통장/카드)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount: { type: number, maximum: 5000000 }
+                payment_type: { type: string, enum: [bank_transfer, card] }
+                description: { type: string, nullable: true }
+      responses:
+        '201':
+          description: 생성됨
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Payment' }
+        '400': { description: amount 초과 (max 5,000,000) }
+
+  /api/payments/confirm:
+    patch:
+      tags: [payments]
+      summary: 결제 확인 (관리자 전용, X-Admin-Key)
+      security: []
+      responses:
+        '200': { description: 크레딧 충전 완료 }
+        '403': { description: Unauthorized (admin key) }
+        '409': { description: 이미 completed }
+
+  /api/premium/activate:
+    post:
+      tags: [payments]
+      summary: 프리미엄 기능 1회 활성화 (voice_clone/avatar_3d/custom_theme)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [feature]
+              properties:
+                feature:
+                  type: string
+                  enum: [voice_clone, avatar_3d, custom_theme]
+      responses:
+        '200': { description: 활성화됨 }
+        '402': { description: Insufficient credits }
+        '409': { description: 이미 활성화됨 }
+
+  # ─── Community ──────────────────────────────────────────────────
+  /api/community:
+    get:
+      tags: [community]
+      summary: 게시글 목록
+      security: []
+      parameters:
+        - { in: query, name: madang, schema: { type: string } }
+        - { in: query, name: sort, schema: { type: string, enum: [latest, popular] } }
+      responses:
+        '200':
+          description: 게시글 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Post' }
+    post:
+      tags: [community]
+      summary: 게시글 작성 (rate-limit: 30/min)
+      responses:
+        '201': { description: 작성됨 }
+        '401': { description: Unauthorized }
+
+  /api/community/{id}:
+    get:
+      tags: [community]
+      summary: 게시글 상세
+      security: []
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: 게시글 }
+        '404': { description: Not found }
+    patch:
+      tags: [community]
+      summary: 게시글 수정 (작성자만)
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: 수정됨 }
+    delete:
+      tags: [community]
+      summary: 게시글 삭제 (작성자만)
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '204': { description: 삭제됨 }
+
+  /api/community/{id}/comments:
+    get:
+      tags: [community]
+      summary: 댓글 목록
+      security: []
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: 댓글 목록 }
+    post:
+      tags: [community]
+      summary: 댓글 작성
+      parameters: [{ in: path, name: id, required: true, schema: { type: string } }]
+      responses:
+        '201': { description: 작성됨 }
+
+  /api/community/like:
+    post:
+      tags: [community]
+      summary: 게시글 좋아요 토글
+      responses:
+        '200': { description: 토글 결과 }
+
+  /api/community/bookmark:
+    post:
+      tags: [community]
+      summary: 북마크 토글
+      responses:
+        '200': { description: 토글 결과 }
+
+  /api/community/report:
+    post:
+      tags: [community]
+      summary: 봇/게시글 신고
+      responses:
+        '201': { description: 접수됨 }
+
+  # ─── Skills ──────────────────────────────────────────────────────
+  /api/skills:
+    get:
+      tags: [skills]
+      summary: 스킬 목록
+      security: []
+      responses:
+        '200': { description: 스킬 목록 }
+
+  /api/skills/install:
+    post:
+      tags: [skills]
+      summary: 스킬 설치 (유료는 크레딧 차감)
+      responses:
+        '200': { description: 설치 완료 }
+        '402': { description: Insufficient credits }
+
+  # ─── Jobs ────────────────────────────────────────────────────────
+  /api/jobs:
+    get:
+      tags: [jobs]
+      summary: 일감 목록
+      security: []
+      responses:
+        '200': { description: 일감 목록 }
+    post:
+      tags: [jobs]
+      summary: 일감 등록
+      responses:
+        '201': { description: 등록됨 }
+
+  # ─── Support ─────────────────────────────────────────────────────
+  /api/customer-service:
+    post:
+      tags: [support]
+      summary: 고객센터 문의 접수
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, name, email, subject, content]
+              properties:
+                type: { type: string }
+                name: { type: string }
+                email: { type: string, format: email }
+                phone: { type: string, nullable: true }
+                subject: { type: string }
+                content: { type: string }
+      responses:
+        '201': { description: 접수됨 }
+        '429': { description: Rate limited }

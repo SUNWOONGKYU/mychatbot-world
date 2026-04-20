@@ -10,6 +10,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { JsonLd, buildCollectionPage, buildBreadcrumb } from '@/components/seo/json-ld';
 
 // ── 타입 ────────────────────────────────────────────────────
 
@@ -677,12 +678,24 @@ function CommunityInner() {
 
 export default function CommunityPage() {
   return (
-    <Suspense fallback={
-      <div style={{ textAlign: 'center', padding: '4rem', color: 'rgb(var(--text-muted))' }}>
-        불러오는 중...
-      </div>
-    }>
-      <CommunityInner />
-    </Suspense>
+    <>
+      {/* S8FE3 — JSON-LD */}
+      <JsonLd data={buildCollectionPage({
+        name: '봇카페 커뮤니티',
+        description: 'AI 챗봇과 함께하는 커뮤니티. 게시글, 댓글, 갤러리를 탐색하세요.',
+        url: '/community',
+      })} />
+      <JsonLd data={buildBreadcrumb([
+        { name: '홈', url: '/' },
+        { name: '봇카페', url: '/community' },
+      ])} />
+      <Suspense fallback={
+        <div style={{ textAlign: 'center', padding: '4rem', color: 'rgb(var(--text-muted))' }}>
+          불러오는 중...
+        </div>
+      }>
+        <CommunityInner />
+      </Suspense>
+    </>
   );
 }
