@@ -68,7 +68,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
     } else if (React.isValidElement(children)) {
       rendered = React.cloneElement(
         children as React.ReactElement<Record<string, unknown>>,
-        controlProps
+        controlProps as unknown as Record<string, unknown>
       );
     } else {
       rendered = children;
