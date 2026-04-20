@@ -2,11 +2,12 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { BrandLogo } from '@/components/common/brand-logo';
+import supabase from '@/lib/supabase';
 
 // 서비스 4메뉴 — DESIGN.md 원칙에 따라 Primary 퍼플 단일색으로 통일
 const SERVICE_ITEMS = [
@@ -38,7 +39,9 @@ function isAdminPath(pathname: string): boolean {
  */
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null); // null = 아직 미확인
   const { theme, setTheme } = useTheme();
 
   // 스크롤 이벤트 — hooks는 조건부 return 이전에 위치해야 함
@@ -47,6 +50,26 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // 세션 상태 감지 — 초기 조회 + 변경 구독
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (mounted) setIsAuthed(!!data.session);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setIsAuthed(!!session);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.replace('/');
+  }
 
   // 로그인/회원가입/게스트/어드민은 Navbar 미표시
   if (!pathname) return null;
@@ -189,34 +212,50 @@ export function Navbar() {
         {/* 구분선 — My Page와 로그인/회원가입 사이 */}
         <span className="mx-1 h-5 w-px" style={{ background: 'rgb(var(--border))' }} aria-hidden="true" />
 
-        {/* 로그인 버튼 */}
-        <Link
-          href="/login"
-          className={clsx(
-            'flex items-center',
-            'px-4 py-2 rounded-lg text-sm font-medium',
-            'border border-border text-text-primary',
-            'hover:bg-surface-hover',
-            'transition-all duration-200',
-          )}
-        >
-          로그인
-        </Link>
-
-        {/* 회원가입 CTA */}
-        <Link
-          href="/signup"
-          className={clsx(
-            'flex items-center',
-            'px-4 py-2 rounded-lg text-sm font-semibold',
-            'bg-primary text-white',
-            'hover:bg-primary/90 hover:-translate-y-px hover:shadow-md',
-            'active:translate-y-0 active:shadow-none',
-            'transition-all duration-200',
-          )}
-        >
-          회원가입
-        </Link>
+        {/* 인증 상태별 버튼 — isAuthed === null 일 때는 깜빡임 방지를 위해 렌더 생략 */}
+        {isAuthed === true ? (
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className={clsx(
+              'flex items-center',
+              'px-4 py-2 rounded-lg text-sm font-medium',
+              'border border-border text-text-primary',
+              'hover:bg-surface-hover',
+              'transition-all duration-200',
+            )}
+          >
+            로그아웃
+          </button>
+        ) : isAuthed === false ? (
+          <>
+            <Link
+              href="/login"
+              className={clsx(
+                'flex items-center',
+                'px-4 py-2 rounded-lg text-sm font-medium',
+                'border border-border text-text-primary',
+                'hover:bg-surface-hover',
+                'transition-all duration-200',
+              )}
+            >
+              로그인
+            </Link>
+            <Link
+              href="/signup"
+              className={clsx(
+                'flex items-center',
+                'px-4 py-2 rounded-lg text-sm font-semibold',
+                'bg-primary text-white',
+                'hover:bg-primary/90 hover:-translate-y-px hover:shadow-md',
+                'active:translate-y-0 active:shadow-none',
+                'transition-all duration-200',
+              )}
+            >
+              회원가입
+            </Link>
+          </>
+        ) : null}
 
         {/* 테마 토글 (회원가입 다음) */}
         <button
