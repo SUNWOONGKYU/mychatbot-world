@@ -647,7 +647,7 @@ export default function ChatWindow({
 
     // 1차: SSE 스트리밍
     try {
-      const streamRes = await fetch('/api/chat-stream', {
+      const streamRes = await fetch('/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

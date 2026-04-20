@@ -562,7 +562,7 @@ async function generateResponse(userText) {
 
     // 1차: SSE 스트리밍 시도
     try {
-        const streamRes = await fetch('/api/chat-stream', {
+        const streamRes = await fetch('/api/chat/stream', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -618,7 +618,7 @@ async function generateResponse(userText) {
                 // 스트리밍으로 이미 DOM에 표시됨 — 플래그로 표시
                 streamDiv._streamComplete = true;
                 const latency = Date.now() - start;
-                console.log('[AI STREAM] /api/chat-stream ' + latency + 'ms');
+                console.log('[AI STREAM] /api/chat/stream ' + latency + 'ms');
 
                 // Run after_receive hook
                 if (typeof MCW !== 'undefined' && MCW.hooks) {
@@ -631,7 +631,7 @@ async function generateResponse(userText) {
             if (streamDiv.parentNode) streamDiv.remove();
         }
     } catch (e) {
-        console.warn('[API] /api/chat-stream error:', e.message);
+        console.warn('[API] /api/chat/stream error:', e.message);
     }
 
     // 2차: 비스트리밍 폴백 (/api/chat)

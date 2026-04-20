@@ -97,7 +97,7 @@ const INITIAL_DATA: WizardData = {
 
 const TOTAL_STEPS = 8;
 
-const STEP_LABELS = ['기본정보', '페르소나', '인터뷰', '분석', '생성', '아바타', '테마', '배포'];
+const STEP_LABELS = ['기본정보', '페르소나', '인터뷰', '분석', '목소리', '아바타', '테마', '생성'];
 
 interface Props {
   onComplete: (botId: string) => void;
@@ -182,17 +182,30 @@ export default function CreateWizard({ onComplete }: Props) {
       const raw = sessionStorage.getItem('mcw_create_draft_v2');
       if (!raw) return;
       const draft = JSON.parse(raw);
-      if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {
+      // 1시간 경과 → 폐기 (이전: 24h. 너무 길어서 false-positive 복원 안내가 잦음)
+      if (Date.now() - draft.savedAt > 60 * 60 * 1000) {
         sessionStorage.removeItem('mcw_create_draft_v2');
         return;
       }
-      if (draft.step > 1) {
-        if (confirm('이전에 작성 중이던 코코봇이 있습니다. 이어서 작성하시겠습니까?')) {
-          setData(draft.data || INITIAL_DATA);
-          setStep(draft.step || 1);
-        } else {
-          sessionStorage.removeItem('mcw_create_draft_v2');
-        }
+      // 이미 봇이 생성됐거나(botId 존재) Step 8까지 진입한 draft → 폐기 (재생성 방지)
+      if (draft.data?.botId || (draft.step ?? 0) >= 8) {
+        sessionStorage.removeItem('mcw_create_draft_v2');
+        return;
+      }
+      // 의미있는 진행이 있을 때만 복원 안내
+      // - Step 4(분석) 이상 또는 인터뷰 응답 100자 이상 입력된 경우만 "이어서?" 묻기
+      // - Step 1에서 "다음" 한 번 누른 정도로는 묻지 않음 (스팸성 프롬프트 방지)
+      const interviewLen = (draft.data?.interviewText ?? '').length;
+      const hasMeaningfulProgress = (draft.step ?? 0) >= 4 || interviewLen >= 100;
+      if (!hasMeaningfulProgress) {
+        sessionStorage.removeItem('mcw_create_draft_v2');
+        return;
+      }
+      if (confirm('이전에 작성 중이던 코코봇이 있습니다. 이어서 작성하시겠습니까?')) {
+        setData(draft.data || INITIAL_DATA);
+        setStep(draft.step || 1);
+      } else {
+        sessionStorage.removeItem('mcw_create_draft_v2');
       }
     } catch { /* ignore */ }
   }, []);

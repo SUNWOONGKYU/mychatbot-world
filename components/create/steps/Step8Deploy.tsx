@@ -6,10 +6,11 @@
  */
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { WizardData } from '../CreateWizard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { authHeaders } from '@/lib/auth-client';
 
 interface Props {
   data: WizardData;
@@ -70,8 +71,70 @@ export default function Step8Deploy({ data, onFinish }: Props) {
     data.deployChannels?.length ? data.deployChannels : ['web']
   );
   const [copied, setCopied] = useState(false);
+  const [creating, setCreating] = useState(!data.botId);
+  const [createError, setCreateError] = useState<string>('');
+  const [createdBot, setCreatedBot] = useState<{ botId: string; deployUrl: string; qrSvg: string } | null>(
+    data.botId
+      ? { botId: data.botId, deployUrl: data.deployUrl ?? '', qrSvg: data.qrSvg ?? '' }
+      : null
+  );
+  const didCreateRef = useRef(false);
 
-  const deployUrl = data.deployUrl
+  // 마운트 시 1회만 실제 생성 호출
+  useEffect(() => {
+    if (didCreateRef.current || data.botId) return;
+    didCreateRef.current = true;
+
+    (async () => {
+      setCreating(true);
+      setCreateError('');
+      try {
+        const res = await fetch('/api/create-bot', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({
+            botName: data.botName,
+            botDesc: data.botDesc,
+            botUsername: data.botUsername,
+            persona: data.persona,
+            greeting: data.greeting,
+            faqs: data.faqs,
+            voice: data.voice,
+            interviewText: data.interviewText,
+            avatarEmoji: data.avatarEmoji,
+            avatarImageData: data.avatarImageData,
+            themeMode: data.themeMode,
+            themeColor: data.themeColor,
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success || !json.data?.botId) {
+          setCreateError(json.error || `생성 실패 (HTTP ${res.status})`);
+          return;
+        }
+        setCreatedBot({
+          botId: json.data.botId,
+          deployUrl: json.data.deployUrl ?? '',
+          qrSvg: json.data.qrSvg ?? '',
+        });
+        // 방어적 draft 제거 — onFinish의 clearDraft가 타이밍 이슈로 누락되는 케이스 대비
+        try { sessionStorage.removeItem('mcw_create_draft_v2'); } catch {}
+        onFinish({
+          botId: json.data.botId,
+          deployUrl: json.data.deployUrl ?? null,
+          qrSvg: json.data.qrSvg ?? null,
+        });
+      } catch (e) {
+        setCreateError(e instanceof Error ? e.message : '네트워크 오류가 발생했습니다.');
+      } finally {
+        setCreating(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const deployUrl = createdBot?.deployUrl
+    || data.deployUrl
     || `${typeof window !== 'undefined' ? window.location.origin : 'https://cocobot.world'}/bot/${data.botUsername || data.botId || 'my-bot'}`;
 
   const toggleChannel = (ch: string) => {
@@ -98,8 +161,9 @@ export default function Step8Deploy({ data, onFinish }: Props) {
   };
 
   const handleDownloadQR = async () => {
-    if (!data.qrSvg) return;
-    const blob = new Blob([data.qrSvg], { type: 'image/svg+xml' });
+    const svg = createdBot?.qrSvg || data.qrSvg;
+    if (!svg) return;
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -109,8 +173,61 @@ export default function Step8Deploy({ data, onFinish }: Props) {
   };
 
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(deployUrl)}`;
-  const botId = data.botId || 'new';
+  const botId = createdBot?.botId || data.botId || 'new';
   const botUsername = data.botUsername || botId;
+  const qrSvg = createdBot?.qrSvg || data.qrSvg;
+
+  // 생성 중: 로딩 화면
+  if (creating) {
+    return (
+      <div className="space-y-6 text-center py-12">
+        <div className="text-5xl animate-bounce" aria-hidden="true">⚙️</div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-text-primary [word-break:keep-all]">
+            코코봇을 생성하고 있어요...
+          </h2>
+          <p className="text-sm text-text-tertiary [word-break:keep-all]">
+            아바타·테마·목소리를 모두 적용하고 있습니다. 잠시만 기다려주세요.
+          </p>
+        </div>
+        <style>{`
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+          .animate-bounce { animation: bounce 1s ease infinite; }
+        `}</style>
+      </div>
+    );
+  }
+
+  // 생성 실패: 에러 + 재시도
+  if (createError && !createdBot) {
+    return (
+      <div className="space-y-6 text-center py-8">
+        <div className="text-5xl" aria-hidden="true">⚠️</div>
+        <h2 className="text-xl font-bold text-text-primary [word-break:keep-all]">
+          코코봇 생성에 실패했습니다
+        </h2>
+        <p className="text-sm text-state-danger-fg [word-break:keep-all] max-w-md mx-auto">
+          {createError}
+        </p>
+        <Button
+          variant="default"
+          size="lg"
+          onClick={() => {
+            didCreateRef.current = false;
+            setCreateError('');
+            setCreating(true);
+            // useEffect가 재실행되도록 마운트 트리거 — 간단히 reload
+            window.location.reload();
+          }}
+        >
+          다시 시도
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -214,9 +331,9 @@ export default function Step8Deploy({ data, onFinish }: Props) {
               border border-border-default shadow-[var(--shadow-sm)]"
             aria-label="QR 코드"
           >
-            {data.qrSvg ? (
+            {qrSvg ? (
               <div
-                dangerouslySetInnerHTML={{ __html: data.qrSvg }}
+                dangerouslySetInnerHTML={{ __html: qrSvg }}
                 className="w-full h-full"
                 aria-hidden="true"
               />

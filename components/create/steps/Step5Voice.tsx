@@ -1,15 +1,14 @@
 /**
- * Step 5: 목소리 선택 + 코코봇 생성하기
+ * Step 5: 목소리 선택 (생성은 Step 8에서)
  * - 6가지 목소리 카드 (fable, nova, shimmer, alloy, echo, onyx)
  * - 미리듣기 버튼 → /api/tts 호출
- * - 코코봇 생성하기 버튼 → /api/create-bot/deploy 호출
+ * - 다음: 아바타 →
  */
 'use client';
 
 import { useState, useRef } from 'react';
 import type { WizardData } from '../CreateWizard';
 import { stepTitle, stepDesc, StepActions } from '../ui';
-import { authHeaders } from '@/lib/auth-client';
 
 interface Props {
   data: WizardData;
@@ -29,8 +28,6 @@ const VOICE_OPTIONS = [
 export default function Step5Voice({ data, onNext, onBack }: Props) {
   const [selectedVoice, setSelectedVoice] = useState(data.voice || 'fable');
   const [previewLabel, setPreviewLabel] = useState('미리듣기');
-  const [isCreating, setIsCreating] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handlePreview = async () => {
@@ -61,52 +58,14 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
     }
   };
 
-  const handleCreate = async () => {
-    setIsCreating(true);
-    setErrorMsg('');
-    try {
-      // 봇 생성 API 호출 (실제 DB INSERT)
-      const res = await fetch('/api/create-bot', {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({
-          botName: data.botName,
-          botDesc: data.botDesc,
-          botUsername: data.botUsername,
-          persona: data.persona,
-          greeting: data.greeting,
-          faqs: data.faqs,
-          voice: selectedVoice,
-          interviewText: data.interviewText,
-          avatarEmoji: data.avatarEmoji,
-        }),
-      });
-
-      const json = await res.json().catch(() => ({}));
-
-      if (!res.ok || !json.success || !json.data?.botId) {
-        const msg = json.error || `생성 실패 (HTTP ${res.status})`;
-        setErrorMsg(msg);
-        return;
-      }
-
-      onNext({
-        voice: selectedVoice,
-        botId: json.data.botId,
-        deployUrl: json.data.deployUrl ?? null,
-        qrSvg: json.data.qrSvg ?? null,
-      });
-    } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : '네트워크 오류가 발생했습니다.');
-    } finally {
-      setIsCreating(false);
-    }
+  const handleNext = () => {
+    onNext({ voice: selectedVoice });
   };
 
   return (
     <div>
-      <h2 style={stepTitle}>코코봇을 완성하세요</h2>
-      <p style={stepDesc}>목소리를 선택하고 코코봇을 생성하세요</p>
+      <h2 style={stepTitle}>목소리를 선택하세요</h2>
+      <p style={stepDesc}>코코봇이 사용할 목소리를 골라보세요</p>
 
       {/* 목소리 선택 카드 영역 */}
       <div style={{
@@ -165,25 +124,7 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
         </button>
       </div>
 
-      {/* 에러 메시지 */}
-      {errorMsg && (
-        <div
-          role="alert"
-          style={{
-            marginTop: '1rem',
-            padding: '12px 16px',
-            background: 'rgba(239,68,68,0.1)',
-            border: '1px solid rgba(239,68,68,0.4)',
-            borderRadius: '10px',
-            color: '#fca5a5',
-            fontSize: '0.875rem',
-          }}
-        >
-          {errorMsg}
-        </div>
-      )}
-
-      {/* 이전/생성 버튼 */}
+      {/* 이전/다음 버튼 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginTop: '2rem' }}>
         <button
           onClick={onBack}
@@ -201,20 +142,19 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
           ← 이전
         </button>
         <button
-          onClick={handleCreate}
-          disabled={isCreating}
+          onClick={handleNext}
           style={{
             padding: '12px 32px',
-            background: isCreating ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
             border: 'none',
             borderRadius: '10px',
             color: 'white',
             fontSize: '0.95rem',
             fontWeight: 700,
-            cursor: isCreating ? 'not-allowed' : 'pointer',
+            cursor: 'pointer',
           }}
         >
-          {isCreating ? '생성 중...' : '코코봇 생성하기'}
+          다음: 아바타 →
         </button>
       </div>
     </div>

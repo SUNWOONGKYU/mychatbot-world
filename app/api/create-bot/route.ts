@@ -61,6 +61,9 @@ interface CreateBotRequest {
   faqs?: WizardFaq[];
   voice?: string;
   avatarEmoji?: string;
+  avatarImageData?: string | null;  // base64 data URL (Step 6)
+  themeMode?: 'dark' | 'light';     // Step 7
+  themeColor?: string;              // Step 7
   // 구버전 호환
   name?: string;
   description?: string;
@@ -224,6 +227,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const userFaqs = normalizeFaqs(body.faqs);
   const voice = (body.voice ?? 'fable').trim();
   const avatarEmoji = (body.avatarEmoji ?? '').trim();
+  const avatarImageData = (body.avatarImageData ?? '').trim();
+  const themeMode = body.themeMode === 'light' ? 'light' : 'dark';
+  const themeColor = (body.themeColor ?? 'purple').trim();
   const interviewText = (body.interviewText ?? '').trim();
   const requestedUsername = (body.botUsername ?? '').trim();
 
@@ -296,6 +302,31 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     username = `${username}-${idSuffix}`;
   }
 
+  // 6.5) 아바타 이미지 업로드 (base64 data URL → bot-avatars 버킷)
+  let avatarUrl: string | null = null;
+  if (avatarImageData && avatarImageData.startsWith('data:image/')) {
+    try {
+      const match = avatarImageData.match(/^data:(image\/[a-z+]+);base64,(.+)$/i);
+      if (match) {
+        const mime = match[1];
+        const ext = mime.split('/')[1].replace('+xml', '');
+        const buffer = Buffer.from(match[2], 'base64');
+        const path = `${botId}/avatar.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('bot-avatars')
+          .upload(path, buffer, { contentType: mime, upsert: true });
+        if (uploadError) {
+          console.warn('[create-bot] 아바타 업로드 경고:', uploadError);
+        } else {
+          const { data: pub } = supabase.storage.from('bot-avatars').getPublicUrl(path);
+          avatarUrl = pub?.publicUrl ?? null;
+        }
+      }
+    } catch (e) {
+      console.warn('[create-bot] 아바타 처리 실패 (계속 진행):', e);
+    }
+  }
+
   // 7) mcw_bots INSERT
   const botInsertData = {
     id: botId,
@@ -309,6 +340,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     input_text: interviewText || botDesc,
     category: analysis.businessType,
     voice,
+    avatar_url: avatarUrl,
+    theme_mode: themeMode,
+    theme_color: themeColor,
   };
 
   const { error: botInsertError } = await supabase.from('mcw_bots').insert(botInsertData);

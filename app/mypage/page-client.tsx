@@ -1,7 +1,7 @@
 /**
  * @task S7FE7
- * @description 마이페이지 클라이언트 컴포넌트 — 8탭 통합 셸 (S7 리디자인)
- * Semantic 토큰 전용, PageToolbar + TabNav + 8탭 콘텐츠
+ * @description 마이페이지 클라이언트 컴포넌트 — 9탭 통합 셸 (S7 리디자인)
+ * Semantic 토큰 전용, PageToolbar + TabNav + 9탭 콘텐츠
  *
  * Route: /mypage
  */
@@ -16,6 +16,7 @@ import Tab4Skills from '@/components/mypage/Tab4Skills';
 import Tab5Operations from '@/components/mypage/Tab5Operations';
 import Tab6Inheritance from '@/components/mypage/Tab6Inheritance';
 import Tab7Credits from '@/components/mypage/Tab7Credits';
+import Tab8Shop from '@/components/mypage/Tab8Shop';
 import Tab8Security from '@/components/mypage/Tab8Security';
 import { getToken, authHeaders } from '@/lib/auth-client';
 
@@ -62,7 +63,7 @@ interface CreditInfo {
   total_charged: number;
 }
 
-type TabId = 'profile' | 'bots' | 'learning' | 'skills' | 'operations' | 'inheritance' | 'credits' | 'security';
+type TabId = 'profile' | 'bots' | 'learning' | 'skills' | 'operations' | 'inheritance' | 'credits' | 'shop' | 'security';
 
 // ── 상수 ─────────────────────────────────────────────────────────────────
 
@@ -73,7 +74,8 @@ const NAV_ITEMS: { id: TabId; label: string; icon: string }[] = [
   { id: 'skills',       label: '스킬 관리',      icon: '⚡' },
   { id: 'operations',   label: '코코봇 운영 관리', icon: '💼' },
   { id: 'inheritance',  label: '상속',           icon: '🏛️' },
-  { id: 'credits',      label: '크레딧/결제',    icon: '🪙' },
+  { id: 'credits',      label: '크레딧·요금제',  icon: '🪙' },
+  { id: 'shop',         label: '코코봇 상점',    icon: '🛒' },
   { id: 'security',     label: '계정 보안',      icon: '🔒' },
 ];
 
@@ -151,14 +153,50 @@ function TabNav({
   activeTab: TabId;
   onTabChange: (t: TabId) => void;
 }) {
+  // 모바일: 가로 스크롤 / 데스크톱(md+): 세로 사이드바
   return (
-    <nav
-      aria-label="마이페이지 탭 네비게이션"
-      className="overflow-x-auto -mx-4 sm:mx-0 mb-6"
-    >
+    <nav aria-label="마이페이지 탭 네비게이션">
+      {/* 모바일 — 가로 스크롤 */}
+      <div className="md:hidden overflow-x-auto -mx-4 mb-6">
+        <div
+          role="tablist"
+          aria-orientation="horizontal"
+          className="flex gap-0 border-b border-[var(--border-default)] min-w-max px-4"
+        >
+          {NAV_ITEMS.map(item => (
+            <button
+              key={item.id}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === item.id}
+              aria-controls={`tab-panel-${item.id}`}
+              id={`tab-m-${item.id}`}
+              onClick={() => onTabChange(item.id)}
+              className={clsx(
+                'flex items-center gap-1.5 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
+                activeTab === item.id
+                  ? 'border-[var(--interactive-primary)] text-[var(--interactive-primary)]'
+                  : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border-strong)]',
+              )}
+            >
+              <span className="text-base leading-none" aria-hidden="true">{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 데스크톱 — 세로 사이드바 */}
       <div
         role="tablist"
-        className="flex gap-0 border-b border-[var(--border-default)] min-w-max px-4 sm:px-0"
+        aria-orientation="vertical"
+        className={clsx(
+          'hidden md:flex md:flex-col gap-1 p-2',
+          'rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-1)]',
+          'sticky top-4',
+        )}
+        style={{ boxShadow: 'var(--shadow-sm)' }}
       >
         {NAV_ITEMS.map(item => (
           <button
@@ -170,15 +208,15 @@ function TabNav({
             id={`tab-${item.id}`}
             onClick={() => onTabChange(item.id)}
             className={clsx(
-              'flex items-center gap-1.5 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px',
+              'flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-[var(--radius-md)] transition-colors text-left',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
               activeTab === item.id
-                ? 'border-[var(--interactive-primary)] text-[var(--interactive-primary)]'
-                : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border-strong)]',
+                ? 'bg-[var(--interactive-primary)] text-[var(--text-inverted)]'
+                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]',
             )}
           >
-            <span className="text-base leading-none" aria-hidden="true">{item.icon}</span>
-            <span>{item.label}</span>
+            <span className="text-base leading-none flex-shrink-0" aria-hidden="true">{item.icon}</span>
+            <span className="truncate">{item.label}</span>
           </button>
         ))}
       </div>
@@ -346,17 +384,19 @@ export default function MyPageClient() {
 
   return (
     <main
-      className="max-w-4xl mx-auto px-4 py-6"
+      className="max-w-6xl mx-auto px-4 py-6"
       aria-label="마이페이지"
     >
       {/* 프로필 헤더 */}
       {profile && <ProfileHeader profile={profile} credits={credits} />}
 
-      {/* 탭 네비게이션 */}
-      <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* 데스크톱: 사이드바(220px) + 콘텐츠  /  모바일: 가로탭 위, 콘텐츠 아래 */}
+      <div className="md:grid md:grid-cols-[220px_1fr] md:gap-6">
+        {/* 탭 네비게이션 */}
+        <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* 탭 콘텐츠 패널 */}
-      <div>
+      <div className="min-w-0">
         <div
           role="tabpanel"
           id={`tab-panel-profile`}
@@ -428,6 +468,15 @@ export default function MyPageClient() {
 
         <div
           role="tabpanel"
+          id="tab-panel-shop"
+          aria-labelledby="tab-shop"
+          hidden={activeTab !== 'shop'}
+        >
+          {activeTab === 'shop' && <Tab8Shop />}
+        </div>
+
+        <div
+          role="tabpanel"
           id="tab-panel-security"
           aria-labelledby="tab-security"
           hidden={activeTab !== 'security'}
@@ -446,6 +495,7 @@ export default function MyPageClient() {
             🔒 관리자
           </a>
         </div>
+      </div>
       </div>
     </main>
   );

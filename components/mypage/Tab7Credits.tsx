@@ -1,7 +1,11 @@
 /**
  * @task S7FE7 (S5FE11)
- * @description 마이페이지 탭7 — 크레딧/결제 (Anthropic UI 참고 카드형)
- * 4개 패키지: 3만/5만/10만/기타 | 할인 없음 | 무통장 입금
+ * @description 마이페이지 탭7 — 크레딧·요금제
+ * - 크레딧 충전 (4개 패키지)
+ * - 요금제 플랜 구매 (Starter/Pro/Business 월정액)
+ * - 무통장 입금 단일 결제 수단
+ *
+ * 부가 아이템 구매(페르소나·음성·아바타 팩)는 Tab8Shop으로 분리됨.
  */
 'use client';
 
@@ -50,96 +54,31 @@ const PACKAGES = [
   { id: 'pkgCustom', amount: 0, label: '직접 입력', credits: 0, custom: true },
 ];
 
-const PERSONA_TEMPLATES = [
+const PLAN_TIERS = [
   {
-    id: 'pt-legal',
-    emoji: '⚖️',
-    name: '법률 전문가 팩',
-    description: '계약서 검토, 법적 상담, 분쟁 해결 페르소나 5종',
+    id: 'starter',
+    emoji: '🌱',
+    name: 'Starter',
     price: 30000,
+    tagline: '월 ₩30,000',
+    features: ['코코봇 5개', '월 2,000회 대화', '전체 템플릿 50종+', '지식베이스 10MB', '커스텀 페르소나'],
   },
   {
-    id: 'pt-medical',
-    emoji: '🏥',
-    name: '의료 상담 팩',
-    description: '증상 체크, 건강 가이드, 복약 정보 페르소나 5종',
-    price: 30000,
+    id: 'pro',
+    emoji: '🚀',
+    name: 'Pro',
+    price: 50000,
+    tagline: '월 ₩50,000',
+    popular: true,
+    features: ['코코봇 무제한', '대화 무제한', '지식베이스 무제한', 'API 연동', '팀원 5인', '고급 분석'],
   },
   {
-    id: 'pt-finance',
-    emoji: '📈',
-    name: '금융·투자 팩',
-    description: '주식, ETF, 자산관리, 부동산 투자 페르소나 5종',
-    price: 30000,
-  },
-  {
-    id: 'pt-education',
-    emoji: '📚',
-    name: '교육·튜터링 팩',
-    description: '수학, 언어, 과학, 논술 지도 페르소나 5종',
-    price: 30000,
-  },
-  {
-    id: 'pt-business',
-    emoji: '💼',
-    name: '비즈니스·마케팅 팩',
-    description: '카피라이팅, 전략 기획, 데이터 분석 페르소나 5종',
-    price: 30000,
-  },
-  {
-    id: 'pt-hr',
-    emoji: '👥',
-    name: 'HR·채용 팩',
-    description: '이력서 검토, 면접 코칭, 인재 평가 페르소나 5종',
-    price: 30000,
-  },
-];
-
-const VOICE_PACKS = [
-  {
-    id: 'vp-basic',
-    emoji: '🎙️',
-    name: '기본 AI 음성 팩',
-    description: '남성·여성 2종 AI 음성, 코코봇 응답 TTS 지원',
-    price: 15000,
-  },
-  {
-    id: 'vp-pro',
-    emoji: '🎤',
-    name: '프로 AI 음성 팩',
-    description: '감정 표현 가능한 AI 음성 5종, 자연스러운 억양',
-    price: 30000,
-  },
-  {
-    id: 'vp-character',
-    emoji: '🗣️',
-    name: '캐릭터 음성 팩',
-    description: '귀엽고 개성 있는 캐릭터 스타일 음성 3종',
-    price: 20000,
-  },
-];
-
-const AVATAR_PACKS = [
-  {
-    id: 'ap-basic',
-    emoji: '🖼️',
-    name: '기본 아바타 팩',
-    description: '다양한 스타일 코코봇 아바타 이미지 10종',
-    price: 15000,
-  },
-  {
-    id: 'ap-business',
-    emoji: '👔',
-    name: '비즈니스 아바타 팩',
-    description: '전문직 콘셉트 고화질 캐릭터 아바타 10종',
-    price: 20000,
-  },
-  {
-    id: 'ap-anime',
-    emoji: '✨',
-    name: '애니메이션 아바타 팩',
-    description: '일러스트 스타일 귀여운 캐릭터 아바타 10종',
-    price: 20000,
+    id: 'business',
+    emoji: '🏢',
+    name: 'Business',
+    price: 100000,
+    tagline: '월 ₩100,000~',
+    features: ['Pro 전체', '화이트라벨', '전담 매니저', '맞춤 통합', '99.9% SLA', '팀원 무제한'],
   },
 ];
 
@@ -231,19 +170,12 @@ export default function Tab7Credits() {
   // 히스토리 탭
   const [historyTab, setHistoryTab] = useState<'charge' | 'use'>('charge');
 
-  // 음성 & 아바타 팩 구매
-  const [selectedAddonId, setSelectedAddonId] = useState<string | null>(null);
-  const [addonDepositor, setAddonDepositor] = useState('');
-  const [addonSubmitting, setAddonSubmitting] = useState(false);
-  const [addonSuccess, setAddonSuccess] = useState('');
-  const [addonError, setAddonError] = useState('');
-
-  // 페르소나 템플릿 구매
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
-  const [templateDepositor, setTemplateDepositor] = useState('');
-  const [templateSubmitting, setTemplateSubmitting] = useState(false);
-  const [templateSuccess, setTemplateSuccess] = useState('');
-  const [templateError, setTemplateError] = useState('');
+  // 요금제 플랜 구매
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [planDepositor, setPlanDepositor] = useState('');
+  const [planSubmitting, setPlanSubmitting] = useState(false);
+  const [planSuccess, setPlanSuccess] = useState('');
+  const [planError, setPlanError] = useState('');
 
   useEffect(() => {
     async function load() {
@@ -319,79 +251,38 @@ export default function Tab7Credits() {
     }
   }
 
-  async function handleAddonSubmit() {
-    if (!selectedAddonId) {
-      setAddonError('아이템을 선택해주세요.');
-      return;
-    }
-    if (!addonDepositor.trim()) {
-      setAddonError('입금자명을 입력해주세요.');
-      return;
-    }
-    const item = [...VOICE_PACKS, ...AVATAR_PACKS].find((t) => t.id === selectedAddonId)!;
-    setAddonSubmitting(true);
-    setAddonError('');
+  async function handlePlanSubmit() {
+    if (!selectedPlanId) { setPlanError('구매할 요금제 플랜을 선택해주세요.'); return; }
+    if (!planDepositor.trim()) { setPlanError('입금자명을 입력해주세요.'); return; }
+    const item = PLAN_TIERS.find((t) => t.id === selectedPlanId)!;
+    setPlanSubmitting(true);
+    setPlanError('');
     try {
       const res = await fetch('/api/payments', {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
           amount: item.price,
-          depositor_name: addonDepositor.trim(),
-          description: `[부가기능] ${item.name}`,
+          depositor_name: planDepositor.trim(),
+          description: `[요금제] ${item.name} 월정액`,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-      setAddonSuccess(`"${item.name}" 구매 신청이 완료되었습니다. 입금 확인 후 24시간 이내 적용됩니다.`);
-      setAddonDepositor('');
-      setSelectedAddonId(null);
-      setTimeout(() => setAddonSuccess(''), 8000);
+      setPlanSuccess(`"${item.name}" 요금제 신청이 완료되었습니다. 입금 확인 후 24시간 이내 활성화됩니다.`);
+      setPlanDepositor('');
+      setSelectedPlanId(null);
+      setTimeout(() => setPlanSuccess(''), 8000);
     } catch (err: unknown) {
-      setAddonError(err instanceof Error ? err.message : '신청에 실패했습니다. 다시 시도해주세요.');
+      setPlanError(err instanceof Error ? err.message : '신청에 실패했습니다. 다시 시도해주세요.');
     } finally {
-      setAddonSubmitting(false);
-    }
-  }
-
-  async function handleTemplateSubmit() {
-    if (!selectedTemplateId) {
-      setTemplateError('구매할 템플릿 팩을 선택해주세요.');
-      return;
-    }
-    if (!templateDepositor.trim()) {
-      setTemplateError('입금자명을 입력해주세요.');
-      return;
-    }
-    const item = PERSONA_TEMPLATES.find((t) => t.id === selectedTemplateId)!;
-    setTemplateSubmitting(true);
-    setTemplateError('');
-    try {
-      const res = await fetch('/api/payments', {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({
-          amount: item.price,
-          depositor_name: templateDepositor.trim(),
-          description: `[페르소나 템플릿] ${item.name}`,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-      setTemplateSuccess(`"${item.name}" 구매 신청이 완료되었습니다. 입금 확인 후 24시간 이내 템플릿이 지급됩니다.`);
-      setTemplateDepositor('');
-      setSelectedTemplateId(null);
-      setTimeout(() => setTemplateSuccess(''), 8000);
-    } catch (err: unknown) {
-      setTemplateError(err instanceof Error ? err.message : '신청에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setTemplateSubmitting(false);
+      setPlanSubmitting(false);
     }
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[var(--text-primary)]">크레딧 / 결제</h2>
+      <h2 className="text-xl font-bold text-[var(--text-primary)]">크레딧 · 요금제</h2>
 
       {/* 잔액 카드 */}
       <div className="bg-gradient-to-br from-amber-500/15 via-amber-400/5 to-transparent rounded-2xl border border-amber-500/25 p-6">
@@ -545,176 +436,57 @@ export default function Tab7Credits() {
         </p>
       </div>
 
-      {/* 전문 분야별 페르소나 템플릿 구매 */}
+      {/* 요금제 플랜 구매 */}
       <div className="bg-[var(--surface-1)] rounded-2xl border border-[var(--border-default)] p-6 space-y-5">
         <div>
-          <h3 className="font-semibold text-[var(--text-primary)]">전문 분야별 페르소나 템플릿</h3>
+          <h3 className="font-semibold text-[var(--text-primary)]">요금제 플랜</h3>
           <p className="text-xs text-[var(--text-tertiary)] mt-1">
-            전문가 수준의 코코봇 페르소나 세트를 구매해 즉시 적용하세요. 팩당 30,000원 · 일회성 구매
+            매월 자동 결제되는 정기 플랜. Free → Starter/Pro/Business 중 선택
           </p>
         </div>
 
-        {/* 템플릿 팩 그리드 */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {PERSONA_TEMPLATES.map((item) => (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {PLAN_TIERS.map((item) => (
             <button
               key={item.id}
-              onClick={() => setSelectedTemplateId(selectedTemplateId === item.id ? null : item.id)}
+              onClick={() => setSelectedPlanId(selectedPlanId === item.id ? null : item.id)}
               className={clsx(
-                'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
-                selectedTemplateId === item.id
+                'relative flex flex-col items-start gap-2 rounded-xl border p-4 text-left transition-all',
+                selectedPlanId === item.id
                   ? 'border-accent bg-accent/10 shadow-accent-glow'
                   : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
               )}
             >
-              <span className="text-2xl">{item.emoji}</span>
-              <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{item.name}</span>
-              <span className="text-[11px] text-[var(--text-tertiary)] leading-snug">{item.description}</span>
+              {item.popular && (
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-accent text-black text-[10px] font-bold whitespace-nowrap">
+                  인기
+                </span>
+              )}
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{item.emoji}</span>
+                <span className="text-base font-bold text-[var(--text-primary)]">{item.name}</span>
+              </div>
               <span className={clsx(
-                'mt-1 text-sm font-bold',
-                selectedTemplateId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]',
+                'text-lg font-extrabold',
+                selectedPlanId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]',
               )}>
-                {item.price.toLocaleString('ko-KR')}원
+                {item.tagline}
               </span>
+              <ul className="mt-1 space-y-0.5 text-[11px] text-[var(--text-tertiary)]">
+                {item.features.map((f) => (
+                  <li key={f}>• {f}</li>
+                ))}
+              </ul>
             </button>
           ))}
         </div>
 
-        {/* 구매 폼 — 팩 선택 시 표시 */}
-        {selectedTemplateId && (() => {
-          const item = PERSONA_TEMPLATES.find((t) => t.id === selectedTemplateId)!;
+        {selectedPlanId && (() => {
+          const item = PLAN_TIERS.find((t) => t.id === selectedPlanId)!;
           return (
             <div className="bg-[var(--surface-2)] rounded-xl border border-accent/30 p-4 space-y-3">
               <p className="text-sm font-semibold text-[var(--text-primary)]">
-                선택: {item.emoji} {item.name} — {item.price.toLocaleString('ko-KR')}원
-              </p>
-
-              {/* 무통장 입금 정보 */}
-              <div className="grid grid-cols-3 gap-2 text-sm">
-                <div className="bg-[var(--surface-2)] rounded-lg p-3">
-                  <p className="text-xs text-[var(--text-tertiary)] mb-1">은행</p>
-                  <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.bank}</p>
-                </div>
-                <div className="bg-[var(--surface-2)] rounded-lg p-3">
-                  <p className="text-xs text-[var(--text-tertiary)] mb-1">계좌번호</p>
-                  <p className="font-semibold text-[var(--text-primary)] text-xs">{BANK_INFO.account}</p>
-                </div>
-                <div className="bg-[var(--surface-2)] rounded-lg p-3">
-                  <p className="text-xs text-[var(--text-tertiary)] mb-1">예금주</p>
-                  <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.holder}</p>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">입금자명 (필수)</label>
-                <input
-                  type="text"
-                  placeholder="입금자명을 정확히 입력하세요"
-                  value={templateDepositor}
-                  onChange={(e) => setTemplateDepositor(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
-                />
-              </div>
-
-              {templateError && (
-                <p className="text-sm text-error">{templateError}</p>
-              )}
-              {templateSuccess && (
-                <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm">
-                  {templateSuccess}
-                </div>
-              )}
-
-              <button
-                onClick={handleTemplateSubmit}
-                disabled={templateSubmitting || !templateDepositor.trim()}
-                className="w-full py-2.5 rounded-xl bg-accent text-black font-bold text-sm hover:opacity-90 disabled:opacity-40 transition-opacity"
-              >
-                {templateSubmitting ? '처리 중...' : `${item.price.toLocaleString('ko-KR')}원 무통장 입금 신청`}
-              </button>
-              <p className="text-xs text-[var(--text-tertiary)] text-center">
-                입금 확인 후 24시간 이내 템플릿이 지급됩니다. 문의: support@cocobot.world
-              </p>
-            </div>
-          );
-        })()}
-
-        {/* 팩 미선택 시 성공/에러 메시지 표시 (선택 해제 후에도 보임) */}
-        {!selectedTemplateId && templateSuccess && (
-          <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
-            {templateSuccess}
-          </div>
-        )}
-      </div>
-
-      {/* 음성 & 아바타 팩 구매 */}
-      <div className="bg-[var(--surface-1)] rounded-2xl border border-[var(--border-default)] p-6 space-y-5">
-        <div>
-          <h3 className="font-semibold text-[var(--text-primary)]">음성 & 아바타 팩</h3>
-          <p className="text-xs text-[var(--text-tertiary)] mt-1">
-            내 코코봇에 AI 음성과 고유 아바타를 장착하세요. 일회성 구매 · 영구 사용
-          </p>
-        </div>
-
-        {/* 음성 팩 */}
-        <div>
-          <p className="text-xs font-semibold text-[var(--text-secondary)] mb-2">🎙️ 음성 팩</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {VOICE_PACKS.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setSelectedAddonId(selectedAddonId === item.id ? null : item.id)}
-                className={clsx(
-                  'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
-                  selectedAddonId === item.id
-                    ? 'border-accent bg-accent/10 shadow-accent-glow'
-                    : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
-                )}
-              >
-                <span className="text-2xl">{item.emoji}</span>
-                <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{item.name}</span>
-                <span className="text-[11px] text-[var(--text-tertiary)] leading-snug">{item.description}</span>
-                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]')}>
-                  {item.price.toLocaleString('ko-KR')}원
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 아바타 팩 */}
-        <div>
-          <p className="text-xs font-semibold text-[var(--text-secondary)] mb-2">🖼️ 아바타 팩</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {AVATAR_PACKS.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setSelectedAddonId(selectedAddonId === item.id ? null : item.id)}
-                className={clsx(
-                  'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
-                  selectedAddonId === item.id
-                    ? 'border-accent bg-accent/10 shadow-accent-glow'
-                    : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
-                )}
-              >
-                <span className="text-2xl">{item.emoji}</span>
-                <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{item.name}</span>
-                <span className="text-[11px] text-[var(--text-tertiary)] leading-snug">{item.description}</span>
-                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]')}>
-                  {item.price.toLocaleString('ko-KR')}원
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 구매 폼 — 아이템 선택 시 */}
-        {selectedAddonId && (() => {
-          const item = [...VOICE_PACKS, ...AVATAR_PACKS].find((t) => t.id === selectedAddonId)!;
-          return (
-            <div className="bg-[var(--surface-2)] rounded-xl border border-accent/30 p-4 space-y-3">
-              <p className="text-sm font-semibold text-[var(--text-primary)]">
-                선택: {item.emoji} {item.name} — {item.price.toLocaleString('ko-KR')}원
+                선택: {item.emoji} {item.name} — {item.tagline}
               </p>
               <div className="grid grid-cols-3 gap-2 text-sm">
                 <div className="bg-[var(--surface-2)] rounded-lg p-3">
@@ -735,34 +507,34 @@ export default function Tab7Credits() {
                 <input
                   type="text"
                   placeholder="입금자명을 정확히 입력하세요"
-                  value={addonDepositor}
-                  onChange={(e) => setAddonDepositor(e.target.value)}
+                  value={planDepositor}
+                  onChange={(e) => setPlanDepositor(e.target.value)}
                   className="w-full px-3 py-2.5 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
                 />
               </div>
-              {addonError && <p className="text-sm text-error">{addonError}</p>}
-              {addonSuccess && (
+              {planError && <p className="text-sm text-error">{planError}</p>}
+              {planSuccess && (
                 <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm">
-                  {addonSuccess}
+                  {planSuccess}
                 </div>
               )}
               <button
-                onClick={handleAddonSubmit}
-                disabled={addonSubmitting || !addonDepositor.trim()}
+                onClick={handlePlanSubmit}
+                disabled={planSubmitting || !planDepositor.trim()}
                 className="w-full py-2.5 rounded-xl bg-accent text-black font-bold text-sm hover:opacity-90 disabled:opacity-40 transition-opacity"
               >
-                {addonSubmitting ? '처리 중...' : `${item.price.toLocaleString('ko-KR')}원 무통장 입금 신청`}
+                {planSubmitting ? '처리 중...' : `${item.price.toLocaleString('ko-KR')}원 첫 달 입금 신청`}
               </button>
               <p className="text-xs text-[var(--text-tertiary)] text-center">
-                입금 확인 후 24시간 이내 적용됩니다. 문의: support@cocobot.world
+                입금 확인 후 24시간 이내 플랜이 활성화됩니다. 문의: support@cocobot.world
               </p>
             </div>
           );
         })()}
 
-        {!selectedAddonId && addonSuccess && (
+        {!selectedPlanId && planSuccess && (
           <div className="p-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm text-center">
-            {addonSuccess}
+            {planSuccess}
           </div>
         )}
       </div>
