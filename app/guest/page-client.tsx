@@ -46,24 +46,22 @@ interface Category {
   desc: string;
 }
 
-// 아바타형 — 나를 대신하는 코코봇 (6개)
+// 아바타형 — 나를 대신하는 코코봇 (5개, 체험 가능 항목만)
 const AVATAR_CATS: Category[] = [
   { id: 'avatar_executive',    templateId: 'guest_avatar_executive',    icon: '🏢', name: '기업경영자',     desc: '회사 소개·비전 응대' },
   { id: 'avatar_smallbiz',     templateId: 'guest_avatar_smallbiz',     icon: '🍱', name: '소상공인',       desc: '가게 안내·예약' },
   { id: 'avatar_professional', templateId: 'guest_avatar_professional', icon: '⚖️', name: '전문직 종사자',  desc: '상담·업무 안내' },
   { id: 'avatar_freelancer',   templateId: 'guest_avatar_freelancer',   icon: '🎨', name: '프리랜서',       desc: '포트폴리오·문의' },
   { id: 'avatar_politician',   templateId: 'guest_avatar_politician',   icon: '🗳️', name: '정치인',         desc: '공약·민원 응대' },
-  { id: 'avatar_other',        templateId: 'guest_avatar_other',        icon: '⚙️', name: '기타',           desc: '나만의 아바타' },
 ];
 
-// 도우미형 — 나를 도와주는 코코봇 (6개)
+// 도우미형 — 나를 도와주는 코코봇 (5개, 체험 가능 항목만)
 const HELPER_CATS: Category[] = [
   { id: 'helper_work',     templateId: 'guest_helper_work',     icon: '💼', name: '업무',  desc: '문서·보고서 작성' },
   { id: 'helper_learning', templateId: 'guest_helper_learning', icon: '📚', name: '학습',  desc: '공부·과제 지원' },
   { id: 'helper_creative', templateId: 'guest_helper_creative', icon: '🎨', name: '창작',  desc: '아이디어·글쓰기' },
   { id: 'helper_health',   templateId: 'guest_helper_health',   icon: '💪', name: '건강',  desc: '운동·식단 코칭' },
   { id: 'helper_life',     templateId: 'guest_helper_life',     icon: '🏠', name: '생활',  desc: '일상·민원 안내' },
-  { id: 'helper_other',    templateId: 'guest_helper_other',    icon: '⚙️', name: '기타',  desc: '나만의 도우미' },
 ];
 
 const CATEGORIES: Category[] = [...AVATAR_CATS, ...HELPER_CATS];
@@ -330,10 +328,13 @@ export default function GuestPageInner() {
         .guest-banner-desc {
           font-size: clamp(0.9rem, 2.5vw, 1.0625rem);
           color: rgb(255 255 255 / 0.85);
-          max-width: 480px;
+          max-width: 760px;
           margin: 0 auto;
           line-height: 1.65;
           position: relative;
+        }
+        .guest-banner-desc-line {
+          display: block;
         }
 
         .guest-banner-meta {
@@ -527,8 +528,8 @@ export default function GuestPageInner() {
             코코봇 체험
           </h1>
           <p className="guest-banner-desc">
-            <strong>아바타형</strong>은 나를 대신해 응대하고, <strong>도우미형</strong>은 나를 도와줍니다.
-            <br />카테고리를 선택하면 바로 대화할 수 있어요.
+            <span className="guest-banner-desc-line"><strong>아바타형</strong>은 나를 대신해 응대하고, <strong>도우미형</strong>은 나를 도와줍니다.</span>
+            <span className="guest-banner-desc-line">카테고리를 선택하면 바로 대화할 수 있어요.</span>
           </p>
         </div>
 
