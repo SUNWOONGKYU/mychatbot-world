@@ -71,7 +71,7 @@ type TabId = 'profile' | 'bots' | 'learning' | 'skills' | 'operations' | 'inheri
 const NAV_ITEMS: { id: TabId; label: string; icon: string }[] = [
   { id: 'profile',      label: '프로필 관리',    icon: '👤' },
   { id: 'bots',         label: '코코봇 관리',      icon: '🤖' },
-  { id: 'learning',     label: '지식 관리',        icon: '📚' },
+  { id: 'learning',     label: '코코봇 학습',      icon: '📚' },
   { id: 'skills',       label: '스킬 관리',      icon: '⚡' },
   { id: 'operations',   label: '코코봇 운영 관리', icon: '💼' },
   { id: 'inheritance',  label: '상속',           icon: '🏛️' },

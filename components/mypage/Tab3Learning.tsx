@@ -1,7 +1,7 @@
 /**
  * @task S7FE7
- * @description 마이페이지 탭3 — 지식 관리 (KB·Wiki·FAQ 통합)
- * KB 주입, Wiki-e-RAG, FAQ, 지식 베이스 현황
+ * @description 마이페이지 탭3 — 코코봇 학습 (KB·Wiki·FAQ 통합)
+ * KB 주입, Wiki-e-RAG, FAQ, 학습 현황
  */
 'use client';
 
@@ -552,7 +552,7 @@ function LearningOverview() {
       className="rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-1)] p-5"
       style={{ boxShadow: 'var(--shadow-sm)' }}
     >
-      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">지식 베이스 현황</h3>
+      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">코코봇 학습 현황</h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: '총 KB 문서', value: '—', icon: '📚' },

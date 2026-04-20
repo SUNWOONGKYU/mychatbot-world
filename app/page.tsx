@@ -40,7 +40,7 @@ const BIRTH_STEPS = [
   { num: '05', title: '코코봇 생성 완료', desc: '전용 링크와 QR 코드가 생성됩니다' },
 ];
 
-/* ── 지식관리시스템 4기능 ─────────────────────────── */
+/* ── 코코봇 학습 4기능 ────────────────────────────── */
 const SCHOOL_FEATURES = [
   { icon: '📤', title: '지식 업로드', desc: 'FAQ·문서(PDF/DOCX/TXT)·URL을 업로드하면 자동으로 분할·색인됩니다.' },
   { icon: '🔍', title: '의미 기반 검색', desc: '벡터 임베딩으로 단어가 달라도 질문 의도에 맞는 답을 찾아냅니다.' },
@@ -374,10 +374,10 @@ export default function LandingPage() {
                   border: '1px solid color-mix(in oklch, oklch(0.65 0.22 210) 35%, transparent)',
                 }}
               >
-                📚 STEP 2 · KNOWLEDGE
+                📚 STEP 2 · LEARNING
               </span>
               <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl [word-break:keep-all]">
-                내 지식으로{' '}
+                배워서{' '}
                 <span
                   style={{
                     background: 'linear-gradient(90deg, oklch(0.78 0.18 210), oklch(0.70 0.22 260))',
@@ -390,7 +390,7 @@ export default function LandingPage() {
                 </span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg [word-break:keep-all]">
-                문서·FAQ·URL을 업로드하면 코코봇이 내 지식 베이스로 답변합니다
+                문서·FAQ·URL을 학습시키면 코코봇이 자기 지식으로 답변합니다
               </p>
             </div>
             <div className="mt-14 grid gap-4 sm:grid-cols-2">
