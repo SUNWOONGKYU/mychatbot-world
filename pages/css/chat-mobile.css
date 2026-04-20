@@ -1,0 +1,263 @@
+/* @task S3F6 */
+/* ============================================
+   Chat Mobile UX — 모바일 전용 최적화 스타일
+   적용 조건: max-width 768px
+   담당 영역: 터치 타깃, iOS safe area, 키보드 대응
+   ============================================ */
+
+/* ─────────────────────────────────────────────
+   기반: iOS 주소창·노치 safe area 변수 정의
+───────────────────────────────────────────── */
+:root {
+  --safe-top:    env(safe-area-inset-top,    0px);
+  --safe-right:  env(safe-area-inset-right,  0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left,   0px);
+
+  /* 터치 최소 영역 (Apple HIG / Google Material 권장: 44px) */
+  --touch-target-min: 44px;
+}
+
+/* ─────────────────────────────────────────────
+   모바일 전용 스타일 (max-width: 768px)
+───────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* ── 전체 레이아웃 ── */
+  .chat-body {
+    /* iOS에서 동적 뷰포트 높이 적용 */
+    height: 100dvh;
+    max-height: 100dvh;
+    /* 키보드 표시 시 레이아웃이 입력창 위까지만 축소되도록 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* iOS 안전 영역 좌우 패딩 */
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+
+  /* ── 헤더 ── */
+  .chat-header {
+    padding-top: calc(var(--space-2) + var(--safe-top));
+    padding-left: calc(var(--space-3) + var(--safe-left));
+    padding-right: calc(var(--space-3) + var(--safe-right));
+    /* 터치 실수 방지: 헤더 버튼 간격 확보 */
+    gap: 4px;
+  }
+
+  /* ── 헤더 버튼 — 터치 영역 44px 보장 ── */
+  .chat-header-btn {
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 터치 확장 패딩 (시각적 크기는 유지하면서 터치 영역 확장) */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── Voice Select ── */
+  .voice-select {
+    height: var(--touch-target-min);
+    font-size: 0.75rem;
+    padding: 0 8px;
+    /* iOS 셀렉트 네이티브 스타일 억제 */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* ── 페르소나 칩 — 터치 영역 확보 ── */
+  .persona-chip {
+    min-height: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 터치 피드백 */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* 더블탭 확대 방지 */
+    user-select: none;
+  }
+
+  .persona-chip:active {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+
+  /* ── 메시지 영역 ── */
+  .chat-messages {
+    /* 과스크롤 바운스 효과 (iOS 느낌) */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    padding-left: calc(var(--space-3) + var(--safe-left));
+    padding-right: calc(var(--space-3) + var(--safe-right));
+  }
+
+  /* ── 메시지 버블 — 모바일 너비 최적화 ── */
+  .message {
+    max-width: 90%;
+  }
+
+  /* ── 입력 영역 — 키보드 표시 시 핵심 ── */
+  .chat-input-area {
+    flex-shrink: 0;
+    /* iOS safe area bottom 적용 */
+    padding-bottom: max(var(--space-3), var(--safe-bottom));
+    padding-left: calc(var(--space-3) + var(--safe-left));
+    padding-right: calc(var(--space-3) + var(--safe-right));
+    /* 키보드가 올라와도 입력창이 항상 visible */
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    background: rgba(15, 15, 26, 0.98);
+  }
+
+  /* 라이트 모드 입력 영역 */
+  .chat-body.light .chat-input-area {
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  /* ── 전송/음성 버튼 — 터치 영역 44px ── */
+  .chat-voice-btn,
+  .chat-send-btn {
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .chat-send-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* ── 텍스트 입력창 ── */
+  .chat-input {
+    font-size: 16px; /* iOS 자동 줌 방지 (16px 미만이면 자동 확대) */
+    min-height: var(--touch-target-min);
+    padding: var(--space-2) var(--space-1);
+  }
+
+  /* ── FAQ 버튼 — 터치 영역 ── */
+  .faq-btn {
+    min-height: var(--touch-target-min);
+    padding: var(--space-2) var(--space-3);
+    display: flex;
+    align-items: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── CPC 바 ── */
+  .cpc-bar {
+    padding-left: calc(var(--space-3) + var(--safe-left));
+    padding-right: calc(var(--space-3) + var(--safe-right));
+  }
+
+  .cpc-select {
+    height: var(--touch-target-min);
+    font-size: 0.85rem;
+  }
+
+  .cpc-autonomous-btn {
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── 스크롤바 숨김 (모바일) ── */
+  .chat-messages::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chat-messages {
+    scrollbar-width: none;
+  }
+
+  /* ── 텍스트 선택 방지 (버튼/칩 등 UI 요소) ── */
+  .chat-header-btn,
+  .persona-chip,
+  .faq-btn,
+  .chat-send-btn,
+  .chat-voice-btn {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── 아바타 영역 — 모바일에서 높이 축소 ── */
+  .chat-avatar-stage {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+  }
+
+  .avatar-container {
+    width: 90px;
+    height: 110px;
+  }
+
+  .avatar-face {
+    transform: scale(0.75);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   소형 모바일 (max-width: 390px) — iPhone SE 등
+───────────────────────────────────────────── */
+@media (max-width: 390px) {
+  .chat-header {
+    padding-top: calc(4px + var(--safe-top));
+    gap: 3px;
+  }
+
+  .chat-bot-name {
+    font-size: 0.9rem;
+  }
+
+  .persona-chip {
+    font-size: 0.58rem;
+    padding: 4px 2px;
+  }
+
+  .message {
+    max-width: 95%;
+  }
+
+  .chat-input {
+    font-size: 16px; /* iOS 줌 방지 유지 */
+  }
+}
+
+/* ─────────────────────────────────────────────
+   iOS 키보드 pop-up 대응 (dvh 미지원 구형 iOS)
+   visual viewport API 보조용 CSS
+───────────────────────────────────────────── */
+@supports not (height: 100dvh) {
+  @media (max-width: 768px) {
+    .chat-body {
+      height: 100vh;
+      max-height: 100vh;
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   터치 피드백 — 물결 효과 (Ripple) 경량 대안
+───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .faq-btn:active,
+  .persona-chip:active,
+  .chat-header-btn:active {
+    transition: transform 0.1s ease, opacity 0.1s ease;
+    opacity: 0.7;
+  }
+}

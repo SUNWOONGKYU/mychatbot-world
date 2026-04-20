@@ -8,8 +8,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>커리큘럼 상세 — CoCoBot</title>
-  <meta name="description" content="코코봇스쿨 커리큘럼 단계별 모듈 목록 및 학습 진행 상태. CoCoBot.">
+  <title>커리큘럼 상세 — CoCoBot World</title>
+  <meta name="description" content="코코봇스쿨 커리큘럼 단계별 모듈 목록 및 학습 진행 상태. CoCoBot World.">
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../css/learning.css">
 </head>
@@ -20,7 +20,7 @@
 
     <!-- 사이드바 -->
     <aside class="sidebar">
-      <a href="../../index.html" class="sidebar-brand">CoCoBot</a>
+      <a href="../../index.html" class="sidebar-brand">CoCoBot World</a>
 
       <span class="sidebar-section-label">5대 메뉴</span>
       <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
@@ -84,7 +84,7 @@
   <script src="../../js/learning.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      if (typeof CoCoBot !== 'undefined') await CoCoBot.ready;
+      if (typeof MCW !== 'undefined') await MCW.ready;
 
       // URL 파라미터로 커리큘럼 결정
       const params = new URLSearchParams(window.location.search);

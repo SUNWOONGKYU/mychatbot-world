@@ -1,0 +1,69 @@
+# Vercel deploy exclusions (Korean paths + Google Drive ghost folders)
+
+# SAL Grid process artifacts (not for production)
+Dev_Package/
+SAL_Grid_Dev_Suite/
+SAL-DA_MCW_품질진단/
+zz_KingFolder/
+
+# Archive
+_archive/
+Dev_Package_archive_*/
+
+# Reference materials
+_reference/
+참고자료_AIRI/
+참고자료_ai-chatbot-avatar-project/
+
+# Process directory (stage folders — sync target only)
+Process/
+
+# Tests (not for production deployment)
+tests/
+playwright-report/
+test-results/
+
+# Documentation
+docs/
+
+# Skill market
+skill-market/
+
+# CPC agent
+cpc-agent-server/
+
+# Grid records at root
+grid_records/
+
+# TalkTodoPlan
+zz_KingFolder/
+
+# Old vanilla JS (replaced by Next.js app/)
+js/
+css/
+pages/
+
+# Legacy API folder
+api/
+_archive/
+
+# Scripts (dev only)
+scripts/
+
+# Build artifacts
+.next/
+node_modules/
+tsconfig.tsbuildinfo
+
+# Temp test files
+_test_*.mjs
+_check.txt
+TASK_PLAN.md
+
+# Playwright
+playwright.config.ts
+
+# OS files
+desktop.ini
+Thumbs.db
+.DS_Store
