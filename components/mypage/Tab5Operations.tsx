@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import { authHeaders } from '@/lib/auth-client';
 
 // ── 타입 ─────────────────────────────────────────────────────
 
@@ -50,18 +51,6 @@ interface OperationStats {
 }
 
 type SubTab = 'job' | 'hired' | 'revenue' | 'stats';
-
-function authHeaders(): HeadersInit {
-  const token =
-    typeof window !== 'undefined'
-      ? localStorage.getItem('mcw_access_token') ||
-        sessionStorage.getItem('mcw_access_token') ||
-        ''
-      : '';
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
-}
 
 function formatCurrency(n: number): string {
   return '₩' + n.toLocaleString('ko-KR');

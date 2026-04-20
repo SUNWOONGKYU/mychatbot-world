@@ -12,6 +12,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import clsx from 'clsx';
+import { getToken, authHeaders } from '@/lib/auth-client';
 
 // ── 타입 정의 ────────────────────────────────────────────────
 
@@ -31,21 +32,6 @@ interface ConsentRequest {
 }
 
 // ── 유틸 ──────────────────────────────────────────────────────
-
-function getToken(): string {
-  return (
-    localStorage.getItem('mcw_access_token') ||
-    sessionStorage.getItem('mcw_access_token') ||
-    ''
-  );
-}
-
-function authHeaders(): HeadersInit {
-  const token = getToken();
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
-}
 
 function formatDate(iso: string | null): string {
   if (!iso) return '-';

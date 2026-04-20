@@ -8,6 +8,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import clsx from 'clsx';
+import { getToken, authHeaders } from '@/lib/auth-client';
 
 interface UserProfile {
   id: string;
@@ -77,19 +78,6 @@ function formatDate(iso: string | null): string {
   const d = new Date(iso);
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 }
-
-function getToken(): string {
-  if (typeof window === 'undefined') return '';
-  return localStorage.getItem('mcw_access_token') || sessionStorage.getItem('mcw_access_token') || '';
-}
-
-function authHeaders(): HeadersInit {
-  const token = getToken();
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
-}
-
 interface Tab1ProfileProps {
   profile: UserProfile;
   onProfileUpdate: (updated: UserProfile) => void;

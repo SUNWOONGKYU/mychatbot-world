@@ -7,6 +7,7 @@
 
 import { useState, useCallback } from 'react';
 import clsx from 'clsx';
+import { authHeaders } from '@/lib/auth-client';
 
 // ── 타입 ─────────────────────────────────────────────────────────────────
 
@@ -44,17 +45,6 @@ const DM_SECURITY_LEVELS = [
   { level: 2, label: '팔로워', desc: '팔로워만 DM 가능' },
   { level: 3, label: '비공개', desc: 'DM 수신 차단' },
 ];
-
-function getToken(): string {
-  if (typeof window === 'undefined') return '';
-  return localStorage.getItem('mcw_access_token') || sessionStorage.getItem('mcw_access_token') || '';
-}
-function authHeaders(): HeadersInit {
-  const token = getToken();
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
-}
 
 // ── 하위 컴포넌트: QR + URL 패널 ─────────────────────────────────────────
 

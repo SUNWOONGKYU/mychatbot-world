@@ -1,15 +1,47 @@
 /**
- * 클라이언트 사이드 인증 유틸리티
- * getToken / authHeaders 중복 제거 — 마이페이지 탭 전체에서 공유
+ * 클라이언트 사이드 인증 유틸리티 — Supabase 세션 기반
+ *
+ * Supabase Auth는 세션을 localStorage 의 `sb-{project-ref}-auth-token` 키에
+ * JSON 으로 저장한다. getToken() 은 이 값을 동기로 읽어 access_token 을 반환.
+ *
+ * 레거시 'mcw_access_token' 키도 호환성을 위해 우선 확인 (있으면 사용).
+ *
+ * 마이페이지 8탭 + create-bot 위저드 등 Bearer 토큰이 필요한 모든 fetch 가 공유.
  */
 
 export function getToken(): string {
   if (typeof window === 'undefined') return '';
-  return (
+
+  // 1) 레거시 자체 토큰 (호환성 유지)
+  const legacy =
     localStorage.getItem('mcw_access_token') ||
-    sessionStorage.getItem('mcw_access_token') ||
-    ''
-  );
+    sessionStorage.getItem('mcw_access_token');
+  if (legacy) return legacy;
+
+  // 2) Supabase 세션에서 access_token 추출
+  //    키: sb-{project-ref}-auth-token  값: JSON (객체 또는 배열)
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith('sb-') || !key.endsWith('-auth-token')) continue;
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          if (typeof parsed.access_token === 'string') return parsed.access_token;
+          // 일부 supabase-js 버전은 [access_token, refresh_token, ...] 배열로 저장
+          if (Array.isArray(parsed) && typeof parsed[0] === 'string') return parsed[0];
+        }
+      } catch {
+        // JSON 파싱 실패 — 다음 키로
+      }
+    }
+  } catch {
+    // localStorage 접근 자체가 실패한 경우 (사파리 사적 모드 등)
+  }
+
+  return '';
 }
 
 export function authHeaders(json = true): HeadersInit {

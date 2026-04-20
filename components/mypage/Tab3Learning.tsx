@@ -7,6 +7,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
+import { getToken, authHeadersFormData as authHeaders } from '@/lib/auth-client';
 
 type KbTab = 'file' | 'text' | 'obsidian';
 type WikiSection = 'ingest' | 'pages' | 'graph' | 'lint' | 'growth';
@@ -24,17 +25,6 @@ const WIKI_SECTIONS: { id: WikiSection; label: string; icon: string; desc: strin
   { id: 'lint',    label: 'Wiki Lint',     icon: '✅', desc: 'Wiki 품질 점검 및 개선 제안을 제공합니다.' },
   { id: 'growth',  label: '축적 현황',     icon: '📈', desc: '복리 성장 지표 — 누적 KB/Wiki/FAQ를 확인합니다.' },
 ];
-
-function getToken(): string {
-  if (typeof window === 'undefined') return '';
-  return localStorage.getItem('mcw_access_token') || sessionStorage.getItem('mcw_access_token') || '';
-}
-function authHeaders(): HeadersInit {
-  const token = getToken();
-  return token
-    ? { Authorization: `Bearer ${token}` }
-    : {};
-}
 
 // ── KB 주입 패널 ──────────────────────────────────────────────────────────
 

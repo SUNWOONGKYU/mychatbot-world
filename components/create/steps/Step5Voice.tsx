@@ -9,6 +9,7 @@
 import { useState, useRef } from 'react';
 import type { WizardData } from '../CreateWizard';
 import { stepTitle, stepDesc, StepActions } from '../ui';
+import { authHeaders } from '@/lib/auth-client';
 
 interface Props {
   data: WizardData;
@@ -65,7 +66,7 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
       // 봇 생성 API 호출
       const res = await fetch('/api/create-bot/deploy', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({
           botName: data.botName,
           botDesc: data.botDesc,

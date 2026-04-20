@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import { authHeaders } from '@/lib/auth-client';
 
 // ── 타입 ─────────────────────────────────────────────────────
 
@@ -163,18 +164,6 @@ function PaymentStatusBadge({ status }: { status: PaymentHistory['status'] }) {
       {label}
     </span>
   );
-}
-
-function authHeaders(): HeadersInit {
-  const token =
-    typeof window !== 'undefined'
-      ? localStorage.getItem('mcw_access_token') ||
-        sessionStorage.getItem('mcw_access_token') ||
-        ''
-      : '';
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
 }
 
 // ── 사용 내역 섹션 ────────────────────────────────────────────

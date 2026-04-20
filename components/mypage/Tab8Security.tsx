@@ -8,17 +8,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 
-function authHeaders(): HeadersInit {
-  const token =
-    typeof window !== 'undefined'
-      ? localStorage.getItem('mcw_access_token') ||
-        sessionStorage.getItem('mcw_access_token') ||
-        ''
-      : '';
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
-}
+import { authHeaders } from '@/lib/auth-client';
 
 // ── 비밀번호 변경 섹션 ───────────────────────────────────────
 

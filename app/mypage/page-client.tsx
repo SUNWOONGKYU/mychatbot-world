@@ -17,6 +17,7 @@ import Tab5Operations from '@/components/mypage/Tab5Operations';
 import Tab6Inheritance from '@/components/mypage/Tab6Inheritance';
 import Tab7Credits from '@/components/mypage/Tab7Credits';
 import Tab8Security from '@/components/mypage/Tab8Security';
+import { getToken, authHeaders } from '@/lib/auth-client';
 
 // ── 타입 ─────────────────────────────────────────────────────────────────
 
@@ -78,16 +79,7 @@ const NAV_ITEMS: { id: TabId; label: string; icon: string }[] = [
 
 // ── 유틸 ─────────────────────────────────────────────────────────────────
 
-function getToken(): string {
-  if (typeof window === 'undefined') return '';
-  return localStorage.getItem('mcw_access_token') || sessionStorage.getItem('mcw_access_token') || '';
-}
-function authHeaders(): HeadersInit {
-  const token = getToken();
-  return token
-    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json' };
-}
+// getToken/authHeaders → @/lib/auth-client 에서 import (Supabase 세션 기반)
 
 // ── 프로필 헤더 (PageToolbar 패턴) ──────────────────────────────────────
 
