@@ -80,10 +80,14 @@ export function Navbar() {
       className={clsx(
         'sticky top-0 z-40',
         'border-b transition-all duration-200',
-        scrolled
-          ? 'bg-surface/80 backdrop-blur-md border-border shadow-sm'
-          : 'bg-surface border-border',
       )}
+      style={{
+        background: scrolled ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg)',
+        borderBottomColor: 'var(--nav-border)',
+        boxShadow: scrolled ? 'var(--nav-shadow)' : 'none',
+        backdropFilter: 'blur(12px) saturate(140%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(140%)',
+      }}
     >
       <div className="mx-auto grid h-16 items-center px-4 md:px-6" style={{ maxWidth: '1280px', gridTemplateColumns: '1fr auto 1fr' }}>
       {/* 로고 — CoCoBot 공식 워드마크 */}

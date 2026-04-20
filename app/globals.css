@@ -562,6 +562,17 @@
   --shadow-accent-glow:
     0 0 0 3px rgb(var(--amber-500) / 0.3),
     0 8px 24px rgb(var(--amber-500) / 0.2);
+
+  /* ── Navbar (S5FE3 재기획: 퍼플 워시 + 글래스) ── */
+  --nav-bg: linear-gradient(180deg,
+    rgb(var(--primary-950) / 0.85) 0%,
+    rgb(var(--neutral-900) / 0.88) 100%);
+  --nav-bg-scrolled: linear-gradient(180deg,
+    rgb(var(--primary-900) / 0.72) 0%,
+    rgb(var(--neutral-900) / 0.78) 100%);
+  --nav-border: rgb(var(--primary-500) / 0.18);
+  --nav-shadow: 0 1px 0 rgb(var(--primary-500) / 0.08),
+                0 8px 24px -12px rgb(0 0 0 / 0.4);
 }
 
 /* =============================================================
@@ -606,6 +617,17 @@
   --chat-bot-text:  17 24 39;
 
   /* ── Shadow (라이트 override: Notion 다층) — S7 shadow-sm/md/lg/xl는 §2에서 이미 적용 ── */
+
+  /* ── Navbar (S5FE3 재기획: 라이트 — 옅은 라벤더 워시 + 글래스) ── */
+  --nav-bg: linear-gradient(180deg,
+    rgb(var(--primary-50) / 0.92) 0%,
+    rgb(255 255 255 / 0.90) 100%);
+  --nav-bg-scrolled: linear-gradient(180deg,
+    rgb(var(--primary-50) / 0.80) 0%,
+    rgb(255 255 255 / 0.78) 100%);
+  --nav-border: rgb(var(--primary-500) / 0.14);
+  --nav-shadow: 0 1px 0 rgb(var(--primary-500) / 0.06),
+                0 4px 16px -8px rgb(var(--primary-700) / 0.12);
 }
 
 /* =============================================================
