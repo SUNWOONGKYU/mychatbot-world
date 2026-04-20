@@ -40,8 +40,9 @@ export default function AuthCallbackPage() {
 
       // (A) Implicit flow — hash 에 토큰이 들어있음 (Google/Kakao OAuth 응답)
       if (accessToken && refreshToken) {
-        // 기존 이메일 세션이 남아있을 수 있으므로 강제로 지움
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        // setSession 이 기존 세션을 덮어쓴다. signOut 선행호출 금지:
+        // signOut({scope:'local'}) 후 setSession 내부의 getUser 가
+        // "Auth session missing!" 을 던지는 문제가 확인됨.
         const { data, error } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
@@ -54,8 +55,6 @@ export default function AuthCallbackPage() {
         }
         const provider =
           (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'unknown';
-        // hash 에서 오는 경로는 OAuth 이므로 email 이 아님이 정상이지만,
-        // 혹시라도 email 로 태그되면 수동 로그인 정책상 /login 으로.
         if (provider === 'email') {
           await supabase.auth.signOut();
           if (!cancelled) router.replace('/login?confirmed=1');
