@@ -16,9 +16,8 @@ interface MarketingGNBProps {
 
 const NAV_LINKS = [
   { label: '스킬스토어', href: '/skills' },
-  { label: '가격', href: '#pricing' },
   { label: '커뮤니티', href: '/community' },
-  { label: '블로그', href: '/blog' },
+  { label: '고객센터', href: '/customer-service' },
 ];
 
 export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {

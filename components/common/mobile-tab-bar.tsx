@@ -9,7 +9,7 @@ import clsx from 'clsx';
 const TAB_ITEMS = [
   {
     label: 'Home',
-    href: '/dashboard',
+    href: '/home',
     icon: HomeIcon,
   },
   {

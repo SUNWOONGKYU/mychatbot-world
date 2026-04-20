@@ -40,7 +40,7 @@ export default async function FaqPage({ searchParams }: PageProps) {
             botId 파라미터가 누락되었습니다.
           </p>
           <a
-            href="/dashboard"
+            href="/home"
             className="inline-block mt-2 text-sm text-text-link hover:underline underline-offset-4"
           >
             대시보드로 이동
@@ -76,7 +76,7 @@ export default async function FaqPage({ searchParams }: PageProps) {
           <nav aria-label="이동 경로" className="mb-1">
             <ol className="flex items-center flex-wrap text-sm text-text-secondary gap-0">
               <li className="flex items-center">
-                <a href="/dashboard" className="text-text-link hover:underline underline-offset-4 transition-colors">
+                <a href="/home" className="text-text-link hover:underline underline-offset-4 transition-colors">
                   대시보드
                 </a>
                 <span className="mx-1.5 text-text-tertiary" aria-hidden="true">/</span>

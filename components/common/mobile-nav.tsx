@@ -13,7 +13,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: '대시보드',    href: '/dashboard',      icon: '◻' },
+  { label: '대시보드',    href: '/home',            icon: '◻' },
   { label: '내 봇',      href: '/bots',            icon: '🤖' },
   { label: '봇 만들기',  href: '/bots/new',        icon: '＋' },
   { label: '대화 기록',  href: '/conversations',   icon: '💬' },
