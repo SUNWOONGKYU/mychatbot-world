@@ -29,12 +29,11 @@ export default function SkillsMarketPage() {
         <div className="page-hero-bg"><div className="page-hero-orb" /></div>
         <div className="page-hero-content">
           <h1 className="page-hero-title">
-            <span className="accent">스킬</span>을 장착합니다
+            <span className="accent">스킬</span>장터
           </h1>
           <p className="page-hero-subtitle">
-            예약, 결제, 번역, 감정 분석 — 필요한 스킬을 골라 장착하세요.<br />
-            {/* 총 스킬 수는 클라이언트 컴포넌트에서 표시 */}
-            23개 스킬로 코코봇의 능력을 강화하세요.
+            필요한 스킬을 골라 코코봇에 장착하거나, 직접 만든 스킬을 공유하세요.<br />
+            예약·결제·번역·감정 분석 등 23+ 스킬이 코코봇의 능력을 강화합니다.
           </p>
         </div>
       </section>
