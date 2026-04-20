@@ -7,9 +7,15 @@
  * - 글래스모피즘 카드 (blur + 반투명 + 얇은 border)
  * - 골드 시머 엑센트
  * - hover: translate-y + scale + glow
+ *
+ * 'use client': MarketingGNB/HeroSection이 실제 Supabase 세션 상태에 따라 분기되어야 함
+ *               (로그아웃 UI 노출, 로그인 후 "내 코코봇 관리하기" CTA 전환)
  */
+'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import supabase from '@/lib/supabase';
 import { HeroSection } from '@/components/landing/hero';
 import { MarketingGNB } from '@/components/landing/marketing-gnb';
 import { LandingFooter } from '@/components/landing/footer';
@@ -55,7 +61,21 @@ const DARK_BG =
   'radial-gradient(ellipse at top, oklch(0.22 0.14 285) 0%, oklch(0.16 0.12 280) 40%, oklch(0.12 0.08 260) 100%)';
 
 export default function LandingPage() {
-  const isLoggedIn = false;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setIsLoggedIn(!!data.session);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setIsLoggedIn(!!session);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <>
