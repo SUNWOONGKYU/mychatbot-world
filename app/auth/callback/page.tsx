@@ -1,125 +1,136 @@
 /**
- * @task S1SC1 (diagnostic build)
- * @description 인증 콜백 — 도착 URL / 세션 상태를 화면에 덤프하여 원인 추적
+ * @task S1SC1 (v3)
+ * @description 인증 콜백 — 두 가지 플로우 수용
+ *   1) 이메일 인증 완료: URL 이 비어있거나 error_description → /login?confirmed=1
+ *   2) OAuth 로그인 (implicit flow): URL hash 의 access_token/refresh_token 으로
+ *      setSession 명시 호출. 기존 세션(이전 이메일 로그인)이 남아있을 경우 덮어씀.
  *
- * ⚠ 일시적으로 자동 redirect 를 중단하고 디버그 패널을 노출한다.
- * 원인 확인 후 기존 로직으로 되돌린다.
+ * 왜 implicit 인가: lib/supabase.ts 의 createClient 가 옵션 없이 생성되어
+ * 기본 flowType 이 implicit. OAuth 응답은 #access_token=... 해시 형태로 도착.
  */
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import supabase from '@/lib/supabase';
 
-const BUILD_TAG = 'DIAG-2026-04-21-01';
-
-type Dump = {
-  href: string;
-  search: Record<string, string>;
-  hash: string;
-  sessionProvider: string | null;
-  sessionUserEmail: string | null;
-  exchangeError: string | null;
-  exchangeAttempted: boolean;
-  onAuthEvents: string[];
-};
-
 export default function AuthCallbackPage() {
-  const [dump, setDump] = useState<Dump | null>(null);
+  const router = useRouter();
+  const [status, setStatus] = useState<'processing' | 'error'>('processing');
+  const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
     let cancelled = false;
-    const events: string[] = [];
 
     async function run() {
       const url = new URL(window.location.href);
-      const search: Record<string, string> = {};
-      url.searchParams.forEach((v, k) => {
-        search[k] = v.length > 80 ? v.slice(0, 80) + '…' : v;
-      });
+      const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+      const errorDescription =
+        url.searchParams.get('error_description') ?? hashParams.get('error_description');
 
-      const base: Dump = {
-        href: window.location.href,
-        search,
-        hash: url.hash || '(none)',
-        sessionProvider: null,
-        sessionUserEmail: null,
-        exchangeError: null,
-        exchangeAttempted: false,
-        onAuthEvents: [],
-      };
-
-      const { data: first } = await supabase.auth.getSession();
-      if (cancelled) return;
-      if (first.session) {
-        base.sessionProvider =
-          (first.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'unknown';
-        base.sessionUserEmail = first.session.user.email ?? null;
+      if (errorDescription) {
+        setStatus('error');
+        setErrMsg(decodeURIComponent(errorDescription));
+        return;
       }
 
-      supabase.auth.onAuthStateChange((event, session) => {
-        events.push(`${event}${session ? `(user=${session.user.email ?? '?'})` : ''}`);
-        setDump((prev) => (prev ? { ...prev, onAuthEvents: [...events] } : prev));
-      });
-
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
       const code = url.searchParams.get('code');
-      if (code && !first.session) {
-        base.exchangeAttempted = true;
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-        if (!cancelled) {
-          if (error) {
-            base.exchangeError = `${error.name ?? 'Error'}: ${error.message}`;
-          } else if (data.session) {
-            base.sessionProvider =
-              (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'unknown';
-            base.sessionUserEmail = data.session.user.email ?? null;
-          } else {
-            base.exchangeError = 'exchange returned session=null, error=null';
-          }
+
+      // (A) Implicit flow — hash 에 토큰이 들어있음 (Google/Kakao OAuth 응답)
+      if (accessToken && refreshToken) {
+        // 기존 이메일 세션이 남아있을 수 있으므로 강제로 지움
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (cancelled) return;
+        if (error || !data.session) {
+          setStatus('error');
+          setErrMsg(error?.message ?? 'setSession returned null');
+          return;
         }
+        const provider =
+          (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'unknown';
+        // hash 에서 오는 경로는 OAuth 이므로 email 이 아님이 정상이지만,
+        // 혹시라도 email 로 태그되면 수동 로그인 정책상 /login 으로.
+        if (provider === 'email') {
+          await supabase.auth.signOut();
+          if (!cancelled) router.replace('/login?confirmed=1');
+        } else {
+          if (!cancelled) router.replace('/home');
+        }
+        return;
       }
 
-      if (!cancelled) setDump(base);
+      // (B) PKCE flow — ?code= 가 있으면 명시 교환
+      if (code) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (cancelled) return;
+        if (error || !data.session) {
+          setStatus('error');
+          setErrMsg(error?.message ?? 'exchange returned null');
+          return;
+        }
+        const provider =
+          (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'unknown';
+        if (provider === 'email') {
+          await supabase.auth.signOut();
+          if (!cancelled) router.replace('/login?confirmed=1');
+        } else {
+          if (!cancelled) router.replace('/home');
+        }
+        return;
+      }
+
+      // (C) 아무 페이로드 없음 — 이메일 인증 완료 후 단순 redirect 로 간주
+      //     (혹시 로그인 상태였다면 수동 로그인 정책상 signOut)
+      const { data: existing } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (existing.session) {
+        await supabase.auth.signOut();
+      }
+      if (!cancelled) router.replace('/login?confirmed=1');
     }
 
     run();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [router]);
 
   return (
-    <main className="min-h-screen px-4 py-6" style={{ background: 'var(--surface-0)' }}>
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-lg font-bold mb-2">🛠 /auth/callback 진단</h1>
-        <p className="text-xs text-text-tertiary mb-4">
-          BUILD: <code>{BUILD_TAG}</code> — 자동 리다이렉트가 일시 중단되어 있습니다.
-        </p>
-        {!dump ? (
-          <p className="text-sm">확인 중…</p>
+    <main
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: 'var(--surface-0)' }}
+    >
+      <div className="text-center">
+        {status === 'processing' ? (
+          <>
+            <div
+              className="mx-auto mb-4 inline-block h-10 w-10 animate-spin rounded-full border-4 border-t-transparent"
+              style={{ borderColor: 'var(--interactive-primary) transparent transparent transparent' }}
+              aria-hidden="true"
+            />
+            <p className="text-sm text-text-secondary">인증 확인 중…</p>
+          </>
         ) : (
-          <pre
-            className="text-xs p-3 rounded-lg overflow-auto whitespace-pre-wrap break-all"
-            style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}
-          >
-            {JSON.stringify(dump, null, 2)}
-          </pre>
+          <>
+            <p className="text-sm font-medium" style={{ color: 'var(--state-danger-fg)' }}>
+              인증 처리에 문제가 발생했습니다.
+            </p>
+            <p className="mt-2 text-xs text-text-tertiary">{errMsg}</p>
+            <button
+              onClick={() => router.replace('/login')}
+              className="mt-4 px-4 py-2 rounded-lg text-sm font-semibold text-white"
+              style={{ background: 'var(--interactive-primary)' }}
+            >
+              로그인 페이지로 이동
+            </button>
+          </>
         )}
-        <div className="mt-4 flex gap-2">
-          <a
-            href="/login"
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-            style={{ background: 'var(--interactive-primary)' }}
-          >
-            /login 으로 이동
-          </a>
-          <a
-            href="/home"
-            className="px-4 py-2 rounded-lg text-sm font-semibold"
-            style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}
-          >
-            /home 으로 이동
-          </a>
-        </div>
       </div>
     </main>
   );
