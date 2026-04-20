@@ -272,7 +272,7 @@ async function searchWiki(
  * 답변 후 위키 accumulate 비동기 호출 (복리 축적)
  * 실패해도 메인 응답에 영향 없음
  */
-function triggerWikiAccumulate(
+export function triggerWikiAccumulate(
   botId: string,
   question: string,
   answer: string,

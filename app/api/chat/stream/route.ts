@@ -27,6 +27,7 @@ import { createClient } from '@supabase/supabase-js';
 import { selectModel } from '@/lib/ai-router';
 import { chatCompletionStream, formatSSE } from '@/lib/openrouter-client';
 import { loadPersona } from '@/lib/persona-loader';
+import { triggerWikiAccumulate } from '@/app/api/chat/route';
 import type { OpenRouterMessage } from '@/types/ai';
 
 // ============================
@@ -335,7 +336,11 @@ export async function POST(req: NextRequest): Promise<Response> {
           fullReply
         );
 
-        // 12. done 이벤트 전송
+        // 12. Wiki accumulate 비동기 호출 (복리 축적, 실패해도 무시)
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+        triggerWikiAccumulate(botId, message, fullReply, appUrl, conversationId);
+
+        // 13. done 이벤트 전송
         write('done', JSON.stringify({ messageId }));
         controller.close();
       } catch (err) {

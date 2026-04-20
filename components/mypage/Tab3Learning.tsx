@@ -545,8 +545,41 @@ function FaqPanel() {
 
 // ── 전체 학습 현황 ───────────────────────────────────────────────────────
 
+interface RecentLearning {
+  id: string;
+  title: string;
+  page_type: string;
+  quality_score: number;
+  created_at: string;
+}
+
+interface LearningStats {
+  kb_count: number;
+  wiki_count: number;
+  faq_count: number;
+  quality_avg: number;
+  recent: RecentLearning[];
+}
+
 function LearningOverview() {
-  // 실제 API에서 데이터를 받아와야 하나, 현재는 UI 뼈대만 표시
+  const [stats, setStats] = useState<LearningStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/learning/stats', { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.success && d.data) setStats(d.data as LearningStats);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const fmt = (n: number | undefined) => loading ? '…' : (n ?? 0).toLocaleString('ko-KR');
+  const qualityPct = loading
+    ? '…'
+    : `${Math.round((stats?.quality_avg ?? 0) * 100)}%`;
+
   return (
     <div
       className="rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-1)] p-5"
@@ -555,10 +588,10 @@ function LearningOverview() {
       <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">코코봇 학습 현황</h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: '총 KB 문서', value: '—', icon: '📚' },
-          { label: '총 Wiki 페이지', value: '—', icon: '📄' },
-          { label: '총 FAQ', value: '—', icon: '❓' },
-          { label: '학습 품질', value: '—', icon: '✅' },
+          { label: '총 KB 문서', value: fmt(stats?.kb_count), icon: '📚' },
+          { label: '총 Wiki 페이지', value: fmt(stats?.wiki_count), icon: '📄' },
+          { label: '총 FAQ', value: fmt(stats?.faq_count), icon: '❓' },
+          { label: '학습 품질', value: qualityPct, icon: '✅' },
         ].map(item => (
           <div
             key={item.label}
@@ -570,6 +603,29 @@ function LearningOverview() {
           </div>
         ))}
       </div>
+      <p className="text-xs text-[var(--text-tertiary)] mt-3">
+        💡 사용자와의 질의응답이 자동 학습됩니다 — 좋은 답변(품질 ≥ 70%)은 위키로 축적되어 다음 답변에 활용됩니다.
+      </p>
+
+      {/* 최근 자동 학습 5건 */}
+      {!loading && (stats?.recent?.length ?? 0) > 0 && (
+        <div className="mt-4 pt-4 border-t border-[var(--border-default)]">
+          <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2">최근 자동 학습된 위키</h4>
+          <ul className="space-y-1.5">
+            {stats!.recent.map(r => (
+              <li key={r.id} className="flex items-center justify-between text-xs">
+                <span className="text-[var(--text-secondary)] truncate flex-1 mr-2">
+                  <span className="text-[var(--text-tertiary)] mr-1">[{r.page_type}]</span>
+                  {r.title}
+                </span>
+                <span className="text-[var(--text-tertiary)] flex-shrink-0">
+                  품질 {Math.round((r.quality_score ?? 0) * 100)}% · {new Date(r.created_at).toLocaleDateString('ko-KR')}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
