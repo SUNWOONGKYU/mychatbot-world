@@ -11,7 +11,7 @@
 
 ## 사전 조건
 
-- Supabase 플랜: **Pro 이상** (PITR 포함)
+- Supabase 플랜: **Pro** (이미 활성 — PITR 사용 가능)
 - Staging DB 있음 (`docs/staging-env.md`)
 - 드릴은 **staging 에서만 수행** — production 은 절대 impact 금지
 
@@ -120,7 +120,7 @@ npx vercel --prod --archive=tgz --yes
 
 ## PO 체크리스트
 
-- [ ] Supabase Pro 플랜 (PITR 포함)
+- [x] Supabase Pro 플랜 (이미 활성 — PITR 즉시 사용 가능)
 - [ ] Staging DB 준비 (S8DV1)
 - [ ] 분기별 캘린더 알림 등록 (위 4건)
 - [ ] 첫 드릴 수행 + 본 문서 "드릴 기록" 업데이트

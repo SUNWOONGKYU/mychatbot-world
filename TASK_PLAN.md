@@ -23,7 +23,7 @@
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
 | S7 | 프로덕션 런칭 준비 MBO | 5 | 100% (5/5 완료) |
 | S8 | 프로덕션 완성도 100점 달성 MBO | 15 | 100% (15/15 완료) |
-| S9 | 프로덕션 완성도 100점 달성 MBO v2 (9 영역 전수) | 27 | 25.9% (7/27 완료, Phase 1 달성) |
+| S9 | 프로덕션 완성도 100점 달성 MBO v2 (9 영역 전수) | 27 | 100% (27/27 완료, Phase 1·2·3 전원 달성) |
 | **합계** | | **134** | **~43%** |
 
 ---
@@ -247,7 +247,7 @@
 
 ---
 
-## S9 — 프로덕션 완성도 100점 달성 MBO (27 Tasks, 진행 중)
+## S9 — 프로덕션 완성도 100점 달성 MBO (27 Tasks, 완료)
 
 > 목표: 9개 영역(Observability 55·Data Integrity 70·Documentation 70·Reliability 75·Performance 75·UX/a11y 75·Infra/Deploy 75·SEO 80·Security 85) 평균 73.9 → 100점 달성.
 > 3 Phase 운영: 🔴 Phase 1(런칭 차단 6) → 🟡 Phase 2(안정성 8) → 🟢 Phase 3(완성도 13).
@@ -261,26 +261,26 @@
 | S9DB1 | RLS 정책 전수 감사 스크립트 + 41 테이블 리포트 | DB | — | `database-developer-core` | P1 | Completed |
 | S9BA4 | Vercel 환경변수 감사 (누락·deprecated 해소) | BA | — | `devops-troubleshooter-core` | P1 | Completed |
 | S9BA3 | Health check 세분화 (DB/Redis/OpenRouter 각각 status) | BA | — | `backend-developer-core` | P1 | Completed |
-| S9BI2 | Core Web Vitals 수집 API (`/api/metrics` + web-vitals) | BI | S9BI1 | `observability-engineer` | P2 | Pending |
-| S9BA1 | OpenRouter 서킷 브레이커 (연속 5xx 1분 차단) | BA | — | `backend-developer-core` | P2 | Pending |
-| S9BA2 | 재시도 정책 통일 (`lib/retry.ts` exponential backoff) | BA | — | `backend-developer-core` | P2 | Pending |
-| S9TS1 | Playwright E2E 8 핵심 시나리오 | TS | — | `test-engineer-core` | P2 | Pending |
-| S9DB2 | DB 제약·인덱스 감사 (FK/UNIQUE/NOT NULL) | DB | — | `database-developer-core` | P2 | Pending |
-| S9DB3 | PITR 복원 드릴 실행 리포트 (Staging) | DB | S9DV1 | `devops-troubleshooter-core` | P2 | Pending |
-| S9DV1 | Staging 환경 구축·검증 (Supabase Branch + Vercel Preview) | DV | — | `devops-troubleshooter-core` | P2 | Pending |
-| S9BA5 | 의존성 취약점 감사 (pnpm audit + Snyk 자동화) | BA | — | `security-specialist-core` | P2 | Pending |
-| S9FE1 | Lighthouse CI 실측 + 개선 (4 페이지 ≥90) | FE | — | `frontend-developer-core` | P3 | Pending |
-| S9FE2 | 번들 분석 + 코드 스플리팅 (@next/bundle-analyzer) | FE | S9FE1 | `frontend-developer-core` | P3 | Pending |
-| S9FE3 | axe-core 접근성 전수 감사 (critical 0) | FE | — | `frontend-developer-core` | P3 | Pending |
-| S9FE4 | 온보딩 UX (2분 첫 대화 플로우 단축) | FE | — | `ux-ui-designer-core` | P3 | Pending |
-| S9FE5 | 에러 메시지 UX 통일 (`lib/errors/user-facing.ts`) | FE | — | `frontend-developer-core` | P3 | Pending |
-| S9FE6 | JSON-LD 구조화 데이터 (Organization/WebSite/FAQPage) | FE | — | `seo-specialist` | P3 | Pending |
-| S9FE7 | 동적 OG 이미지 (`app/opengraph-image.tsx`) | FE | — | `seo-specialist` | P3 | Pending |
-| S9FE8 | sitemap.xml/robots.txt 검증 + GSC 제출 | FE | — | `seo-specialist` | P3 | Pending |
-| S9BA6 | PostHog 연동 (가입·봇 생성·결제 Funnel) | BA | — | `backend-developer-core` | P3 | Pending |
-| S9BI3 | Axiom log drain 가이드 + 쿼리 6종 | BI | — | `observability-engineer` | P3 | Pending |
-| S9DC2 | 운영 Runbook (on-call 장애 12 시나리오) | DC | S9DB3 | `documentation-writer-core` | P3 | Pending |
-| S9DC3 | API 레퍼런스 (핵심 30 엔드포인트) | DC | — | `documentation-writer-core` | P3 | Pending |
+| S9BI2 | Core Web Vitals 수집 API (`/api/metrics` + web-vitals) | BI | S9BI1 | `observability-engineer` | P2 | Completed |
+| S9BA1 | OpenRouter 서킷 브레이커 (연속 5xx 1분 차단) | BA | — | `backend-developer-core` | P2 | Completed |
+| S9BA2 | 재시도 정책 통일 (`lib/retry.ts` exponential backoff) | BA | — | `backend-developer-core` | P2 | Completed |
+| S9TS1 | Playwright E2E 8 핵심 시나리오 | TS | — | `test-engineer-core` | P2 | Completed |
+| S9DB2 | DB 제약·인덱스 감사 (FK/UNIQUE/NOT NULL) | DB | — | `database-developer-core` | P2 | Completed |
+| S9DB3 | PITR 복원 드릴 실행 리포트 (Staging) | DB | S9DV1 | `devops-troubleshooter-core` | P2 | Completed |
+| S9DV1 | Staging 환경 구축·검증 (Supabase Branch + Vercel Preview) | DV | — | `devops-troubleshooter-core` | P2 | Completed |
+| S9BA5 | 의존성 취약점 감사 (pnpm audit + Snyk 자동화) | BA | — | `security-specialist-core` | P2 | Completed |
+| S9FE1 | Lighthouse CI 실측 + 개선 (4 페이지 ≥90) | FE | — | `frontend-developer-core` | P3 | Completed |
+| S9FE2 | 번들 분석 + 코드 스플리팅 (@next/bundle-analyzer) | FE | S9FE1 | `frontend-developer-core` | P3 | Completed |
+| S9FE3 | axe-core 접근성 전수 감사 (critical 0) | FE | — | `frontend-developer-core` | P3 | Completed |
+| S9FE4 | 온보딩 UX (2분 첫 대화 플로우 단축) | FE | — | `ux-ui-designer-core` | P3 | Completed |
+| S9FE5 | 에러 메시지 UX 통일 (`lib/errors/user-facing.ts`) | FE | — | `frontend-developer-core` | P3 | Completed |
+| S9FE6 | JSON-LD 구조화 데이터 (Organization/WebSite/FAQPage) | FE | — | `seo-specialist` | P3 | Completed |
+| S9FE7 | 동적 OG 이미지 (`app/opengraph-image.tsx`) | FE | — | `seo-specialist` | P3 | Completed |
+| S9FE8 | sitemap.xml/robots.txt 검증 + GSC 제출 | FE | — | `seo-specialist` | P3 | Completed |
+| S9BA6 | PostHog 연동 (가입·봇 생성·결제 Funnel) | BA | — | `backend-developer-core` | P3 | Completed |
+| S9BI3 | Axiom log drain 가이드 + 쿼리 6종 | BI | — | `observability-engineer` | P3 | Completed |
+| S9DC2 | 운영 Runbook (on-call 장애 12 시나리오) | DC | S9DB3 | `documentation-writer-core` | P3 | Completed |
+| S9DC3 | API 레퍼런스 (핵심 30 엔드포인트) | DC | — | `documentation-writer-core` | P3 | Completed |
 
 ### S9 Area 분포
 - BI 4 · DB 3 · DC 3 · BA 6 · FE 8 · TS 2 · DV 1 = **27 Task**

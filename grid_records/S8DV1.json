@@ -20,8 +20,8 @@
   "test_result": {"setup_steps": 6, "environment_diffs": 7},
   "build_verification": {"status": "n/a"},
   "integration_verification": {"cross_refs": ["docs/pitr-drill.md", "docs/runbooks/deploy.md"]},
-  "blockers": {"count": 1, "items": ["Supabase Pro 플랜 업그레이드가 PO 수행 필요 (월 $25)"]},
+  "blockers": {"count": 0, "items": []},
   "comprehensive_verification": {"pr_isolation": "branch DB + 환경변수 자동 주입"},
-  "notes": "Vercel Preview 는 이미 활성. Supabase Branching 은 PO 플랜 업그레이드 후 활성화.",
+  "notes": "Vercel Preview 는 이미 활성. Supabase Pro 플랜 이미 활성 상태 — Branching 은 Dashboard 에서 토글 활성화만 필요.",
   "remarks": "MBO S8 Infra/Deploy 영역 75→90 (staging 문서화 완료, 활성화는 PO)."
 }

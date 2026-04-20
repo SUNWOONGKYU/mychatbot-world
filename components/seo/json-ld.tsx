@@ -111,3 +111,43 @@ export function buildCollectionPage(opts: { name: string; description: string; u
     inLanguage: 'ko-KR',
   };
 }
+
+// ── S9FE6 추가 ────────────────────────────────────────────────────────────
+
+export function buildFAQPage(items: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+export function buildSoftwareApplication(opts: {
+  name: string;
+  description: string;
+  url: string;
+  price?: number;
+  priceCurrency?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: opts.name,
+    description: opts.description,
+    url: opts.url.startsWith('http') ? opts.url : `${SITE_URL}${opts.url}`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web Browser',
+    offers: {
+      '@type': 'Offer',
+      price: opts.price ?? 0,
+      priceCurrency: opts.priceCurrency ?? 'KRW',
+    },
+  };
+}

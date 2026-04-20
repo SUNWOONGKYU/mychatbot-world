@@ -16,8 +16,14 @@ const PAGES: Array<{ path: string; name: string }> = [
   { path: '/', name: 'Landing' },
   { path: '/skills', name: 'Skills (CollectionPage)' },
   { path: '/community', name: 'Community' },
-  { path: '/support', name: 'Support (ContactPage)' },
+  { path: '/customer-service', name: 'Customer Service (ContactPage)' },
   { path: '/login', name: 'Login' },
+  // S9FE3 확장 — 핵심 전수 감사
+  { path: '/signup', name: 'Signup' },
+  { path: '/jobs', name: 'Jobs' },
+  { path: '/terms', name: '이용약관' },
+  { path: '/privacy', name: '개인정보처리방침' },
+  { path: '/refund', name: '환불정책' },
 ];
 
 for (const { path, name } of PAGES) {

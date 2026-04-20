@@ -22,6 +22,6 @@
   "integration_verification": {"pending_po_action": "Supabase MFA 활성화 + 관리자 라우트 가드 구현"},
   "blockers": {"count": 0, "items": []},
   "comprehensive_verification": {"csrf_mitigation": "Origin 검증으로 CSRF 1차 방어", "admin_mfa": "verifyAdminUser 에 factor check 스니펫 제공"},
-  "notes": "MFA UI 전면 구현은 별도 페이지 태스크 필요. 미들웨어 Origin check 는 즉시 적용 가능.",
+  "notes": "MFA 등록(Supabase/GitHub/Vercel 계정)은 PO 판단으로 Pending 처리 — 프로덕션 가동·데이터 손실 방지가 선결 과제이므로 운영 궤도 안정 후 착수. 미들웨어 Origin check 는 이미 코드 반영·배포됨.",
   "remarks": "MBO S8 Security 영역 85→95 (Origin + MFA 완비 시 100)."
 }
