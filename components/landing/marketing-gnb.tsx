@@ -142,14 +142,14 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                 href="/mypage"
                 className="flex items-center gap-1.5 text-sm transition-all duration-200"
                 style={{
-                  color: 'rgb(var(--text-secondary))',
+                  color: 'rgb(var(--text-secondary-rgb))',
                   fontWeight: 600,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = 'rgb(var(--color-primary))';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary-rgb))';
                 }}
                 aria-label="마이페이지"
               >
@@ -176,7 +176,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                 disabled={signingOut}
                 className="text-sm transition-all duration-200"
                 style={{
-                  color: 'rgb(var(--text-secondary))',
+                  color: 'rgb(var(--text-secondary-rgb))',
                   fontWeight: 500,
                   background: 'transparent',
                   border: 'none',
@@ -187,7 +187,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
                   if (!signingOut) e.currentTarget.style.color = 'rgb(var(--color-primary))';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary-rgb))';
                 }}
               >
                 {signingOut ? '로그아웃 중…' : '로그아웃'}
