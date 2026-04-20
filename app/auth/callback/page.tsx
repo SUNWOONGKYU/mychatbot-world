@@ -36,13 +36,41 @@ export default function AuthCallbackPage() {
 
       const accessToken = hashParams.get('access_token');
       const refreshToken = hashParams.get('refresh_token');
+      const tokenType = hashParams.get('type'); // signup | invite | magiclink | recovery | null
       const code = url.searchParams.get('code');
 
-      // (A) Implicit flow — hash 에 access_token 이 있으면 정의상 OAuth 경로.
-      //     email 가입 사용자가 나중에 Google 로 로그인하는 경우 Supabase 가 계정을
-      //     링크하면서도 app_metadata.provider 를 'email' 로 유지하기도 하므로
-      //     provider 필드로 판정하지 않고 경로 자체(hash 도달)로 OAuth 판정.
+      // (A) Implicit flow — hash 에 access_token 이 있는 경로.
+      //     `type` 파라미터로 이메일 인증 vs OAuth 를 구분한다.
+      //     - type=signup|invite|magiclink → 이메일 기반 → 수동 로그인 정책 (setSession 하지 않음)
+      //     - type=recovery → 비밀번호 재설정 → /reset-password 에서 처리
+      //     - type 없음 → OAuth (Google 등) → 자동 로그인 → /home
+      //     email 가입 사용자가 Google 로 로그인 시 app_metadata.provider 가 'email' 로
+      //     남아있을 수 있으므로 provider 필드 대신 `type` 부재를 OAuth 판정 근거로 사용.
       if (accessToken && refreshToken) {
+        // 이메일 회원가입/초대/매직링크 → 수동 로그인 강제
+        if (tokenType === 'signup' || tokenType === 'invite' || tokenType === 'magiclink') {
+          // 인증은 이미 서버측에서 완료됨. 클라이언트 세션은 수립하지 않고 로그인 페이지로.
+          if (!cancelled) router.replace('/login?confirmed=1');
+          return;
+        }
+
+        // 비밀번호 재설정 — /reset-password 가 세션을 필요로 하므로 setSession 후 이동
+        if (tokenType === 'recovery') {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          if (cancelled) return;
+          if (error) {
+            setStatus('error');
+            setErrMsg(error.message);
+            return;
+          }
+          if (!cancelled) router.replace('/reset-password');
+          return;
+        }
+
+        // type 없음 → OAuth → 자동 로그인
         const { data, error } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
