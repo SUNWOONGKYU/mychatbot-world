@@ -1152,10 +1152,8 @@
     }
 }
 
-/* Hidden */
-.hidden {
-    display: none !important;
-}
+/* Hidden — Tailwind 의 .hidden 유틸리티(no !important)와 충돌하므로 제거됨.
+   레거시 vanilla 페이지가 .hidden을 쓰지 않고 React+Tailwind로 마이그레이션됨. */
 
 /* === Responsive === */
 @media (max-width: 768px) {
