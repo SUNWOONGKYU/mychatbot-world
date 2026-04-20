@@ -726,9 +726,16 @@
     border-radius: var(--radius-sm);
   }
 
+  /* 스크롤바 항상 보이게 — 페이지 가드(gutter) 확보 */
+  html {
+    scrollbar-gutter: stable;
+    scrollbar-width: auto; /* Firefox: thin 대신 기본 폭 */
+    scrollbar-color: rgb(var(--border-strong-rgb)) rgb(var(--bg-muted));
+  }
+
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 14px;
+    height: 14px;
   }
   ::-webkit-scrollbar-track {
     background: rgb(var(--bg-muted));
@@ -736,6 +743,7 @@
   ::-webkit-scrollbar-thumb {
     background: rgb(var(--border-strong-rgb));
     border-radius: var(--radius-full);
+    border: 3px solid rgb(var(--bg-muted)); /* 엄지 주변 padding 효과 */
   }
   ::-webkit-scrollbar-thumb:hover {
     background: rgb(var(--color-primary));
