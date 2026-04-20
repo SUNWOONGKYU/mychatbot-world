@@ -163,8 +163,8 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 
 **상단 Navbar (앱 내부)**
 - Height: `64px` (`--header-height`)
-- Background: `rgb(var(--bg-surface))` — 스크롤 시 `backdrop-blur-md`
-- Border-bottom: `1px solid rgb(var(--border))`
+- Background: `rgb(var(--nav-bg))` — `bg-surface` 위에 `primary-500` 4% 워시 오버레이 (다크), `primary-50` 60% 워시 (라이트). 순수 블랙/화이트 인상 완화를 위한 **브랜드 퍼플 힌트**. 스크롤 시 `/80` + `backdrop-blur-md`
+- Border-bottom: `1px solid rgb(var(--nav-border))` — `primary-500 / 0.14` (라이트) / `primary-500 / 0.18` (다크) — active 메뉴 글로우와 자연스러운 연결선
 - 로고: "CoCoBot" 텍스트 (`font-extrabold`, `text-primary`)
 - 4대 메뉴: Birth / Skills / Jobs / Community
 - 활성 메뉴: `text-primary` 색상, 밑줄 또는 퍼플 하이라이트
