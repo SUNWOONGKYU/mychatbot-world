@@ -161,10 +161,13 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 
 ### Navigation
 
-**상단 Navbar (앱 내부)**
+**상단 Navbar (앱 내부) — Seamless Header 패턴**
 - Height: `64px` (`--header-height`)
-- Background: `rgb(var(--nav-bg))` — `bg-surface` 위에 `primary-500` 4% 워시 오버레이 (다크), `primary-50` 60% 워시 (라이트). 순수 블랙/화이트 인상 완화를 위한 **브랜드 퍼플 힌트**. 스크롤 시 `/80` + `backdrop-blur-md`
-- Border-bottom: `1px solid rgb(var(--nav-border))` — `primary-500 / 0.14` (라이트) / `primary-500 / 0.18` (다크) — active 메뉴 글로우와 자연스러운 연결선
+- Background: `rgb(var(--nav-bg))` — **`bg-base`와 동일 톤** + `primary-500` 3% 미묘한 워시. 페이지와 경계 없이 이어져 "띠/테이프" 인상 제거 (Linear/Vercel 방식)
+- Border-bottom:
+  - 기본 상태: **보더 없음** (투명)
+  - 스크롤 상태: `1px solid rgb(var(--nav-border))` — `primary-500 / 0.12` + `backdrop-blur-md` + `shadow-sm` 로 "플로팅" 분리감 부여
+- 원칙: 정적 상태에서는 배경과 융합, 스크롤 시 **부드럽게 분리**. 딱딱한 띠 경계는 DS 안티패턴.
 - 로고: "CoCoBot" 텍스트 (`font-extrabold`, `text-primary`)
 - 4대 메뉴: Birth / Skills / Jobs / Community
 - 활성 메뉴: `text-primary` 색상, 밑줄 또는 퍼플 하이라이트

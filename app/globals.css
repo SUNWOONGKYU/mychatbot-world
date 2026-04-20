@@ -563,17 +563,17 @@
     0 0 0 3px rgb(var(--amber-500) / 0.3),
     0 8px 24px rgb(var(--amber-500) / 0.2);
 
-  /* ── Navbar (DESIGN.md §4 Navigation 준수)
-       bg-surface 위에 primary 4% 워시 — 검정 인상 완화, 브랜드 힌트 ── */
+  /* ── Navbar — Seamless Header (DESIGN.md §4)
+       bg-base 와 동일 톤 + primary 3% 워시 — 페이지와 융합, 띠 효과 제거 ── */
   --nav-bg: linear-gradient(0deg,
-    rgb(var(--primary-500) / 0.04),
-    rgb(var(--primary-500) / 0.04)),
-    rgb(var(--bg-surface));
+    rgb(var(--primary-500) / 0.03),
+    rgb(var(--primary-500) / 0.03)),
+    rgb(var(--bg-base));
   --nav-bg-scrolled: linear-gradient(0deg,
-    rgb(var(--primary-500) / 0.06),
-    rgb(var(--primary-500) / 0.06)),
-    rgb(var(--bg-surface) / 0.8);
-  --nav-border: rgb(var(--primary-500) / 0.18);
+    rgb(var(--primary-500) / 0.05),
+    rgb(var(--primary-500) / 0.05)),
+    rgb(var(--bg-base) / 0.75);
+  --nav-border: rgb(var(--primary-500) / 0.12);
 }
 
 /* =============================================================
@@ -619,16 +619,16 @@
 
   /* ── Shadow (라이트 override: Notion 다층) — S7 shadow-sm/md/lg/xl는 §2에서 이미 적용 ── */
 
-  /* ── Navbar (라이트 — 옅은 라벤더 워시) ── */
+  /* ── Navbar (라이트 — Seamless) ── */
   --nav-bg: linear-gradient(0deg,
-    rgb(var(--primary-50) / 0.60),
-    rgb(var(--primary-50) / 0.60)),
-    rgb(var(--bg-surface));
+    rgb(var(--primary-50) / 0.40),
+    rgb(var(--primary-50) / 0.40)),
+    rgb(var(--bg-base));
   --nav-bg-scrolled: linear-gradient(0deg,
     rgb(var(--primary-50) / 0.50),
     rgb(var(--primary-50) / 0.50)),
-    rgb(var(--bg-surface) / 0.8);
-  --nav-border: rgb(var(--primary-500) / 0.14);
+    rgb(var(--bg-base) / 0.78);
+  --nav-border: rgb(var(--primary-500) / 0.10);
 }
 
 /* =============================================================

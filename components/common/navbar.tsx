@@ -79,12 +79,12 @@ export function Navbar() {
     <header
       className={clsx(
         'sticky top-0 z-40',
-        'border-b transition-all duration-200',
-        scrolled && 'backdrop-blur-md shadow-sm',
+        'transition-all duration-200',
+        scrolled && 'backdrop-blur-md shadow-sm border-b',
       )}
       style={{
         background: scrolled ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg)',
-        borderBottomColor: 'var(--nav-border)',
+        borderBottomColor: scrolled ? 'var(--nav-border)' : 'transparent',
       }}
     >
       <div className="mx-auto grid h-16 items-center px-4 md:px-6" style={{ maxWidth: '1280px', gridTemplateColumns: '1fr auto 1fr' }}>
