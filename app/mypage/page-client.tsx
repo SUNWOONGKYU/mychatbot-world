@@ -434,6 +434,18 @@ export default function MyPageClient() {
         >
           {activeTab === 'security' && <Tab8Security />}
         </div>
+
+        {/* 관리자 링크 — 본인만 알아보는 수준의 아주 옅은 텍스트 (호버 시 선명) */}
+        <div className="mt-12 mb-4 text-center">
+          <a
+            href="/admin"
+            aria-label="관리자 대시보드"
+            className="inline-block text-[10px] tracking-wider opacity-30 hover:opacity-100 transition-opacity focus-visible:opacity-100 focus-visible:outline-none"
+            style={{ color: 'var(--text-tertiary)' }}
+          >
+            🔒 관리자
+          </a>
+        </div>
       </div>
     </main>
   );
