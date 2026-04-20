@@ -8,8 +8,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { BrandLogo } from '@/components/common/brand-logo';
+import supabase from '@/lib/supabase';
 
 interface MarketingGNBProps {
   isLoggedIn?: boolean;
@@ -25,7 +27,22 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // 무시 — 세션이 이미 만료된 경우 등
+    } finally {
+      router.refresh();
+      router.push('/');
+    }
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -111,17 +128,62 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
             </button>
           )}
           {isLoggedIn ? (
-            <Link
-              href="/home"
-              className="rounded-xl px-5 py-2 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-px"
-              style={{
-                background: 'rgb(var(--color-primary))',
-                boxShadow:
-                  '0 0 12px rgb(var(--color-primary) / 0.4), 0 4px 16px rgb(var(--color-primary) / 0.25)',
-              }}
-            >
-              대시보드
-            </Link>
+            <>
+              <Link
+                href="/mypage"
+                className="flex items-center gap-1.5 text-sm transition-all duration-200"
+                style={{
+                  color: 'rgb(var(--text-secondary))',
+                  fontWeight: 600,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--color-primary))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                }}
+                aria-label="마이페이지"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>My Page</span>
+              </Link>
+              <Link
+                href="/home"
+                className="rounded-xl px-5 py-2 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-px"
+                style={{
+                  background: 'rgb(var(--color-primary))',
+                  boxShadow:
+                    '0 0 12px rgb(var(--color-primary) / 0.4), 0 4px 16px rgb(var(--color-primary) / 0.25)',
+                }}
+              >
+                대시보드
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                disabled={signingOut}
+                className="text-sm transition-all duration-200"
+                style={{
+                  color: 'rgb(var(--text-secondary))',
+                  fontWeight: 500,
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: signingOut ? 'wait' : 'pointer',
+                  padding: '0 8px',
+                }}
+                onMouseEnter={(e) => {
+                  if (!signingOut) e.currentTarget.style.color = 'rgb(var(--color-primary))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                }}
+              >
+                {signingOut ? '로그아웃 중…' : '로그아웃'}
+              </button>
+            </>
           ) : (
             <>
               <Link

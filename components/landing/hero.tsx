@@ -12,9 +12,12 @@ interface HeroSectionProps {
   isLoggedIn?: boolean;
 }
 
-export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
-  const primaryHref = isLoggedIn ? '/mypage' : '/create';
-  const primaryLabel = isLoggedIn ? '내 코코봇 관리하기' : '5분 인터뷰로 코코봇 생성하기';
+export function HeroSection({ isLoggedIn: _isLoggedIn = false }: HeroSectionProps) {
+  // 랜딩 Hero 주 CTA는 로그인 여부와 무관하게 "코코봇 생성"으로 통일.
+  // (로그인됐다고 해서 봇을 만들었단 보장이 없으므로 "관리하기"는 잘못된 문구)
+  // 로그인 사용자의 대시보드 진입은 상단 GNB "대시보드" 버튼으로 안내.
+  const primaryHref = '/create';
+  const primaryLabel = '5분 인터뷰로 코코봇 생성하기';
 
   return (
     <section
