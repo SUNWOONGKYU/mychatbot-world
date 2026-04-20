@@ -24,17 +24,60 @@ export default function SkillsMarketPage() {
         { name: '홈', url: '/' },
         { name: '스킬', url: '/skills' },
       ])} />
-      {/* Hero */}
-      <section className="page-hero">
-        <div className="page-hero-bg"><div className="page-hero-orb" /></div>
-        <div className="page-hero-content">
-          <h1 className="page-hero-title">
-            <span className="accent">스킬</span>장터
+      {/* ── Hero (jobs 스타일 통일) ──────────────────────── */}
+      <section
+        className="relative overflow-hidden py-16 px-6 text-center"
+        style={{ background: 'rgb(var(--bg-subtle))' }}
+      >
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-[80px]"
+            style={{ background: 'rgb(var(--color-primary) / 0.1)' }}
+          />
+        </div>
+
+        <div className="relative max-w-3xl mx-auto">
+          <h1
+            className="mb-4"
+            style={{
+              color: 'rgb(var(--text-primary-rgb))',
+              fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+              fontWeight: 800,
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            <span style={{ color: 'rgb(var(--color-primary))' }}>스킬장터</span>
           </h1>
-          <p className="page-hero-subtitle">
+          <p className="mb-8" style={{ color: 'rgb(var(--text-secondary-rgb))', fontSize: '1.125rem', lineHeight: 1.6 }}>
             필요한 스킬을 골라 코코봇에 장착하거나, 직접 만든 스킬을 공유하세요.<br />
             예약·결제·번역·감정 분석 등 23+ 스킬이 코코봇의 능력을 강화합니다.
           </p>
+
+          {/* CTA 버튼 */}
+          <div className="flex gap-3 justify-center flex-wrap">
+            <a
+              href="#skills-grid"
+              className="px-6 py-3 text-sm font-semibold rounded-full transition-all"
+              style={{
+                background: 'rgb(var(--color-primary))',
+                color: 'rgb(var(--text-on-primary))',
+              }}
+            >
+              🔍 스킬 둘러보기
+            </a>
+            <a
+              href="/skills/my"
+              className="px-6 py-3 text-sm font-semibold rounded-full transition-all"
+              style={{
+                background: 'transparent',
+                color: 'rgb(var(--text-primary-rgb))',
+                border: '1.5px solid rgb(var(--border))',
+              }}
+            >
+              ⭐ 내 스킬 관리
+            </a>
+          </div>
         </div>
       </section>
 

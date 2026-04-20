@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
           created_at: user.created_at,
           notification_enabled: true,
           language: 'ko',
+          is_admin: false,
         },
       });
     }
@@ -62,6 +63,7 @@ export async function GET(req: NextRequest) {
         created_at: profile.created_at,
         notification_enabled: true,
         language: 'ko',
+        is_admin: profile.is_admin === true,
       },
     });
   } catch (e) {

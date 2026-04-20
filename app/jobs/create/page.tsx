@@ -1,10 +1,10 @@
 /**
  * @task S3FE3
- * @description 채용 공고 등록 폼 (고용주용)
+ * @description 공고 등록 폼 (구봇=hiring / 구직=seeking 선택)
  *
  * Route: /jobs/create
  * API: POST /api/jobs
- *   요청: { title, description?, required_skills?, budget_min?, budget_max? }
+ *   요청: { title, description?, required_skills?, budget_min?, budget_max?, post_type }
  */
 'use client';
 
@@ -14,7 +14,10 @@ import Link from 'next/link';
 
 // ── 타입 ─────────────────────────────────────────────────────
 
+type PostType = 'hiring' | 'seeking';
+
 interface FormValues {
+  post_type: PostType;
   title: string;
   description: string;
   required_skills: string[];
@@ -215,11 +218,45 @@ function BudgetSlider({ minVal, maxVal, onChange }: BudgetSliderProps) {
 // ── 메인 폼 ──────────────────────────────────────────────────
 
 const INITIAL_FORM: FormValues = {
+  post_type: 'hiring',
   title: '',
   description: '',
   required_skills: [],
   budget_min: null,
   budget_max: null,
+};
+
+// 공고 유형별 UI 문구
+const POST_TYPE_COPY: Record<PostType, {
+  heading: string;
+  titleLabel: string;
+  titlePlaceholder: string;
+  descLabel: string;
+  descPlaceholder: string;
+  skillsLabel: string;
+  budgetLabel: string;
+  submitLabel: string;
+}> = {
+  hiring: {
+    heading: '구봇 공고 등록 (코코봇 고용)',
+    titleLabel: '공고 제목',
+    titlePlaceholder: '예: React/Next.js 코코봇 UI 개발자 모집',
+    descLabel: '공고 설명',
+    descPlaceholder: '업무 범위, 조건, 우대사항 등을 포함해 주세요.',
+    skillsLabel: '필요 스킬',
+    budgetLabel: '예산 범위',
+    submitLabel: '구봇 공고 등록',
+  },
+  seeking: {
+    heading: '구직 공고 등록 (코코봇 일감 찾기)',
+    titleLabel: '자기소개 제목',
+    titlePlaceholder: '예: React/Next.js 전문 코코봇, 일감 찾습니다',
+    descLabel: '소개 / 경력',
+    descPlaceholder: '내 코코봇이 할 수 있는 일, 경력, 강점 등을 소개해주세요.',
+    skillsLabel: '보유 스킬',
+    budgetLabel: '희망 단가',
+    submitLabel: '구직 공고 등록',
+  },
 };
 
 export default function JobCreatePage() {
@@ -264,6 +301,7 @@ export default function JobCreatePage() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
+          post_type: form.post_type,
           title: form.title.trim(),
           description: form.description.trim() || undefined,
           required_skills: form.required_skills.length > 0 ? form.required_skills : undefined,
@@ -294,11 +332,13 @@ export default function JobCreatePage() {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
         <p className="text-4xl mb-4">✅</p>
-        <p className="text-xl font-semibold text-text-primary mb-2">채용 공고가 등록되었습니다!</p>
+        <p className="text-xl font-semibold text-text-primary mb-2">공고가 등록되었습니다!</p>
         <p className="text-text-secondary text-sm">상세 페이지로 이동합니다...</p>
       </div>
     );
   }
+
+  const copy = POST_TYPE_COPY[form.post_type];
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -310,10 +350,61 @@ export default function JobCreatePage() {
         >
           ← 목록
         </Link>
-        <h1 className="text-xl font-bold text-text-primary">채용 공고 등록</h1>
+        <h1 className="text-xl font-bold text-text-primary">{copy.heading}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* 공고 유형 선택 */}
+        <div>
+          <label className="block text-sm font-medium text-text-primary mb-2">
+            공고 유형 <span className="text-error">*</span>
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, post_type: 'hiring' }))}
+              className={`p-4 rounded-xl border-2 text-left transition-colors ${
+                form.post_type === 'hiring'
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border bg-bg-base hover:border-primary/50'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">💼</span>
+                <span className={`font-semibold text-sm ${
+                  form.post_type === 'hiring' ? 'text-primary' : 'text-text-primary'
+                }`}>
+                  구봇 (코코봇 고용)
+                </span>
+              </div>
+              <p className="text-xs text-text-secondary">
+                일을 맡길 코코봇을 찾습니다.
+              </p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, post_type: 'seeking' }))}
+              className={`p-4 rounded-xl border-2 text-left transition-colors ${
+                form.post_type === 'seeking'
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border bg-bg-base hover:border-primary/50'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">🤖</span>
+                <span className={`font-semibold text-sm ${
+                  form.post_type === 'seeking' ? 'text-primary' : 'text-text-primary'
+                }`}>
+                  구직 (코코봇 일감 찾기)
+                </span>
+              </div>
+              <p className="text-xs text-text-secondary">
+                내 코코봇이 할 수 있는 일을 찾습니다.
+              </p>
+            </button>
+          </div>
+        </div>
+
         {/* 일반 에러 */}
         {errors.general && (
           <div className="p-4 bg-error/10 border border-error/20 rounded-xl text-error text-sm">
@@ -324,13 +415,13 @@ export default function JobCreatePage() {
         {/* 제목 */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">
-            공고 제목 <span className="text-error">*</span>
+            {copy.titleLabel} <span className="text-error">*</span>
           </label>
           <input
             type="text"
             value={form.title}
             onChange={(e: any) => setForm((f: any) => ({ ...f, title: e.target.value }))}
-            placeholder="예: React/Next.js 코코봇 UI 개발자 모집"
+            placeholder={copy.titlePlaceholder}
             maxLength={200}
             className={`w-full px-4 py-2.5 bg-bg-base border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors text-sm ${
               errors.title ? 'border-error' : 'border-border focus:border-primary'
@@ -349,21 +440,21 @@ export default function JobCreatePage() {
         {/* 설명 */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">
-            공고 설명
+            {copy.descLabel}
           </label>
           <textarea
             value={form.description}
             onChange={(e: any) => setForm((f: any) => ({ ...f, description: e.target.value }))}
-            placeholder="채용 공고에 대한 상세 내용을 입력해주세요. 업무 범위, 조건, 우대사항 등을 포함하면 좋습니다."
+            placeholder={copy.descPlaceholder}
             rows={5}
             className="w-full px-4 py-2.5 bg-bg-base border border-border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-sm resize-y"
           />
         </div>
 
-        {/* 필요 스킬 */}
+        {/* 스킬 */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">
-            필요 스킬
+            {copy.skillsLabel}
           </label>
           <SkillTagInput
             skills={form.required_skills}
@@ -377,7 +468,7 @@ export default function JobCreatePage() {
         {/* 예산 */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-3">
-            예산 범위
+            {copy.budgetLabel}
           </label>
           {errors.budget && (
             <p className="text-error text-xs mb-2">{errors.budget}</p>
@@ -406,7 +497,7 @@ export default function JobCreatePage() {
             disabled={submitting}
             className="flex-1 sm:flex-none px-8 py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary-hover disabled:opacity-60 transition-colors text-sm"
           >
-            {submitting ? '등록 중...' : '공고 등록'}
+            {submitting ? '등록 중...' : copy.submitLabel}
           </button>
         </div>
       </form>

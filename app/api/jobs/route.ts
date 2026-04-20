@@ -27,6 +27,7 @@ interface JobPosting {
   budget_min: number | null;
   budget_max: number | null;
   status: 'open' | 'closed' | 'filled';
+  post_type: 'hiring' | 'seeking';
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +38,7 @@ interface CreateJobBody {
   required_skills?: string[];
   budget_min?: number;
   budget_max?: number;
+  post_type?: 'hiring' | 'seeking';
 }
 
 // ============================
@@ -79,6 +81,7 @@ async function authenticate(
 // ============================
 
 const ALLOWED_STATUSES = ['open', 'closed', 'filled'] as const;
+const ALLOWED_POST_TYPES = ['hiring', 'seeking'] as const;
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 20;
 
@@ -92,6 +95,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   const status = searchParams.get('status');
   const search = searchParams.get('search');
+  const postType = searchParams.get('post_type');
   const rawLimit = searchParams.get('limit');
   const rawOffset = searchParams.get('offset');
 
@@ -99,6 +103,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   if (status && !ALLOWED_STATUSES.includes(status as typeof ALLOWED_STATUSES[number])) {
     return NextResponse.json(
       { error: `Invalid status. Allowed: ${ALLOWED_STATUSES.join(', ')}` },
+      { status: 400 }
+    );
+  }
+
+  if (postType && !ALLOWED_POST_TYPES.includes(postType as typeof ALLOWED_POST_TYPES[number])) {
+    return NextResponse.json(
+      { error: `Invalid post_type. Allowed: ${ALLOWED_POST_TYPES.join(', ')}` },
       { status: 400 }
     );
   }
@@ -115,6 +126,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (status) {
       query = query.eq('status', status);
+    }
+
+    if (postType) {
+      query = query.eq('post_type', postType);
     }
 
     if (search) {
@@ -155,7 +170,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: '유효하지 않은 JSON 요청입니다' }, { status: 400 });
   }
 
-  const { title, description, required_skills, budget_min, budget_max } = body;
+  const { title, description, required_skills, budget_min, budget_max, post_type } = body;
 
   // 필수 필드 검증
   if (!title || typeof title !== 'string' || title.trim().length === 0) {
@@ -164,6 +179,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   if (title.length > 200) {
     return NextResponse.json({ error: 'title은 200자를 초과할 수 없습니다' }, { status: 400 });
+  }
+
+  // post_type 검증
+  const finalPostType: 'hiring' | 'seeking' =
+    post_type === 'seeking' ? 'seeking' : 'hiring';
+  if (post_type && !ALLOWED_POST_TYPES.includes(post_type)) {
+    return NextResponse.json(
+      { error: `Invalid post_type. Allowed: ${ALLOWED_POST_TYPES.join(', ')}` },
+      { status: 400 }
+    );
   }
 
   // 예산 검증
@@ -184,6 +209,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         budget_min: budget_min ?? null,
         budget_max: budget_max ?? null,
         status: 'open',
+        post_type: finalPostType,
       })
       .select()
       .single();
