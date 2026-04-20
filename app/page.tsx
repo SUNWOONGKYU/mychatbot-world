@@ -40,11 +40,12 @@ const BIRTH_STEPS = [
   { num: '05', title: '코코봇 생성 완료', desc: '전용 링크와 QR 코드가 생성됩니다' },
 ];
 
-/* ── 코코봇스쿨 3기능 ──────────────────────────────── */
+/* ── 지식관리시스템 4기능 ─────────────────────────── */
 const SCHOOL_FEATURES = [
-  { icon: '🎮', title: '시나리오 훈련', desc: '까다로운 고객, 긴급 상황 등 다양한 시나리오를 훈련합니다.' },
-  { icon: '📊', title: '학습 이력', desc: '어떤 코코봇 교육을 받았고, 어떤 능력이 향상됐는지 포트폴리오로 보여줍니다.' },
-  { icon: '📖', title: '지식 학습', desc: 'FAQ 추가, 문서 업로드, 웹 크롤링으로 전문 지식을 축적합니다.' },
+  { icon: '📤', title: '지식 업로드', desc: 'FAQ·문서(PDF/DOCX/TXT)·URL을 업로드하면 자동으로 분할·색인됩니다.' },
+  { icon: '🔍', title: '의미 기반 검색', desc: '벡터 임베딩으로 단어가 달라도 질문 의도에 맞는 답을 찾아냅니다.' },
+  { icon: '📚', title: '위키 자동 정리', desc: '축적된 지식을 카테고리·주제별 위키 문서로 자동 구조화합니다.' },
+  { icon: '🧠', title: 'RAG 답변 생성', desc: '코코봇이 자기 지식 베이스를 근거로 출처와 함께 정확히 답변합니다.' },
 ];
 
 /* ── 커뮤니티 3기능 ──────────────────────────────── */
@@ -373,10 +374,10 @@ export default function LandingPage() {
                   border: '1px solid color-mix(in oklch, oklch(0.65 0.22 210) 35%, transparent)',
                 }}
               >
-                📚 STEP 2 · LEARNING
+                📚 STEP 2 · KNOWLEDGE
               </span>
               <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl [word-break:keep-all]">
-                체계적으로 배우고{' '}
+                내 지식으로{' '}
                 <span
                   style={{
                     background: 'linear-gradient(90deg, oklch(0.78 0.18 210), oklch(0.70 0.22 260))',
@@ -385,11 +386,11 @@ export default function LandingPage() {
                     backgroundClip: 'text',
                   }}
                 >
-                  성장합니다
+                  똑똑해집니다
                 </span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg [word-break:keep-all]">
-                마이페이지의 학습 기능으로 코코봇을 체계적으로 교육시킵니다
+                문서·FAQ·URL을 업로드하면 코코봇이 내 지식 베이스로 답변합니다
               </p>
             </div>
             <div className="mt-14 grid gap-4 sm:grid-cols-2">
