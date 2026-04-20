@@ -38,18 +38,6 @@ grid_records/
 # TalkTodoPlan
 zz_KingFolder/
 
-# Old vanilla JS (replaced by Next.js app/)
-js/
-css/
-pages/
-
-# Legacy API folder
-api/
-_archive/
-
-# Scripts (dev only)
-scripts/
-
 # Build artifacts
 .next/
 node_modules/
