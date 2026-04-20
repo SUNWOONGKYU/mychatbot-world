@@ -11,6 +11,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { generateQueryEmbedding } from '@/lib/chat/rag';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -121,9 +122,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
+  // 임베딩 자동 생성 (S5BA8): question + answer를 벡터화하여 챗 캐스케이드에서 검색 가능
+  // 실패 시 null 저장 → 검색에서 제외되지만 FAQ 자체는 정상 등록됨 (graceful)
+  const embeddingInput = `${question.trim()}\n${answer.trim()}`;
+  const embedding = await generateQueryEmbedding(embeddingInput);
+
   const { data, error } = await supabase
     .from('faqs')
-    .insert({ chatbot_id, question: question.trim(), answer: answer.trim(), order_index })
+    .insert({
+      chatbot_id,
+      question: question.trim(),
+      answer: answer.trim(),
+      order_index,
+      embedding,
+    })
     .select()
     .single();
 

@@ -77,6 +77,39 @@ export async function searchWiki(
 }
 
 /**
+ * FAQ 검색 (3단계 캐스케이드): match_faqs RPC로 의미 유사도 검색
+ * @returns content는 LLM 컨텍스트용 포맷 문자열, items는 매칭된 Q/A 원본
+ */
+export async function searchFaqs(
+  botId: string,
+  queryEmbedding: number[]
+): Promise<{ content: string; items: Array<{ question: string; answer: string }> } | null> {
+  try {
+    const supabase = getSupabaseServer();
+    const { data, error } = await supabase.rpc('match_faqs', {
+      p_bot_id: botId,
+      query_embedding: queryEmbedding,
+      match_threshold: 0.78,
+      match_count: 2,
+    });
+
+    if (error || !data || data.length === 0) return null;
+
+    const items = (data as Array<{ question: string; answer: string }>).map((r) => ({
+      question: r.question,
+      answer: r.answer,
+    }));
+    const content = items
+      .map((it, i) => `[FAQ ${i + 1}]\nQ: ${it.question}\nA: ${it.answer}`)
+      .join('\n\n');
+
+    return { content, items };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * 답변 후 위키 accumulate 비동기 호출 (복리 축적)
  */
 export function triggerWikiAccumulate(

@@ -60,7 +60,7 @@ interface ChatResponseBody {
   /** 감성 티어 */
   emotionTier: string;
   /** RAG 소스 (wiki | chunk | none) — S5BI1 */
-  ragSource?: 'wiki' | 'chunk' | 'none';
+  ragSource?: 'wiki' | 'chunk' | 'faq' | 'none';
 }
 
 // ============================
@@ -263,6 +263,39 @@ async function searchWiki(
     void supabase.rpc('increment_wiki_view_count', { page_ids: ids }).then(() => {});
 
     return { content, titles };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * FAQ 검색 (3단계 캐스케이드): match_faqs RPC로 의미 유사도 검색
+ * Wiki/KB 미히트 시에만 호출. 히트 시 Q/A 컨텍스트 반환
+ */
+async function searchFaqs(
+  botId: string,
+  queryEmbedding: number[]
+): Promise<{ content: string; items: Array<{ question: string; answer: string }> } | null> {
+  try {
+    const supabase = getSupabaseServer();
+    const { data, error } = await supabase.rpc('match_faqs', {
+      p_bot_id: botId,
+      query_embedding: queryEmbedding,
+      match_threshold: 0.78,
+      match_count: 2,
+    });
+
+    if (error || !data || data.length === 0) return null;
+
+    const items = (data as Array<{ question: string; answer: string }>).map((r) => ({
+      question: r.question,
+      answer: r.answer,
+    }));
+    const content = items
+      .map((it, i) => `[FAQ ${i + 1}]\nQ: ${it.question}\nA: ${it.answer}`)
+      .join('\n\n');
+
+    return { content, items };
   } catch {
     return null;
   }
@@ -582,9 +615,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     ]);
     conversationId = resolvedConversationId;
 
-    // 6. Wiki-First RAG (S5BI1): 위키 검색 우선, 미히트 시 kb_embeddings 폴백
+    // 6. RAG 캐스케이드: wiki → kb → faq → AI 자유 답변
     let wikiCtx: { content: string; titles: string[] } | null = null;
-    let ragSource: 'wiki' | 'chunk' | 'none' = 'none';
+    let faqCtx: { content: string; items: Array<{ question: string; answer: string }> } | null = null;
+    let ragSource: 'wiki' | 'chunk' | 'faq' | 'none' = 'none';
 
     if (queryEmbedding) {
       wikiCtx = await searchWiki(botId, queryEmbedding);
@@ -600,12 +634,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       botId,
       wikiCtx ? undefined : (queryEmbedding ?? undefined)
     );
-    if (!wikiCtx && queryEmbedding) ragSource = 'chunk';
+    if (!wikiCtx && personaCtx.kbHitCount > 0) ragSource = 'chunk';
+
+    // 7.5. FAQ 캐스케이드 (S5BA8): 위키·KB 모두 미히트 시 FAQ 의미 검색
+    if (!wikiCtx && personaCtx.kbHitCount === 0 && queryEmbedding) {
+      faqCtx = await searchFaqs(botId, queryEmbedding);
+      if (faqCtx) ragSource = 'faq';
+    }
 
     // 8. 대화 히스토리 로드
     const history = await loadConversationHistory(conversationId);
 
-    // 9. 메시지 배열 조합 (system + wiki context (if any) + history + current user message)
+    // 9. 메시지 배열 조합 (system + wiki/faq context (if any) + history + current user message)
     const systemMessages: OpenRouterMessage[] = [
       { role: 'system', content: personaCtx.systemPrompt },
     ];
@@ -613,6 +653,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       systemMessages.push({
         role: 'system',
         content: `[지식베이스 — 위키]\n다음 위키 정보를 참고하여 답변하세요:\n\n${wikiCtx.content}`,
+      });
+    } else if (faqCtx) {
+      systemMessages.push({
+        role: 'system',
+        content: `[지식베이스 — FAQ]\n다음 FAQ를 참고하여 답변하세요:\n\n${faqCtx.content}`,
       });
     }
 

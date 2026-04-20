@@ -62,6 +62,11 @@ export interface PersonaContext {
    * (페르소나 기본 + KB 컨텍스트 포함)
    */
   systemPrompt: string;
+  /**
+   * KB 검색에서 매칭된 청크 개수 (0이면 KB 미히트)
+   * 챗 캐스케이드(wiki → kb → faq) 분기 판단에 사용
+   */
+  kbHitCount: number;
 }
 
 /**
@@ -214,14 +219,16 @@ export async function loadPersona(
 
   const persona = data as PersonaRow;
   let systemPrompt = buildBaseSystemPrompt(persona);
+  let kbHitCount = 0;
 
   // KB 검색 통합 (임베딩 제공 시)
   if (queryEmbedding && queryEmbedding.length > 0) {
     const kbResults = await searchKb(botId, queryEmbedding);
+    kbHitCount = kbResults.length;
     systemPrompt = appendKbContext(systemPrompt, kbResults);
   }
 
-  const ctx: PersonaContext = { persona, systemPrompt };
+  const ctx: PersonaContext = { persona, systemPrompt, kbHitCount };
 
   // 임베딩 없는 기본 조회만 캐시 저장 (동적 KB 컨텍스트는 캐시 제외)
   if (!queryEmbedding) {

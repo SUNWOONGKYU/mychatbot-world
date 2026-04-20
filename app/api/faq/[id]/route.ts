@@ -11,6 +11,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { generateQueryEmbedding } from '@/lib/chat/rag';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -58,7 +59,7 @@ export async function PATCH(
     );
   }
 
-  const updates: UpdateFaqBody = {};
+  const updates: UpdateFaqBody & { embedding?: number[] | null } = {};
   if (body.question !== undefined) updates.question = body.question.trim();
   if (body.answer !== undefined) updates.answer = body.answer.trim();
   if (body.order_index !== undefined) updates.order_index = body.order_index;
@@ -68,6 +69,21 @@ export async function PATCH(
       { success: false, error: '수정할 항목이 없습니다.' },
       { status: 400 }
     );
+  }
+
+  // question/answer 변경 시 임베딩 재생성 (S5BA8)
+  // 캐스케이드 검색 정확도 유지를 위해 의미 변경 시 벡터도 갱신
+  if (updates.question !== undefined || updates.answer !== undefined) {
+    const { data: existing } = await supabase
+      .from('faqs')
+      .select('question, answer')
+      .eq('id', id)
+      .single();
+    const finalQ = updates.question ?? (existing as any)?.question ?? '';
+    const finalA = updates.answer ?? (existing as any)?.answer ?? '';
+    if (finalQ && finalA) {
+      updates.embedding = await generateQueryEmbedding(`${finalQ}\n${finalA}`);
+    }
   }
 
   const { data, error } = await supabase
