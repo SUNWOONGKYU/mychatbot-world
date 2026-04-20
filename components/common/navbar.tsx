@@ -8,12 +8,12 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { BrandLogo } from '@/components/common/brand-logo';
 
-// 서비스 4메뉴
+// 서비스 4메뉴 — 각 메뉴별 고유 색상 (DESIGN.md 시맨틱 컬러 기반)
 const SERVICE_ITEMS = [
-  { label: 'Birth',     labelKo: '탄생',     href: '/create',    icon: '🐣' },
-  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills',    icon: '🔧' },
-  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs',      icon: '💼' },
-  { label: 'Community', labelKo: '봇카페',    href: '/community', icon: '🤝' },
+  { label: 'Birth',     labelKo: '탄생',     href: '/create',    icon: '🐣', color: '#F59E0B' }, // Amber - 탄생/생성
+  { label: 'Skills',    labelKo: '스킬장터',  href: '/skills',    icon: '🔧', color: '#7B6EFF' }, // Purple - 기술/AI
+  { label: 'Jobs',      labelKo: '구봇구직',  href: '/jobs',      icon: '💼', color: '#3B82F6' }, // Blue - 비즈니스
+  { label: 'Community', labelKo: '봇카페',    href: '/community', icon: '🤝', color: '#10B981' }, // Green - 교류
 ] as const;
 
 // Navbar 숨김 경로 — 로그인/회원가입/게스트/어드민은 별도 레이아웃
@@ -72,54 +72,58 @@ export function Navbar() {
         <BrandLogo variant="wordmark" height={28} style={{ color: 'var(--text-primary)' }} />
       </Link>
 
-      {/* 서비스 메뉴 + 구분선 + My Page */}
+      {/* 서비스 4메뉴 — 고유 색상 */}
       <nav
         className="items-center gap-1"
         style={{ display: 'flex' }}
         aria-label="주 메뉴"
       >
-        {/* 서비스 4메뉴 */}
         {SERVICE_ITEMS.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
-            <Link key={item.href} href={item.href} aria-current={isActive ? 'page' : undefined}
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={clsx(
                 'relative flex flex-col items-center px-3 py-1.5 rounded-lg',
                 'text-xs font-medium transition-all duration-200',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                isActive ? 'text-primary bg-primary/10' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
+                'focus-visible:outline-none focus-visible:ring-2',
               )}
+              style={{
+                color: isActive ? item.color : 'rgb(var(--text-secondary))',
+                background: isActive
+                  ? `color-mix(in oklch, ${item.color} 12%, transparent)`
+                  : 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = item.color;
+                  e.currentTarget.style.background = `color-mix(in oklch, ${item.color} 8%, transparent)`;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.background = 'transparent';
+                }
+              }}
             >
-              <span className="text-sm font-semibold">{item.label}</span>
-              <span className="text-[10px] text-text-muted">{item.labelKo}</span>
-              {isActive && <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full bg-primary" />}
+              <span className="text-sm font-bold">{item.label}</span>
+              <span className="text-[10px]" style={{ opacity: 0.75 }}>{item.labelKo}</span>
+              {isActive && (
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full"
+                  style={{ background: item.color, boxShadow: `0 0 8px ${item.color}` }}
+                />
+              )}
             </Link>
           );
         })}
-
-        {/* 구분선 */}
-        <span className="mx-2 h-6 w-px" style={{ background: 'rgb(var(--border))' }} aria-hidden="true" />
-
-        {/* My Page (별도 구분) */}
-        {(() => {
-          const isActive = pathname === '/mypage' || pathname.startsWith('/mypage/');
-          return (
-            <Link href="/mypage" aria-current={isActive ? 'page' : undefined}
-              className={clsx(
-                'relative flex flex-col items-center px-3 py-1.5 rounded-lg',
-                'text-xs font-medium transition-all duration-200',
-                isActive ? 'text-primary bg-primary/10' : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
-              )}
-            >
-              <span className="text-sm font-semibold">My Page</span>
-              <span className="text-[10px] text-text-muted">마이페이지</span>
-              {isActive && <span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 rounded-full bg-primary" />}
-            </Link>
-          );
-        })()}
       </nav>
 
-      {/* 우측 액션 영역 */}
+      {/* 우측 액션 영역 — My Page + 로그인/회원가입 */}
       <div className="flex items-center gap-2 justify-self-end">
         {/* 알림 벨 아이콘 */}
         <button
@@ -140,19 +144,31 @@ export function Navbar() {
           />
         </button>
 
-        {/* 프로필 아이콘 → /mypage */}
-        <Link
-          href="/mypage"
-          aria-label="마이페이지"
-          className={clsx(
-            'w-9 h-9 flex items-center justify-center rounded-full shrink-0',
-            'bg-primary/15 text-primary font-semibold text-sm',
-            'hover:bg-primary/25 transition-colors duration-150',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-          )}
-        >
-          <UserIcon />
-        </Link>
+        {/* My Page — 우측 액션 영역으로 이동 (아이콘 + 라벨) */}
+        {(() => {
+          const isActive = pathname === '/mypage' || pathname.startsWith('/mypage/');
+          return (
+            <Link
+              href="/mypage"
+              aria-current={isActive ? 'page' : undefined}
+              aria-label="마이페이지"
+              className={clsx(
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                'text-xs font-semibold transition-all duration-150',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                isActive
+                  ? 'bg-primary/15 text-primary'
+                  : 'text-text-secondary hover:text-primary hover:bg-primary/10',
+              )}
+            >
+              <UserIcon />
+              <span className="hidden md:inline">My Page</span>
+            </Link>
+          );
+        })()}
+
+        {/* 구분선 — My Page와 로그인/회원가입 사이 */}
+        <span className="mx-1 h-5 w-px" style={{ background: 'rgb(var(--border))' }} aria-hidden="true" />
 
         {/* 로그인 버튼 */}
         <Link

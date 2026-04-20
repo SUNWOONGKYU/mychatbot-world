@@ -135,7 +135,11 @@ const nextConfig = {
 
   // ── 리다이렉트 ────────────────────────────────────────────────
   async redirects() {
-    return [];
+    return [
+      // /support → /customer-service (고객센터 공식 라우트)
+      { source: '/support', destination: '/customer-service', permanent: false },
+      { source: '/support/:path*', destination: '/customer-service', permanent: false },
+    ];
   },
 };
 
