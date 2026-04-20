@@ -683,7 +683,7 @@ export default function LandingPage() {
 
           <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
             <h2 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl [word-break:keep-all]">
-              당신의 AI 코코봇을{' '}
+              당신의 AI Assistant 코코봇을{' '}
               <span
                 className="inline-block"
                 style={{
