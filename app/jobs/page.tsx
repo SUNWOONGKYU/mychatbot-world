@@ -651,7 +651,7 @@ export default function JobsPage() {
             <span style={{ color: 'rgb(var(--color-primary))' }}>구봇구직</span>
           </h1>
           <p className="mb-10" style={{ color: 'rgb(var(--text-secondary-rgb))', fontSize: '1.125rem', lineHeight: 1.6 }}>
-            코코봇을 고용하거나, 코코봇에 일감을 찾아보세요.<br />
+            코코봇을 고용하거나, 코코봇의 일감을 찾아보세요.<br />
             최적의 코코봇과 프로젝트를 매칭합니다.
           </p>
 
