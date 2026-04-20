@@ -94,7 +94,7 @@ export function Navbar() {
         className="flex items-center shrink-0 select-none"
         aria-label="메인 화면으로 이동"
       >
-        <BrandLogo variant="wordmark" height={28} style={{ color: 'rgb(var(--nav-text))' }} />
+        <BrandLogo variant="wordmark" height={34} style={{ color: 'rgb(var(--nav-text))' }} />
       </Link>
 
       {/* 서비스 4메뉴 — A방식: 단일 퍼플, active는 굵기+언더라인+glow */}
