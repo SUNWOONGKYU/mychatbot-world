@@ -4,10 +4,12 @@
   "stage": 9,
   "area": "BI",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
-  "dependencies": ["S9BI1"],
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": [
+    "S9BI1"
+  ],
   "priority": "Medium",
   "execution_type": "AI-Only",
   "task_instruction": "web-vitals 패키지 설치. app/layout.tsx에 reportWebVitals 함수로 LCP/FID/CLS/TTFB/INP 측정 후 POST /api/metrics. 서버 측에서 Sentry custom metric 또는 Axiom 전송. 샘플링 10% 적용.",
@@ -18,9 +20,12 @@
   "verification_instruction": "페이지 방문 시 /api/metrics 호출 확인(Network 탭). 서버 로그에 LCP/FID 등 기록.",
   "verification_agent": "observability-engineer",
   "test_result": {},
-  "build_verification": {"status": "pending"},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 0, "items": []},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
   "comprehensive_verification": {},
   "notes": "Phase 2 — Performance 가시화.",
   "remarks": "MBO S9 Phase 2 #1"

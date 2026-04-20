@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "FE",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "Medium",
   "execution_type": "AI-Only",
@@ -17,10 +17,15 @@
   "modification_history": "S7/S8에서 lighthouserc.json + lighthouse.yml 이미 구축됨. S9는 리포트 문서 신설 + 운영 가이드. 대상 페이지는 /, /skills, /community, /support (/bots 미존재).",
   "verification_instruction": "CI 리포트 4 페이지 모두 ≥90.",
   "verification_agent": "frontend-developer-core",
-  "test_result": {"config": "lighthouserc.json", "threshold": 0.9, "pages": 4, "report_doc": "docs/lighthouse-report.md"},
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["실측 값은 PO 또는 CI 실행 후 기록"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "실측 값은 PO 또는 CI 실행 후 기록"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 3 — Performance 실측. 개선 미달 시 S9FE2(번들)·S9FE3(a11y)에서 후속.",
   "remarks": "MBO S9 Phase 3 #1"

@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "DC",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "High",
   "execution_type": "AI-Only",
@@ -17,11 +17,30 @@
   "modification_history": "2026-04-20 MBO S9 PHASE A — 법률 문서 3종 런칭 대비",
   "verification_instruction": "(1) 세 페이지 모두 '2026-04-20' 시행일, CoCoBot World 브랜드, mychatbot.world 도메인, (2) 환불정책에 전상법 제17·18조, 콘텐츠산업진흥법 제28조 명시, (3) 푸터에 4개 링크(이용약관/개인정보처리방침/환불정책/고객센터), (4) 사업자등록번호·통신판매업 신고번호 자리표시(기재 시점 대기), (5) 7일 이내 미사용 100% 환불 규정.",
   "verification_agent": "documentation-writer-core",
-  "test_result": {"docs_updated": 2, "docs_created": 1, "footer_links": 4, "refund_cases": 7, "dispute_bodies": 3},
-  "build_verification": {"status": "pending — tsc --noEmit 수행"},
-  "integration_verification": {"cross_refs": ["terms#6 ↔ refund", "privacy ↔ support", "footer ↔ terms/privacy/refund/support"]},
-  "blockers": {"count": 1, "items": ["사업자등록번호·통신판매업 신고번호·대표자명·주소 기재는 PO 사업자 등록 후 반영"]},
-  "comprehensive_verification": {"law_compliance": ["전자상거래법 제17조 청약철회", "전자상거래법 제18조 효과", "콘텐츠산업진흥법 제28조", "개인정보보호법 제17조 제3자 제공", "통신비밀보호법 보관기간 3개월"]},
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {
+    "cross_refs": [
+      "terms#6 ↔ refund",
+      "privacy ↔ support",
+      "footer ↔ terms/privacy/refund/support"
+    ]
+  },
+  "blockers": {
+    "count": 1,
+    "items": [
+      "사업자등록번호·통신판매업 신고번호·대표자명·주소 기재는 PO 사업자 등록 후 반영"
+    ]
+  },
+  "comprehensive_verification": {
+    "law_compliance": [
+      "전자상거래법 제17조 청약철회",
+      "전자상거래법 제18조 효과",
+      "콘텐츠산업진흥법 제28조",
+      "개인정보보호법 제17조 제3자 제공",
+      "통신비밀보호법 보관기간 3개월"
+    ]
+  },
   "notes": "통신판매업 신고·사업자등록·대표자 정보 기재는 PO 수동 작업 필요. 신고 완료 후 terms/refund 페이지 하단 플레이스홀더 4곳 교체.",
   "remarks": "MBO S9 런칭 준비 1/N — 법적 차단요인 해소 1단계."
 }

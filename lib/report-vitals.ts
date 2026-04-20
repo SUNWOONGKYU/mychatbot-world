@@ -49,7 +49,6 @@ async function sendBeacon(metric: VitalMetric): Promise<void> {
 export async function initWebVitals(): Promise<void> {
   if (typeof window === 'undefined') return;
   try {
-    // @ts-expect-error 옵셔널 — web-vitals 패키지 미설치 시 런타임 skip
     const mod = await import('web-vitals');
     mod.onCLS(sendBeacon);
     mod.onFCP(sendBeacon);

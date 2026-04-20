@@ -4,10 +4,12 @@
   "stage": 9,
   "area": "FE",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
-  "dependencies": ["S9FE1"],
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": [
+    "S9FE1"
+  ],
   "priority": "Low",
   "execution_type": "AI-Only",
   "task_instruction": "@next/bundle-analyzer 설정. pnpm analyze 스크립트. First Load JS 200KB 이하 목표. 큰 라이브러리 dynamic import 전환.",
@@ -17,10 +19,15 @@
   "modification_history": "next.config.mjs에 bundle-analyzer 이미 wiring됨. S9는 package.json 스크립트/devDeps 정식화 + 리포트 문서.",
   "verification_instruction": "번들 리포트 생성, First Load JS 200KB 미만.",
   "verification_agent": "frontend-developer-core",
-  "test_result": {"script": "pnpm analyze", "target": "First Load JS ≤200KB"},
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["pnpm install 후 실측은 PO 또는 CI"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "pnpm install 후 실측은 PO 또는 CI"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 3 — Performance. 실측 수치는 차후 리포트에 추가.",
   "remarks": "MBO S9 Phase 3 #2"

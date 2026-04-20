@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "TS",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "Medium",
   "execution_type": "AI-Only",
@@ -17,14 +17,15 @@
   "modification_history": "기존 커버: auth-flow, landing, production-smoke, payment-flow, a11y-audit. 신규 추가: 봇/챗/스킬/환불/관리자 = core-scenarios.spec.ts.",
   "verification_instruction": "pnpm e2e 전 시나리오 PASS, CI 파이프라인 green.",
   "verification_agent": "test-engineer-core",
-  "test_result": {
-    "scenarios": 8,
-    "files": ["auth-flow.spec.ts", "core-scenarios.spec.ts", "payment-flow.spec.ts", "production-smoke.spec.ts", "a11y-audit.spec.ts"],
-    "env_gated": ["TEST_USER_EMAIL", "TEST_USER_PASSWORD", "TEST_ADMIN_KEY"]
-  },
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["CI 실행용 테스트 계정 시드 필요 (PO 수동)"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "CI 실행용 테스트 계정 시드 필요 (PO 수동)"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 2 — 회귀 방지 기반. 8 시나리오 매핑 완료, CI job 추가.",
   "remarks": "MBO S9 Phase 2 #4"

@@ -4,10 +4,12 @@
   "stage": 9,
   "area": "DC",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
-  "dependencies": ["S9DB3"],
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": [
+    "S9DB3"
+  ],
   "priority": "Low",
   "execution_type": "AI-Only",
   "task_instruction": "docs/runbook.md 작성. 12 시나리오: DB down, Redis down, OpenRouter 장애, 결제 실패, 로그인 불가, Sentry 알림 급증, 무통장입금 대기 폭주, RLS 위반 탐지, Vercel 배포 실패, Supabase Migration 실패, DNS 만료, SSL 만료. 각각 증상·진단·조치·에스컬레이션.",
@@ -17,10 +19,13 @@
   "modification_history": "기존 docs/runbooks/ 5종(S8DC2)와 보완 — 12시나리오 통합 runbook. 각 시나리오 4섹션.",
   "verification_instruction": "12 시나리오 × 4섹션(증상/진단/조치/에스컬레이션) 모두 작성.",
   "verification_agent": "documentation-writer-core",
-  "test_result": {"scenarios": 12, "sections_each": 4, "doc_length_lines": 270},
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 0, "items": []},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
   "comprehensive_verification": {},
   "notes": "Phase 3 — Documentation. on-call 즉시 조치 가능.",
   "remarks": "MBO S9 Phase 3 #11"

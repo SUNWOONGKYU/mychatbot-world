@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "BI",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "High",
   "execution_type": "AI-Only",
@@ -18,10 +18,17 @@
   "verification_instruction": "DSN 미설정 시 콘솔 에러 없이 silent. DSN 설정 시 테스트 에러가 Sentry에 기록. PII(email, authorization 헤더) 비식별화 확인.",
   "verification_agent": "observability-engineer",
   "test_result": {},
-  "build_verification": {"status": "passed", "tsc": "no-emit 통과"},
-  "test_result_extras": {"graceful_disable": "DSN 없을 시 silent no-op 동작 확인"},
+  "build_verification": {},
+  "test_result_extras": {
+    "graceful_disable": "DSN 없을 시 silent no-op 동작 확인"
+  },
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["Sentry DSN은 PO가 Sentry 계정에서 발급 후 Vercel env 등록"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "Sentry DSN은 PO가 Sentry 계정에서 발급 후 Vercel env 등록"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 1 — Observability 최저점(55). 프로덕션 에러 가시성 필수.",
   "remarks": "MBO S9 Phase 1 #2"

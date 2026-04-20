@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "BA",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "Medium",
   "execution_type": "AI-Only",
@@ -18,9 +18,12 @@
   "verification_instruction": "단위테스트: 5회 5xx → open, open 상태에서 즉시 503, 60초 후 half-open.",
   "verification_agent": "backend-developer-core",
   "test_result": {},
-  "build_verification": {"status": "pending"},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 0, "items": []},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
   "comprehensive_verification": {},
   "notes": "Phase 2 — Reliability. 외부 AI 장애 전파 차단.",
   "remarks": "MBO S9 Phase 2 #2"

@@ -4,10 +4,12 @@
   "stage": 9,
   "area": "DB",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
-  "dependencies": ["S9DV1"],
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": [
+    "S9DV1"
+  ],
   "priority": "Medium",
   "execution_type": "Hybrid",
   "task_instruction": "Supabase Pro PITR 기능을 사용하여 Staging 브랜치에서 과거 시점 복원 드릴 실행. 드릴 전후 체크리스트(스냅샷·데이터 검증·RPC 정상 동작·RLS 정책 유지). 결과를 docs/pitr-drill-2026Q2.md로 기록.",
@@ -17,10 +19,15 @@
   "modification_history": "드릴 템플릿 문서 생성. 실제 실행은 PO 수동 (Supabase 콘솔).",
   "verification_instruction": "리포트에 복원 소요 시간, 데이터 일관성 검증 결과, 이슈 없음.",
   "verification_agent": "devops-troubleshooter-core",
-  "test_result": {"artifact": "docs/pitr-drill-2026Q2.md", "type": "runbook+template"},
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["Staging Supabase Branch(S9DV1) + PO 수동 드릴 실행 필요"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "Staging Supabase Branch(S9DV1) + PO 수동 드릴 실행 필요"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 2 — Data Integrity. 분기별 드릴 정례화. 코드는 완료, PO 수동 실행 이월.",
   "remarks": "MBO S9 Phase 2 #6"

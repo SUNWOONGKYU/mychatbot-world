@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "BA",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "High",
   "execution_type": "AI-Only",
@@ -18,9 +18,12 @@
   "verification_instruction": "pnpm build 통과. zod validate 에서 필수 env 누락 시 명확한 에러 메시지.",
   "verification_agent": "devops-troubleshooter-core",
   "test_result": {},
-  "build_verification": {"status": "pending"},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 0, "items": []},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
   "comprehensive_verification": {},
   "notes": "Phase 1 — Infra/Deploy 75→. env 누락이 런타임 장애 주범.",
   "remarks": "MBO S9 Phase 1 #5"

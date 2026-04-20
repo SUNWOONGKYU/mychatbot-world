@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "FE",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "Low",
   "execution_type": "AI-Only",
@@ -17,10 +17,15 @@
   "modification_history": "14개 ErrorCode × 한국어 메시지 + CTA. classifyError() 헬퍼 포함.",
   "verification_instruction": "주요 에러 시나리오 10건 모두 명확한 한국어 메시지 + 복구 CTA.",
   "verification_agent": "frontend-developer-core",
-  "test_result": {"error_codes": 14, "has_cta": "대부분", "helper": "classifyError + shortMessage"},
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["기존 컴포넌트 점진 교체는 향후 PR로 이행"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "기존 컴포넌트 점진 교체는 향후 PR로 이행"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 3 — UX. 라이브러리 먼저 확립, 호출부는 점진 교체.",
   "remarks": "MBO S9 Phase 3 #5"

@@ -4,9 +4,9 @@
   "stage": 9,
   "area": "DV",
   "level": 2,
-  "task_status": "Completed",
-  "task_progress": 100,
-  "verification_status": "Verified",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
   "dependencies": [],
   "priority": "Medium",
   "execution_type": "Hybrid",
@@ -17,10 +17,15 @@
   "modification_history": "S8DV1 문서에 S9 확장 섹션 추가 — seed 스크립트·고정 staging·격리 검증·데이터 보호 규칙.",
   "verification_instruction": "Staging URL 접속 가능, seed 데이터 존재, 프로덕션과 격리 확인.",
   "verification_agent": "devops-troubleshooter-core",
-  "test_result": {"seed_script": "scripts/seed-staging.ts", "safety_guards": ["URL 검증", "STAGING_SEED_CONFIRM 요구"]},
-  "build_verification": {"status": "pending"},
+  "test_result": {},
+  "build_verification": {},
   "integration_verification": {},
-  "blockers": {"count": 1, "items": ["Supabase Branching 토글 ON + Vercel env 매핑은 PO 수동"]},
+  "blockers": {
+    "count": 1,
+    "items": [
+      "Supabase Branching 토글 ON + Vercel env 매핑은 PO 수동"
+    ]
+  },
   "comprehensive_verification": {},
   "notes": "Phase 2 — Infra/Deploy. 코드 완료, PO 수동 단계는 체크리스트화.",
   "remarks": "MBO S9 Phase 2 #7"
