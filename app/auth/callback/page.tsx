@@ -50,8 +50,11 @@ export default function AuthCallbackPage() {
 
       if (error || !data.session) {
         // 교환 실패: 대부분 이메일 인증 링크 재사용 / 만료 / code_verifier 없음
-        // → 수동 로그인으로 안내
-        router.replace('/login?confirmed=1');
+        // 진단을 위해 에러 메시지를 화면에 노출 (이후 안정화되면 silent redirect 로 복귀)
+        // eslint-disable-next-line no-console
+        console.error('[auth/callback] exchangeCodeForSession failed', error);
+        setStatus('error');
+        setErrMsg(error?.message ?? 'session=null');
         return;
       }
 
