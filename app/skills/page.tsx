@@ -28,7 +28,6 @@ export default function SkillsMarketPage() {
       <section className="page-hero">
         <div className="page-hero-bg"><div className="page-hero-orb" /></div>
         <div className="page-hero-content">
-          <span className="page-hero-badge">STEP 3 — SKILLS</span>
           <h1 className="page-hero-title">
             <span className="accent">스킬</span>을 장착합니다
           </h1>

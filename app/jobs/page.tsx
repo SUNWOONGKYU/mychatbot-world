@@ -638,12 +638,6 @@ export default function JobsPage() {
         </div>
 
         <div className="relative max-w-3xl mx-auto">
-          <span
-            className="inline-block text-xs font-bold tracking-widest mb-4 uppercase"
-            style={{ color: 'rgb(var(--color-primary))' }}
-          >
-            STEP 4 — JOBS
-          </span>
           <h1
             className="text-4xl md:text-5xl font-bold mb-4"
             style={{ color: 'rgb(var(--text-primary-rgb))' }}
