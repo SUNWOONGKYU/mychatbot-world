@@ -14,10 +14,10 @@ export default function MypageError({
   return (
     <div className="flex min-h-screen items-center justify-center bg-[rgb(var(--bg-base))] px-6">
       <div className="text-center space-y-4 max-w-md">
-        <h2 className="text-xl font-semibold text-[rgb(var(--text-primary))]">
+        <h2 className="text-xl font-semibold text-[rgb(var(--text-primary-rgb))]">
           마이페이지 오류
         </h2>
-        <p className="text-[rgb(var(--text-secondary))] text-sm">
+        <p className="text-[rgb(var(--text-secondary-rgb))] text-sm">
           {error.message || '데이터를 불러오는 중 문제가 발생했습니다.'}
         </p>
         <div className="flex gap-2 justify-center">
@@ -29,7 +29,7 @@ export default function MypageError({
           </button>
           <a
             href="/"
-            className="px-4 py-2 border border-[rgb(var(--text-muted)/0.3)] text-[rgb(var(--text-secondary))] rounded-lg hover:bg-[rgb(var(--bg-subtle))] transition"
+            className="px-4 py-2 border border-[rgb(var(--text-muted)/0.3)] text-[rgb(var(--text-secondary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))] transition"
           >
             홈으로
           </a>

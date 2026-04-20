@@ -123,9 +123,9 @@ function ProgressBar({ currentStep }: { currentStep: number }) {
                 gap: '3px',
                 fontSize: '0.6rem',
                 color: isActive
-                  ? 'rgb(var(--text-primary))'
+                  ? 'rgb(var(--text-primary-rgb))'
                   : isDone
-                  ? 'rgb(var(--text-secondary))'
+                  ? 'rgb(var(--text-secondary-rgb))'
                   : 'rgb(var(--text-muted))',
               }}
             >

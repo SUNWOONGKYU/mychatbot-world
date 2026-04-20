@@ -172,7 +172,7 @@ function BotCard({ bot }: { bot: BotItem }) {
             </div>
             <h3
               className="text-base font-bold leading-snug"
-              style={{ color: 'rgb(var(--text-primary))' }}
+              style={{ color: 'rgb(var(--text-primary-rgb))' }}
             >{bot.name}</h3>
           </div>
         </div>
@@ -180,7 +180,7 @@ function BotCard({ bot }: { bot: BotItem }) {
         {/* 설명 */}
         <p
           className="text-[0.825rem] leading-relaxed line-clamp-2"
-          style={{ color: 'rgb(var(--text-secondary))' }}
+          style={{ color: 'rgb(var(--text-secondary-rgb))' }}
         >
           {bot.description}
         </p>
@@ -216,7 +216,7 @@ function BotCard({ bot }: { bot: BotItem }) {
           </div>
           <div className="text-right">
             <span className="text-[0.7rem] mr-0.5">월</span>
-            <span className="font-medium" style={{ color: 'rgb(var(--text-secondary))' }}>{formatPrice(bot.price)}</span>
+            <span className="font-medium" style={{ color: 'rgb(var(--text-secondary-rgb))' }}>{formatPrice(bot.price)}</span>
           </div>
         </div>
       </article>
@@ -265,7 +265,7 @@ function JobCard({ job }: { job: JobItem }) {
         {/* 제목 */}
         <h3
           className="text-base font-bold leading-snug line-clamp-2"
-          style={{ color: 'rgb(var(--text-primary))' }}
+          style={{ color: 'rgb(var(--text-primary-rgb))' }}
         >
           {job.title}
         </h3>
@@ -273,7 +273,7 @@ function JobCard({ job }: { job: JobItem }) {
         {/* 설명 */}
         <p
           className="text-[0.825rem] leading-relaxed line-clamp-2"
-          style={{ color: 'rgb(var(--text-secondary))' }}
+          style={{ color: 'rgb(var(--text-secondary-rgb))' }}
         >
           {job.description}
         </p>
@@ -300,7 +300,7 @@ function JobCard({ job }: { job: JobItem }) {
 
         {/* 하단 메타 */}
         <div className="flex items-center justify-between text-xs mt-auto pt-1">
-          <div className="font-medium" style={{ color: 'rgb(var(--text-secondary))' }}>
+          <div className="font-medium" style={{ color: 'rgb(var(--text-secondary-rgb))' }}>
             예산: <strong style={{ color: 'rgb(var(--color-accent))' }}>{formatPrice(job.budget)}</strong>
           </div>
           <div
@@ -378,7 +378,7 @@ function Pagination({
           borderRadius: 'var(--radius-lg)',
           background: 'rgb(var(--bg-surface))',
           border: '1px solid rgb(var(--border))',
-          color: 'rgb(var(--text-secondary))',
+          color: 'rgb(var(--text-secondary-rgb))',
         }}
         aria-label="이전 페이지"
       >
@@ -424,7 +424,7 @@ function Pagination({
           borderRadius: 'var(--radius-lg)',
           background: 'rgb(var(--bg-surface))',
           border: '1px solid rgb(var(--border))',
-          color: 'rgb(var(--text-secondary))',
+          color: 'rgb(var(--text-secondary-rgb))',
         }}
         aria-label="다음 페이지"
       >
@@ -440,10 +440,10 @@ function EmptyState({ label, icon }: { label: string; icon: string }) {
   return (
     <div className="text-center py-16" role="status">
       <div className="text-5xl mb-4">{icon}</div>
-      <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>
+      <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary-rgb))' }}>
         아직 등록된 {label}가 없습니다
       </h3>
-      <p style={{ color: 'rgb(var(--text-secondary))' }}>
+      <p style={{ color: 'rgb(var(--text-secondary-rgb))' }}>
         곧 업데이트될 예정입니다.
       </p>
     </div>
@@ -646,11 +646,11 @@ export default function JobsPage() {
           </span>
           <h1
             className="text-4xl md:text-5xl font-bold mb-4"
-            style={{ color: 'rgb(var(--text-primary))' }}
+            style={{ color: 'rgb(var(--text-primary-rgb))' }}
           >
             <span style={{ color: 'rgb(var(--color-primary))' }}>구봇구직</span>
           </h1>
-          <p className="text-lg mb-10" style={{ color: 'rgb(var(--text-secondary))' }}>
+          <p className="text-lg mb-10" style={{ color: 'rgb(var(--text-secondary-rgb))' }}>
             코코봇을 고용하거나, 일감을 찾아보세요.<br />
             최적의 코코봇과 프로젝트를 매칭합니다.
           </p>
@@ -681,7 +681,7 @@ export default function JobsPage() {
                 background: 'rgb(var(--bg-surface))',
                 border: '1.5px solid rgb(var(--border))',
                 borderRadius: 'var(--radius-3xl)',
-                color: 'rgb(var(--text-primary))',
+                color: 'rgb(var(--text-primary-rgb))',
               }}
               onFocus={e => {
                 e.currentTarget.style.borderColor = 'rgb(var(--color-primary))';
@@ -735,7 +735,7 @@ export default function JobsPage() {
                 border: '1px solid',
                 borderColor: category === cat ? 'rgb(var(--color-primary) / 0.5)' : 'rgb(var(--border))',
                 background: category === cat ? 'rgb(var(--color-primary) / 0.12)' : 'transparent',
-                color: category === cat ? 'rgb(var(--color-primary))' : 'rgb(var(--text-secondary))',
+                color: category === cat ? 'rgb(var(--color-primary))' : 'rgb(var(--text-secondary-rgb))',
               }}
             >
               {CATEGORY_LABELS[cat]}
@@ -863,8 +863,8 @@ export default function JobsPage() {
             ) : (
               <div className="text-center py-16" role="status">
                 <div className="text-5xl mb-4">🤖</div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>코코봇을 찾을 수 없습니다</h3>
-                <p className="mb-4" style={{ color: 'rgb(var(--text-secondary))' }}>다른 카테고리나 검색어를 시도해보세요.</p>
+                <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary-rgb))' }}>코코봇을 찾을 수 없습니다</h3>
+                <p className="mb-4" style={{ color: 'rgb(var(--text-secondary-rgb))' }}>다른 카테고리나 검색어를 시도해보세요.</p>
                 <button
                   onClick={() => handleCategoryChange('all')}
                   className="px-5 py-2 font-semibold transition-all"

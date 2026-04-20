@@ -151,7 +151,7 @@ export default function JobsMatchPage() {
   const page: React.CSSProperties = {
     minHeight: '100vh',
     background: 'rgb(var(--bg-base))',
-    color: 'rgb(var(--text-primary))',
+    color: 'rgb(var(--text-primary-rgb))',
     paddingBottom: '4rem',
   };
 
@@ -172,7 +172,7 @@ export default function JobsMatchPage() {
           gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
           <div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 800,
-              color: 'rgb(var(--text-primary))', marginBottom: '.375rem' }}>
+              color: 'rgb(var(--text-primary-rgb))', marginBottom: '.375rem' }}>
               코코봇 매칭 결과
             </h1>
             <p style={{ fontSize: '.9375rem', color: 'rgb(var(--text-muted))' }}>
@@ -225,7 +225,7 @@ export default function JobsMatchPage() {
             }}>
               <div>
                 <h2 style={{ fontSize: '1.125rem', fontWeight: 700,
-                  color: 'rgb(var(--text-primary))', marginBottom: '.625rem' }}>
+                  color: 'rgb(var(--text-primary-rgb))', marginBottom: '.625rem' }}>
                   {job.title}
                 </h2>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
@@ -240,7 +240,7 @@ export default function JobsMatchPage() {
                       background: 'rgba(129,140,248,0.1)',
                       border: '1px solid rgba(129,140,248,0.2)',
                       borderRadius: 999, fontSize: '.8125rem',
-                      color: 'rgb(var(--text-secondary))',
+                      color: 'rgb(var(--text-secondary-rgb))',
                     }}>
                       {tag.icon} {tag.text}
                     </span>
@@ -273,7 +273,7 @@ export default function JobsMatchPage() {
                   width: '100%', padding: '.875rem 1.25rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   background: 'transparent', border: 'none', cursor: 'pointer',
-                  color: 'rgb(var(--text-secondary))', fontSize: '.875rem', fontWeight: 600,
+                  color: 'rgb(var(--text-secondary-rgb))', fontSize: '.875rem', fontWeight: 600,
                 }}
                 aria-expanded={algoOpen}
               >
@@ -293,7 +293,7 @@ export default function JobsMatchPage() {
                       <div key={f.label}>
                         <div style={{ display: 'flex', justifyContent: 'space-between',
                           fontSize: '.8125rem', fontWeight: 600, marginBottom: '.3rem' }}>
-                          <span style={{ color: 'rgb(var(--text-secondary))' }}>{f.label}</span>
+                          <span style={{ color: 'rgb(var(--text-secondary-rgb))' }}>{f.label}</span>
                           <span style={{ color: f.color }}>{f.weight}%</span>
                         </div>
                         <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 4 }}>
@@ -317,7 +317,7 @@ export default function JobsMatchPage() {
               }}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700,
-                  color: 'rgb(var(--text-primary))', marginBottom: '.5rem' }}>
+                  color: 'rgb(var(--text-primary-rgb))', marginBottom: '.5rem' }}>
                   매칭 결과가 없습니다
                 </h3>
                 <p style={{ fontSize: '.9rem', color: 'rgb(var(--text-muted))',
@@ -389,7 +389,7 @@ export default function JobsMatchPage() {
                               지원자 ID
                             </div>
                             <div style={{ fontSize: '.9375rem', fontWeight: 700,
-                              color: 'rgb(var(--text-primary))', fontFamily: 'monospace' }}>
+                              color: 'rgb(var(--text-primary-rgb))', fontFamily: 'monospace' }}>
                               {m.applicant_id.slice(0, 8)}…
                             </div>
                           </div>

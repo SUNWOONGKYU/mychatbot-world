@@ -53,7 +53,7 @@ export default function GuestChatPage() {
           flex-direction: column;
           height: 100svh;
           background: rgb(var(--bg-base));
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
           font-family: var(--font-sans);
         }
         .gchat-header {
@@ -77,7 +77,7 @@ export default function GuestChatPage() {
           border-radius: var(--radius-md);
           border: 1px solid rgb(var(--border));
           background: transparent;
-          color: rgb(var(--text-secondary));
+          color: rgb(var(--text-secondary-rgb));
           cursor: pointer;
           text-decoration: none;
           transition: all var(--transition-fast);
@@ -91,7 +91,7 @@ export default function GuestChatPage() {
           flex: 1;
           font-size: 0.9375rem;
           font-weight: var(--font-semibold);
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -140,13 +140,13 @@ export default function GuestChatPage() {
         .gchat-modal-title {
           font-size: 1.25rem;
           font-weight: var(--font-bold);
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
           margin-bottom: var(--space-2);
           letter-spacing: -0.02em;
         }
         .gchat-modal-desc {
           font-size: 0.875rem;
-          color: rgb(var(--text-secondary));
+          color: rgb(var(--text-secondary-rgb));
           line-height: 1.65;
           margin-bottom: var(--space-6);
         }
@@ -175,7 +175,7 @@ export default function GuestChatPage() {
           display: block;
           padding: var(--space-2_5) var(--space-6);
           background: transparent;
-          color: rgb(var(--text-secondary));
+          color: rgb(var(--text-secondary-rgb));
           border: 1px solid rgb(var(--border));
           border-radius: var(--radius-lg);
           font-size: 0.875rem;
@@ -188,7 +188,7 @@ export default function GuestChatPage() {
         }
         .gchat-btn-secondary:hover {
           border-color: rgb(var(--border-strong));
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
         }
       `}</style>
 

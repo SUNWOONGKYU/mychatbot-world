@@ -15,10 +15,10 @@ export default function BotError({
     <div className="flex min-h-screen items-center justify-center bg-[rgb(var(--bg-base))] px-6">
       <div className="text-center space-y-4 max-w-md">
         <div className="text-4xl">🤖</div>
-        <h2 className="text-xl font-semibold text-[rgb(var(--text-primary))]">
+        <h2 className="text-xl font-semibold text-[rgb(var(--text-primary-rgb))]">
           봇을 불러올 수 없습니다
         </h2>
-        <p className="text-[rgb(var(--text-secondary))] text-sm">
+        <p className="text-[rgb(var(--text-secondary-rgb))] text-sm">
           {error.message || '해당 봇이 존재하지 않거나 일시적 오류가 발생했습니다.'}
         </p>
         <div className="flex gap-2 justify-center">
@@ -30,7 +30,7 @@ export default function BotError({
           </button>
           <a
             href="/"
-            className="px-4 py-2 border border-[rgb(var(--text-muted)/0.3)] text-[rgb(var(--text-secondary))] rounded-lg hover:bg-[rgb(var(--bg-subtle))] transition"
+            className="px-4 py-2 border border-[rgb(var(--text-muted)/0.3)] text-[rgb(var(--text-secondary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))] transition"
           >
             홈으로
           </a>

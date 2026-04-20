@@ -84,7 +84,7 @@ export default function HomePageDashboard() {
                 onClick={() => setActiveTab(item.id)}
                 style={{
                   width: '100%', padding: '12px 16px',
-                  color: activeTab === item.id ? 'white' : 'rgb(var(--text-secondary))',
+                  color: activeTab === item.id ? 'white' : 'rgb(var(--text-secondary-rgb))',
                   borderRadius: 10, cursor: 'pointer', fontWeight: 500,
                   display: 'flex', alignItems: 'center', gap: 12,
                   background: activeTab === item.id ? '#6366f1' : 'transparent',
@@ -100,7 +100,7 @@ export default function HomePageDashboard() {
                 onMouseLeave={(e) => {
                   if (activeTab !== item.id) {
                     (e.currentTarget as HTMLElement).style.background = 'transparent';
-                    (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary))';
+                    (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary-rgb))';
                   }
                 }}
               >
@@ -143,7 +143,7 @@ function LogoutButton() {
   return (
     <button onClick={handleLogout} style={{
       width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-      padding: '12px 16px', color: 'rgb(var(--text-secondary))', fontSize: '0.9rem',
+      padding: '12px 16px', color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.9rem',
       background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10,
     }}>🔌 로그아웃</button>
   );

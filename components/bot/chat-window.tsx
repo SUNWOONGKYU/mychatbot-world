@@ -821,7 +821,7 @@ export default function ChatWindow({
               <h1
                 className="font-bold truncate"
                 style={{
-                  color: 'rgb(var(--text-primary))',
+                  color: 'rgb(var(--text-primary-rgb))',
                   fontSize: '1rem',
                 }}
               >
@@ -1110,7 +1110,7 @@ export default function ChatWindow({
               flex: 1,
               background: 'transparent',
               border: 'none',
-              color: 'rgb(var(--text-primary))',
+              color: 'rgb(var(--text-primary-rgb))',
               fontSize: 16, // iOS 자동 줌 방지
               padding: '8px 0',
               resize: 'none',
@@ -1496,7 +1496,7 @@ function MessageBubble({
               verticalAlign: 'middle',
               transition: 'opacity 0.2s',
               animation: ttsPlaying ? 'pulse-speaker 1s infinite' : undefined,
-              color: 'rgb(var(--text-secondary))',
+              color: 'rgb(var(--text-secondary-rgb))',
             } as React.CSSProperties}
           >
             🔊

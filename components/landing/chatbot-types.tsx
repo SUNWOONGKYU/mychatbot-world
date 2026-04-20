@@ -83,13 +83,13 @@ export function ChatbotTypes() {
           </span>
           <h2
             className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
-            style={{ color: 'rgb(var(--text-primary))' }}
+            style={{ color: 'rgb(var(--text-primary-rgb))' }}
           >
             나의 코코봇을 선택하세요
           </h2>
           <p
             className="mt-4 text-lg"
-            style={{ color: 'rgb(var(--text-secondary))' }}
+            style={{ color: 'rgb(var(--text-secondary-rgb))' }}
           >
             목적에 맞는 코코봇 유형을 선택하면 5분 인터뷰로 바로 생성됩니다.
           </p>
@@ -136,7 +136,7 @@ export function ChatbotTypes() {
                   style={{
                     color: isHovered
                       ? 'rgb(var(--color-primary))'
-                      : 'rgb(var(--text-primary))',
+                      : 'rgb(var(--text-primary-rgb))',
                   }}
                 >
                   {cat.title}
@@ -145,7 +145,7 @@ export function ChatbotTypes() {
                 {/* 설명 */}
                 <p
                   className="mt-2 flex-1 text-xs leading-relaxed"
-                  style={{ color: 'rgb(var(--text-secondary))' }}
+                  style={{ color: 'rgb(var(--text-secondary-rgb))' }}
                 >
                   {cat.description}
                 </p>

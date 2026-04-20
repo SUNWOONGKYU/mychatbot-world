@@ -151,13 +151,13 @@ export function DemoSection() {
             </span>
             <h2
               className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
-              style={{ color: 'rgb(var(--text-primary))' }}
+              style={{ color: 'rgb(var(--text-primary-rgb))' }}
             >
               탄생부터 수익까지
             </h2>
             <p
               className="mt-4 text-lg"
-              style={{ color: 'rgb(var(--text-secondary))' }}
+              style={{ color: 'rgb(var(--text-secondary-rgb))' }}
             >
               CoCoBot는 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
             </p>
@@ -225,7 +225,7 @@ export function DemoSection() {
                   {/* 제목 */}
                   <h3
                     className="text-sm font-bold"
-                    style={{ color: 'rgb(var(--text-primary))' }}
+                    style={{ color: 'rgb(var(--text-primary-rgb))' }}
                   >
                     {step.title}
                   </h3>
@@ -233,7 +233,7 @@ export function DemoSection() {
                   {/* 설명 */}
                   <p
                     className="mt-2 text-xs leading-relaxed"
-                    style={{ color: 'rgb(var(--text-secondary))' }}
+                    style={{ color: 'rgb(var(--text-secondary-rgb))' }}
                   >
                     {step.desc}
                   </p>
@@ -274,13 +274,13 @@ export function DemoSection() {
             </span>
             <h2
               className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
-              style={{ color: 'rgb(var(--text-primary))' }}
+              style={{ color: 'rgb(var(--text-primary-rgb))' }}
             >
               지금 바로 체험해보세요
             </h2>
             <p
               className="mt-4 text-lg"
-              style={{ color: 'rgb(var(--text-secondary))' }}
+              style={{ color: 'rgb(var(--text-secondary-rgb))' }}
             >
               5분 만에 만들 수 있는 CoCoBot 데모와 직접 대화해보세요.
             </p>
@@ -328,13 +328,13 @@ export function DemoSection() {
                     <div className="pb-8">
                       <h3
                         className="text-base font-bold"
-                        style={{ color: 'rgb(var(--text-primary))' }}
+                        style={{ color: 'rgb(var(--text-primary-rgb))' }}
                       >
                         {item.title}
                       </h3>
                       <p
                         className="mt-1.5 text-sm leading-relaxed"
-                        style={{ color: 'rgb(var(--text-secondary))' }}
+                        style={{ color: 'rgb(var(--text-secondary-rgb))' }}
                       >
                         {item.desc}
                       </p>
@@ -413,7 +413,7 @@ export function DemoSection() {
                   <div>
                     <p
                       className="text-sm font-bold"
-                      style={{ color: 'rgb(var(--text-primary))' }}
+                      style={{ color: 'rgb(var(--text-primary-rgb))' }}
                     >
                       CoCoBot 데모 코코봇
                     </p>
@@ -453,7 +453,7 @@ export function DemoSection() {
                               }
                             : {
                                 background: 'rgb(var(--bg-muted))',
-                                color: 'rgb(var(--text-primary))',
+                                color: 'rgb(var(--text-primary-rgb))',
                                 borderRadius: '18px 18px 18px 4px',
                               }
                         }
@@ -525,7 +525,7 @@ export function DemoSection() {
                     style={{
                       background: 'rgb(var(--bg-subtle))',
                       borderColor: 'rgb(var(--border))',
-                      color: 'rgb(var(--text-primary))',
+                      color: 'rgb(var(--text-primary-rgb))',
                     }}
                     onFocus={(e) => {
                       e.target.style.borderColor = 'rgb(var(--color-primary))';

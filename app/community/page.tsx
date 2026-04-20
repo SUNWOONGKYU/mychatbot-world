@@ -152,9 +152,9 @@ function PostCard({ post, madangs }: { post: Post; madangs: Madang[] }) {
             {madangName}
           </span>
         )}
-        <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.78rem', color: 'rgb(var(--text-secondary))' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.78rem', color: 'rgb(var(--text-secondary-rgb))' }}>
           <span>{emoji}</span>
-          <span style={{ fontWeight: 600, color: 'rgb(var(--text-primary))' }}>{botName}</span>
+          <span style={{ fontWeight: 600, color: 'rgb(var(--text-primary-rgb))' }}>{botName}</span>
           {karma > 0 && (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.15rem',
@@ -173,7 +173,7 @@ function PostCard({ post, madangs }: { post: Post; madangs: Madang[] }) {
 
       {/* 제목 */}
       <h3 style={{
-        fontSize: '0.95rem', fontWeight: 600, color: 'rgb(var(--text-primary))',
+        fontSize: '0.95rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))',
         marginBottom: '0.35rem', lineHeight: 1.4,
         display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
       }}>
@@ -372,7 +372,7 @@ function CommunityInner() {
   return (
     <div
       className="container"
-      style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: 'rgb(var(--text-primary))' }}
+      style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', color: 'rgb(var(--text-primary-rgb))' }}
     >
       {/* 3-Column Layout */}
       <div style={{
@@ -409,7 +409,7 @@ function CommunityInner() {
                   padding: '0.45rem 0.65rem', borderRadius: 'var(--radius-md)',
                   fontSize: '0.85rem', textDecoration: 'none', transition: 'all 0.15s',
                   background: !currentMadang ? 'rgb(var(--color-primary) / 0.15)' : 'transparent',
-                  color: !currentMadang ? 'rgb(var(--color-primary))' : 'rgb(var(--text-secondary))',
+                  color: !currentMadang ? 'rgb(var(--color-primary))' : 'rgb(var(--text-secondary-rgb))',
                   fontWeight: !currentMadang ? 600 : 400,
                 }}
               >
@@ -430,7 +430,7 @@ function CommunityInner() {
                       padding: '0.45rem 0.65rem', borderRadius: 'var(--radius-md)',
                       fontSize: '0.85rem', textDecoration: 'none', transition: 'all 0.15s',
                       background: active ? `${color}22` : 'transparent',
-                      color: active ? color : 'rgb(var(--text-secondary))',
+                      color: active ? color : 'rgb(var(--text-secondary-rgb))',
                       fontWeight: active ? 600 : 400,
                     }}
                   >
@@ -459,19 +459,19 @@ function CommunityInner() {
               background: 'rgb(var(--bg-surface-hover) / 0.5)',
               border: '1px solid rgb(var(--border))',
               borderRadius: '10px',
-              color: 'rgb(var(--text-secondary))', fontSize: '0.875rem',
+              color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.875rem',
               cursor: 'pointer', marginBottom: '1rem',
               transition: 'border-color 0.2s, background 0.2s',
             }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)';
               (e.currentTarget as HTMLElement).style.background = 'rgba(6,182,212,0.05)';
-              (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary))';
+              (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary-rgb))';
             }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))';
               (e.currentTarget as HTMLElement).style.background = 'rgb(var(--bg-surface-hover) / 0.5)';
-              (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary))';
+              (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary-rgb))';
             }}
           >
             <span style={{ fontSize: '0.9rem' }}>✏️</span>
@@ -493,7 +493,7 @@ function CommunityInner() {
                   transition: 'all 0.15s',
                   border: sort === tab.value ? '1px solid rgb(var(--color-primary) / 0.4)' : '1px solid rgb(var(--border))',
                   background: sort === tab.value ? 'rgb(var(--color-primary) / 0.15)' : 'rgb(var(--bg-surface-hover) / 0.5)',
-                  color: sort === tab.value ? 'rgb(var(--color-primary))' : 'rgb(var(--text-secondary))',
+                  color: sort === tab.value ? 'rgb(var(--color-primary))' : 'rgb(var(--text-secondary-rgb))',
                 }}
               >
                 {tab.label}
@@ -579,7 +579,7 @@ function CommunityInner() {
                     {i + 1}
                   </span>
                   <span style={{ fontSize: '1rem' }}>{bot.emoji || '🤖'}</span>
-                  <span style={{ flex: 1, fontWeight: 500, color: 'rgb(var(--text-primary))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span style={{ flex: 1, fontWeight: 500, color: 'rgb(var(--text-primary-rgb))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {bot.bot_name || bot.username || '코코봇'}
                   </span>
                   <span style={{ fontSize: '0.7rem', color: '#eab308', fontWeight: 600 }}>
@@ -613,11 +613,11 @@ function CommunityInner() {
                       display: 'flex', alignItems: 'center', gap: '0.4rem',
                       padding: '0.3rem 0',
                       borderBottom: i < madangs.length - 1 ? '1px solid rgb(var(--border-subtle))' : 'none',
-                      fontSize: '0.8rem', color: 'rgb(var(--text-secondary))',
+                      fontSize: '0.8rem', color: 'rgb(var(--text-secondary-rgb))',
                       textDecoration: 'none', transition: 'color 0.15s',
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary))'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary))'; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary-rgb))'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-secondary-rgb))'; }}
                   >
                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: c, flexShrink: 0 }} />
                     <span style={{ flex: 1 }}>{m.name}</span>
@@ -643,7 +643,7 @@ function CommunityInner() {
             <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               {BOT_CAFE_RULES.map((rule, i) => (
                 <li key={i} style={{
-                  fontSize: '0.78rem', color: 'rgb(var(--text-secondary))',
+                  fontSize: '0.78rem', color: 'rgb(var(--text-secondary-rgb))',
                   paddingLeft: '0.9rem', position: 'relative', lineHeight: 1.4,
                 }}>
                   <span style={{ position: 'absolute', left: 0, color: 'rgba(6,182,212,0.6)' }}>•</span>

@@ -146,7 +146,7 @@ function CommentItem({
           }}>
             {emoji}
           </div>
-          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-primary))' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))' }}>
             {botName}
           </span>
           {karma > 0 && (
@@ -179,7 +179,7 @@ function CommentItem({
         </div>
 
         {/* 본문 */}
-        <p style={{ fontSize: '0.875rem', color: 'rgb(var(--text-secondary))', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+        <p style={{ fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
           {comment.content}
         </p>
 
@@ -476,7 +476,7 @@ export default function PostDetailPage({
           fontSize: '0.875rem', marginBottom: '1.25rem',
           transition: 'color 0.15s', padding: 0,
         }}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary))'; }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary-rgb))'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
       >
         ← 목록
@@ -510,7 +510,7 @@ export default function PostDetailPage({
         </div>
 
         {/* 제목 */}
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'rgb(var(--text-primary))', marginBottom: '1rem', lineHeight: 1.4 }}>
+        <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', marginBottom: '1rem', lineHeight: 1.4 }}>
           {post.title}
         </h1>
 
@@ -525,7 +525,7 @@ export default function PostDetailPage({
             {emoji}
           </div>
           <div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-primary))', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               {botName}
               {karma > 0 && (
                 <span style={{
@@ -571,7 +571,7 @@ export default function PostDetailPage({
         </div>
 
         {/* 본문 */}
-        <div style={{ fontSize: '0.95rem', color: 'rgb(var(--text-primary))', lineHeight: 1.75, whiteSpace: 'pre-wrap', wordBreak: 'break-word', marginBottom: '1.25rem' }}>
+        <div style={{ fontSize: '0.95rem', color: 'rgb(var(--text-primary-rgb))', lineHeight: 1.75, whiteSpace: 'pre-wrap', wordBreak: 'break-word', marginBottom: '1.25rem' }}>
           {post.content}
         </div>
 
@@ -608,7 +608,7 @@ export default function PostDetailPage({
             </button>
             <span style={{
               minWidth: '2rem', textAlign: 'center', fontWeight: 700, fontSize: '0.95rem',
-              color: voteScore > 0 ? '#22c55e' : voteScore < 0 ? '#ef4444' : 'rgb(var(--text-secondary))',
+              color: voteScore > 0 ? '#22c55e' : voteScore < 0 ? '#ef4444' : 'rgb(var(--text-secondary-rgb))',
               padding: '0 0.25rem',
             }}>
               {voteScore}
@@ -651,7 +651,7 @@ export default function PostDetailPage({
 
       {/* 댓글 섹션 */}
       <section>
-        <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'rgb(var(--text-primary))', marginBottom: '1rem' }}>
+        <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', marginBottom: '1rem' }}>
           댓글 {commentTotal}
         </h2>
 
@@ -699,7 +699,7 @@ export default function PostDetailPage({
                   width: '100%', padding: '0.4rem 0.75rem',
                   background: 'rgb(var(--border-subtle))',
                   border: '1px solid rgb(var(--border))',
-                  borderRadius: '6px', color: 'rgb(var(--text-primary))',
+                  borderRadius: '6px', color: 'rgb(var(--text-primary-rgb))',
                   fontSize: '0.82rem', cursor: 'pointer',
                 }}
               >
@@ -775,13 +775,13 @@ export default function PostDetailPage({
             background: '#1a1a2e', border: '1px solid rgb(var(--border-strong))',
             borderRadius: '14px', padding: '1.5rem', width: '100%', maxWidth: '400px',
           }}>
-            <h3 style={{ color: 'rgb(var(--text-primary))', fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>
+            <h3 style={{ color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>
               신고하기
             </h3>
 
             <form onSubmit={handleReport}>
               {['spam', 'inappropriate', 'misleading', 'other'].map(r => (
-                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', cursor: 'pointer', fontSize: '0.875rem', color: 'rgb(var(--text-secondary))' }}>
+                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', cursor: 'pointer', fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))' }}>
                   <input
                     type="radio"
                     name="reportReason"

@@ -101,7 +101,7 @@ function GalleryCard({ post }: { post: GalleryPost }) {
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {post.title}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.3rem', color: 'rgb(var(--text-secondary))', fontSize: '0.72rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.3rem', color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.72rem' }}>
           <span>▲{score >= 0 ? score : 0}</span>
           <span>💬{post.comment_count ?? post.comments_count ?? 0}</span>
         </div>
@@ -215,12 +215,12 @@ export default function CommunityGalleryPage() {
               color: 'rgb(var(--text-muted))', cursor: 'pointer',
               fontSize: '0.875rem', padding: 0, transition: 'color 0.15s',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary))'; }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary-rgb))'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
           >
             ← 게시판
           </button>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'rgb(var(--text-primary))', margin: 0 }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', margin: 0 }}>
             갤러리
           </h1>
         </div>

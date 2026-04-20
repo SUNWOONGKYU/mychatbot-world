@@ -182,8 +182,8 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
               disabled={uploading}
               className={clsx(
                 'text-sm px-4 py-1.5 rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                'bg-[rgb(var(--bg-surface-hover))] text-[rgb(var(--text-secondary))]',
-                'hover:text-[rgb(var(--text-primary))] hover:border-[rgb(var(--border-strong))]',
+                'bg-[rgb(var(--bg-surface-hover))] text-[rgb(var(--text-secondary-rgb))]',
+                'hover:text-[rgb(var(--text-primary-rgb))] hover:border-[rgb(var(--border-strong))]',
                 'transition-colors disabled:opacity-50',
               )}
             >
@@ -200,7 +200,7 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
 
           {/* 기본 정보 영역 */}
           <div className="flex-1 space-y-4">
-            <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))]">기본 정보</h2>
+            <h2 className="text-lg font-semibold text-[rgb(var(--text-primary-rgb))]">기본 정보</h2>
 
             {/* 닉네임 */}
             <div className="space-y-1">
@@ -216,7 +216,7 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
                   maxLength={30}
                   className={clsx(
                     'w-full px-3 py-2 rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))]',
+                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))]',
                     'placeholder:text-[rgb(var(--text-muted))]',
                     'focus:outline-none focus:border-[rgb(var(--color-primary))]',
                     'focus:ring-1 focus:ring-[rgb(var(--color-primary)/0.3)]',
@@ -224,7 +224,7 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
                   )}
                 />
               ) : (
-                <p className="text-[rgb(var(--text-primary))] font-medium">
+                <p className="text-[rgb(var(--text-primary-rgb))] font-medium">
                   {profile.full_name || '—'}
                 </p>
               )}
@@ -235,7 +235,7 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
               <label className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide">
                 이메일
               </label>
-              <p className="text-[rgb(var(--text-secondary))]">{profile.email}</p>
+              <p className="text-[rgb(var(--text-secondary-rgb))]">{profile.email}</p>
             </div>
 
             {/* 가입일 */}
@@ -243,7 +243,7 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
               <label className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide">
                 가입일
               </label>
-              <p className="text-[rgb(var(--text-secondary))]">{formatDate(profile.created_at)}</p>
+              <p className="text-[rgb(var(--text-secondary-rgb))]">{formatDate(profile.created_at)}</p>
             </div>
 
             {/* 자기소개 */}
@@ -260,7 +260,7 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
                   placeholder="간단한 소개를 입력하세요"
                   className={clsx(
                     'w-full px-3 py-2 rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))]',
+                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))]',
                     'placeholder:text-[rgb(var(--text-muted))]',
                     'focus:outline-none focus:border-[rgb(var(--color-primary))]',
                     'focus:ring-1 focus:ring-[rgb(var(--color-primary)/0.3)]',
@@ -306,8 +306,8 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
                     className={clsx(
                       'px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium',
                       'border border-[rgb(var(--border))]',
-                      'text-[rgb(var(--text-secondary))]',
-                      'hover:text-[rgb(var(--text-primary))] hover:border-[rgb(var(--border-strong))]',
+                      'text-[rgb(var(--text-secondary-rgb))]',
+                      'hover:text-[rgb(var(--text-primary-rgb))] hover:border-[rgb(var(--border-strong))]',
                       'transition-colors',
                     )}
                   >
@@ -321,8 +321,8 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
                   className={clsx(
                     'px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium',
                     'border border-[rgb(var(--border))]',
-                    'text-[rgb(var(--text-secondary))]',
-                    'hover:text-[rgb(var(--text-primary))] hover:border-[rgb(var(--border-strong))]',
+                    'text-[rgb(var(--text-secondary-rgb))]',
+                    'hover:text-[rgb(var(--text-primary-rgb))] hover:border-[rgb(var(--border-strong))]',
                     'transition-colors',
                   )}
                 >
@@ -339,10 +339,10 @@ export default function Tab1Profile({ profile, onProfileUpdate }: Tab1ProfilePro
         className="rounded-[var(--radius-xl)] border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] p-6"
         style={{ boxShadow: 'var(--shadow-md)' }}
       >
-        <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-4">알림 설정</h2>
+        <h2 className="text-lg font-semibold text-[rgb(var(--text-primary-rgb))] mb-4">알림 설정</h2>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-[rgb(var(--text-primary))]">이메일 알림</p>
+            <p className="text-sm font-medium text-[rgb(var(--text-primary-rgb))]">이메일 알림</p>
             <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">
               상속 동의, 입금 완료, 스킬 업데이트 등 중요 알림을 받습니다.
             </p>

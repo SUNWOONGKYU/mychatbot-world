@@ -68,7 +68,7 @@ function ReviewCard({ review }: { review: typeof DUMMY_REVIEWS[0] }) {
         </div>
         <StarDisplay rating={review.rating} size="sm" />
       </div>
-      <p style={{ fontSize: '0.875rem', color: 'rgb(var(--text-secondary))', lineHeight: 1.6 }}>{review.comment}</p>
+      <p style={{ fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))', lineHeight: 1.6 }}>{review.comment}</p>
       <p style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: '0.5rem' }}>
         {new Date(review.date).toLocaleDateString('ko-KR')}
       </p>
@@ -248,7 +248,7 @@ export default function SkillDetailPage() {
             {activeTab === 'overview' && (
               <div className="sk-detail-section">
                 <h2 className="sk-detail-section-title">스킬 소개</h2>
-                <p style={{ fontSize: '0.9rem', color: 'rgb(var(--text-secondary))', lineHeight: 1.7 }}>
+                <p style={{ fontSize: '0.9rem', color: 'rgb(var(--text-secondary-rgb))', lineHeight: 1.7 }}>
                   {skill.description}
                 </p>
 
@@ -270,7 +270,7 @@ export default function SkillDetailPage() {
                     filter: 'blur(3px)',
                     userSelect: 'none',
                     fontSize: '0.875rem',
-                    color: 'rgb(var(--text-secondary))',
+                    color: 'rgb(var(--text-secondary-rgb))',
                     lineHeight: 1.7,
                     fontStyle: 'italic',
                   }}>
@@ -303,7 +303,7 @@ export default function SkillDetailPage() {
                   </div>
                   <div className="sk-detail-dl-row">
                     <dt>상태</dt>
-                    <dd style={{ color: installed ? '#34d399' : 'rgb(var(--text-secondary))' }}>
+                    <dd style={{ color: installed ? '#34d399' : 'rgb(var(--text-secondary-rgb))' }}>
                       {installed ? '설치됨' : '미설치'}
                     </dd>
                   </div>

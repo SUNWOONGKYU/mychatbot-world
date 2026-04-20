@@ -127,7 +127,7 @@ function SkillRow({
           onClick={() => setExpanded(v => !v)}
         >
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-[rgb(var(--text-primary))]">{skill.name}</span>
+            <span className="text-sm font-semibold text-[rgb(var(--text-primary-rgb))]">{skill.name}</span>
             <span className={clsx(
               'text-[10px] px-1.5 py-0.5 rounded-full border font-medium',
               skill.active
@@ -159,7 +159,7 @@ function SkillRow({
         <div className="px-4 pb-4 border-t border-[rgb(var(--border))] pt-3 space-y-3">
           {/* 설명 */}
           {skill.description && (
-            <p className="text-sm text-[rgb(var(--text-secondary))]">{skill.description}</p>
+            <p className="text-sm text-[rgb(var(--text-secondary-rgb))]">{skill.description}</p>
           )}
 
           {/* 장착된 봇 */}
@@ -174,7 +174,7 @@ function SkillRow({
                 {skill.attached_bots.map(bot => (
                   <span
                     key={bot.id}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[rgb(var(--bg-muted))] border border-[rgb(var(--border))] text-xs text-[rgb(var(--text-secondary))]"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[rgb(var(--bg-muted))] border border-[rgb(var(--border))] text-xs text-[rgb(var(--text-secondary-rgb))]"
                   >
                     {bot.emoji ?? '🤖'} {bot.name}
                   </span>
@@ -277,13 +277,13 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
         {/* 헤더 */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-[rgb(var(--text-primary))]">스킬 마켓 등록</h2>
+            <h2 className="text-lg font-bold text-[rgb(var(--text-primary-rgb))]">스킬 마켓 등록</h2>
             <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">내 스킬을 마켓에 등록해 수익을 창출하세요.</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-primary))] text-xl leading-none"
+            className="text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-primary-rgb))] text-xl leading-none"
           >
             ×
           </button>
@@ -323,7 +323,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
                 placeholder="예: 고객응대 자동화"
                 className={clsx(
                   'w-full px-3 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                  'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))] placeholder:text-[rgb(var(--text-muted))]',
+                  'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))] placeholder:text-[rgb(var(--text-muted))]',
                   'focus:outline-none focus:border-[rgb(var(--color-primary))]',
                 )}
               />
@@ -337,7 +337,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
                 rows={3}
                 className={clsx(
                   'w-full px-3 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                  'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))] placeholder:text-[rgb(var(--text-muted))]',
+                  'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))] placeholder:text-[rgb(var(--text-muted))]',
                   'focus:outline-none focus:border-[rgb(var(--color-primary))] resize-none',
                 )}
               />
@@ -352,7 +352,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
                   placeholder="1.0.0"
                   className={clsx(
                     'w-full px-3 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))]',
+                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))]',
                     'focus:outline-none focus:border-[rgb(var(--color-primary))]',
                   )}
                 />
@@ -364,7 +364,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
                   onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
                   className={clsx(
                     'w-full px-3 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))]',
+                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))]',
                     'focus:outline-none focus:border-[rgb(var(--color-primary))]',
                   )}
                 >
@@ -394,7 +394,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
                 )}
               >
                 <span className="text-3xl">{form.file ? '✅' : '📦'}</span>
-                <p className="text-sm text-[rgb(var(--text-secondary))]">
+                <p className="text-sm text-[rgb(var(--text-secondary-rgb))]">
                   {form.file ? form.file.name : '스킬 파일 (.zip, .json)'}
                 </p>
               </div>
@@ -417,7 +417,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
                   onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
                   className={clsx(
                     'w-full pl-7 pr-3 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))]',
+                    'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary-rgb))]',
                     'focus:outline-none focus:border-[rgb(var(--color-primary))]',
                   )}
                 />
@@ -435,7 +435,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
         {step === 3 && (
           <div className="text-center py-4">
             <div className="text-5xl mb-4">🎉</div>
-            <p className="font-semibold text-[rgb(var(--text-primary))]">{result || '등록 신청 완료!'}</p>
+            <p className="font-semibold text-[rgb(var(--text-primary-rgb))]">{result || '등록 신청 완료!'}</p>
             <p className="text-sm text-[rgb(var(--text-muted))] mt-2">검토 후 마켓에 공개됩니다. 보통 1~2 영업일 소요됩니다.</p>
           </div>
         )}
@@ -446,7 +446,7 @@ function RegisterSkillModal({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               onClick={() => setStep(s => (s - 1) as 1 | 2 | 3)}
-              className="px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))] text-[rgb(var(--text-secondary))]"
+              className="px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))] text-[rgb(var(--text-secondary-rgb))]"
             >
               이전
             </button>
@@ -580,7 +580,7 @@ export default function Tab4Skills({ skills, onSkillsChange }: Tab4SkillsProps) 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex-1">
             <h3 className="text-sm font-bold text-[rgb(var(--color-primary))]">스킬 마켓에 내 스킬 등록하기</h3>
-            <p className="text-xs text-[rgb(var(--text-secondary))] mt-1">
+            <p className="text-xs text-[rgb(var(--text-secondary-rgb))] mt-1">
               직접 만든 스킬을 마켓에 등록해 다른 회원들과 공유하고 수익을 창출하세요.
             </p>
           </div>

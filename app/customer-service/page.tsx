@@ -75,7 +75,7 @@ export default function CustomerServicePage() {
       style={{
         minHeight: '100vh',
         background: 'rgb(var(--bg-base))',
-        color: 'rgb(var(--text-primary))',
+        color: 'rgb(var(--text-primary-rgb))',
       }}
     >
       {/* S8FE3 — JSON-LD */}
@@ -156,7 +156,7 @@ export default function CustomerServicePage() {
               <div
                 style={{
                   fontSize: '14px',
-                  color: 'rgb(var(--text-secondary))',
+                  color: 'rgb(var(--text-secondary-rgb))',
                 }}
               >
                 {item.value}
@@ -179,7 +179,7 @@ export default function CustomerServicePage() {
               fontSize: '20px',
               fontWeight: 700,
               marginBottom: '32px',
-              color: 'rgb(var(--text-primary))',
+              color: 'rgb(var(--text-primary-rgb))',
             }}
           >
             문의하기
@@ -312,7 +312,7 @@ export default function CustomerServicePage() {
             textAlign: 'center',
           }}
         >
-          <p style={{ fontSize: '14px', color: 'rgb(var(--text-secondary))' }}>
+          <p style={{ fontSize: '14px', color: 'rgb(var(--text-secondary-rgb))' }}>
             자주 묻는 질문은{' '}
             <a
               href="/bot/faq"
@@ -340,7 +340,7 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid rgb(var(--text-muted) / 0.25)',
   borderRadius: '8px',
   fontSize: '14px',
-  color: 'rgb(var(--text-primary))',
+  color: 'rgb(var(--text-primary-rgb))',
   outline: 'none',
   boxSizing: 'border-box',
 };
@@ -367,7 +367,7 @@ function Field({
         style={{
           fontSize: '13px',
           fontWeight: 600,
-          color: 'rgb(var(--text-secondary))',
+          color: 'rgb(var(--text-secondary-rgb))',
         }}
       >
         {label}

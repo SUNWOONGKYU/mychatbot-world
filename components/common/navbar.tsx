@@ -93,7 +93,7 @@ export function Navbar() {
               style={{
                 color: isActive
                   ? 'rgb(var(--color-primary))'
-                  : 'rgb(var(--text-secondary))',
+                  : 'rgb(var(--text-secondary-rgb))',
                 background: 'transparent',
               }}
               onMouseEnter={(e) => {
@@ -103,7 +103,7 @@ export function Navbar() {
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.color = 'rgb(var(--text-secondary))';
+                  e.currentTarget.style.color = 'rgb(var(--text-secondary-rgb))';
                 }
               }}
             >

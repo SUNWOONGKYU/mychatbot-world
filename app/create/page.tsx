@@ -45,7 +45,7 @@ export default function CreatePage() {
     return (
       <main
         className="min-h-screen flex items-center justify-center"
-        style={{ background: 'rgb(var(--bg-base))', color: 'rgb(var(--text-secondary))' }}
+        style={{ background: 'rgb(var(--bg-base))', color: 'rgb(var(--text-secondary-rgb))' }}
       >
         <p>로그인 확인 중...</p>
       </main>

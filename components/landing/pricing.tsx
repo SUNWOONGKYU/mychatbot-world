@@ -126,13 +126,13 @@ export function PricingSection() {
           </span>
           <h2
             className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
-            style={{ color: 'rgb(var(--text-primary))' }}
+            style={{ color: 'rgb(var(--text-primary-rgb))' }}
           >
             나에게 맞는 플랜을 선택하세요
           </h2>
           <p
             className="mt-4 text-lg"
-            style={{ color: 'rgb(var(--text-secondary))' }}
+            style={{ color: 'rgb(var(--text-secondary-rgb))' }}
           >
             무료로 시작하고 성장에 맞춰 업그레이드하세요. 언제든지 변경 가능합니다.
           </p>
@@ -180,7 +180,7 @@ export function PricingSection() {
                 {/* 플랜명 */}
                 <h3
                   className="text-base font-bold"
-                  style={{ color: isRecommended ? 'white' : 'rgb(var(--text-primary))' }}
+                  style={{ color: isRecommended ? 'white' : 'rgb(var(--text-primary-rgb))' }}
                 >
                   {tier.name}
                 </h3>
@@ -189,7 +189,7 @@ export function PricingSection() {
                 <div className="mt-4 flex items-end gap-1">
                   <span
                     className="text-3xl font-extrabold"
-                    style={{ color: isRecommended ? 'white' : 'rgb(var(--text-primary))' }}
+                    style={{ color: isRecommended ? 'white' : 'rgb(var(--text-primary-rgb))' }}
                   >
                     {tier.tagline}
                   </span>
@@ -213,7 +213,7 @@ export function PricingSection() {
                   style={{
                     color: isRecommended
                       ? 'rgb(255 255 255 / 0.7)'
-                      : 'rgb(var(--text-secondary))',
+                      : 'rgb(var(--text-secondary-rgb))',
                   }}
                 >
                   {tier.description}
@@ -237,7 +237,7 @@ export function PricingSection() {
                         }
                       : {
                           background: 'rgb(var(--bg-muted))',
-                          color: 'rgb(var(--text-primary))',
+                          color: 'rgb(var(--text-primary-rgb))',
                           border: '1.5px solid rgb(var(--border))',
                         }
                   }
@@ -280,7 +280,7 @@ export function PricingSection() {
                         style={{
                           color: isRecommended
                             ? 'rgb(255 255 255 / 0.85)'
-                            : 'rgb(var(--text-secondary))',
+                            : 'rgb(var(--text-secondary-rgb))',
                         }}
                       >
                         {feature}

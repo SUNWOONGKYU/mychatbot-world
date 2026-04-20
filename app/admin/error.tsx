@@ -14,10 +14,10 @@ export default function AdminError({
   return (
     <div className="flex min-h-screen items-center justify-center bg-[rgb(var(--bg-base))]">
       <div className="text-center space-y-4 p-8 max-w-md">
-        <h2 className="text-xl font-semibold text-[rgb(var(--text-primary))]">
+        <h2 className="text-xl font-semibold text-[rgb(var(--text-primary-rgb))]">
           관리자 페이지 오류
         </h2>
-        <p className="text-[rgb(var(--text-secondary))] text-sm">
+        <p className="text-[rgb(var(--text-secondary-rgb))] text-sm">
           {error.message || '일시적 오류가 발생했습니다.'}
         </p>
         {error.digest && (
@@ -34,7 +34,7 @@ export default function AdminError({
           </button>
           <a
             href="/admin"
-            className="px-4 py-2 border border-[rgb(var(--text-muted)/0.3)] text-[rgb(var(--text-secondary))] rounded-lg hover:bg-[rgb(var(--bg-subtle))] transition"
+            className="px-4 py-2 border border-[rgb(var(--text-muted)/0.3)] text-[rgb(var(--text-secondary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))] transition"
           >
             관리자 홈
           </a>

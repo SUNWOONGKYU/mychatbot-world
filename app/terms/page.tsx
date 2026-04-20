@@ -14,7 +14,7 @@ export default function TermsPage() {
       style={{
         minHeight: '100vh',
         background: 'rgb(var(--bg-base))',
-        color: 'rgb(var(--text-primary))',
+        color: 'rgb(var(--text-primary-rgb))',
       }}
     >
       {/* 헤더 */}
@@ -268,7 +268,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         style={{
           fontSize: '15px',
           lineHeight: '1.9',
-          color: 'rgb(var(--text-secondary))',
+          color: 'rgb(var(--text-secondary-rgb))',
         }}
       >
         {children}

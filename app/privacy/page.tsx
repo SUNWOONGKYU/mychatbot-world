@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       style={{
         minHeight: '100vh',
         background: 'rgb(var(--bg-base))',
-        color: 'rgb(var(--text-primary))',
+        color: 'rgb(var(--text-primary-rgb))',
       }}
     >
       {/* 헤더 */}
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
           style={{
             fontSize: '15px',
             lineHeight: '1.9',
-            color: 'rgb(var(--text-secondary))',
+            color: 'rgb(var(--text-secondary-rgb))',
             marginBottom: '40px',
             padding: '20px 24px',
             background: 'rgb(var(--color-primary) / 0.06)',
@@ -246,7 +246,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         style={{
           fontSize: '15px',
           lineHeight: '1.9',
-          color: 'rgb(var(--text-secondary))',
+          color: 'rgb(var(--text-secondary-rgb))',
         }}
       >
         {children}
@@ -295,7 +295,7 @@ function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
                   style={{
                     padding: '10px 14px',
                     border: '1px solid rgb(var(--text-muted) / 0.15)',
-                    color: 'rgb(var(--text-secondary))',
+                    color: 'rgb(var(--text-secondary-rgb))',
                     lineHeight: '1.6',
                     verticalAlign: 'top',
                   }}

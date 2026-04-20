@@ -196,7 +196,7 @@ export default function GuestPageInner() {
           flex-direction: column;
           font-family: var(--font-sans);
           background: rgb(var(--bg-base));
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
         }
 
         /* ── 헤더 ── */
@@ -236,7 +236,7 @@ export default function GuestPageInner() {
           padding: var(--space-2) var(--space-4);
           border: 1px solid rgb(var(--border-strong));
           background: transparent;
-          color: rgb(var(--text-secondary));
+          color: rgb(var(--text-secondary-rgb));
           border-radius: var(--radius-md);
           font-size: 0.875rem;
           font-weight: var(--font-medium);
@@ -356,7 +356,7 @@ export default function GuestPageInner() {
           text-align: center;
           font-size: 1.0625rem;
           font-weight: var(--font-semibold);
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
           margin-bottom: var(--space-6);
           letter-spacing: -0.01em;
         }
@@ -416,13 +416,13 @@ export default function GuestPageInner() {
         .guest-card-name {
           font-size: 0.9375rem;
           font-weight: var(--font-semibold);
-          color: rgb(var(--text-primary));
+          color: rgb(var(--text-primary-rgb));
           margin-bottom: var(--space-1);
         }
 
         .guest-card-desc {
           font-size: 0.75rem;
-          color: rgb(var(--text-secondary));
+          color: rgb(var(--text-secondary-rgb));
           line-height: 1.45;
         }
 
@@ -465,7 +465,7 @@ export default function GuestPageInner() {
         .guest-loading-text {
           font-size: 1rem;
           font-weight: var(--font-medium);
-          color: rgb(var(--text-secondary));
+          color: rgb(var(--text-secondary-rgb));
           font-family: var(--font-sans);
         }
 

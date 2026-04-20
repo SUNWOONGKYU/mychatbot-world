@@ -57,7 +57,7 @@ export function RevenueSection() {
 
             <h2
               className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl"
-              style={{ color: 'rgb(var(--text-primary))' }}
+              style={{ color: 'rgb(var(--text-primary-rgb))' }}
             >
               코코봇이{' '}
               <span
@@ -74,7 +74,7 @@ export function RevenueSection() {
 
             <p
               className="mt-5 text-lg leading-8"
-              style={{ color: 'rgb(var(--text-secondary))' }}
+              style={{ color: 'rgb(var(--text-secondary-rgb))' }}
             >
               스킬스토어에서 스킬을 판매하거나, 코코봇을 임대하거나, 프리미엄 상담 서비스로
               직접 수익을 창출하세요. 자는 동안에도 코코봇이 수익을 만들어냅니다.
@@ -103,7 +103,7 @@ export function RevenueSection() {
                   </p>
                   <p
                     className="mt-1 text-xs font-medium"
-                    style={{ color: 'rgb(var(--text-primary))' }}
+                    style={{ color: 'rgb(var(--text-primary-rgb))' }}
                   >
                     {stat.label}
                   </p>
@@ -162,7 +162,7 @@ export function RevenueSection() {
                     <div>
                       <span
                         className="text-sm font-semibold"
-                        style={{ color: 'rgb(var(--text-primary))' }}
+                        style={{ color: 'rgb(var(--text-primary-rgb))' }}
                       >
                         {item.title}
                       </span>
@@ -205,7 +205,7 @@ export function RevenueSection() {
                 className="inline-flex items-center justify-center rounded-xl border px-7 py-3.5 text-sm font-semibold transition-all hover:shadow-sm"
                 style={{
                   borderColor: 'rgb(var(--border))',
-                  color: 'rgb(var(--text-primary))',
+                  color: 'rgb(var(--text-primary-rgb))',
                   background: 'rgb(var(--bg-surface))',
                 }}
               >
@@ -235,7 +235,7 @@ export function RevenueSection() {
                 <div>
                   <p
                     className="text-sm font-semibold"
-                    style={{ color: 'rgb(var(--text-primary))' }}
+                    style={{ color: 'rgb(var(--text-primary-rgb))' }}
                   >
                     수익 현황 대시보드
                   </p>
@@ -295,12 +295,12 @@ export function RevenueSection() {
                   {REVENUE_BREAKDOWN.map((item) => (
                     <div key={item.label}>
                       <div className="mb-1.5 flex items-center justify-between text-xs">
-                        <span style={{ color: 'rgb(var(--text-secondary))' }}>
+                        <span style={{ color: 'rgb(var(--text-secondary-rgb))' }}>
                           {item.label}
                         </span>
                         <span
                           className="font-semibold"
-                          style={{ color: 'rgb(var(--text-primary))' }}
+                          style={{ color: 'rgb(var(--text-primary-rgb))' }}
                         >
                           {item.amount}
                         </span>
