@@ -115,13 +115,8 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
 
           {/* 서브카피 */}
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/80 sm:text-xl [word-break:keep-all]">
-            <span className="block">
-              인터뷰 5분이면 끝.{' '}
-              <span className="font-semibold text-white">나머지는 AI가 다 만들어 드립니다.</span>
-            </span>
-            <span className="mt-1 block">
-              소상공인부터 전문직, 정치인까지 어떤 직업이든 OK.
-            </span>
+            인터뷰 5분이면 끝.{' '}
+            <span className="font-semibold text-white">나머지는 AI가 다 만들어 드립니다.</span>
           </p>
 
           {/* CTA 버튼 — 글로우 강화 */}
@@ -168,41 +163,6 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
             </Link>
           </div>
 
-          {/* 글래스모피즘 스탯 카드 — 신뢰 지표 */}
-          <div className="mt-14 grid grid-cols-1 gap-3 sm:mt-16 sm:grid-cols-3 sm:gap-4">
-            {[
-              { num: '5분', label: 'AI 인터뷰 완료', icon: '⏱' },
-              { num: '0원', label: '시작 비용', icon: '💫' },
-              { num: '∞', label: '가능한 직업', icon: '🌐' },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-2xl p-5 text-left transition-all hover:-translate-y-1"
-                style={{
-                  background: 'color-mix(in oklch, white 6%, transparent)',
-                  border: '1px solid color-mix(in oklch, white 12%, transparent)',
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 8px 32px color-mix(in oklch, black 20%, transparent)',
-                }}
-              >
-                <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/60">
-                  <span aria-hidden="true">{stat.icon}</span>
-                  <span>{stat.label}</span>
-                </div>
-                <div className="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">
-                  {stat.num}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 스크롤 인디케이터 */}
-          <div className="mt-14 flex items-center justify-center sm:mt-20" aria-hidden="true">
-            <div className="flex flex-col items-center gap-2 text-white/40">
-              <span className="text-xs tracking-widest">SCROLL</span>
-              <div className="h-10 w-[1px] animate-hero-scroll bg-gradient-to-b from-white/60 to-transparent" />
-            </div>
-          </div>
         </div>
       </div>
 
@@ -224,16 +184,9 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
           0%, 100% { transform: translate(-50%, 0) scale(1); opacity: 0.25; }
           50%      { transform: translate(-50%, -20px) scale(1.15); opacity: 0.35; }
         }
-        @keyframes hero-scroll {
-          0%       { transform: scaleY(0); transform-origin: top; }
-          50%      { transform: scaleY(1); transform-origin: top; }
-          50.01%   { transform: scaleY(1); transform-origin: bottom; }
-          100%     { transform: scaleY(0); transform-origin: bottom; }
-        }
         .animate-hero-orb-1 { animation: hero-orb-1 16s ease-in-out infinite; }
         .animate-hero-orb-2 { animation: hero-orb-2 20s ease-in-out infinite; }
         .animate-hero-orb-3 { animation: hero-orb-3 12s ease-in-out infinite; }
-        .animate-hero-scroll { animation: hero-scroll 2.2s ease-in-out infinite; }
       `}</style>
     </section>
   );

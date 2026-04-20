@@ -73,12 +73,12 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
               <a
                 href={link.href}
                 className="transition-colors"
-                style={{ color: 'var(--text-secondary)' }}
+                style={{ color: 'var(--text-primary)' }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--interactive-primary)';
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-secondary)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
                 }}
               >
                 {link.label}
@@ -120,12 +120,12 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
               <Link
                 href="/login"
                 className="text-sm font-medium transition-colors"
-                style={{ color: 'var(--text-secondary)' }}
+                style={{ color: 'var(--text-primary)' }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--interactive-primary)';
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-secondary)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
                 }}
               >
                 로그인
