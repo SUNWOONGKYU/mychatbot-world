@@ -94,7 +94,7 @@ export function Navbar() {
         className="flex items-center shrink-0 select-none"
         aria-label="메인 화면으로 이동"
       >
-        <BrandLogo variant="wordmark" height={28} style={{ color: 'var(--text-primary)' }} />
+        <BrandLogo variant="wordmark" height={28} style={{ color: 'rgb(var(--nav-text))' }} />
       </Link>
 
       {/* 서비스 4메뉴 — A방식: 단일 퍼플, active는 굵기+언더라인+glow */}
@@ -117,18 +117,18 @@ export function Navbar() {
               )}
               style={{
                 color: isActive
-                  ? 'rgb(var(--color-primary))'
-                  : 'rgb(var(--text-secondary-rgb))',
+                  ? 'rgb(var(--nav-text))'
+                  : 'rgb(var(--nav-text-muted))',
                 background: 'transparent',
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.color = 'rgb(var(--color-primary))';
+                  e.currentTarget.style.color = 'rgb(var(--nav-text))';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.color = 'rgb(var(--text-secondary-rgb))';
+                  e.currentTarget.style.color = 'rgb(var(--nav-text-muted))';
                 }
               }}
             >
@@ -156,9 +156,9 @@ export function Navbar() {
                   className="absolute -bottom-px left-1/2 -translate-x-1/2 h-[2px] rounded-full"
                   style={{
                     width: '70%',
-                    background: 'rgb(var(--color-primary))',
+                    background: 'rgb(var(--nav-accent))',
                     boxShadow:
-                      '0 0 10px rgb(var(--color-primary) / 0.7), 0 0 20px rgb(var(--color-primary) / 0.4)',
+                      '0 0 10px rgb(var(--nav-accent) / 0.8), 0 0 20px rgb(var(--nav-accent) / 0.4)',
                   }}
                 />
               )}
@@ -175,10 +175,18 @@ export function Navbar() {
           aria-label="알림"
           className={clsx(
             'relative w-9 h-9 flex items-center justify-center rounded-lg',
-            'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
             'transition-colors duration-150',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
           )}
+          style={{ color: 'rgb(var(--nav-text-muted))' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'rgb(var(--nav-text))';
+            e.currentTarget.style.background = 'rgb(255 255 255 / 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'rgb(var(--nav-text-muted))';
+            e.currentTarget.style.background = 'transparent';
+          }}
         >
           <BellIcon />
           {/* 미읽음 알림 뱃지 (있을 경우) */}
@@ -199,11 +207,24 @@ export function Navbar() {
               className={clsx(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
                 'text-xs font-semibold transition-all duration-150',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                isActive
-                  ? 'bg-primary/15 text-primary'
-                  : 'text-text-secondary hover:text-primary hover:bg-primary/10',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
               )}
+              style={{
+                color: isActive ? 'rgb(var(--nav-accent))' : 'rgb(var(--nav-text-muted))',
+                background: isActive ? 'rgb(255 255 255 / 0.12)' : 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'rgb(var(--nav-text))';
+                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.08)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'rgb(var(--nav-text-muted))';
+                  e.currentTarget.style.background = 'transparent';
+                }
+              }}
             >
               <UserIcon />
               <span className="hidden md:inline">My Page</span>
@@ -212,7 +233,7 @@ export function Navbar() {
         })()}
 
         {/* 구분선 — My Page와 로그인/회원가입 사이 */}
-        <span className="mx-1 h-5 w-px" style={{ background: 'rgb(var(--border))' }} aria-hidden="true" />
+        <span className="mx-1 h-5 w-px" style={{ background: 'rgb(255 255 255 / 0.2)' }} aria-hidden="true" />
 
         {/* 인증 상태별 버튼 — isAuthed === null 일 때는 깜빡임 방지를 위해 렌더 생략 */}
         {isAuthed === true ? (
@@ -222,10 +243,15 @@ export function Navbar() {
             className={clsx(
               'flex items-center',
               'px-4 py-2 rounded-lg text-sm font-medium',
-              'border border-border text-text-primary',
-              'hover:bg-surface-hover',
-              'transition-all duration-200',
+              'border transition-all duration-200',
             )}
+            style={{
+              color: 'rgb(var(--nav-text))',
+              borderColor: 'rgb(255 255 255 / 0.25)',
+              background: 'transparent',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgb(255 255 255 / 0.1)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
           >
             로그아웃
           </button>
@@ -236,10 +262,14 @@ export function Navbar() {
               className={clsx(
                 'flex items-center',
                 'px-4 py-2 rounded-lg text-sm font-medium',
-                'border border-border text-text-primary',
-                'hover:bg-surface-hover',
-                'transition-all duration-200',
+                'border transition-all duration-200',
               )}
+              style={{
+                color: 'rgb(var(--nav-text))',
+                borderColor: 'rgb(255 255 255 / 0.25)',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgb(255 255 255 / 0.1)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
             >
               로그인
             </Link>
@@ -248,11 +278,14 @@ export function Navbar() {
               className={clsx(
                 'flex items-center',
                 'px-4 py-2 rounded-lg text-sm font-semibold',
-                'bg-primary text-white',
-                'hover:bg-primary/90 hover:-translate-y-px hover:shadow-md',
+                'hover:-translate-y-px hover:shadow-md',
                 'active:translate-y-0 active:shadow-none',
                 'transition-all duration-200',
               )}
+              style={{
+                background: 'rgb(var(--nav-accent))',
+                color: 'rgb(17 17 17)',
+              }}
             >
               회원가입
             </Link>
@@ -264,7 +297,16 @@ export function Navbar() {
           type="button"
           aria-label="테마 전환"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-9 h-9 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+          className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors"
+          style={{ color: 'rgb(var(--nav-text-muted))' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'rgb(var(--nav-text))';
+            e.currentTarget.style.background = 'rgb(255 255 255 / 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'rgb(var(--nav-text-muted))';
+            e.currentTarget.style.background = 'transparent';
+          }}
         >
           {theme === 'dark' ? '☀' : '☽'}
         </button>

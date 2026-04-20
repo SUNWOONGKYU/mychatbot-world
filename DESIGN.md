@@ -161,13 +161,14 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 
 ### Navigation
 
-**상단 Navbar (앱 내부) — Seamless Header 패턴**
+**상단 Navbar (앱 내부) — Deep Purple Brand Bar**
 - Height: `64px` (`--header-height`)
-- Background: `rgb(var(--nav-bg))` — **`bg-base`와 동일 톤** + `primary-500` 3% 미묘한 워시. 페이지와 경계 없이 이어져 "띠/테이프" 인상 제거 (Linear/Vercel 방식)
-- Border-bottom:
-  - 기본 상태: **보더 없음** (투명)
-  - 스크롤 상태: `1px solid rgb(var(--nav-border))` — `primary-500 / 0.12` + `backdrop-blur-md` + `shadow-sm` 로 "플로팅" 분리감 부여
-- 원칙: 정적 상태에서는 배경과 융합, 스크롤 시 **부드럽게 분리**. 딱딱한 띠 경계는 DS 안티패턴.
+- Background: `rgb(var(--nav-bg))` — **`primary-900`** (#1A0D68 딥 퍼플, 다크) / **`primary-700`** (#3822B8, 라이트). 브랜드 퍼플을 정면에 노출하는 B2B 톤
+- Text: `rgb(var(--nav-text))` = `#FFFFFF`, 비활성 `rgb(var(--nav-text-muted))` (연한 라벤더 톤)
+- Active 메뉴: 흰색 + **앰버(`amber-400`) 밑줄 글로우** — 퍼플 배경 위 대비 확보 (DS §2 "앰버=가치/강조" 역할과 일치)
+- Border-bottom: 스크롤 시에만 `1px solid rgb(var(--nav-border))` — `primary-500 / 0.30` + `backdrop-blur-md` + `shadow-sm`
+- 로그인/로그아웃 버튼: transparent + 흰색 보더(`rgb(255 255 255 / 0.25)`), 호버 시 흰색 10% 배경
+- 회원가입 버튼: 앰버 배경 + 검정 텍스트 (Accent CTA 강조)
 - 로고: "CoCoBot" 텍스트 (`font-extrabold`, `text-primary`)
 - 4대 메뉴: Birth / Skills / Jobs / Community
 - 활성 메뉴: `text-primary` 색상, 밑줄 또는 퍼플 하이라이트

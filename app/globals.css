@@ -563,17 +563,14 @@
     0 0 0 3px rgb(var(--amber-500) / 0.3),
     0 8px 24px rgb(var(--amber-500) / 0.2);
 
-  /* ── Navbar — Seamless Header (DESIGN.md §4)
-       bg-base 와 동일 톤 + primary 3% 워시 — 페이지와 융합, 띠 효과 제거 ── */
-  --nav-bg: linear-gradient(0deg,
-    rgb(var(--primary-500) / 0.03),
-    rgb(var(--primary-500) / 0.03)),
-    rgb(var(--bg-base));
-  --nav-bg-scrolled: linear-gradient(0deg,
-    rgb(var(--primary-500) / 0.05),
-    rgb(var(--primary-500) / 0.05)),
-    rgb(var(--bg-base) / 0.75);
-  --nav-border: rgb(var(--primary-500) / 0.12);
+  /* ── Navbar — Deep Purple Brand Bar (DESIGN.md §4)
+       primary-900 단색 딥 퍼플 — 브랜드 색 그대로 노출, 검정 띠 느낌 제거 ── */
+  --nav-bg: rgb(var(--primary-900));
+  --nav-bg-scrolled: rgb(var(--primary-900) / 0.92);
+  --nav-border: rgb(var(--primary-500) / 0.30);
+  --nav-text: 255 255 255;
+  --nav-text-muted: 200 195 255;
+  --nav-accent: var(--amber-400);
 }
 
 /* =============================================================
@@ -619,16 +616,13 @@
 
   /* ── Shadow (라이트 override: Notion 다층) — S7 shadow-sm/md/lg/xl는 §2에서 이미 적용 ── */
 
-  /* ── Navbar (라이트 — Seamless) ── */
-  --nav-bg: linear-gradient(0deg,
-    rgb(var(--primary-50) / 0.40),
-    rgb(var(--primary-50) / 0.40)),
-    rgb(var(--bg-base));
-  --nav-bg-scrolled: linear-gradient(0deg,
-    rgb(var(--primary-50) / 0.50),
-    rgb(var(--primary-50) / 0.50)),
-    rgb(var(--bg-base) / 0.78);
-  --nav-border: rgb(var(--primary-500) / 0.10);
+  /* ── Navbar (라이트 — Deep Purple 동일 톤) ── */
+  --nav-bg: rgb(var(--primary-700));
+  --nav-bg-scrolled: rgb(var(--primary-700) / 0.92);
+  --nav-border: rgb(var(--primary-500) / 0.30);
+  --nav-text: 255 255 255;
+  --nav-text-muted: 220 215 255;
+  --nav-accent: var(--amber-400);
 }
 
 /* =============================================================
