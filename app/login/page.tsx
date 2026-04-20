@@ -7,24 +7,32 @@
 
 'use client'
 
-import { useState, useId, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useId, useEffect, FormEvent } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signInWithEmail, signInWithGoogle } from '@/lib/auth'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const emailId = useId()
   const passwordId = useId()
   const emailErrorId = useId()
   const passwordErrorId = useId()
   const generalErrorId = useId()
+  const confirmedNoticeId = useId()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loadingEmail, setLoadingEmail] = useState(false)
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // 이메일 인증 완료 후 /auth/callback에서 /login?confirmed=1 로 리다이렉트됨
+  const [confirmedNotice, setConfirmedNotice] = useState(false)
+  useEffect(() => {
+    if (searchParams?.get('confirmed') === '1') setConfirmedNotice(true)
+  }, [searchParams])
 
   const isLoading = loadingEmail || loadingGoogle
 
@@ -81,6 +89,35 @@ export default function LoginPage() {
             나의 코코봇 세계로 입장하세요
           </p>
         </div>
+
+        {/* 이메일 인증 완료 배너 — state.success 토큰 */}
+        {confirmedNotice && !error && (
+          <div
+            id={confirmedNoticeId}
+            className="mb-5 rounded-xl px-4 py-3 flex items-start gap-2.5"
+            style={{
+              background: 'var(--state-success-bg)',
+              border: '1px solid var(--state-success-border)',
+            }}
+            role="status"
+            aria-live="polite"
+          >
+            <svg
+              className="mt-0.5 h-4 w-4 shrink-0"
+              style={{ color: 'var(--state-success-fg)' }}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: 'var(--state-success-fg)' }}>
+              이메일 인증이 완료되었습니다. 로그인해 주세요.
+            </p>
+          </div>
+        )}
 
         {/* 에러 배너 — state.danger 토큰 */}
         {error && (
