@@ -109,7 +109,7 @@ const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
 
     return (
       <Tag
-        ref={ref as React.Ref<HTMLSpanElement>}
+        ref={ref as React.Ref<HTMLSpanElement & HTMLDivElement>}
         role="status"
         className={cn(spinnerVariants({ variant }), className)}
         {...props}

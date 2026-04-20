@@ -40,7 +40,7 @@ export interface DisplayProps
 const Display = React.forwardRef<HTMLHeadingElement, DisplayProps>(
   ({ className, size, as: Tag = 'h1', ...props }, ref) => (
     <Tag
-      ref={ref as React.Ref<HTMLHeadingElement>}
+      ref={ref as React.Ref<HTMLHeadingElement & HTMLParagraphElement & HTMLSpanElement>}
       className={cn(displayVariants({ size, className }))}
       {...props}
     />
