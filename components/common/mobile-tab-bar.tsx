@@ -14,7 +14,7 @@ const TAB_ITEMS = [
   },
   {
     label: 'Birth',
-    href: '/birth',
+    href: '/create',
     icon: BirthIcon,
   },
   {

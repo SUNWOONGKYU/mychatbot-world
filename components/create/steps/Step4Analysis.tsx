@@ -1,7 +1,7 @@
 /**
  * Step 4: AI 분석 중 → 결과 확인
  * - 애니메이션 4단계 순차 표시
- * - /api/create-bot 호출하여 greeting + faqs 생성
+ * - /api/create-bot/analyze + /api/create-bot/faq 호출 (분석만, 봇 생성은 Step 5에서)
  * - 인사말 TTS 미리듣기 (▶ 인사말 듣기 버튼)
  * - 분석 완료 후 "다음: 목소리 선택 →" 버튼
  */
@@ -10,6 +10,7 @@
 import { useEffect, useState, useRef } from 'react';
 import type { WizardData, FaqItem } from '../CreateWizard';
 import { stepTitle, btnPrimary } from '../ui';
+import { authHeaders } from '@/lib/auth-client';
 
 interface Props {
   data: WizardData;
@@ -62,32 +63,44 @@ export default function Step4Analysis({ data, onNext }: Props) {
         setDoneSteps(prev => [...prev, i - 1].filter(x => x >= 0));
       }
 
-      // AI API 호출
+      // AI 분석 API 호출 — analyze + faq 두 단계 (봇 생성 X, Step 5에서 생성됨)
       let aiGreeting = '';
       let aiFaqs: FaqItem[] = [];
+      const description = (data.botDesc || data.interviewText || '').trim();
 
       try {
-        const res = await fetch('/api/create-bot', {
+        const analyzeRes = await fetch('/api/create-bot/analyze', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            botName: data.botName,
-            botDesc: data.botDesc,
-            inputText: data.interviewText,
-            persona: {
-              name: data.persona.name,
-              role: data.persona.role,
-              iqEq: data.persona.iqEq,
-            },
-          }),
+          headers: authHeaders(),
+          body: JSON.stringify({ name: data.botName, description }),
         });
-        if (res.ok) {
-          const d = await res.json();
-          if (d.greeting) aiGreeting = d.greeting;
-          if (d.faqs?.length) aiFaqs = d.faqs;
+        const analyzeJson = await analyzeRes.json().catch(() => ({}));
+        const analysis = analyzeJson?.data;
+        if (analysis?.suggestedGreeting) aiGreeting = analysis.suggestedGreeting;
+
+        if (analysis) {
+          const faqRes = await fetch('/api/create-bot/faq', {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({
+              name: data.botName,
+              description,
+              businessType: analysis.businessType,
+              tone: analysis.tone,
+              keywords: analysis.keywords,
+            }),
+          });
+          const faqJson = await faqRes.json().catch(() => ({}));
+          const rawFaqs = faqJson?.data?.faqs;
+          if (Array.isArray(rawFaqs)) {
+            aiFaqs = rawFaqs.map((f: { question: string; answer: string }) => ({
+              q: f.question,
+              a: f.answer,
+            }));
+          }
         }
       } catch (e) {
-        console.warn('[AI] server API failed:', e);
+        console.warn('[AI] analyze/faq API failed:', e);
       }
 
       // 폴백

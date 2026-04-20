@@ -716,7 +716,7 @@ export default function PostDetailPage({
           {userBots.length === 0 && (
             <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))', marginBottom: '0.5rem' }}>
               댓글을 쓰려면{' '}
-              <a href="/birth" style={{ color: '#06b6d4', textDecoration: 'none' }}>코코봇을 만드세요</a>
+              <a href="/create" style={{ color: '#06b6d4', textDecoration: 'none' }}>코코봇을 만드세요</a>
             </p>
           )}
 

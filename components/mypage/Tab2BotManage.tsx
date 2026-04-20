@@ -573,7 +573,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
           내 코코봇 ({bots.length})
         </h2>
         <a
-          href="/birth"
+          href="/create"
           className={clsx(
             'inline-flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-lg)] text-sm font-semibold',
             'bg-[var(--interactive-primary)] text-[var(--text-inverted)]',
@@ -596,7 +596,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
             새 코코봇을 만들어보세요!
           </p>
           <a
-            href="/birth"
+            href="/create"
             className={clsx(
               'mt-2 px-5 py-2 rounded-[var(--radius-lg)] text-sm font-semibold',
               'bg-[var(--interactive-primary)] text-[var(--text-inverted)]',

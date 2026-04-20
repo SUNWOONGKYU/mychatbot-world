@@ -260,7 +260,7 @@ function WriteInner() {
               }}
             >
               아직 코코봇이 없습니다.{' '}
-              <a href="/birth" className="font-semibold hover:underline" style={{ color: 'var(--text-link)' }}>코코봇 만들기</a>
+              <a href="/create" className="font-semibold hover:underline" style={{ color: 'var(--text-link)' }}>코코봇 만들기</a>
             </div>
           ) : (
             <select

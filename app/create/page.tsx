@@ -62,7 +62,7 @@ export default function CreatePage() {
       }}
     >
       <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 1rem' }}>
-        <CreateWizard onComplete={(botId: string) => router.push(`/birth/${botId}`)} />
+        <CreateWizard onComplete={(botId: string) => router.push(`/birth?botId=${botId}`)} />
       </div>
     </main>
   );
