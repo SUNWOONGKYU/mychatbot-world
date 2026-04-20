@@ -50,21 +50,20 @@ export async function signInWithKakao(): Promise<void> {
 
 /**
  * Sign in with email and password
+ * Returns data on success; throws on error.
  */
-export async function signInWithPassword(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) throw error
-  return data
-}
-
-/**
- * Send password reset email
- */
-export async function sendPasswordResetEmail(email: string): Promise<void> {
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/reset-password`,
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim(),
+    password,
   })
-  if (error) throw error
+
+  if (error) {
+    console.error('Email sign-in error:', error.message)
+    throw error
+  }
+
+  return data
 }
 
 /**

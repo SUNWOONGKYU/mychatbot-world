@@ -16,9 +16,9 @@ let _ttsVoice = localStorage.getItem('mcw_tts_voice') || 'fable';
 let _audioCtx = null;        // AudioContext (iOS 호환 TTS)
 let _audioSource = null;     // 현재 재생 중인 BufferSource
 document.addEventListener('DOMContentLoaded', async () => {
-    if (typeof CoCoBot !== 'undefined' && CoCoBot.ready) await CoCoBot.ready;
+    if (typeof MCW !== 'undefined' && MCW.ready) await MCW.ready;
     // Sync skill catalog from server (non-blocking)
-    if (typeof CoCoBot !== 'undefined' && CoCoBot.syncSkills) CoCoBot.syncSkills();
+    if (typeof MCW !== 'undefined' && MCW.syncSkills) MCW.syncSkills();
     // Security: purge any leaked API keys from localStorage
     localStorage.removeItem('mcw_openrouter_key');
     await loadBotData();
@@ -95,13 +95,13 @@ async function loadBotData() {
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     const usernameFromPath = pathParts[0] === 'bot' ? pathParts[1] : null;
 
-    const bots = CoCoBot.storage.getBots();
+    const bots = MCW.storage.getBots();
     if (idParam) {
         chatBotData = bots.find(b => b.id === idParam);
     }
     // id로 못 찾으면 username으로 로컬 검색
     if (!chatBotData && usernameFromPath) {
-        chatBotData = CoCoBot.storage.getBotByUsername(usernameFromPath);
+        chatBotData = MCW.storage.getBotByUsername(usernameFromPath);
     }
     // 로컬에 없으면 클라우드에서 로드
     if (!chatBotData && typeof StorageManager !== 'undefined' && StorageManager.loadBotFromCloud) {
@@ -109,7 +109,7 @@ async function loadBotData() {
             const key = idParam || usernameFromPath;
             const cloudBot = key ? await StorageManager.loadBotFromCloud(key) : null;
             if (cloudBot) {
-                CoCoBot.storage.saveBot(cloudBot);
+                MCW.storage.saveBot(cloudBot);
                 chatBotData = cloudBot;
                 console.log('[Chat] Bot loaded from cloud:', key);
             }
@@ -128,7 +128,7 @@ async function loadBotData() {
             chatBotData = {
                 botName: 'Bot',
                 username: 'bot',
-                personality: '코코봇입니다.',
+                personality: 'AI Assistant 코코봇입니다.',
                 greeting: '안녕하세요! 무엇이든 물어보세요.',
                 faqs: []
             };
@@ -154,7 +154,7 @@ async function loadBotData() {
     }
     const nameEl = document.getElementById('chatBotName');
     if (nameEl) nameEl.textContent = chatBotData.botName;
-    document.title = `${chatBotData.botName} - CoCoBot`;
+    document.title = `${chatBotData.botName} - CoCoBot World`;
 
     // 봇에 저장된 음성이 있으면 기본값으로 사용
     if (chatBotData.voice) {
@@ -207,8 +207,8 @@ function renderPersonaSelector() {
     // 소유자 뷰인지 (로그인 유저 == 봇 ownerId)
     let isOwnerView = false;
     try {
-        if (typeof CoCoBot !== 'undefined' && CoCoBot.user && CoCoBot.user.getCurrentUser && chatBotData.ownerId) {
-            const u = CoCoBot.user.getCurrentUser();
+        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser && chatBotData.ownerId) {
+            const u = MCW.user.getCurrentUser();
             if (u && u.id === chatBotData.ownerId) {
                 isOwnerView = true;
             }
@@ -319,8 +319,8 @@ async function sendMessage() {
     input.style.height = 'auto';
     addMessage('user', text);
     // Channel adapter: relay user input
-    if (typeof CoCoBot !== 'undefined' && CoCoBot.channels) {
-        const wc = CoCoBot.channels.get('webchat');
+    if (typeof MCW !== 'undefined' && MCW.channels) {
+        const wc = MCW.channels.get('webchat');
         if (wc && wc.relayUserMessage) wc.relayUserMessage(text);
     }
     showTyping();
@@ -501,10 +501,10 @@ function getInstalledSkillsForPersona() {
     let installed;
     try { installed = JSON.parse(localStorage.getItem('mcw_skills_' + botId + '_' + personaId) || '[]'); }
     catch (e) { installed = []; }
-    // Merge with full skill data (including systemPrompt) from CoCoBot.skills
-    if (typeof CoCoBot !== 'undefined' && CoCoBot.skills) {
+    // Merge with full skill data (including systemPrompt) from MCW.skills
+    if (typeof MCW !== 'undefined' && MCW.skills) {
         return installed.map(function(s) {
-            let full = CoCoBot.skills.find(function(sk) { return sk.id === s.id; });
+            let full = MCW.skills.find(function(sk) { return sk.id === s.id; });
             return full ? { id: full.id, name: full.name, systemPrompt: full.systemPrompt || '' } : s;
         });
     }
@@ -520,8 +520,8 @@ async function generateResponse(userText) {
     // Resolve userId for DM policy (allowlist/pairing)
     let userId = 'anon';
     try {
-        if (typeof CoCoBot !== 'undefined' && CoCoBot.user && CoCoBot.user.getCurrentUser) {
-            const u = CoCoBot.user.getCurrentUser();
+        if (typeof MCW !== 'undefined' && MCW.user && MCW.user.getCurrentUser) {
+            const u = MCW.user.getCurrentUser();
             if (u && u.email) userId = u.email;
         }
     } catch (e) {}
@@ -553,9 +553,9 @@ async function generateResponse(userText) {
     };
 
     // Run before_send hook
-    if (typeof CoCoBot !== 'undefined' && CoCoBot.hooks) {
+    if (typeof MCW !== 'undefined' && MCW.hooks) {
         try {
-            const modified = await CoCoBot.hooks.run('before_send', payload);
+            const modified = await MCW.hooks.run('before_send', payload);
             if (modified && modified.message) payload.message = modified.message;
         } catch (e) { console.warn('[Hook] before_send error:', e); }
     }
@@ -621,8 +621,8 @@ async function generateResponse(userText) {
                 console.log('[AI STREAM] /api/chat-stream ' + latency + 'ms');
 
                 // Run after_receive hook
-                if (typeof CoCoBot !== 'undefined' && CoCoBot.hooks) {
-                    try { await CoCoBot.hooks.run('after_receive', { text: fullText }); } catch (e) {}
+                if (typeof MCW !== 'undefined' && MCW.hooks) {
+                    try { await MCW.hooks.run('after_receive', { text: fullText }); } catch (e) {}
                 }
 
                 return fullText;
@@ -648,8 +648,8 @@ async function generateResponse(userText) {
                 console.log('[AI SUCCESS] /api/chat ' + latency + 'ms');
 
                 // Run after_receive hook
-                if (typeof CoCoBot !== 'undefined' && CoCoBot.hooks) {
-                    try { await CoCoBot.hooks.run('after_receive', { text: data.reply }); } catch (e) {}
+                if (typeof MCW !== 'undefined' && MCW.hooks) {
+                    try { await MCW.hooks.run('after_receive', { text: data.reply }); } catch (e) {}
                 }
 
                 return data.reply;

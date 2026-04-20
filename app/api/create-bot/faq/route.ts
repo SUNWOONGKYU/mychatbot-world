@@ -77,7 +77,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
   }
 
   // ── 3. AI FAQ 생성 ──────────────────────────────────────────────────────────
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
       { success: false, error: 'AI 서비스 설정이 올바르지 않습니다.' },
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
     );
   }
 
-  const openai = createOpenAI({ apiKey });
+  const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const toneGuide: Record<string, string> = {
     friendly: '친근하고 따뜻한 말투로',
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FaqRespon
   const toneDescription = toneGuide[tone] ?? '친근하고 자연스러운 말투로';
   const keywordContext = keywords.length > 0 ? `주요 키워드: ${keywords.join(', ')}` : '';
 
-  const systemPrompt = `당신은 코코봇의 FAQ를 작성하는 전문가입니다.
+  const systemPrompt = `당신은 AI Assistant 코코봇의 FAQ를 작성하는 전문가입니다.
 비즈니스 정보를 분석하여 고객이 가장 자주 묻는 질문 10개와 답변을 생성합니다.
 ${toneDescription} 작성하세요.
 
@@ -130,7 +130,7 @@ ${keywordContext}
 
   try {
     const result = await generateText({
-      ...openai.chat('gpt-4o-mini'),
+      ...openai.chat('openai/gpt-4o-mini'),
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },

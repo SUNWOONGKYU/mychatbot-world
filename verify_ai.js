@@ -33,7 +33,7 @@ async function testModel(model) {
                 "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://mychatbot.world",
-                "X-Title": "CoCoBot Test"
+                "X-Title": "My Chatbot World Test"
             },
             body: JSON.stringify({
                 "model": model,

@@ -13,8 +13,8 @@ import type { Metadata } from 'next';
 
 // ── 기본값 ──────────────────────────────────────────────────────
 
-const DEFAULT_SITE_NAME = 'CoCoBot';
-const DEFAULT_DESCRIPTION = '코코봇을 만들고 공유하는 플랫폼. 나만의 코코봇을 제작하고 마켓플레이스에 공유하세요.';
+const DEFAULT_SITE_NAME = 'CoCoBot World';
+const DEFAULT_DESCRIPTION = 'AI 챗봇을 만들고 공유하는 플랫폼. 나만의 챗봇을 제작하고 마켓플레이스에 공유하세요.';
 const DEFAULT_OG_IMAGE = '/og-image.png'; // 1200x630
 const DEFAULT_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mychatbot-world.vercel.app';
 const TWITTER_HANDLE = '@mychatbotworld';
@@ -54,7 +54,7 @@ export function buildSEOMeta({
   const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${DEFAULT_APP_URL}${ogImage}`;
 
   const allKeywords = [
-    'chatbot', 'AI', '챗봇', '인공지능', 'CoCoBot', '코코봇',
+    'chatbot', 'AI', '챗봇', '코코봇', '인공지능', 'CoCoBot World', 'MCW',
     ...keywords,
   ];
 
@@ -119,12 +119,12 @@ export function buildSEOMeta({
 export const PAGE_META = {
   home: buildSEOMeta({
     title: '홈',
-    description: '코코봇 생성 플랫폼 — 나만의 코코봇을 만들고 수익화하세요.',
+    description: 'AI 챗봇 생성 플랫폼 — 나만의 챗봇을 만들고 수익화하세요.',
     canonicalUrl: DEFAULT_APP_URL,
   }),
   marketplace: buildSEOMeta({
     title: '마켓플레이스',
-    description: '다양한 코코봇 스킬을 탐색하고 구매하세요. 크리에이터들의 고품질 스킬 마켓.',
+    description: '다양한 AI 챗봇 스킬을 탐색하고 구매하세요. 크리에이터들의 고품질 스킬 마켓.',
     canonicalUrl: `${DEFAULT_APP_URL}/marketplace`,
     keywords: ['marketplace', '스킬', '마켓', 'AI 스킬'],
   }),

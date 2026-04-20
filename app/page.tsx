@@ -203,7 +203,7 @@ export default function LandingPage() {
                     backgroundClip: 'text',
                   }}
                 >
-                  AI 코코봇 생성
+                  AI Assistant 코코봇 생성
                 </span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 sm:text-lg [word-break:keep-all]">

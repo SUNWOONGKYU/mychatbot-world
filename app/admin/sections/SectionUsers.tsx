@@ -287,8 +287,8 @@ export default function SectionUsers({ adminKey }: SectionUsersProps) {
 
       {/* 크레딧 조정 모달 */}
       {creditModal && (
-        <div className="admin-modal-overlay" onClick={() => setCreditModal(null)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-overlay" onClick={() => setCreditModal(null)} role="presentation" aria-hidden="true">
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()} role="presentation">
             <h2 className="admin-modal-title">크레딧 직접 조정</h2>
             <button className="admin-modal-close" onClick={() => setCreditModal(null)}>✕</button>
 
@@ -388,11 +388,12 @@ export default function SectionUsers({ adminKey }: SectionUsersProps) {
 
       {/* 회원 상세 모달 */}
       {detailUser && (
-        <div className="admin-modal-overlay" onClick={() => setDetailUser(null)}>
+        <div className="admin-modal-overlay" onClick={() => setDetailUser(null)} role="presentation" aria-hidden="true">
           <div
             className="admin-modal"
             style={{ maxWidth: '520px' }}
             onClick={(e) => e.stopPropagation()}
+            role="presentation"
           >
             <h2 className="admin-modal-title">회원 상세</h2>
             <button className="admin-modal-close" onClick={() => setDetailUser(null)}>✕</button>

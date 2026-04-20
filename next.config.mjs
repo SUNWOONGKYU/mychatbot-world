@@ -19,9 +19,25 @@ const nextConfig = {
   // ── 이미지 최적화 ─────────────────────────────────────────────
   images: {
     remotePatterns: [
+      // Supabase Storage (프로젝트 도메인 패턴)
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '*.supabase.co',
+      },
+      // Google OAuth 프로필 이미지
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      // Kakao 프로필 이미지
+      {
+        protocol: 'https',
+        hostname: 'k.kakaocdn.net',
+      },
+      // GitHub 아바타 (개발/데모용)
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
       },
     ],
     // 이미지 포맷 최적화
@@ -38,14 +54,6 @@ const nextConfig = {
   },
   // SSG 비활성화 — 모든 페이지를 SSR로 처리 (useSearchParams 호환)
   // output: 'standalone', // Vercel은 자체 빌드 — standalone 불필요
-
-  // ── 빌드 오류 우회 (Supabase 타입 엄격화로 인한 제네릭 불일치) ────
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 
   // ── 필수 환경 변수 명시 ───────────────────────────────────────
   env: {
@@ -80,6 +88,21 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              process.env.NODE_ENV === 'development'
+                ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+                : "script-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' https: data: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https:",
+              "media-src 'self' blob:",
+              "frame-ancestors 'none'",
+            ].join('; '),
           },
         ],
       },

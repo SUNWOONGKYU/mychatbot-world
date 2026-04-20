@@ -27,7 +27,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin, getAdminSupabase } from '@/lib/admin-auth';
-import { rateLimit, RATE_ADMIN } from '@/lib/rate-limiter';
+import { rateLimit, rateLimitAsync, RATE_ADMIN } from '@/lib/rate-limiter';
+
+// user_id 별 크레딧 증가 직렬화 락 — 동일 유저 복수 승인 동시 처리 race 방지
+const CREDIT_ADD_LOCK = { limit: 1, windowMs: 3_000 };
 
 // ── 타입 ──────────────────────────────────────────────────────────────────
 
@@ -233,6 +236,15 @@ export async function PATCH(req: NextRequest) {
         message: `${paymentDesc} 구매 확인 완료. 아이템을 수동 지급하세요.`,
         processedAt: now,
       });
+    }
+
+    // 동일 유저에 대한 동시 승인 직렬화 (balance SELECT→UPSERT race 완화)
+    const lock = await rateLimitAsync(req, CREDIT_ADD_LOCK, `credit-add:${userId}`);
+    if (!lock.allowed) {
+      return NextResponse.json(
+        { error: 'Another approval for this user is in progress. Retry shortly.' },
+        { status: 429, headers: { 'Retry-After': String(lock.retryAfterSec) } },
+      );
     }
 
     // 2. 크레딧 충전: mcw_credits.balance += amount (upsert)

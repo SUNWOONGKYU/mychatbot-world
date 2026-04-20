@@ -1,0 +1,113 @@
+============================================================
+ S7 디자인 혁신 v3.0 — 배포 및 PO 검증 액션 가이드
+ 작성: 2026-04-20
+============================================================
+
+## 현재 상태
+- S7 15/15 Task Completed + Verified (AI 정적 검증 100%)
+- MINOR 3건 → 0건 (2차 패스 완료)
+- package.json S7 의존성 18개 추가 (3차 패스 완료)
+- 로컬 npm install, Vercel CLI 직접 배포는 Google Drive FS 제약으로 블록
+- Git 기반 배포가 유일한 경로
+
+============================================================
+## 1단계: Git Push로 Vercel 자동 배포 트리거
+============================================================
+
+터미널에서 실행 (PowerShell 또는 Git Bash):
+
+```
+cd "G:\내 드라이브\mychatbot-world"
+git status
+git add package.json .vercelignore
+git add SAL_Grid_Dev_Suite/Process/S0_Project-SAL-Grid_생성/2.sal-grid/stage-gates/S7GATE_verification_report.md
+git add SAL_Grid_Dev_Suite/Process/S0_Project-SAL-Grid_생성/3.method/json/data/stage_gate_records/S7_gate.json
+git commit -m "feat(S7): 디자인 혁신 v3.0 배포 준비 - 의존성 + 배포 가이드"
+git push origin fix/member-flow-audit
+```
+
+Vercel이 GitHub 연동으로 자동 배포 시작.
+
+============================================================
+## 2단계: Vercel Dashboard에서 배포 확인
+============================================================
+
+https://vercel.com/finder-world/mychatbot-world/deployments
+
+- 최신 배포 상태 확인 (Building → Ready)
+- Build 로그에서 에러 없음 확인
+- Preview URL 획득
+
+============================================================
+## 3단계: Lighthouse 실측 (배포 URL 대상)
+============================================================
+
+Chrome DevTools → Lighthouse 탭에서 각 페이지 측정:
+
+대상 페이지 (8개):
+- /
+- /login
+- /signup
+- /marketplace
+- /skills
+- /bot/[id] (임의 bot)
+- /mypage
+- /admin
+
+측정 기준:
+- A11y: 95+ 목표
+- Performance: 85+ 목표
+- Best Practices: 95+ 목표
+- Mobile + Desktop 각각
+
+============================================================
+## 4단계: Light/Dark 수동 확인 (16+ 페이지)
+============================================================
+
+각 페이지에서:
+1. ThemeToggle 컴포넌트의 3모드 전환 (Light/Dark/System)
+2. OS 시스템 다크모드 토글
+3. 색상 깨짐, 대비 불량, 레이아웃 shift 기록
+
+특히 확인:
+- 에러 상태 (danger 색상)
+- 경고 상태 (warning 색상)
+- Code 폰트 렌더링
+- Shadow 시각적 계층
+
+============================================================
+## 5단계: 키보드/스크린리더 (최소 10페이지)
+============================================================
+
+- Tab 키만으로 전 UI 요소 탐색 가능성 확인
+- 포커스 링 가시성 (focus-visible:ring)
+- NVDA(Windows) 또는 VoiceOver(Mac):
+  * Form 입력 label 읽힘
+  * Overlay open/close 알림
+  * DataTable 탐색 ARIA
+
+============================================================
+## 6단계: PO 최종 승인 기록
+============================================================
+
+파일: SAL_Grid_Dev_Suite/Process/S0_Project-SAL-Grid_생성/3.method/json/data/stage_gate_records/S7_gate.json
+
+모든 KPI 충족 시:
+- "po_approval_status": "Approved"
+- "po_approval_date": "{실측 완료 일자}"
+- "po_approval_note": "Lighthouse A11y {X}점, Perf {Y}점 등 기재"
+
+일부 미충족 시:
+- "po_approval_status": "Rejected"
+- 사유 + 재작업 Task 명시
+
+============================================================
+## 참고 문서
+============================================================
+
+- DESIGN.md (루트) — v2.0 전면 개정, 11 섹션
+- S7GATE_verification_report.md — §8 배포 블로커 + §8.4 PO 실행 매뉴얼
+- S7DC1_before_after.md — Before/After 20쌍
+- S7DC1_kpi_actuals.md — KPI 실측표 (달성 12/15, PENDING 3/15)
+
+============================================================

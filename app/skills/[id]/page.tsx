@@ -13,7 +13,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { SKILLS, buildStars, type SkillItem } from '@/lib/skills-data';
+import { fetchSkillsFromAPI, buildStars, type SkillItem } from '@/lib/skills-data';
 import { useSkillsStore } from '@/lib/use-skills-store';
 
 // ── Toast (로컬) ──────────────────────────────────────────────────
@@ -118,8 +118,9 @@ export default function SkillDetailPage() {
   const [showPurchase, setShowPurchase] = useState(false);
 
   useEffect(() => {
-    const found = SKILLS.find(s => s.id === skillId) ?? null;
-    setSkill(found);
+    fetchSkillsFromAPI().then(skills => {
+      setSkill(skills.find(s => s.id === skillId) ?? null);
+    });
   }, [skillId]);
 
   const installed = skill ? isInstalled(skill.id) : false;

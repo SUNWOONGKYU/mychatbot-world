@@ -36,7 +36,7 @@ function targetTable(targetType: string): string | null {
 }
 
 async function syncVoteCounts(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   targetType: string,
   targetId: string,
 ): Promise<void> {

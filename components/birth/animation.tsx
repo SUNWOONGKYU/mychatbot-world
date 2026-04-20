@@ -1,7 +1,7 @@
 /**
  * @task S2FE5 - Birth 페이지 React 전환
  * @file components/birth/animation.tsx
- * @description 코코봇 탄생 순서형 fade-in 애니메이션 컨테이너
+ * @description 코코봇 생성 완료 순서형 fade-in 애니메이션 컨테이너
  *
  * 애니메이션 순서:
  *  1) 코코봇 아이콘 fade-in (step 1, delay 0ms)

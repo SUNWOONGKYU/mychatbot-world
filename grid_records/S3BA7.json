@@ -1,0 +1,30 @@
+{
+  "task_id": "S3BA7",
+  "task_name": "Jobs API 기본 4개 (소급)",
+  "stage": 3,
+  "area": "BA",
+  "level": 7,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1DB1",
+    "S1SC1"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S3BA7_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "api/Backend_APIs/job-list.js, job-hire.js, job-matching.js, job-review.js, job-fee.js",
+  "modification_history": "2026-03-31: 소급 등록",
+  "verification_instruction": "sal-grid/verification-instructions/S3BA7_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {},
+  "comprehensive_verification": {},
+  "priority": "High",
+  "remarks": "",
+  "notes": ""
+}

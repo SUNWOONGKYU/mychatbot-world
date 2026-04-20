@@ -1,0 +1,223 @@
+/* ======================================================
+   MCW Design System — Semantic Tokens
+   Generated from S7DS4 Primitives (84 tokens)
+   Task: S7DS5 (2026-04-20)
+   Target: app/globals.css 통합 (S7FE1)
+   ======================================================
+   Layer Architecture:
+     Primitive (S7DS4) → Semantic (this file) → Component
+   Usage Rules:
+     1. Components reference ONLY Semantic tokens
+     2. Every Semantic token is defined in BOTH Light/Dark
+     3. No direct OKLCH numeric values in Semantic layer
+   ====================================================== */
+
+/* ======================================================
+   Light (default)
+   ====================================================== */
+:root {
+  /* ---- Surface (Elevation) ---- */
+  --surface-0: var(--color-neutral-50);
+  --surface-1: var(--color-neutral-100);
+  --surface-2: #FFFFFF;
+  --surface-3: #FFFFFF;
+  --surface-4: var(--color-neutral-900);
+
+  /* ---- Foreground (Text) ---- */
+  --text-primary:    var(--color-neutral-900);
+  --text-secondary:  var(--color-neutral-600);
+  --text-tertiary:   var(--color-neutral-500);
+  --text-inverted:   var(--color-neutral-50);
+  --text-link:       var(--color-brand-600);
+  --text-disabled:   var(--color-neutral-400);
+
+  /* ---- Border ---- */
+  --border-subtle:  var(--color-neutral-100);
+  --border-default: var(--color-neutral-200);
+  --border-strong:  var(--color-neutral-300);
+
+  /* ---- Ring (Focus) ---- */
+  --ring-focus:  oklch(from var(--color-brand-500) l c h / 0.5);
+  --ring-offset: var(--color-neutral-50);
+
+  /* ---- Interactive (Action) ---- */
+  --interactive-primary:           var(--color-brand-500);
+  --interactive-primary-hover:     var(--color-brand-600);
+  --interactive-primary-active:    var(--color-brand-700);
+  --interactive-secondary:         var(--color-neutral-100);
+  --interactive-secondary-hover:   var(--color-neutral-200);
+  --interactive-destructive:       var(--color-danger-500);
+  --interactive-destructive-hover: var(--color-danger-600);
+
+  /* ---- Semantic State ---- */
+  --state-success-bg:     var(--color-success-50);
+  --state-success-fg:     var(--color-success-700);
+  --state-success-border: var(--color-success-200);
+
+  --state-warning-bg:     var(--color-warning-50);
+  --state-warning-fg:     var(--color-warning-700);
+  --state-warning-border: var(--color-warning-200);
+
+  --state-danger-bg:     var(--color-danger-50);
+  --state-danger-fg:     var(--color-danger-700);
+  --state-danger-border: var(--color-danger-200);
+
+  --state-info-bg:     var(--color-info-50);
+  --state-info-fg:     var(--color-info-700);
+  --state-info-border: var(--color-info-200);
+
+  /* ---- Accent ---- */
+  --accent-primary:   var(--color-brand-500);
+  --accent-secondary: var(--color-accent-600);
+
+  /* ---- Shadow (Elevation) ---- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* ======================================================
+   Dark (수동 토글 — data-theme="dark")
+   ====================================================== */
+[data-theme="dark"] {
+  /* ---- Surface (Elevation) ---- */
+  --surface-0: var(--color-neutral-950);
+  --surface-1: var(--color-neutral-900);
+  --surface-2: var(--color-neutral-800);
+  --surface-3: var(--color-neutral-800);
+  --surface-4: var(--color-neutral-100);
+
+  /* ---- Foreground (Text) ---- */
+  --text-primary:   var(--color-neutral-50);
+  --text-secondary: var(--color-neutral-400);
+  --text-tertiary:  var(--color-neutral-500);
+  --text-inverted:  var(--color-neutral-900);
+  --text-link:      var(--color-brand-400);
+  --text-disabled:  var(--color-neutral-600);
+
+  /* ---- Border ---- */
+  --border-subtle:  var(--color-neutral-800);
+  --border-default: var(--color-neutral-700);
+  --border-strong:  var(--color-neutral-600);
+
+  /* ---- Ring (Focus) ---- */
+  --ring-focus:  oklch(from var(--color-brand-400) l c h / 0.55);
+  --ring-offset: var(--color-neutral-950);
+
+  /* ---- Interactive (Action) ---- */
+  --interactive-primary:           var(--color-brand-500);
+  --interactive-primary-hover:     var(--color-brand-400);
+  --interactive-primary-active:    var(--color-brand-300);
+  --interactive-secondary:         var(--color-neutral-800);
+  --interactive-secondary-hover:   var(--color-neutral-700);
+  --interactive-destructive:       var(--color-danger-500);
+  --interactive-destructive-hover: var(--color-danger-400);
+
+  /* ---- Semantic State ---- */
+  --state-success-bg:     var(--color-success-900);
+  --state-success-fg:     var(--color-success-300);
+  --state-success-border: var(--color-success-700);
+
+  --state-warning-bg:     var(--color-warning-900);
+  --state-warning-fg:     var(--color-warning-300);
+  --state-warning-border: var(--color-warning-700);
+
+  --state-danger-bg:     var(--color-danger-900);
+  --state-danger-fg:     var(--color-danger-300);
+  --state-danger-border: var(--color-danger-700);
+
+  --state-info-bg:     var(--color-info-900);
+  --state-info-fg:     var(--color-info-300);
+  --state-info-border: var(--color-info-700);
+
+  /* ---- Accent ---- */
+  --accent-primary:   var(--color-brand-400);
+  --accent-secondary: var(--color-accent-300);
+
+  /* ---- Shadow (Dark 모드는 투명도 강화) ---- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* ======================================================
+   시스템 Dark 자동 감지 (data-theme 미지정 시 적용)
+   사용자가 명시적으로 data-theme="light"를 설정했다면 이 블록은 무시됨
+   ====================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Surface */
+    --surface-0: var(--color-neutral-950);
+    --surface-1: var(--color-neutral-900);
+    --surface-2: var(--color-neutral-800);
+    --surface-3: var(--color-neutral-800);
+    --surface-4: var(--color-neutral-100);
+
+    /* Foreground */
+    --text-primary:   var(--color-neutral-50);
+    --text-secondary: var(--color-neutral-400);
+    --text-tertiary:  var(--color-neutral-500);
+    --text-inverted:  var(--color-neutral-900);
+    --text-link:      var(--color-brand-400);
+    --text-disabled:  var(--color-neutral-600);
+
+    /* Border */
+    --border-subtle:  var(--color-neutral-800);
+    --border-default: var(--color-neutral-700);
+    --border-strong:  var(--color-neutral-600);
+
+    /* Ring */
+    --ring-focus:  oklch(from var(--color-brand-400) l c h / 0.55);
+    --ring-offset: var(--color-neutral-950);
+
+    /* Interactive */
+    --interactive-primary:           var(--color-brand-500);
+    --interactive-primary-hover:     var(--color-brand-400);
+    --interactive-primary-active:    var(--color-brand-300);
+    --interactive-secondary:         var(--color-neutral-800);
+    --interactive-secondary-hover:   var(--color-neutral-700);
+    --interactive-destructive:       var(--color-danger-500);
+    --interactive-destructive-hover: var(--color-danger-400);
+
+    /* State */
+    --state-success-bg:     var(--color-success-900);
+    --state-success-fg:     var(--color-success-300);
+    --state-success-border: var(--color-success-700);
+    --state-warning-bg:     var(--color-warning-900);
+    --state-warning-fg:     var(--color-warning-300);
+    --state-warning-border: var(--color-warning-700);
+    --state-danger-bg:      var(--color-danger-900);
+    --state-danger-fg:      var(--color-danger-300);
+    --state-danger-border:  var(--color-danger-700);
+    --state-info-bg:        var(--color-info-900);
+    --state-info-fg:        var(--color-info-300);
+    --state-info-border:    var(--color-info-700);
+
+    /* Accent */
+    --accent-primary:   var(--color-brand-400);
+    --accent-secondary: var(--color-accent-300);
+
+    /* Shadow */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+  }
+}
+
+/* ======================================================
+   Reduced motion 대응 (참고)
+   애니메이션을 쓰는 컴포넌트에서 추가 활용
+   ====================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

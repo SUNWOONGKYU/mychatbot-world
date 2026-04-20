@@ -1,21 +1,9 @@
 /**
- * @task S5FE6
- * @description 마이페이지 클라이언트 컴포넌트 — 8탭 구조 (탭1~4 구현)
- * S5 디자인 시스템 기반, 다크/라이트 동시 지원
+ * @task S7FE7
+ * @description 마이페이지 클라이언트 컴포넌트 — 8탭 통합 셸 (S7 리디자인)
+ * Semantic 토큰 전용, PageToolbar + TabNav + 8탭 콘텐츠
  *
  * Route: /mypage
- * Tabs:
- *   탭1. 프로필 관리 (닉네임/이메일/가입일, 아바타, 알림)
- *   탭2. 코코봇 관리 (카드뷰, 페르소나, 툴6종, 복제/내보내기/삭제)
- *   탭3. 코코봇 학습 (KB주입, Wiki-e-RAG, FAQ, 학습현황)
- *   탭4. 스킬 관리 (다운로드 스킬, 토글, 장착봇, 마켓등록)
- *   탭5~8. 코코봇운영관리 / 상속 / 크레딧결제 / 계정보안 (별도 Task S5FE7)
- *
- * APIs:
- *   /api/auth/me            — 프로필 조회
- *   /api/bots               — 내 코코봇 목록
- *   /api/skills/my          — 내 스킬 목록
- *   /api/credits            — 크레딧 잔액
  */
 'use client';
 
@@ -80,7 +68,7 @@ type TabId = 'profile' | 'bots' | 'learning' | 'skills' | 'operations' | 'inheri
 const NAV_ITEMS: { id: TabId; label: string; icon: string }[] = [
   { id: 'profile',      label: '프로필 관리',    icon: '👤' },
   { id: 'bots',         label: '코코봇 관리',      icon: '🤖' },
-  { id: 'learning',     label: '코코봇 학습',      icon: '📚' },
+  { id: 'learning',     label: '코코봇 교육',      icon: '📚' },
   { id: 'skills',       label: '스킬 관리',      icon: '⚡' },
   { id: 'operations',   label: '코코봇 운영 관리', icon: '💼' },
   { id: 'inheritance',  label: '상속',           icon: '🏛️' },
@@ -101,7 +89,7 @@ function authHeaders(): HeadersInit {
     : { 'Content-Type': 'application/json' };
 }
 
-// ── 프로필 헤더 ───────────────────────────────────────────────────────────
+// ── 프로필 헤더 (PageToolbar 패턴) ──────────────────────────────────────
 
 function ProfileHeader({
   profile,
@@ -113,7 +101,10 @@ function ProfileHeader({
   const initials = profile.full_name?.trim()?.[0]?.toUpperCase() ?? (profile.email ?? 'U')[0].toUpperCase();
   return (
     <div
-      className="rounded-[var(--radius-xl)] border border-[rgb(var(--border))] bg-[rgb(var(--bg-subtle))] px-5 py-4 mb-5"
+      className={clsx(
+        'rounded-[var(--radius-xl)] mb-5 px-5 py-4',
+        'bg-[var(--surface-1)] border border-[var(--border-default)]',
+      )}
       style={{ boxShadow: 'var(--shadow-sm)' }}
     >
       <div className="flex items-center gap-4">
@@ -123,10 +114,13 @@ function ProfileHeader({
             <img
               src={profile.avatar_url}
               alt="프로필 사진"
-              className="w-14 h-14 rounded-full object-cover border-2 border-[rgb(var(--color-primary)/0.3)]"
+              className="w-14 h-14 rounded-full object-cover ring-2 ring-[var(--interactive-primary)] ring-offset-2 ring-offset-[var(--surface-1)]"
             />
           ) : (
-            <div className="w-14 h-14 rounded-full bg-[rgb(var(--color-primary-muted))] border-2 border-[rgb(var(--color-primary)/0.3)] flex items-center justify-center text-2xl font-bold text-[rgb(var(--color-primary))]">
+            <div
+              aria-hidden="true"
+              className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-[var(--text-inverted)] bg-[var(--interactive-primary)]"
+            >
               {initials}
             </div>
           )}
@@ -134,10 +128,10 @@ function ProfileHeader({
 
         {/* 환영 메시지 */}
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[rgb(var(--text-primary))] truncate">
-            안녕하세요, {profile.full_name || profile.email.split('@')[0]}님 👋
+          <p className="font-semibold text-[var(--text-primary)] truncate [word-break:keep-all]">
+            안녕하세요, {profile.full_name || profile.email.split('@')[0]}님
           </p>
-          <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">
+          <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
             오늘도 코코봇이 열심히 일하고 있어요!
           </p>
         </div>
@@ -145,10 +139,10 @@ function ProfileHeader({
         {/* 크레딧 위젯 */}
         {credits !== null && (
           <div className="flex-shrink-0 text-right">
-            <p className="text-lg font-bold text-[rgb(var(--color-accent))]">
+            <p className="text-lg font-bold text-[var(--accent-secondary)]">
               {credits.balance.toLocaleString('ko-KR')} CR
             </p>
-            <p className="text-xs text-[rgb(var(--text-muted))]">보유 크레딧</p>
+            <p className="text-xs text-[var(--text-tertiary)]">보유 크레딧</p>
           </div>
         )}
       </div>
@@ -156,7 +150,7 @@ function ProfileHeader({
   );
 }
 
-// ── 탭 네비게이션 ─────────────────────────────────────────────────────────
+// ── 탭 네비게이션 (Tab Indicator 패턴) ──────────────────────────────────
 
 function TabNav({
   activeTab,
@@ -166,38 +160,37 @@ function TabNav({
   onTabChange: (t: TabId) => void;
 }) {
   return (
-    <div className="overflow-x-auto -mx-4 sm:mx-0 mb-6">
-      <div className="flex gap-0 border-b border-[rgb(var(--border))] min-w-max px-4 sm:px-0">
+    <nav
+      aria-label="마이페이지 탭 네비게이션"
+      className="overflow-x-auto -mx-4 sm:mx-0 mb-6"
+    >
+      <div
+        role="tablist"
+        className="flex gap-0 border-b border-[var(--border-default)] min-w-max px-4 sm:px-0"
+      >
         {NAV_ITEMS.map(item => (
           <button
             key={item.id}
+            role="tab"
             type="button"
+            aria-selected={activeTab === item.id}
+            aria-controls={`tab-panel-${item.id}`}
+            id={`tab-${item.id}`}
             onClick={() => onTabChange(item.id)}
             className={clsx(
               'flex items-center gap-1.5 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
               activeTab === item.id
-                ? 'border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary))]'
-                : 'border-transparent text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-secondary))] hover:border-[rgb(var(--border-strong))]',
+                ? 'border-[var(--interactive-primary)] text-[var(--interactive-primary)]'
+                : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border-strong)]',
             )}
           >
-            <span className="text-base leading-none">{item.icon}</span>
+            <span className="text-base leading-none" aria-hidden="true">{item.icon}</span>
             <span>{item.label}</span>
           </button>
         ))}
       </div>
-    </div>
-  );
-}
-
-// ── Placeholder (탭5~8 — 추후 S5FE7에서 구현) ───────────────────────────
-
-function TabPlaceholder({ label, icon }: { label: string; icon: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-24 text-center gap-3">
-      <span className="text-5xl opacity-50">{icon}</span>
-      <p className="text-lg font-semibold text-[rgb(var(--text-secondary))]">{label}</p>
-      <p className="text-sm text-[rgb(var(--text-muted))]">다음 업데이트에서 구현될 예정입니다.</p>
-    </div>
+    </nav>
   );
 }
 
@@ -205,13 +198,13 @@ function TabPlaceholder({ label, icon }: { label: string; icon: string }) {
 
 function SkeletonBlock({ className }: { className?: string }) {
   return (
-    <div className={clsx('rounded-[var(--radius-md)] bg-[rgb(var(--bg-muted))] animate-pulse', className)} />
+    <div className={clsx('rounded-[var(--radius-md)] bg-[var(--surface-2)] animate-pulse', className)} />
   );
 }
 
 function LoadingSkeleton() {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="space-y-4 animate-pulse" aria-busy="true" aria-label="불러오는 중">
       <SkeletonBlock className="h-20 rounded-[var(--radius-xl)]" />
       <div className="flex gap-2">
         {[...Array(4)].map((_, i) => <SkeletonBlock key={i} className="h-10 flex-1" />)}
@@ -303,25 +296,37 @@ export default function MyPageClient() {
   if (!isLoggedIn) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* 비로그인 안내 배너 */}
-        <div className="mb-6 flex items-center gap-3 rounded-[var(--radius-xl)] border border-[rgb(var(--color-primary)/0.3)] bg-[rgb(var(--color-primary-muted))] px-5 py-4">
-          <span className="text-2xl">🔒</span>
+        {/* 비로그인 EmptyState 배너 */}
+        <div
+          role="alert"
+          className={clsx(
+            'mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-3',
+            'rounded-[var(--radius-xl)] border border-[var(--border-default)]',
+            'bg-[var(--state-info-bg)] px-5 py-4',
+          )}
+        >
+          <span className="text-2xl flex-shrink-0" aria-hidden="true">🔒</span>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[rgb(var(--text-primary))]">로그인하면 실제 데이터가 표시됩니다</p>
-            <p className="text-sm text-[rgb(var(--text-muted))] mt-0.5">지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.</p>
+            <p className="font-semibold text-[var(--text-primary)] [word-break:keep-all]">
+              로그인하면 실제 데이터가 표시됩니다
+            </p>
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5 [word-break:keep-all]">
+              지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.
+            </p>
           </div>
           <a
             href="/login?redirect=/mypage"
-            className="shrink-0 px-4 py-2 rounded-[var(--radius-md)] bg-[rgb(var(--color-primary))] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            className={clsx(
+              'shrink-0 px-4 py-2 rounded-[var(--radius-md)] text-sm font-semibold transition-colors',
+              'bg-[var(--interactive-primary)] text-[var(--text-inverted)]',
+              'hover:bg-[var(--interactive-primary-hover)]',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
+            )}
           >
             로그인
           </a>
         </div>
-
-        {/* 탭 네비게이션 (미리보기) */}
         <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {/* 탭 콘텐츠 미리보기 (빈 상태) */}
         <div className="py-8" />
       </div>
     );
@@ -329,12 +334,17 @@ export default function MyPageClient() {
 
   if (error && !profile) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4">
-        <p className="text-[rgb(var(--color-error))]">{error}</p>
+      <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4" role="alert">
+        <p className="text-[var(--state-danger-fg)] [word-break:keep-all]">{error}</p>
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))] text-[rgb(var(--text-secondary))]"
+          className={clsx(
+            'px-4 py-2 text-sm rounded-[var(--radius-md)] transition-colors',
+            'border border-[var(--border-default)] text-[var(--text-secondary)]',
+            'hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
+          )}
         >
           다시 시도
         </button>
@@ -343,56 +353,96 @@ export default function MyPageClient() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <main
+      className="max-w-4xl mx-auto px-4 py-6"
+      aria-label="마이페이지"
+    >
       {/* 프로필 헤더 */}
       {profile && <ProfileHeader profile={profile} credits={credits} />}
 
       {/* 탭 네비게이션 */}
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* 탭 콘텐츠 */}
+      {/* 탭 콘텐츠 패널 */}
       <div>
-        {activeTab === 'profile' && profile && (
-          <Tab1Profile
-            profile={profile}
-            onProfileUpdate={setProfile}
-          />
-        )}
+        <div
+          role="tabpanel"
+          id={`tab-panel-profile`}
+          aria-labelledby="tab-profile"
+          hidden={activeTab !== 'profile'}
+        >
+          {activeTab === 'profile' && profile && (
+            <Tab1Profile profile={profile} onProfileUpdate={setProfile} />
+          )}
+        </div>
 
-        {activeTab === 'bots' && (
-          <Tab2BotManage
-            bots={bots}
-            onBotsChange={setBots}
-          />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-bots"
+          aria-labelledby="tab-bots"
+          hidden={activeTab !== 'bots'}
+        >
+          {activeTab === 'bots' && (
+            <Tab2BotManage bots={bots} onBotsChange={setBots} />
+          )}
+        </div>
 
-        {activeTab === 'learning' && (
-          <Tab3Learning />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-learning"
+          aria-labelledby="tab-learning"
+          hidden={activeTab !== 'learning'}
+        >
+          {activeTab === 'learning' && <Tab3Learning />}
+        </div>
 
-        {activeTab === 'skills' && (
-          <Tab4Skills
-            skills={skills}
-            onSkillsChange={setSkills}
-          />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-skills"
+          aria-labelledby="tab-skills"
+          hidden={activeTab !== 'skills'}
+        >
+          {activeTab === 'skills' && (
+            <Tab4Skills skills={skills} onSkillsChange={setSkills} />
+          )}
+        </div>
 
-        {activeTab === 'operations' && (
-          <Tab5Operations />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-operations"
+          aria-labelledby="tab-operations"
+          hidden={activeTab !== 'operations'}
+        >
+          {activeTab === 'operations' && <Tab5Operations />}
+        </div>
 
-        {activeTab === 'inheritance' && (
-          <Tab6Inheritance />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-inheritance"
+          aria-labelledby="tab-inheritance"
+          hidden={activeTab !== 'inheritance'}
+        >
+          {activeTab === 'inheritance' && <Tab6Inheritance />}
+        </div>
 
-        {activeTab === 'credits' && (
-          <Tab7Credits />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-credits"
+          aria-labelledby="tab-credits"
+          hidden={activeTab !== 'credits'}
+        >
+          {activeTab === 'credits' && <Tab7Credits />}
+        </div>
 
-        {activeTab === 'security' && (
-          <Tab8Security />
-        )}
+        <div
+          role="tabpanel"
+          id="tab-panel-security"
+          aria-labelledby="tab-security"
+          hidden={activeTab !== 'security'}
+        >
+          {activeTab === 'security' && <Tab8Security />}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

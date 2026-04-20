@@ -81,7 +81,7 @@ export function MobileNav() {
         {/* Drawer header */}
         <div className="flex items-center justify-between h-header px-5 border-b border-border shrink-0">
           <span className="text-xl font-bold tracking-tight text-primary select-none">
-            CoCoBot
+            MCW
           </span>
           <button
             type="button"

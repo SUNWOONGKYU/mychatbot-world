@@ -88,7 +88,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // ── 3. AI 분석 ─────────────────────────────────────────────────────────────
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
       { success: false, error: 'AI 서비스 설정이 올바르지 않습니다.' },
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const openai = createOpenAI({ apiKey });
+  const openai = createOpenAI({ apiKey, baseURL: 'https://openrouter.ai/api/v1' });
 
   const systemPrompt = `당신은 비즈니스 분석 전문가입니다.
 코코봇의 이름과 설명을 분석하여 JSON 형식으로만 응답하세요.
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const result = await generateText({
-      ...openai.chat('gpt-4o-mini'),
+      ...openai.chat('openai/gpt-4o-mini'),
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },

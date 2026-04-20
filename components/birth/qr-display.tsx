@@ -30,7 +30,7 @@ export interface QrDisplayProps {
  * next/image로 최적화 렌더링.
  *
  * @example
- * <QrDisplay deployUrl="https://mychatbot.world/bots/abc123" />
+ * <QrDisplay deployUrl="https://cocobot.world/bots/abc123" />
  */
 export function QrDisplay({ deployUrl, size = 200, className }: QrDisplayProps) {
   const encodedUrl = encodeURIComponent(deployUrl);

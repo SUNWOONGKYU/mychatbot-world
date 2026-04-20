@@ -61,7 +61,17 @@ export default function Step6Avatar({ data, onNext, onBack }: Props) {
             {AVATAR_EMOJIS.map(em => (
               <div
                 key={em.key}
+                role="radio"
+                aria-checked={selectedEmoji === em.key}
+                aria-label={em.label}
+                tabIndex={0}
                 onClick={() => setSelectedEmoji(em.key)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedEmoji(em.key);
+                  }
+                }}
                 style={{
                   display: 'flex',
                   flexDirection: 'column',

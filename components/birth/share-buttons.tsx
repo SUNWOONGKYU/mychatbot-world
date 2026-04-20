@@ -81,8 +81,8 @@ export function ShareButtons({ deployUrl, botName, className }: ShareButtonsProp
    * window.Kakao SDK가 로드되어 있으면 SDK 사용, 아니면 URL 폴백
    */
   const handleKakao = useCallback(() => {
-    const title = `${botName} — 코코봇`;
-    const description = 'CoCoBot에서 만든 코코봇입니다. 대화해 보세요!';
+    const title = `${botName} — AI Assistant 코코봇`;
+    const description = 'CoCoBot World에서 만든 AI Assistant 코코봇입니다. 대화해 보세요!';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Kakao = (window as any).Kakao;

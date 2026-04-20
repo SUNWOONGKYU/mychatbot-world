@@ -27,7 +27,7 @@ async function auth(req: NextRequest) {
   return { user, supabase };
 }
 
-async function verifyOwner(supabase: ReturnType<typeof createClient>, botId: string, userId: string) {
+async function verifyOwner(supabase: any, botId: string, userId: string) {
   const { data } = await supabase
     .from('mcw_bots')
     .select('id')

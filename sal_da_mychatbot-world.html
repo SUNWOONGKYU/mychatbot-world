@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAL-DA 진단 리포트 — MyChatbot World</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --danger: #ff7b72;
+    --warning: #ffa657;
+    --normal: #3fb950;
+    --pass: #3fb950;
+    --fail: #ff7b72;
+    --acceptable: #ffa657;
+    --accent: #58a6ff;
+    --critical: #f85149;
+    --high: #ff7b72;
+    --medium: #ffa657;
+    --low: #79c0ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', 'Malgun Gothic', monospace; font-size: 14px; line-height: 1.6; }
+
+  /* Header */
+  header { background: linear-gradient(135deg, #161b22, #21262d); border-bottom: 1px solid var(--border); padding: 24px 32px; }
+  header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+  header .meta { color: var(--text2); font-size: 12px; margin-top: 6px; }
+  header .badges { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid; }
+  .badge-normal { background: rgba(63,185,80,.15); color: var(--normal); border-color: rgba(63,185,80,.3); }
+  .badge-warning { background: rgba(255,166,87,.15); color: var(--warning); border-color: rgba(255,166,87,.3); }
+  .badge-danger { background: rgba(255,123,114,.15); color: var(--danger); border-color: rgba(255,123,114,.3); }
+  .badge-info { background: rgba(88,166,255,.15); color: var(--accent); border-color: rgba(88,166,255,.3); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; overflow-x: auto; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 20px; }
+  .tab { padding: 12px 20px; border: none; background: transparent; color: var(--text2); cursor: pointer; font-size: 13px; font-weight: 500; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Content panels */
+  .panel { display: none; padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  /* Dashboard */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+  .stat-num { font-size: 36px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .stat-normal .stat-num { color: var(--normal); }
+  .stat-warning .stat-num { color: var(--warning); }
+  .stat-danger .stat-num { color: var(--danger); }
+
+  /* Grade gauge */
+  .grade-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+  .grade-title { font-size: 14px; font-weight: 600; color: var(--text2); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .grade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grade-grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grade-item { text-align: center; }
+  .grade-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+  .grade-value { font-size: 28px; font-weight: 700; }
+  .grade-before { color: var(--danger); }
+  .grade-after { color: var(--normal); }
+  .grade-predicted { color: var(--warning); }
+
+  /* Area bars */
+  .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .area-bar { background: var(--bg3); border-radius: 6px; padding: 12px 16px; }
+  .area-bar-label { font-size: 12px; color: var(--text2); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .area-bar-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .area-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+  .fill-100-normal { width: 100%; background: var(--normal); }
+  .fill-100-warning { width: 100%; background: var(--warning); }
+  .fill-40-warning { width: 40%; background: var(--warning); }
+  .fill-100-border { width: 100%; background: var(--text2); }
+
+  /* Cards */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 20px; }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .card-header { padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .card-id { font-family: monospace; font-size: 13px; font-weight: 700; color: var(--accent); }
+  .card-area { font-size: 11px; color: var(--text2); background: var(--bg3); padding: 2px 8px; border-radius: 4px; }
+  .card-body { padding: 16px 18px; }
+  .card-name { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+
+  /* Card status colors */
+  .card.status-normal { border-top: 3px solid var(--normal); }
+  .card.status-warning { border-top: 3px solid var(--warning); }
+  .card.status-danger { border-top: 3px solid var(--danger); }
+  .card.status-na { border-top: 3px solid var(--border); }
+
+  /* Attributes table */
+  .attr-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .attr-table tr { border-bottom: 1px solid var(--border); }
+  .attr-table tr:last-child { border-bottom: none; }
+  .attr-table td { padding: 6px 8px; vertical-align: top; }
+  .attr-table td:first-child { color: var(--text2); width: 120px; min-width: 100px; white-space: nowrap; }
+  .attr-table td:last-child { color: var(--text); }
+  .attr-table .group-header { background: var(--bg3); color: var(--text2); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* Status pills */
+  .pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .pill-normal { background: rgba(63,185,80,.2); color: var(--normal); }
+  .pill-warning { background: rgba(255,166,87,.2); color: var(--warning); }
+  .pill-danger { background: rgba(255,123,114,.2); color: var(--danger); }
+  .pill-na { background: rgba(139,148,158,.2); color: var(--text2); }
+  .pill-pass { background: rgba(63,185,80,.2); color: var(--pass); }
+  .pill-fail { background: rgba(255,123,114,.2); color: var(--fail); }
+  .pill-acceptable { background: rgba(255,166,87,.2); color: var(--acceptable); }
+  .pill-critical { background: rgba(248,81,73,.2); color: var(--critical); }
+  .pill-high { background: rgba(255,123,114,.2); color: var(--high); }
+  .pill-medium { background: rgba(255,166,87,.2); color: var(--medium); }
+  .pill-low { background: rgba(121,192,255,.2); color: var(--low); }
+  .pill-done { background: rgba(63,185,80,.15); color: var(--normal); }
+  .pill-pending { background: rgba(139,148,158,.15); color: var(--text2); }
+
+  /* Section titles */
+  .section-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .section-badge { font-size: 11px; background: var(--bg3); color: var(--text2); padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+
+  /* S0 matrix */
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 11px; overflow-x: auto; display: block; }
+  .matrix-table th { background: var(--bg3); color: var(--text2); padding: 8px; border: 1px solid var(--border); text-align: center; white-space: nowrap; }
+  .matrix-table td { padding: 6px 8px; border: 1px solid var(--border); text-align: center; }
+  .matrix-cell-hit { background: rgba(63,185,80,.2); color: var(--normal); font-weight: 700; }
+  .matrix-cell-empty { color: var(--text2); }
+  .matrix-cell-na { background: rgba(139,148,158,.1); color: var(--text2); font-style: italic; }
+  .matrix-row-header { background: var(--bg3); color: var(--text); font-weight: 600; text-align: left !important; white-space: nowrap; }
+
+  /* Evidence block */
+  .evidence { background: var(--bg3); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 4px 4px 0; font-family: monospace; font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  /* Scroll helpers */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media (max-width: 768px) {
+    .panel { padding: 16px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .grade-grid { grid-template-columns: 1fr; }
+    .area-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media print {
+    .tabs { display: none; }
+    .panel { display: block !important; padding: 16px; }
+    .card { break-inside: avoid; margin-bottom: 16px; }
+    body { background: #fff; color: #111; }
+    header { background: #f5f5f5; border-bottom: 2px solid #ccc; }
+    header h1 { color: #111; }
+    .evidence { background: #f0f0f0; border-left: 3px solid #555; color: #333; }
+    .attr-table td:first-child { color: #555; }
+    .attr-table .group-header { background: #e8e8e8; color: #333; }
+    .card { border: 1px solid #ccc; }
+    .stat-card, .grade-section, .area-bar { background: #f9f9f9; border: 1px solid #ddd; }
+    .pill { color: #222 !important; background: #eee !important; border: 1px solid #ccc; }
+    .badge { color: #222 !important; background: #eee !important; border: 1px solid #ccc; }
+    .grade-value, .stat-num { color: #111 !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔍 SAL-DA 진단 리포트 — MyChatbot World</h1>
+  <div class="meta">진단일: 2026-04-13 | 진단 대상: Next.js App Router (TypeScript) | 진단자: Claude Sonnet 4.6</div>
+  <div class="badges">
+    <span class="badge badge-info">소프트웨어 진단</span>
+    <span class="badge badge-normal">11개 SAL ID</span>
+    <span class="badge badge-normal">S1~S3 (3 Stages)</span>
+    <span class="badge badge-normal">7개 진단 Area</span>
+    <span class="badge badge-warning">S3MT1 잔여 Warning</span>
+  </div>
+</header>
+
+<div class="tabs" role="tablist" aria-label="SAL-DA 진단 탭" aria-orientation="horizontal">
+  <button class="tab active" role="tab" aria-selected="true" tabindex="0" aria-controls="panel-dashboard" id="tab-dashboard" onclick="showTab('dashboard', this)">📊 대시보드</button>
+  <button class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-s0" id="tab-s0" onclick="showTab('s0', this)">S0 역방향 분해</button>
+  <button class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-s1" id="tab-s1" onclick="showTab('s1', this)">S1 — 핵심 보안</button>
+  <button class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-s2" id="tab-s2" onclick="showTab('s2', this)">S2 — API 보안·신뢰성</button>
+  <button class="tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-s3" id="tab-s3" onclick="showTab('s3', this)">S3 — 유지보수·기능</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="panel-dashboard" class="panel active" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
+  <div class="stats-grid">
+    <div class="stat-card stat-normal"><div class="stat-num">9</div><div class="stat-label">Normal (재진단)</div></div>
+    <div class="stat-card stat-warning"><div class="stat-num">1</div><div class="stat-label">Warning (잔여)</div></div>
+    <div class="stat-card stat-danger"><div class="stat-num">0</div><div class="stat-label">Danger (잔여)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent)">11</div><div class="stat-label">총 진단 카드 (유효 10 + N/A 1)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--pass)">10</div><div class="stat-label">Pass / Acceptable (N/A 제외)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--fail)">0</div><div class="stat-label">Fail</div></div>
+  </div>
+
+  <div class="grade-section">
+    <div class="grade-title">N단계 품질 등급 (10단계)</div>
+    <div class="grade-grid grade-grid-4">
+      <div class="grade-item">
+        <div class="grade-label">Before Grade (초기 진단)</div>
+        <div class="grade-value grade-before">4</div>
+        <div style="font-size:11px;color:var(--text2)">N=1, W=5, D=4 / 10</div>
+      </div>
+      <div class="grade-item">
+        <div class="grade-label">Predicted After Grade</div>
+        <div class="grade-value grade-predicted">9</div>
+        <div style="font-size:11px;color:var(--text2)">목표 N=9, W=1, D=0</div>
+      </div>
+      <div class="grade-item">
+        <div class="grade-label">Actual After Grade (재진단)</div>
+        <div class="grade-value grade-after">10</div>
+        <div style="font-size:11px;color:var(--text2)">N=9, W=1, D=0 / 10 (N/A=1)</div>
+      </div>
+      <div class="grade-item">
+        <div class="grade-label">개선 폭</div>
+        <div class="grade-value" style="color:var(--accent)">+6</div>
+        <div style="font-size:11px;color:var(--text2)">4등급 → 10등급</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:12px;color:var(--text2)">
+      공식: Grade = max(1, ceil((Normal + Warning×0.5) / Total × 10)) — Total = N/A 카드 제외한 유효 진단 수<br>
+      Before: ceil((1 + 5×0.5) / 10 × 10) = ceil(3.5) = <strong style="color:var(--danger)">4등급</strong><br>
+      After: ceil((9 + 1×0.5) / 10 × 10) = ceil(9.5) = <strong style="color:var(--normal)">10등급</strong> <span style="color:var(--text2)">(유효 수=10: S3UX1 N/A 제외)</span>
+    </div>
+  </div>
+
+  <div class="section-title">Area별 개선 현황 <span class="section-badge">7개 Area</span></div>
+  <div class="area-grid">
+    <div class="area-bar">
+      <div class="area-bar-label"><span>SE — 보안 (4개)</span><span style="color:var(--normal)">4/4 Pass</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-100-normal"></div></div>
+    </div>
+    <div class="area-bar">
+      <div class="area-bar-label"><span>AP — API 설계 (2개)</span><span style="color:var(--normal)">2/2 Pass</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-100-normal"></div></div>
+    </div>
+    <div class="area-bar">
+      <div class="area-bar-label"><span>AR — 아키텍처 (1개)</span><span style="color:var(--normal)">1/1 Pass</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-100-normal"></div></div>
+    </div>
+    <div class="area-bar">
+      <div class="area-bar-label"><span>MT — 유지보수 (1개)</span><span style="color:var(--warning)">0/1 Warning</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-40-warning"></div></div>
+    </div>
+    <div class="area-bar">
+      <div class="area-bar-label"><span>RL — 신뢰성 (1개)</span><span style="color:var(--normal)">1/1 Pass</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-100-normal"></div></div>
+    </div>
+    <div class="area-bar">
+      <div class="area-bar-label"><span>FN — 기능 (1개)</span><span style="color:var(--normal)">1/1 Pass</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-100-normal"></div></div>
+    </div>
+    <div class="area-bar">
+      <div class="area-bar-label"><span>UX — 사용자 경험 (1개)</span><span style="color:var(--text2)">N/A (S3UX1 → S2SE2에서 처리)</span></div>
+      <div class="area-bar-track"><div class="area-bar-fill fill-100-border"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S0 -->
+<div id="panel-s0" class="panel" role="tabpanel" aria-labelledby="tab-s0" tabindex="-1">
+  <div class="section-title">S0 역방향 분해 <span class="section-badge">구성요소 × 평가 항목 매트릭스</span></div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--accent)">[1] 유형 감지 + 구성요소 목록</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;font-size:12px;">
+      <div style="background:var(--bg3);padding:10px;border-radius:6px;"><div style="color:var(--text2);margin-bottom:4px">분류</div><div>소프트웨어 (Next.js)</div></div>
+      <div style="background:var(--bg3);padding:10px;border-radius:6px;"><div style="color:var(--text2);margin-bottom:4px">페이지 (app/)</div><div>52개</div></div>
+      <div style="background:var(--bg3);padding:10px;border-radius:6px;"><div style="color:var(--text2);margin-bottom:4px">API 라우트</div><div>89개</div></div>
+      <div style="background:var(--bg3);padding:10px;border-radius:6px;"><div style="color:var(--text2);margin-bottom:4px">컴포넌트</div><div>60개</div></div>
+      <div style="background:var(--bg3);padding:10px;border-radius:6px;"><div style="color:var(--text2);margin-bottom:4px">lib 유틸</div><div>24개</div></div>
+      <div style="background:var(--bg3);padding:10px;border-radius:6px;"><div style="color:var(--text2);margin-bottom:4px">미들웨어</div><div>1개</div></div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--accent)">[2] 진단 Area 목록 (7개)</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">배지 색상 = 초기 진단 위험도 (재진단 후 결과는 대시보드 참조)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:12px;">
+      <span class="badge badge-danger">SE — 보안</span>
+      <span class="badge badge-warning">AP — API 설계</span>
+      <span class="badge badge-warning">AR — 아키텍처</span>
+      <span class="badge badge-warning">MT — 유지보수성</span>
+      <span class="badge badge-warning">RL — 신뢰성</span>
+      <span class="badge badge-normal">FN — 기능 적합성</span>
+      <span class="badge badge-normal">UX — 사용자 경험 (N/A)</span>
+    </div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--accent)">[3~5] 구성요소 × 평가 항목 매트릭스 → SAL ID 배치</div>
+    <div style="overflow-x:auto;">
+      <table class="matrix-table" aria-label="구성요소 × 평가 항목 매트릭스 — SAL ID 배치표">
+        <thead>
+          <tr>
+            <th>평가 항목 / 구성요소</th>
+            <th>next.config.mjs</th>
+            <th>API 라우트 (89)</th>
+            <th>Wiki API</th>
+            <th>Chat API</th>
+            <th>Error Boundary</th>
+            <th>미들웨어</th>
+            <th>lib/api-auth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="matrix-row-header">SE — CSP 헤더</td>
+            <td class="matrix-cell-hit">S1SE1</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">SE — API 인증 미적용</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S1SE2</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">SE — API 오류 노출 (13개 라우트)</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S2SE1</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">SE — UI 오류 노출 (error.tsx)</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S2SE2</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">AP — Rate Limiting</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit" title="적용 대상 엔드포인트">S2AP1 (대상)</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit" title="구현 위치">S2AP1 (구현)</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">AP — 입력 검증</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S2AP2</td>
+            <td class="matrix-cell-hit">S2AP2</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">AR — 인증 중앙화</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S1AR1</td>
+            <td class="matrix-cell-hit">S1AR1</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">MT — 코드 중복</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S3MT1</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">RL — 비동기 오류처리</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S2RL1</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">FN — 채팅 엔진 완성도</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-hit">S3FN1</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+          <tr>
+            <td class="matrix-row-header">UX — Error Boundary</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-na">S3UX1 (N/A)</td>
+            <td class="matrix-cell-empty">-</td>
+            <td class="matrix-cell-empty">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--accent)">[4~5] 의존성 분석 → Stage 배치 + SAL ID 확정</div>
+    <div style="font-size:12px;color:var(--text2);">
+      <div>• S1 (독립 항목): SE1, SE2, AR1 — 다른 카드에 의존하지 않음</div>
+      <div style="margin-top:4px">• S2 (S1 완료 후): SE1, SE2, AP1, AP2, RL1 — 인증·미들웨어 기반 위에서 처리</div>
+      <div style="margin-top:4px">• S3 (S2 완료 후): MT1, FN1, UX1(→N/A 병합) — 전체 시스템 파악 후 구조적 평가</div>
+    </div>
+  </div>
+</div>
+
+<!-- S1 -->
+<div id="panel-s1" class="panel" role="tabpanel" aria-labelledby="tab-s1" tabindex="-1">
+  <div class="section-title">Stage 1 — 핵심 보안 <span class="section-badge">3개 카드 | Stage Gate: PASS</span></div>
+  <div class="cards-grid">
+    <!-- S1SE1 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S1SE1</span>
+        <span class="card-area">SE — 보안</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">CSP unsafe-eval 프로덕션 노출</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S1SE1</td></tr>
+          <tr><td>Diagnostic Name</td><td>CSP unsafe-eval 프로덕션 노출</td></tr>
+          <tr><td>Area</td><td>SE — 보안 (Security)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>OWASP Top10 A05 (Security Misconfiguration)</td></tr>
+          <tr><td>Target</td><td>next.config.mjs:94-99</td></tr>
+          <tr><td>Dependencies</td><td>없음 (S1 독립 항목)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-danger">Danger</span></td></tr>
+          <tr><td>Issues</td><td>script-src에 'unsafe-eval'이 NODE_ENV 조건 없이 포함 → XSS 취약점 확대</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">"script-src 'self' 'unsafe-inline' 'unsafe-eval'",</div></td></tr>
+          <tr><td>Impact</td><td>프로덕션 CSP 무력화 → eval() 기반 공격 가능</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>NODE_ENV 조건부: dev에만 unsafe-eval, prod에는 제거</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-critical">Critical</span></td></tr>
+          <tr><td>Expected Effect</td><td>프로덕션 CSP에서 unsafe-eval 제거 → eval() 기반 XSS 공격 벡터 차단. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>process.env.NODE_ENV === 'development' ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline'" 로 수정</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>Next.js 13+ 프로덕션 빌드는 unsafe-eval 불필요 확인됨</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S1SE2 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S1SE2</span>
+        <span class="card-area">SE — 보안</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Wiki API 인증 완전 부재</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S1SE2</td></tr>
+          <tr><td>Diagnostic Name</td><td>Wiki API 인증 완전 부재</td></tr>
+          <tr><td>Area</td><td>SE — 보안 (Security)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>OWASP Top10 A01 (Broken Access Control)</td></tr>
+          <tr><td>Target</td><td>api/wiki/sync, api/wiki/vault/export, api/wiki/vault/graph</td></tr>
+          <tr><td>Dependencies</td><td>없음 (S1 독립 항목)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-danger">Danger</span></td></tr>
+          <tr><td>Issues</td><td>3개 wiki 라우트가 인증 없이 공개 접근 가능 — Service Role Key 사용하며 전체 wiki 데이터 노출</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">POST /api/wiki/sync — no auth header check<br>POST /api/wiki/vault/export — no auth<br>GET /api/wiki/vault/graph — no auth</div></td></tr>
+          <tr><td>Impact</td><td>임의 사용자가 모든 봇의 wiki 데이터 읽기/쓰기 가능</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>verifyAuth() + bot_id 소유권 검증 (personas 테이블) 추가</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-critical">Critical</span></td></tr>
+          <tr><td>Expected Effect</td><td>Wiki 데이터 무단 읽기/쓰기 차단, 봇 소유권 이중 검증. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>3개 라우트에 verifyAuth(req) + personas 소유권 .eq('user_id', authCtx.userId) 추가</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>인증 + 봇 소유권 이중 검증 완료</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S1AR1 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S1AR1</span>
+        <span class="card-area">AR — 아키텍처</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">관리자 API 중앙 인증 가드 부재</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S1AR1</td></tr>
+          <tr><td>Diagnostic Name</td><td>관리자 API 중앙 인증 가드 부재</td></tr>
+          <tr><td>Area</td><td>AR — 아키텍처 (Architecture)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>Defense in Depth, Next.js Middleware 패턴</td></tr>
+          <tr><td>Target</td><td>middleware.ts, /api/admin/*</td></tr>
+          <tr><td>Dependencies</td><td>없음 (S1 독립 항목)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-warning">Warning</span></td></tr>
+          <tr><td>Issues</td><td>/api/admin/* 경로에 중앙 인증 가드 없음 — 각 route 개별 처리에만 의존</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">// middleware.ts — /api/admin/* 경로 누락 (수정 전)<br>export const config = { matcher: [] }; // admin 없음<br>// 각 admin route에만 개별 Bearer 체크 존재</div></td></tr>
+          <tr><td>Impact</td><td>route 누락 시 관리자 기능 무단 접근 가능</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>Next.js middleware에서 /api/admin/* 경로 X-Admin-Key / Bearer 검증</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-high">High</span></td></tr>
+          <tr><td>Expected Effect</td><td>관리자 API 무단 접근 방지 — middleware 레벨 이중 방어선 구축. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>middleware.ts에 /api/admin 경로 X-Admin-Key / Bearer 가드 추가. matcher 설정 포함.</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>이중 방어선 구축 (middleware + route 레벨)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S2 -->
+<div id="panel-s2" class="panel" role="tabpanel" aria-labelledby="tab-s2" tabindex="-1">
+  <div class="section-title">Stage 2 — API 보안·신뢰성 <span class="section-badge">5개 카드 | Stage Gate: PASS (Fail 없음, Acceptable 1건 포함)</span></div>
+  <div class="cards-grid">
+    <!-- S2SE1 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S2SE1</span>
+        <span class="card-area">SE — 보안</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">API 오류 메시지 노출 (13개 라우트)</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S2SE1</td></tr>
+          <tr><td>Diagnostic Name</td><td>API 오류 메시지 노출 (13개 라우트)</td></tr>
+          <tr><td>Area</td><td>SE — 보안 (Security)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>OWASP Top10 A09 (Security Logging Failures / Info Exposure)</td></tr>
+          <tr><td>Target</td><td>api/bots, api/faq, api/faq/[id], api/bots/[id]/chat-log, api/bots/[id]/personas, api/skills/[id]/toggle, api/skills/[id]/uninstall, api/profile, api/auth/me, api/school/session, api/school/progress, api/wiki/vault/graph, api/wiki/vault/export</td></tr>
+          <tr><td>Dependencies</td><td>S1SE1, S1SE2 (보안 기반 항목 확립 후)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-danger">Danger</span></td></tr>
+          <tr><td>Issues</td><td>13개 라우트에서 Supabase DB 오류 메시지를 그대로 클라이언트에 반환 (error.message)</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">{ success: false, error: error.message, data: null }, { status: 500 }</div></td></tr>
+          <tr><td>Impact</td><td>DB 스키마, 테이블명, 칼럼명, 쿼리 패턴 노출 → 공격 벡터 제공</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>safeError() 헬퍼 추가: production에서는 'Internal server error' 반환, dev에서는 원본 메시지 유지</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-high">High</span></td></tr>
+          <tr><td>Expected Effect</td><td>DB 내부 정보 노출 차단. 공격자가 스키마 추측 불가. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>lib/api-auth.ts에 safeError() 추가. 13개 라우트에 임포트 + 적용. app/error.tsx 정적 메시지로 변경.</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>tsc --noEmit 통과 확인. app/api 전체 error.message 잔여 0건.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S2SE2 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S2SE2</span>
+        <span class="card-area">SE — 보안</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">error.tsx 클라이언트 오류 노출</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S2SE2</td></tr>
+          <tr><td>Diagnostic Name</td><td>error.tsx 클라이언트 오류 노출</td></tr>
+          <tr><td>Area</td><td>SE — 보안 (Security)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>OWASP A09, Next.js Error Boundary 모범 사례</td></tr>
+          <tr><td>Target</td><td>app/error.tsx:8</td></tr>
+          <tr><td>Dependencies</td><td>S2SE1 (오류 처리 패턴 확립)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-warning">Warning</span></td></tr>
+          <tr><td>Issues</td><td>error.message를 UI에 직접 노출 → 런타임 에러 스택/함수명 사용자에게 표시 가능</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">{`{error.message || '잠시 후 다시 시도해주세요.'}`}</div></td></tr>
+          <tr><td>Impact</td><td>클라이언트 사이드 런타임 오류 정보(스택, 함수명 등) 사용자 화면 노출 → 공격 벡터 제공 가능</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>정적 한국어 메시지만 표시. error.message 제거.</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-medium">Medium</span></td></tr>
+          <tr><td>Expected Effect</td><td>런타임 오류 정보 노출 제거. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>'잠시 후 다시 시도해주세요.' 정적 텍스트로 교체</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>S3UX1(UX)와 동일 파일 처리됨. S3UX1은 N/A로 병합 처리.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S2AP1 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S2AP1</span>
+        <span class="card-area">AP — API 설계</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">AI/고비용 엔드포인트 Rate Limiting 부재</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S2AP1</td></tr>
+          <tr><td>Diagnostic Name</td><td>AI/고비용 엔드포인트 Rate Limiting 부재</td></tr>
+          <tr><td>Area</td><td>AP — API 설계 (API Design)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>OWASP API Top10 API4 (Unrestricted Resource Consumption)</td></tr>
+          <tr><td>Target</td><td>/api/chat, /api/chat/stream, /api/ai/chat, /api/tts, /api/stt</td></tr>
+          <tr><td>Dependencies</td><td>S1AR1 (middleware 존재 확인 후)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-danger">Danger</span></td></tr>
+          <tr><td>Issues</td><td>AI API / TTS / STT 엔드포인트에 Rate Limiting 없음 → DoS / 비용 공격 가능</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">// middleware.ts (수정 전) — /api/chat 경로 rate limit 없음<br>// lib/rate-limit.ts — 파일 존재하지 않음<br>// /api/chat, /api/tts, /api/stt: 요청 횟수 제한 없이 무제한 처리</div></td></tr>
+          <tr><td>Impact</td><td>무제한 AI API 호출 → OpenRouter/OpenAI 비용 폭발, 서비스 불안정</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>토큰 버킷 Rate Limiter 구현. AI: 20req/min, 오디오: 10req/min (per IP). Next.js middleware에 통합.</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-critical">Critical</span></td></tr>
+          <tr><td>Expected Effect</td><td>AI API 남용 차단, 비용 폭발 방지. Retry-After 헤더로 클라이언트 안내. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>lib/rate-limit.ts 생성 (토큰 버킷 알고리즘). middleware.ts에 AI/오디오 경로 rate limit 통합. Retry-After 헤더 반환.</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>서버리스 인스턴스 간 공유 없음 (in-memory). 분산 환경 운영 시 Redis 기반 Rate Limiter로 업그레이드 권장 (별도 과제).</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S2AP2 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S2AP2</span>
+        <span class="card-area">AP — API 설계</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Zod 입력 검증 부족 (5/89 라우트만 적용)</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S2AP2</td></tr>
+          <tr><td>Diagnostic Name</td><td>Zod 입력 검증 부족 (5/89 라우트만 적용)</td></tr>
+          <tr><td>Area</td><td>AP — API 설계 (API Design)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>OWASP API Top10 API1 (Broken Object Level Auth) / Input Validation</td></tr>
+          <tr><td>Target</td><td>api/wiki/sync, api/faq, api/faq/[id]</td></tr>
+          <tr><td>Dependencies</td><td>S2SE1, S2SE2 (오류 처리 패턴 확립 후)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-warning">Warning</span></td></tr>
+          <tr><td>Issues</td><td>89개 라우트 중 5개만 Zod 스키마 적용. wiki/sync: 파일명 경로 탐색 취약점, faq: 길이 제한 없음.</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">// api/wiki/sync (수정 전) — 파일명 무검증<br>const { bot_id, files } = rawBody; // Zod 없음<br>// api/faq (수정 전) — question/answer 길이 제한 없음<br>// lib/validations/ 디렉토리 미존재</div></td></tr>
+          <tr><td>Impact</td><td>oversized payload DoS, 경로 탐색 공격, XSS 저장 가능성</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>고위험 mutation 라우트부터 Zod 적용. wiki/sync: 파일명 패턴 검사 + 500KB 제한. faq: 길이 제한.</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-high">High</span></td></tr>
+          <tr><td>Expected Effect</td><td>경로 탐색 공격 차단, payload DoS 방지, FAQ 길이 오버플로 방지. 목표 Status: Normal (고위험 라우트 기준)</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>lib/validations/wiki.ts, lib/validations/faq.ts 생성. wiki/sync: WikiSyncSchema (.md only, 500KB limit, 100파일 max). faq POST/PATCH: FaqCreateSchema/FaqUpdateSchema 적용.</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-acceptable">Acceptable</span></td></tr>
+          <tr><td>Remarks</td><td>핵심 고위험 라우트 완료. 나머지 84개 라우트 Zod 마이그레이션은 장기 과제.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S2RL1 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S2RL1</span>
+        <span class="card-area">RL — 신뢰성</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Fire-and-Forget 비동기 오류 미처리</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S2RL1</td></tr>
+          <tr><td>Diagnostic Name</td><td>Fire-and-Forget 비동기 오류 미처리</td></tr>
+          <tr><td>Area</td><td>RL — 신뢰성 (Reliability)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>Node.js UnhandledPromiseRejection, SRE 신뢰성 기준</td></tr>
+          <tr><td>Target</td><td>app/api/chat/route.ts:293-297</td></tr>
+          <tr><td>Dependencies</td><td>S2SE1 (라우트 오류 처리 패턴 확립 후)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-warning">Warning</span></td></tr>
+          <tr><td>Issues</td><td>wiki view_count 비동기 업데이트에 .catch() 없음 → UnhandledPromiseRejection 가능</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">void supabase.from('wiki_pages').update(...).in(ids).then(() => {});<br>// .catch() 누락</div></td></tr>
+          <tr><td>Impact</td><td>Node.js process 불안정 가능성 (Edge Runtime에서 무시되나, 로그 노이즈)</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>.catch() 핸들러 추가하여 경고 로그 출력</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-medium">Medium</span></td></tr>
+          <tr><td>Expected Effect</td><td>UnhandledPromiseRejection 제거, 오류 로그 체계화. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6</td></tr>
+          <tr><td>Content</td><td>.catch((e) => console.warn('[chat/route] wiki view_count update failed:', ...)) 추가</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>triggerWikiAccumulate()는 이미 .catch() 있음 — 정상</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S3 -->
+<div id="panel-s3" class="panel" role="tabpanel" aria-labelledby="tab-s3" tabindex="-1">
+  <div class="section-title">Stage 3 — 유지보수·기능 <span class="section-badge">3개 카드 | Stage Gate: ACCEPTABLE</span></div>
+  <div class="cards-grid">
+    <!-- S3MT1 -->
+    <div class="card status-warning">
+      <div class="card-header">
+        <span class="card-id">S3MT1</span>
+        <span class="card-area">MT — 유지보수성</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Bearer 토큰 인증 코드 88개 라우트 중복</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S3MT1</td></tr>
+          <tr><td>Diagnostic Name</td><td>Bearer 토큰 인증 코드 88개 라우트 중복</td></tr>
+          <tr><td>Area</td><td>MT — 유지보수성 (Maintainability)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>DRY (Don't Repeat Yourself), ISO25010 유지보수성</td></tr>
+          <tr><td>Target</td><td>app/api/* (88개 라우트 중 수동 Bearer 파싱 사용)</td></tr>
+          <tr><td>Dependencies</td><td>S2AP1, S2AP2 (전체 라우트 파악 완료 후)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-warning">Warning</span></td></tr>
+          <tr><td>Issues</td><td>verifyAuth()가 lib/api-auth.ts에 있음에도 88개 라우트 중 ~4개만 사용. 나머지는 수동 authHeader.startsWith('Bearer ') 패턴 반복.</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">const authHeader = request.headers.get('authorization');<br>if (!authHeader?.startsWith('Bearer ')) { ... }<br>const token = authHeader.replace('Bearer ', '');<br>await supabase.auth.getUser(token);<br>// 위 패턴이 ~84개 라우트에 반복됨</div></td></tr>
+          <tr><td>Impact</td><td>auth 로직 변경 시 84개 파일 수정 필요. 버그 수정 누락 위험.</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>withAuth() HOF 패턴으로 점진적 마이그레이션. 신규 라우트는 반드시 verifyAuth() 사용 강제.</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-medium">Medium</span></td></tr>
+          <tr><td>Expected Effect</td><td>유지보수 포인트 집중화. auth 변경 시 1개 파일만 수정. 목표 Status: Normal</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-pending">Pending</span></td></tr>
+          <tr><td>Agent</td><td>미정 (점진적 마이그레이션 — Sprint 계획 필요)</td></tr>
+          <tr><td>Content</td><td>이 진단 세션에서 수행하지 않음. 기능 회귀 위험으로 별도 Sprint에서 처리 권장.</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-warning">Warning</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-acceptable">Acceptable</span></td></tr>
+          <tr><td>Remarks</td><td>보안 위험은 아님. 유지보수 부채. 장기 Sprint로 처리.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S3FN1 -->
+    <div class="card status-normal">
+      <div class="card-header">
+        <span class="card-id">S3FN1</span>
+        <span class="card-area">FN — 기능 적합성</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">채팅 엔진 기능 완성도</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S3FN1</td></tr>
+          <tr><td>Diagnostic Name</td><td>채팅 엔진 기능 완성도</td></tr>
+          <tr><td>Area</td><td>FN — 기능 적합성 (Functionality)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>ISO25010 기능 적합성, 설계 명세</td></tr>
+          <tr><td>Target</td><td>app/api/chat/route.ts, app/api/ai/chat/route.ts</td></tr>
+          <tr><td>Dependencies</td><td>S2SE1, S2AP1, S2RL1 (전체 시스템 안정화 후)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Issues</td><td>없음</td></tr>
+          <tr><td>Evidence</td><td>Wiki-First RAG, 감성 슬라이더, 비용 티어, 크레딧 차감, 컨텍스트 압축, 대화 이력 저장 모두 구현됨</td></tr>
+          <tr><td>Impact</td><td>N/A</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>불필요 (Status=Normal)</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-na">N/A</span></td></tr>
+          <tr><td>Expected Effect</td><td>해당없음 (현재 Normal 상태 유지)</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-na">N/A</span></td></tr>
+          <tr><td>Agent</td><td>해당없음</td></tr>
+          <tr><td>Content</td><td>해당없음</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-normal">Normal</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-pass">Pass</span></td></tr>
+          <tr><td>Remarks</td><td>핵심 AI 채팅 파이프라인 완성. TODO/FIXME 0건.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- S3UX1 — merged into S2SE2, mark as N/A -->
+    <div class="card status-na">
+      <div class="card-header">
+        <span class="card-id">S3UX1</span>
+        <span class="card-area">UX — 사용자 경험</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Error Boundary 개선</div>
+        <table class="attr-table">
+          <tr><td colspan="2" class="group-header">식별 정보</td></tr>
+          <tr><td>Diagnostic ID</td><td>S3UX1</td></tr>
+          <tr><td>Diagnostic Name</td><td>Error Boundary 개선</td></tr>
+          <tr><td>Area</td><td>UX — 사용자 경험 (UX)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 기준</td></tr>
+          <tr><td>Track</td><td>Diagnosis</td></tr>
+          <tr><td>Standard</td><td>Next.js Error Boundary 모범 사례</td></tr>
+          <tr><td>Target</td><td>app/error.tsx</td></tr>
+          <tr><td>Dependencies</td><td>S2SE2 (선행 처리됨)</td></tr>
+          <tr><td colspan="2" class="group-header">진단 결과</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-na">N/A</span></td></tr>
+          <tr><td>Issues</td><td>S2SE2에서 선행 처리됨 — error.message 정적 메시지로 교체 완료</td></tr>
+          <tr><td>Evidence</td><td><div class="evidence">app/error.tsx — S2SE2에서 처리됨</div></td></tr>
+          <tr><td>Impact</td><td>해당없음 (S2SE2 처리로 해소됨)</td></tr>
+          <tr><td colspan="2" class="group-header">개선안</td></tr>
+          <tr><td>Plan</td><td>해당없음 (S2SE2 처리로 완료)</td></tr>
+          <tr><td>Priority</td><td><span class="pill pill-na">N/A</span></td></tr>
+          <tr><td>Expected Effect</td><td>해당없음</td></tr>
+          <tr><td colspan="2" class="group-header">개선 실행</td></tr>
+          <tr><td>Status</td><td><span class="pill pill-done">Done (S2SE2)</span></td></tr>
+          <tr><td>Agent</td><td>Claude Sonnet 4.6 (S2SE2에서 수행)</td></tr>
+          <tr><td>Content</td><td>S2SE2 참조 — error.message 정적 텍스트로 교체</td></tr>
+          <tr><td colspan="2" class="group-header">재진단</td></tr>
+          <tr><td>Re-status</td><td><span class="pill pill-na">N/A</span></td></tr>
+          <tr><td>Final Verdict</td><td><span class="pill pill-na">N/A (병합)</span></td></tr>
+          <tr><td>Remarks</td><td>S2SE2와 동일 파일 처리됨. 별도 조치 불필요. 중복 카드로 N/A 처리. Re-status=N/A이므로 Final Verdict도 N/A (병합) 표기.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TAB_IDS = ['dashboard', 's0', 's1', 's2', 's3'];
+
+function showTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+    t.setAttribute('tabindex', '-1');
+  });
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.remove('active');
+    p.setAttribute('tabindex', '-1');
+  });
+  const panel = document.getElementById('panel-' + id);
+  panel.classList.add('active');
+  panel.setAttribute('tabindex', '0');
+  el.classList.add('active');
+  el.setAttribute('aria-selected', 'true');
+  el.setAttribute('tabindex', '0');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = Array.from(document.querySelectorAll('.tab[role="tab"]'));
+  tabs.forEach((tab, i) => {
+    tab.setAttribute('tabindex', i === 0 ? '0' : '-1');
+    tab.addEventListener('keydown', function(e) {
+      const cur = tabs.indexOf(document.activeElement);
+      let next = -1;
+      if (e.key === 'ArrowRight') next = (cur + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') next = (cur - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      if (next !== -1) {
+        e.preventDefault();
+        showTab(TAB_IDS[next], tabs[next]);
+        tabs[next].focus();
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

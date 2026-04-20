@@ -2,7 +2,7 @@
     "name": "mychatbot-world",
     "version": "1.0.0",
     "type": "module",
-    "description": "My Chatbot World - AI 코코봇 생성 플랫폼",
+    "description": "My Chatbot World - AI Assistant 코코봇 생성 플랫폼",
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.1",
         "@radix-ui/react-checkbox": "^1.1.2",

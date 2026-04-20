@@ -18,7 +18,7 @@ interface ChatMessage {
 const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   {
     trigger: '안녕',
-    response: '안녕하세요! 저는 CoCoBot 데모봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
+    response: '안녕하세요! 저는 MCW 데모 코코봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
   },
   {
     trigger: '수익',
@@ -30,7 +30,7 @@ const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   },
   {
     trigger: '만들기',
-    response: '코코봇 만들기는 5분이면 충분해요! ①유형 선택 → ②5분 인터뷰 → ③AI 분석 → ④배포 순서로 진행됩니다. 코딩은 전혀 필요 없어요!',
+    response: '코코봇 생성은 5분이면 충분해요! ①유형 선택 → ②5분 인터뷰 → ③AI 분석 → ④배포 순서로 진행됩니다. 코딩은 전혀 필요 없어요!',
   },
 ];
 
@@ -38,18 +38,18 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: 'init-1',
     role: 'bot',
-    text: 'CoCoBot에 오신 것을 환영해요! 아래 버튼을 눌러 직접 대화해보세요 👋',
+    text: 'CoCoBot World에 오신 것을 환영해요! 아래 버튼을 눌러 직접 대화해보세요 👋',
   },
 ];
 
-const QUICK_QUESTIONS = ['안녕하세요!', '수익은 얼마나?', '스킬은 뭐예요?', '코코봇 만들기'];
+const QUICK_QUESTIONS = ['안녕하세요!', '수익은 얼마나?', '스킬은 뭐예요?', '코코봇 생성'];
 
 const LIFECYCLE_STEPS = [
   {
     step: 'Birth',
     icon: '🌱',
     title: '5분 인터뷰로 탄생',
-    desc: '코딩 없이 5분 인터뷰만으로 맞춤형 코코봇이 자동으로 생성됩니다.',
+    desc: '코딩 없이 5분 인터뷰만으로 맞춤형 AI Assistant 코코봇이 자동으로 생성됩니다.',
   },
   {
     step: 'Skills',
@@ -159,7 +159,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              CoCoBot은 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
+              MCW는 코코봇의 전 생애주기를 하나의 플랫폼에서 관리합니다.
             </p>
           </div>
 
@@ -282,7 +282,7 @@ export function DemoSection() {
               className="mt-4 text-lg"
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              5분 만에 만들 수 있는 CoCoBot 데모봇과 직접 대화해보세요.
+              5분 만에 만들 수 있는 MCW 코코봇을 직접 대화해보세요.
             </p>
           </div>
 
@@ -415,7 +415,7 @@ export function DemoSection() {
                       className="text-sm font-bold"
                       style={{ color: 'rgb(var(--text-primary))' }}
                     >
-                      CoCoBot 데모 코코봇
+                      MCW 데모 코코봇
                     </p>
                     <p className="text-xs text-green-500">● 온라인</p>
                   </div>

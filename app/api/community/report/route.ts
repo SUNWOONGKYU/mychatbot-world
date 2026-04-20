@@ -38,7 +38,7 @@ async function authenticate(supabase: any, authHeader: string) {
   return { userId: data.user.id, error: null as null };
 }
 
-async function checkIsAdmin(supabase: ReturnType<typeof createClient>, userId: string): Promise<boolean> {
+async function checkIsAdmin(supabase: any, userId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
       .from('profiles')

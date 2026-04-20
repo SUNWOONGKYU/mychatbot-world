@@ -1,11 +1,11 @@
 /**
  * @page /terms
- * @description CoCoBot 이용약관
+ * @description My Chatbot World 이용약관
  */
 
 export const metadata = {
-  title: '이용약관 | CoCoBot',
-  description: 'CoCoBot 서비스 이용약관',
+  title: '이용약관 | My Chatbot World',
+  description: 'My Chatbot World 서비스 이용약관',
 };
 
 export default function TermsPage() {
@@ -51,7 +51,7 @@ export default function TermsPage() {
       >
         <Section title="제1조 (목적)">
           <p>
-            이 약관은 CoCoBot(이하 &quot;회사&quot;)가 운영하는 CoCoBot 서비스(이하 &quot;서비스&quot;)의
+            이 약관은 My Chatbot World(이하 &quot;회사&quot;)가 운영하는 My Chatbot World 서비스(이하 &quot;서비스&quot;)의
             이용과 관련하여 회사와 이용자의 권리·의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
           </p>
         </Section>
@@ -60,7 +60,7 @@ export default function TermsPage() {
           <p>이 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
           <ol>
             <li>
-              <strong>서비스</strong>란 회사가 제공하는 코코봇 생성·관리·배포 플랫폼 및 관련 부가서비스 일체를 말합니다.
+              <strong>서비스</strong>란 회사가 제공하는 AI 챗봇 생성·관리·배포 플랫폼 및 관련 부가서비스 일체를 말합니다.
             </li>
             <li>
               <strong>이용자</strong>란 이 약관에 동의하고 서비스를 이용하는 회원 및 비회원을 말합니다.
@@ -69,13 +69,13 @@ export default function TermsPage() {
               <strong>회원</strong>이란 회사에 개인정보를 제공하고 회원 등록을 한 자로서, 회사의 정보를 지속적으로 제공받으며 서비스를 이용할 수 있는 자를 말합니다.
             </li>
             <li>
-              <strong>코코봇</strong>이란 회원이 서비스를 통해 생성·배포하는 AI 대화 에이전트를 말합니다.
+              <strong>챗봇</strong>이란 회원이 서비스를 통해 생성·배포하는 AI 대화 에이전트를 말합니다.
             </li>
             <li>
-              <strong>크레딧</strong>이란 서비스 내에서 코코봇 운영 및 유료 기능 이용에 사용되는 가상 화폐 단위를 말합니다.
+              <strong>크레딧</strong>이란 서비스 내에서 챗봇 운영 및 유료 기능 이용에 사용되는 가상 화폐 단위를 말합니다.
             </li>
             <li>
-              <strong>스킬</strong>이란 코코봇에 부가할 수 있는 특정 기능 모듈을 말합니다.
+              <strong>스킬</strong>이란 챗봇에 부가할 수 있는 특정 기능 모듈을 말합니다.
             </li>
           </ol>
         </Section>
@@ -101,12 +101,12 @@ export default function TermsPage() {
             <li>
               회사는 다음과 같은 서비스를 제공합니다.
               <ul>
-                <li>코코봇 생성 및 커스터마이징 기능</li>
-                <li>코코봇 배포 및 외부 채널 연동 기능</li>
-                <li>코코봇 스킬 마켓플레이스</li>
-                <li>코코봇 학습 데이터 관리(위키) 기능</li>
+                <li>AI 챗봇 생성 및 커스터마이징 기능</li>
+                <li>챗봇 배포 및 외부 채널 연동 기능</li>
+                <li>챗봇 스킬 마켓플레이스</li>
+                <li>챗봇 학습 데이터 관리(위키) 기능</li>
                 <li>커뮤니티 및 지식 공유 기능</li>
-                <li>수익 창출(스킬 판매, 코코봇 임대 등) 기능</li>
+                <li>수익 창출(스킬 판매, 챗봇 임대 등) 기능</li>
                 <li>기타 회사가 정하는 부가서비스</li>
               </ul>
             </li>
@@ -171,7 +171,7 @@ export default function TermsPage() {
             <ul>
               <li>타인의 개인정보, 계정 정보 등을 도용하거나 부정 취득하는 행위</li>
               <li>허위 정보를 게시하거나 타인을 기망하는 행위</li>
-              <li>음란·폭력적·혐오적 콘텐츠를 생성·배포하는 코코봇을 운영하는 행위</li>
+              <li>음란·폭력적·혐오적 콘텐츠를 생성·배포하는 챗봇을 운영하는 행위</li>
               <li>회사의 지식재산권 또는 제3자의 권리를 침해하는 행위</li>
               <li>서비스의 정상적인 운영을 방해하는 해킹·DDoS 등의 행위</li>
               <li>관련 법령 및 이 약관에서 금지하는 기타 행위</li>

@@ -1,5 +1,4 @@
-// @task S5FE7 - 관리자 사이드바 컴포넌트 (섹션1~4)
-// @task S5FE8 - 섹션5~8 활성화 (코코봇/스킬/구봇구직/커뮤니티 disabled 제거)
+// @task S7FE7 - 관리자 사이드바 (S7 리디자인 — Semantic 토큰)
 'use client';
 
 import type { AdminSection, BadgeCounts } from '../page';
@@ -58,115 +57,61 @@ export default function AdminSidebar({
 
   return (
     <nav
+      aria-label="관리자 메뉴"
+      className="fixed top-0 left-0 h-screen flex flex-col overflow-y-auto z-[100]"
       style={{
-        width: 'var(--admin-sidebar-w)',
-        background: 'var(--admin-sidebar)',
-        borderRight: '1px solid var(--admin-border)',
+        width: 'var(--admin-sidebar-w, 240px)',
+        background: 'var(--surface-1)',
+        borderRight: '1px solid var(--border-default)',
         padding: '1.25rem 0.75rem',
-        position: 'fixed',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'auto',
-        zIndex: 100,
       }}
     >
       {/* 브랜드 */}
-      <div
-        style={{
-          fontSize: '1.15rem',
-          fontWeight: 800,
-          color: 'var(--admin-primary)',
-          marginBottom: '1.75rem',
-          padding: '0 0.5rem',
-          letterSpacing: '-0.02em',
-        }}
-      >
-        CoCoBot Admin
+      <div className="text-lg font-extrabold mb-7 px-2 tracking-tight" style={{ color: 'var(--interactive-primary)' }}>
+        MCW Admin
       </div>
 
       {/* 네비게이션 */}
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1 }}>
+      <ul className="list-none p-0 m-0 flex-1 space-y-0.5">
         {navItems.map((item) => {
           const isActive = item.id === active;
           const disabled = item.disabled;
           return (
-            <li key={item.id} style={{ marginBottom: '2px' }}>
+            <li key={item.id}>
               <button
+                type="button"
+                aria-current={isActive ? 'page' : undefined}
+                aria-disabled={disabled}
                 onClick={() => !disabled && onNav(item.id as AdminSection)}
                 disabled={disabled}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.55rem',
-                  width: '100%',
-                  padding: '0.6rem 0.75rem',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: isActive ? 'rgba(129,140,248,0.12)' : 'transparent',
-                  color: isActive
-                    ? 'var(--admin-primary)'
+                className={[
+                  'flex items-center gap-2 w-full px-3 py-2.5 rounded-[var(--radius-md)] text-sm font-medium transition-colors text-left',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
+                  isActive
+                    ? 'bg-[var(--surface-2)] text-[var(--interactive-primary)] font-semibold'
                     : disabled
-                    ? 'rgba(255,255,255,0.2)'
-                    : 'var(--admin-muted)',
-                  fontSize: '0.875rem',
-                  fontWeight: isActive ? 600 : 400,
-                  cursor: disabled ? 'not-allowed' : 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.15s',
-                  textAlign: 'left',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive && !disabled) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      'rgba(255,255,255,0.04)';
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      'var(--admin-text)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      'transparent';
-                    (e.currentTarget as HTMLButtonElement).style.color = disabled
-                      ? 'rgba(255,255,255,0.2)'
-                      : 'var(--admin-muted)';
-                  }
-                }}
+                    ? 'text-[var(--text-disabled)] cursor-not-allowed'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]',
+                ].join(' ')}
               >
-                <span style={{ fontSize: '1rem', lineHeight: 1 }}>{item.icon}</span>
-                <span style={{ flex: 1 }}>{item.label}</span>
-                {/* 배지 */}
+                <span className="text-base leading-none flex-shrink-0" aria-hidden="true">{item.icon}</span>
+                <span className="flex-1">{item.label}</span>
+                {/* 알림 배지 */}
                 {item.badge != null && item.badge > 0 && (
                   <span
-                    style={{
-                      background:
-                        item.badgeColor === 'warning'
-                          ? 'var(--admin-warning)'
-                          : 'var(--admin-danger)',
-                      color: item.badgeColor === 'warning' ? '#000' : '#fff',
-                      fontSize: '0.65rem',
-                      fontWeight: 700,
-                      padding: '0.1rem 0.45rem',
-                      borderRadius: '99px',
-                      lineHeight: '1.6',
-                      minWidth: '18px',
-                      textAlign: 'center',
-                    }}
+                    className="text-[0.65rem] font-bold px-1.5 py-0.5 rounded-[var(--radius-full)] leading-snug min-w-[18px] text-center"
+                    style={
+                      item.badgeColor === 'warning'
+                        ? { background: 'var(--state-warning-bg)', color: 'var(--state-warning-fg)', border: '1px solid var(--state-warning-border)' }
+                        : { background: 'var(--state-danger-bg)', color: 'var(--state-danger-fg)', border: '1px solid var(--state-danger-border)' }
+                    }
+                    aria-label={`${item.badge}건`}
                   >
                     {item.badge > 99 ? '99+' : item.badge}
                   </span>
                 )}
                 {disabled && (
-                  <span
-                    style={{
-                      fontSize: '0.6rem',
-                      color: 'rgba(255,255,255,0.2)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    준비중
-                  </span>
+                  <span className="text-[0.6rem] text-[var(--text-disabled)] font-normal">준비중</span>
                 )}
               </button>
             </li>
@@ -175,43 +120,17 @@ export default function AdminSidebar({
       </ul>
 
       {/* 하단 */}
-      <div
-        style={{
-          borderTop: '1px solid var(--admin-border)',
-          paddingTop: '0.75rem',
-          marginTop: '0.5rem',
-        }}
-      >
+      <div className="border-t border-[var(--border-default)] pt-3 mt-2 space-y-0.5">
         <a
           href="/"
-          style={{
-            display: 'block',
-            padding: '0.5rem 0.75rem',
-            color: 'var(--admin-muted)',
-            textDecoration: 'none',
-            fontSize: '0.8rem',
-            borderRadius: '8px',
-            transition: 'color 0.15s',
-          }}
+          className="block px-3 py-2 text-xs rounded-[var(--radius-md)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors no-underline"
         >
           ← 서비스로 돌아가기
         </a>
         <button
+          type="button"
           onClick={onLogout}
-          style={{
-            display: 'block',
-            width: '100%',
-            padding: '0.5rem 0.75rem',
-            color: 'rgba(248,113,113,0.7)',
-            background: 'transparent',
-            border: 'none',
-            fontSize: '0.8rem',
-            fontFamily: 'inherit',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            textAlign: 'left',
-            transition: 'color 0.15s',
-          }}
+          className="block w-full px-3 py-2 text-xs rounded-[var(--radius-md)] text-left transition-colors text-[var(--state-danger-fg)] hover:bg-[var(--state-danger-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]"
         >
           로그아웃
         </button>

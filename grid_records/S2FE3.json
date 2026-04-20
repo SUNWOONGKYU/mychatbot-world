@@ -1,0 +1,50 @@
+{
+  "task_id": "S2FE3",
+  "task_name": "Home 대시보드 React 전환",
+  "stage": 2,
+  "area": "FE",
+  "level": 3,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1FE1",
+    "S2BA3"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S2FE3_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "npm",
+  "execution_type": "AI-Only",
+  "priority": "High",
+  "generated_files": "app/home/page.tsx, components/home/dashboard.tsx, components/home/kb-manager.tsx, components/home/settings-panel.tsx, app/api/bots/route.ts",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S2FE3_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "PENDING — 런타임 테스트 필요",
+    "integration_test": "PENDING — /api/bots, /api/kb, /api/settings API 연동 필요",
+    "edge_cases": "PENDING",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS — TypeScript noEmit 오류 없음",
+    "lint": "PENDING",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S2BA3 /api/kb, /api/settings 연동",
+    "cross_task_connection": "PASS — sidebar /dashboard 라우트 일치",
+    "data_flow": "PASS — API fetch → state → render 흐름 구현"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "recharts npm install EBADF (Google Drive 환경) — SVG 직접 구현으로 대체 완료",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {},
+  "fix_instructions": "",
+  "notes": "[2026-04-06 REWORK DONE] Vanilla HTML 충실 전환 완료. | [2026-04-06 REWORK] Vanilla HTML 원본 기반 재작업. 이전: 빈 껍데기 생성. 이번: pages/xxx/index.html + css + js 충실 전환. | recharts를 SVG 직접 구현으로 대체함 (npm install EBADF 오류). /api/bots 엔드포인트 S2FE3 범위에서 추가 생성.",
+  "remarks": ""
+}

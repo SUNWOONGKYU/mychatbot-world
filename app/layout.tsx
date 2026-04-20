@@ -22,7 +22,7 @@ import { buildSEOMeta } from '@/components/seo/meta';
 
 export const metadata: Metadata = buildSEOMeta({
   title: undefined, // 홈 — 서비스명만 표시
-  description: '코코봇을 만들고 공유하는 플랫폼 — CoCoBot. 나만의 코코봇을 제작하고 수익화하세요.',
+  description: 'AI 챗봇을 만들고 공유하는 플랫폼 — CoCoBot World. 나만의 코코봇을 제작하고 수익화하세요.',
   canonicalUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://mychatbot-world.vercel.app',
 });
 

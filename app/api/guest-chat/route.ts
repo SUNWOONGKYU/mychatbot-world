@@ -29,19 +29,19 @@ interface GuestChatRequest {
 
 // 카테고리별 기본 시스템 프롬프트
 const CATEGORY_PROMPTS: Record<string, string> = {
-  restaurant:  '당신은 음식점 코코봇입니다. 메뉴, 예약, 영업시간, 위치 등을 친근하고 상세하게 안내하세요.',
-  hospital:    '당신은 병원 코코봇입니다. 진료 예약, 의사 일정, 진료 정보, 건강 문의를 전문적으로 안내하세요.',
-  law_firm:    '당신은 법률 상담 코코봇입니다. 계약서 검토, 법적 권리, 분쟁 해결 등을 전문적으로 안내하세요. 구체적인 법적 조언은 변호사 상담을 권유하세요.',
-  real_estate: '당신은 부동산 코코봇입니다. 매물 정보, 임대 상담, 시장 분석, 투자 조언을 친근하게 제공하세요.',
-  education:   '당신은 학원 코코봇입니다. 수강 등록, 수업 일정, 수강료, 커리큘럼 정보를 상세하게 안내하세요.',
-  tech_startup:'당신은 업무 보조 코코봇입니다. 문서 작성, 보고서 작성, 회의록, 이메일 초안 등을 도와드립니다.',
-  healthcare:  '당신은 건강 상담 코코봇입니다. 건강 생활 정보, 영양, 운동, 웰니스 팁을 친근하게 제공하세요. 의학적 진단은 의사에게 받으시도록 안내하세요.',
-  finance:     '당신은 금융 안내 코코봇입니다. 보험, 세금, 투자 기초, 저축 전략을 쉽게 설명하세요. 구체적 투자 결정은 전문가 상담을 권유하세요.',
+  restaurant:  '당신은 음식점 AI Assistant 코코봇입니다. 메뉴, 예약, 영업시간, 위치 등을 친근하고 상세하게 안내하세요.',
+  hospital:    '당신은 병원 AI Assistant 코코봇입니다. 진료 예약, 의사 일정, 진료 정보, 건강 문의를 전문적으로 안내하세요.',
+  law_firm:    '당신은 법률 상담 AI Assistant 코코봇입니다. 계약서 검토, 법적 권리, 분쟁 해결 등을 전문적으로 안내하세요. 구체적인 법적 조언은 변호사 상담을 권유하세요.',
+  real_estate: '당신은 부동산 AI Assistant 코코봇입니다. 매물 정보, 임대 상담, 시장 분석, 투자 조언을 친근하게 제공하세요.',
+  education:   '당신은 학원 AI Assistant 코코봇입니다. 수강 등록, 수업 일정, 수강료, 커리큘럼 정보를 상세하게 안내하세요.',
+  tech_startup:'당신은 업무 보조 AI Assistant 코코봇입니다. 문서 작성, 보고서 작성, 회의록, 이메일 초안 등을 도와드립니다.',
+  healthcare:  '당신은 건강 상담 AI Assistant 코코봇입니다. 건강 생활 정보, 영양, 운동, 웰니스 팁을 친근하게 제공하세요. 의학적 진단은 의사에게 받으시도록 안내하세요.',
+  finance:     '당신은 금융 안내 AI Assistant 코코봇입니다. 보험, 세금, 투자 기초, 저축 전략을 쉽게 설명하세요. 구체적 투자 결정은 전문가 상담을 권유하세요.',
 };
 
 function getSystemPrompt(category: string, botName: string, greeting: string): string {
   const base = CATEGORY_PROMPTS[category]
-    ?? `당신은 ${botName} 코코봇입니다. 친근하고 도움이 되는 방식으로 답변하세요.`;
+    ?? `당신은 ${botName} AI Assistant 코코봇입니다. 친근하고 도움이 되는 방식으로 답변하세요.`;
   return `${base}\n\n인삿말: "${greeting}"\n\n항상 한국어로 답변하고, 간결하면서도 충분한 정보를 제공하세요. 답변은 300자 이내로 유지하세요.`;
 }
 
@@ -52,25 +52,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       { reply: '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.' },
       { status: 429, headers: { 'Retry-After': String(rl.retryAfterSec) } }
-    );
-  }
-
-  // 게스트 10회 한도 — IP+세션 기반 서버 카운터
-  const GUEST_LIMIT = 10;
-  const GUEST_WINDOW_MS = 24 * 60 * 60 * 1000; // 24h
-  const guestCheck = rateLimit(
-    req,
-    { limit: GUEST_LIMIT, windowMs: GUEST_WINDOW_MS },
-    'guest-chat-quota'
-  );
-  if (!guestCheck.allowed) {
-    return NextResponse.json(
-      {
-        reply: '체험 횟수(10회/일)를 모두 사용하셨습니다. 회원가입 후 무제한으로 이용하세요.',
-        quota_exceeded: true,
-        retry_after_sec: guestCheck.retryAfterSec,
-      },
-      { status: 429, headers: { 'Retry-After': String(guestCheck.retryAfterSec) } }
     );
   }
 
@@ -98,7 +79,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  let systemPrompt = `당신은 코코봇입니다. 친근하고 도움이 되는 방식으로 한국어로 답변하세요.`;
+  let systemPrompt = `당신은 AI Assistant 코코봇입니다. 친근하고 도움이 되는 방식으로 한국어로 답변하세요.`;
 
   try {
     const { data: bot } = await supabase

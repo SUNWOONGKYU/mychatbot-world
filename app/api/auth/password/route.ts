@@ -5,7 +5,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { rateLimit, RATE_PASSWORD } from '@/lib/rate-limiter';
+import { rateLimitAsync, RATE_PASSWORD } from '@/lib/rate-limiter';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +13,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function PATCH(req: NextRequest) {
-  // Rate Limiting: 시간당 10회 — 브루트포스 방지
-  const rl = rateLimit(req, RATE_PASSWORD, 'auth:password');
+  // Rate Limiting: 시간당 10회 — 브루트포스 방지 (Redis 기반 정확 측정)
+  const rl = await rateLimitAsync(req, RATE_PASSWORD, 'auth:password');
   if (!rl.allowed) {
     return NextResponse.json(
       { error: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.' },
@@ -30,17 +30,6 @@ export async function PATCH(req: NextRequest) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const { data: { user } } = await supabase.auth.getUser(token);
   if (!user || !user.email) return NextResponse.json({ error: '유효하지 않은 토큰' }, { status: 401 });
-
-  // OAuth 전용 사용자 가드 — 비밀번호가 없는 계정
-  const providers = (user.app_metadata?.providers as string[] | undefined) ?? [];
-  const hasPasswordProvider =
-    providers.includes('email') || user.app_metadata?.provider === 'email';
-  if (!hasPasswordProvider) {
-    return NextResponse.json(
-      { error: '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다. 소셜 제공자에서 관리해 주세요.' },
-      { status: 400 }
-    );
-  }
 
   const { current_password, new_password } = await req.json();
   if (!current_password || !new_password) {

@@ -20,8 +20,8 @@
   window.SunnyDemoBotData = SunnyDemoBotData;
 
   // localStorage에 데모 봇 등록
-  if (typeof CoCoBot !== 'undefined' && CoCoBot.storage && CoCoBot.storage.getBots) {
-    var bots = CoCoBot.storage.getBots();
+  if (typeof MCW !== 'undefined' && MCW.storage && MCW.storage.getBots) {
+    var bots = MCW.storage.getBots();
     var demoIndex = bots.findIndex(function(b) { return b.id === 'sunny-demo'; });
     var demoBot = Object.assign({}, SunnyDemoBotData, {
       id: 'sunny-demo',
@@ -31,11 +31,11 @@
 
     if (demoIndex === -1) {
       demoBot.created = Date.now();
-      CoCoBot.storage.saveBot(demoBot);
+      MCW.storage.saveBot(demoBot);
     } else {
       // 실제 봇 데이터 변경 시 데모도 동기화
       demoBot.created = bots[demoIndex].created || Date.now();
-      CoCoBot.storage.saveBot(demoBot);
+      MCW.storage.saveBot(demoBot);
     }
   }
 })();

@@ -29,17 +29,17 @@ const StorageManager = (() => {
 
   function getSupabase() {
     if (_sb) return _sb;
-    // Prefer CoCoBot.auth's shared Supabase client (single source of truth for anon key)
-    if (typeof CoCoBot !== 'undefined' && CoCoBot.auth && CoCoBot.auth.getClient && CoCoBot.auth.getClient()) {
-      _sb = CoCoBot.auth.getClient();
+    // Prefer MCW.auth's shared Supabase client (single source of truth for anon key)
+    if (typeof MCW !== 'undefined' && MCW.auth && MCW.auth.getClient && MCW.auth.getClient()) {
+      _sb = MCW.auth.getClient();
       capabilities.supabase = true;
-      console.log('[StorageManager] Using shared CoCoBot.auth Supabase client');
+      console.log('[StorageManager] Using shared MCW.auth Supabase client');
       return _sb;
     }
-    // Fallback: create own client (when CoCoBot.auth not yet initialized)
+    // Fallback: create own client (when MCW.auth not yet initialized)
     if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
-      const url = (typeof CoCoBot !== 'undefined' && CoCoBot.SB_URL) || '';
-      const key = (typeof CoCoBot !== 'undefined' && CoCoBot.SB_KEY) || '';
+      const url = (typeof MCW !== 'undefined' && MCW.SB_URL) || '';
+      const key = (typeof MCW !== 'undefined' && MCW.SB_KEY) || '';
       if (url && key) {
         _sb = window.supabase.createClient(url, key);
         capabilities.supabase = true;
@@ -831,7 +831,7 @@ const StorageManager = (() => {
 
   /**
    * 봇 프로필을 Supabase에 동기화
-   * CoCoBot.storage.saveBot() 이후 호출
+   * MCW.storage.saveBot() 이후 호출
    */
   async function syncBotToCloud(botData) {
     if (!getSupabase()) return null;

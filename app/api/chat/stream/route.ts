@@ -222,6 +222,20 @@ export async function POST(req: NextRequest): Promise<Response> {
     return new Response(stream, { headers: sseHeaders, status: 400 });
   }
 
+  // DoS / 토큰 폭주 방어: message 길이 10,000자 상한
+  const MAX_MESSAGE_CHARS = 10_000;
+  if (typeof message !== 'string' || message.length > MAX_MESSAGE_CHARS) {
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(
+          sseError(`message must be a string of at most ${MAX_MESSAGE_CHARS} characters`)
+        );
+        controller.close();
+      },
+    });
+    return new Response(stream, { headers: sseHeaders, status: 400 });
+  }
+
   if (emotionLevel < 1 || emotionLevel > 100) {
     const stream = new ReadableStream<Uint8Array>({
       start(controller) {

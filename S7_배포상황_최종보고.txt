@@ -1,0 +1,84 @@
+============================================================
+ S7 디자인 혁신 v3.0 — 배포 상황 최종 보고
+ 작성: 2026-04-20
+============================================================
+
+## ✅ 완료된 것
+
+### 1. Preview 배포 (테스트 가능)
+- URL: https://mychatbot-world-eer0j1cyy-finder-world.vercel.app
+- 상태: Ready (빌드 45초, 69 패키지 설치)
+- 브랜치: fix/member-flow-audit
+- S7 디자인 혁신 v3.0 전체 반영됨
+
+→ PO는 이 URL로 Lighthouse/Light-Dark/스크린리더 실측 가능
+
+### 2. AI 검증 완료
+- S7 15/15 Tasks: Completed + Verified
+- Stage Gate: AI Verified
+- S7GATE_verification_report.md 작성 완료
+- S7_gate.json 업데이트 완료
+
+### 3. package.json S7 의존성 18개 추가 완료
+- @radix-ui/* 13개 + @tanstack/react-table
+- class-variance-authority + framer-motion + lucide-react
+- tailwindcss-animate -D
+
+============================================================
+## ⚠️ 미해결 이슈: Production 도메인 연결
+
+### 문제
+mychatbot.world (운영 도메인)은 main 브랜치에서만 배포됨
+fix/member-flow-audit → main 병합이 필요
+
+### 병합 충돌 규모
+- fix 브랜치에 없는 main 커밋: 28+ 개
+  * S9DC1 법률 문서 3종
+  * MBO S8 프로덕션 100점 PHASE D (15/15)
+  * S7PROD1~5 프로덕션 보안·UX 강화
+  * S6 코코봇 브랜딩 + 로그인 복원
+  * Agenda M1~M2 Tab2/Tab5 API 연동
+  * etc.
+- git diff origin/main fix: 720 files changed, +6963 / -751,518 lines
+  → fix가 main 대비 75만 줄 삭제 (main의 S6~S9 작업물)
+
+### 결론
+단순 병합하면 S6~S9 프로덕션 작업이 전부 롤백됨 → 위험
+
+============================================================
+## 권장 다음 액션
+
+### Option 1: Preview에서 실측 완료 먼저
+PO가 Preview URL에서 Lighthouse/Light-Dark/스크린리더 실측 완료
+→ S7_gate.json PO 승인 기록
+→ 그 다음 Production 병합 전략 결정
+
+### Option 2: GitHub 웹에서 PR 생성 + 충돌 검토
+https://github.com/SUNWOONGKYU/mychatbot-world/compare/main...fix/member-flow-audit
+
+위 링크에서 "Create pull request" 클릭 → GitHub이 충돌 파일 목록 표시
+→ 파일별로 main/fix 중 어느 것을 살릴지 수동 판단
+
+### Option 3: S7 디자인 변경분만 main 위에 재적용 (cherry-pick)
+main이 이미 S6~S9 프로덕션 작업까지 진행되어 있으므로
+fix의 S7 디자인 요소(OKLCH 토큰, primitive, DESIGN.md, theme-toggle)를
+main 위에 깨끗하게 재적용하는 것이 안전
+
+============================================================
+## 차단 요인
+
+1. gh CLI 토큰 만료 — PR 자동 생성 불가 (`gh auth login` 필요)
+2. 로컬 checkout main 불가 — Google Drive 고스트 폴더 EPERM
+   (SAL-DA_MCW_품질진단 경로 접근 거부)
+3. git push fix:main 거부 — non-fast-forward (당연)
+
+============================================================
+## PO 판단 요청
+
+Preview 테스트는 즉시 가능합니다.
+Production 반영은 main의 S6~S9 작업과 충돌을 어떻게 처리할지
+판단이 필요합니다.
+
+위 Option 1/2/3 중 선택해주세요.
+
+============================================================

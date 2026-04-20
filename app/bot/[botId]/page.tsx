@@ -139,13 +139,13 @@ export default function BotChatPage() {
         id: botId,
         botName: 'Bot',
         username: botId,
-        personality: '코코봇입니다.',
+        personality: 'AI Assistant 코코봇입니다.',
         greeting: '안녕하세요! 무엇이든 물어보세요.',
         faqs: [],
         personas: [{
           id: 'default',
           name: 'AI 어시스턴트',
-          role: '코코봇입니다.',
+          role: 'AI Assistant 코코봇입니다.',
           model: 'logic',
           isVisible: true,
           category: 'avatar',
@@ -161,27 +161,17 @@ export default function BotChatPage() {
   // ── 에러 상태 ──────────────────────────────────────────────
   if (loadError) {
     return (
-      <div
-        className="flex min-h-screen items-center justify-center px-4"
-        style={{ background: 'rgb(var(--bg-base))' }}
-      >
-        <div
-          className="rounded-2xl p-8 text-center max-w-sm"
-          style={{
-            background: 'rgb(var(--bg-surface))',
-            border: '1.5px solid rgb(var(--border))',
-          }}
-        >
-          <p className="font-medium" style={{ color: 'rgb(var(--color-error))' }}>{loadError}</p>
+      <div className="flex min-h-screen items-center justify-center px-4 bg-surface-0">
+        <div className="rounded-2xl p-8 text-center max-w-sm bg-surface-2 border border-border-default shadow-[var(--shadow-lg)]">
+          <p className="text-base font-semibold text-state-danger-fg [word-break:keep-all]">
+            {loadError}
+          </p>
           <button
             onClick={() => window.history.back()}
-            className="mt-4 px-4 py-2 text-sm transition-all"
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              background: 'rgb(var(--color-primary))',
-              color: 'rgb(var(--text-on-primary))',
-              border: 'none',
-            }}
+            className="mt-5 px-5 py-2.5 rounded-lg text-sm font-semibold
+              bg-interactive-primary text-text-inverted
+              hover:bg-interactive-primary-hover transition-colors
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus"
           >
             뒤로 가기
           </button>
@@ -193,16 +183,13 @@ export default function BotChatPage() {
   // ── 로딩 상태 ──────────────────────────────────────────────
   if (!botData) {
     return (
-      <div
-        className="flex min-h-screen items-center justify-center"
-        style={{ background: 'rgb(var(--bg-base))' }}
-      >
+      <div className="flex min-h-screen items-center justify-center bg-surface-0">
         <div className="flex flex-col items-center gap-3">
           <div
-            className="h-10 w-10 rounded-full border-4 border-t-transparent animate-spin"
-            style={{ borderColor: 'rgb(var(--color-primary))', borderTopColor: 'transparent' }}
+            className="h-10 w-10 rounded-full border-4 border-interactive-primary border-t-transparent animate-spin"
+            aria-label="로딩 중"
           />
-          <p className="text-sm" style={{ color: 'rgb(var(--text-muted))' }}>
+          <p className="text-sm text-text-tertiary [word-break:keep-all]">
             봇 정보를 불러오는 중...
           </p>
         </div>

@@ -180,7 +180,7 @@ function AdminLoginForm({ onAuth }: { onAuth: (key: string) => void }) {
   return (
     <div className="admin-login-wrap">
       <form className="admin-login-form" onSubmit={handleSubmit}>
-        <div className="admin-login-logo">CoCoBot Admin</div>
+        <div className="admin-login-logo">MCW Admin</div>
         <p className="admin-login-sub">관리자 전용 대시보드</p>
         <div className="admin-login-field">
           <label htmlFor="adminKey">Admin Key</label>
@@ -206,17 +206,18 @@ function AdminLoginForm({ onAuth }: { onAuth: (key: string) => void }) {
 // ── 스타일 ────────────────────────────────────────────────────────────────
 const adminStyles = `
   :root {
-    --admin-bg: #0d0d12;
-    --admin-sidebar: #16161c;
-    --admin-card: rgba(255,255,255,0.03);
-    --admin-border: rgba(255,255,255,0.07);
-    --admin-text: #e2e8f0;
-    --admin-muted: rgba(255,255,255,0.4);
-    --admin-primary: #818cf8;
-    --admin-primary-hover: #6d77e4;
-    --admin-success: #34d399;
-    --admin-danger: #f87171;
-    --admin-warning: #fbbf24;
+    /* S7 Semantic 토큰 브리지 — admin-* 별칭 */
+    --admin-bg: var(--surface-0);
+    --admin-sidebar: var(--surface-1);
+    --admin-card: var(--surface-1);
+    --admin-border: var(--border-default);
+    --admin-text: var(--text-primary);
+    --admin-muted: var(--text-tertiary);
+    --admin-primary: var(--interactive-primary);
+    --admin-primary-hover: var(--interactive-hover);
+    --admin-success: var(--state-success-fg);
+    --admin-danger: var(--state-danger-fg);
+    --admin-warning: var(--state-warning-fg);
     --admin-sidebar-w: 240px;
   }
 
@@ -241,14 +242,14 @@ const adminStyles = `
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: #0d0d12;
+    background: var(--surface-0);
   }
 
   .admin-spinner {
     width: 36px;
     height: 36px;
-    border: 3px solid rgba(129,140,248,0.2);
-    border-top-color: #818cf8;
+    border: 3px solid color-mix(in srgb, var(--interactive-primary) 20%, transparent);
+    border-top-color: var(--interactive-primary);
     border-radius: 50%;
     animation: adminSpin 0.8s linear infinite;
   }

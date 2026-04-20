@@ -121,7 +121,7 @@ export function BotsTab({ user }: { user: any }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ ...S.h1, marginBottom: 0 }}>코코봇 및 운영 관리</h1>
+        <h1 style={{ ...S.h1, marginBottom: 0 }}>코코봇 운영 관리</h1>
         {!hasBots && !draft && (
           <button style={S.btnPrimary} onClick={() => router.push('/create')}>+ 새 코코봇 생성</button>
         )}
@@ -695,7 +695,7 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 function SkillPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
   const [filter, setFilter] = useState('all');
   const installed = getSkills(bot.id, persona.id);
-  const marketSkills: any[] = []; // CoCoBot.skills — 서버에서 로드 필요
+  const marketSkills: any[] = []; // MCW.skills — 서버에서 로드 필요
 
   const uninstall = (skillId: string) => {
     const updated = installed.filter((s: any) => s.id !== skillId);

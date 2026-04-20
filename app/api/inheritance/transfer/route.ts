@@ -33,7 +33,7 @@ function getSupabase() {
 }
 
 async function authenticate(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   authHeader: string | null
 ): Promise<{ userId: string | null; userEmail: string | null; error: string | null }> {
   if (!authHeader) return { userId: null, userEmail: null, error: '인증이 필요합니다.' };

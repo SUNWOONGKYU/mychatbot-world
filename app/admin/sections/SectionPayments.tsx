@@ -496,8 +496,8 @@ export default function SectionPayments({ adminKey, onBadgeChange }: SectionPaym
 
       {/* 거부 모달 */}
       {rejectModal && (
-        <div className="admin-modal-overlay" onClick={() => setRejectModal(null)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-overlay" onClick={() => setRejectModal(null)} role="presentation" aria-hidden="true">
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()} role="presentation">
             <h2 className="admin-modal-title">입금 거부</h2>
             <button className="admin-modal-close" onClick={() => setRejectModal(null)}>✕</button>
 

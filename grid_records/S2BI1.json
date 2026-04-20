@@ -1,0 +1,34 @@
+{
+  "task_id": "S2BI1",
+  "task_name": "멀티 AI 라우팅 (OpenRouter) 고도화",
+  "stage": 2,
+  "area": "BI",
+  "level": 1,
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": [
+    "S1BI1",
+    "S1BI2"
+  ],
+  "task_instruction": "sal-grid/task-instructions/S2BI1_instruction.md",
+  "task_agent": "backend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "priority": "High",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S2BI1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {},
+  "build_verification": {},
+  "integration_verification": {},
+  "blockers": {
+    "count": 0,
+    "items": []
+  },
+  "comprehensive_verification": {},
+  "fix_instructions": "",
+  "notes": "",
+  "remarks": ""
+}

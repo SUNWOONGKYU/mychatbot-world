@@ -1,5 +1,5 @@
 /**
- * @task S5FE11
+ * @task S7FE7 (S5FE11)
  * @description 마이페이지 탭7 — 크레딧/결제 (Anthropic UI 참고 카드형)
  * 4개 패키지: 3만/5만/10만/기타 | 할인 없음 | 무통장 입금
  */
@@ -197,21 +197,21 @@ function UsageHistorySection({
   }, [onMount]);
 
   if (loading) {
-    return <div className="text-center text-text-muted py-6 text-sm">불러오는 중...</div>;
+    return <div className="text-center text-[var(--text-tertiary)] py-6 text-sm">불러오는 중...</div>;
   }
   if (items.length === 0) {
-    return <p className="text-center text-text-muted py-6 text-sm">크레딧 사용 내역이 없습니다.</p>;
+    return <p className="text-center text-[var(--text-tertiary)] py-6 text-sm">크레딧 사용 내역이 없습니다.</p>;
   }
   return (
     <div className="space-y-2">
       {items.map((u) => (
         <div
           key={u.id}
-          className="flex items-center justify-between py-3 border-b border-border last:border-0"
+          className="flex items-center justify-between py-3 border-b border-[var(--border-default)] last:border-0"
         >
           <div>
-            <p className="text-sm text-text-primary font-medium">{u.description}</p>
-            <p className="text-xs text-text-muted">
+            <p className="text-sm text-[var(--text-primary)] font-medium">{u.description}</p>
+            <p className="text-xs text-[var(--text-tertiary)]">
               {formatDate(u.createdAt)}
               {u.model ? ` · ${u.model}` : ''}
               {u.tokens ? ` · ${u.tokens.toLocaleString()}토큰` : ''}
@@ -402,17 +402,17 @@ export default function Tab7Credits() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-text-primary">크레딧 / 결제</h2>
+      <h2 className="text-xl font-bold text-[var(--text-primary)]">크레딧 / 결제</h2>
 
       {/* 잔액 카드 */}
       <div className="bg-gradient-to-br from-amber-500/15 via-amber-400/5 to-transparent rounded-2xl border border-amber-500/25 p-6">
         {loading ? (
-          <div className="h-12 bg-bg-muted rounded animate-pulse w-40" />
+          <div className="h-12 bg-[var(--surface-2)] rounded animate-pulse w-40" />
         ) : (
           <>
             <p className="text-xs text-amber-400/80 font-medium mb-1">현재 크레딧 잔액</p>
-            <p className="text-4xl font-extrabold text-accent">{formatCurrency(creditInfo.balance)}</p>
-            <p className="text-xs text-text-muted mt-2">
+            <p className="text-4xl font-extrabold text-[var(--interactive-primary)]">{formatCurrency(creditInfo.balance)}</p>
+            <p className="text-xs text-[var(--text-tertiary)] mt-2">
               누적 충전: {formatCurrency(creditInfo.total_charged)}
             </p>
           </>
@@ -420,8 +420,8 @@ export default function Tab7Credits() {
       </div>
 
       {/* 충전 패널 */}
-      <div className="bg-bg-surface rounded-2xl border border-border p-6 space-y-5">
-        <h3 className="font-semibold text-text-primary">크레딧 충전</h3>
+      <div className="bg-[var(--surface-1)] rounded-2xl border border-[var(--border-default)] p-6 space-y-5">
+        <h3 className="font-semibold text-[var(--text-primary)]">크레딧 충전</h3>
 
         {/* 패키지 선택 카드 — Anthropic 스타일 */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -433,7 +433,7 @@ export default function Tab7Credits() {
                 'relative flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all',
                 selectedPkgId === pkg.id
                   ? 'border-accent bg-accent/10 shadow-accent-glow'
-                  : 'border-border bg-bg-subtle hover:border-accent/50',
+                  : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
               )}
             >
               {pkg.popular && (
@@ -444,19 +444,19 @@ export default function Tab7Credits() {
               {pkg.custom ? (
                 <>
                   <span className="text-lg mb-0.5">✏️</span>
-                  <span className="text-xs font-semibold text-text-primary">{pkg.label}</span>
+                  <span className="text-xs font-semibold text-[var(--text-primary)]">{pkg.label}</span>
                 </>
               ) : (
                 <>
                   <span
                     className={clsx(
                       'text-xl font-extrabold',
-                      selectedPkgId === pkg.id ? 'text-accent' : 'text-text-primary',
+                      selectedPkgId === pkg.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-primary)]',
                     )}
                   >
                     {formatCurrency(pkg.amount)}
                   </span>
-                  <span className="text-[10px] text-text-muted mt-0.5">크레딧 {formatCurrency(pkg.credits)}</span>
+                  <span className="text-[10px] text-[var(--text-tertiary)] mt-0.5">크레딧 {formatCurrency(pkg.credits)}</span>
                 </>
               )}
             </button>
@@ -466,9 +466,9 @@ export default function Tab7Credits() {
         {/* 직접 입력 */}
         {selectedPkg.custom && (
           <div>
-            <label className="block text-sm text-text-secondary mb-1.5">금액 직접 입력 (최소 30,000원)</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1.5">금액 직접 입력 (최소 30,000원)</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">₩</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] text-sm">₩</span>
               <input
                 type="text"
                 inputMode="numeric"
@@ -478,59 +478,59 @@ export default function Tab7Credits() {
                   const v = e.target.value.replace(/[^0-9]/g, '');
                   setCustomAmount(v ? Number(v).toLocaleString('ko-KR') : '');
                 }}
-                className="w-full pl-8 pr-4 py-2.5 bg-bg-muted border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent/60"
+                className="w-full pl-8 pr-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--interactive-primary)]"
               />
             </div>
           </div>
         )}
 
         {/* 금액 요약 */}
-        <div className="bg-bg-muted rounded-xl p-4 space-y-2">
+        <div className="bg-[var(--surface-2)] rounded-xl p-4 space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-text-secondary">충전 금액</span>
-            <span className="font-semibold text-text-primary">{formatCurrency(finalAmount)}</span>
+            <span className="text-[var(--text-secondary)]">충전 금액</span>
+            <span className="font-semibold text-[var(--text-primary)]">{formatCurrency(finalAmount)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-text-secondary">할인</span>
-            <span className="text-text-muted">없음</span>
+            <span className="text-[var(--text-secondary)]">할인</span>
+            <span className="text-[var(--text-tertiary)]">없음</span>
           </div>
-          <div className="border-t border-border pt-2 flex justify-between">
-            <span className="text-sm font-semibold text-text-primary">최종 결제 금액</span>
-            <span className="text-lg font-extrabold text-accent">{formatCurrency(finalAmount)}</span>
+          <div className="border-t border-[var(--border-default)] pt-2 flex justify-between">
+            <span className="text-sm font-semibold text-[var(--text-primary)]">최종 결제 금액</span>
+            <span className="text-lg font-extrabold text-[var(--interactive-primary)]">{formatCurrency(finalAmount)}</span>
           </div>
         </div>
 
         {/* 무통장 입금 정보 */}
-        <div className="bg-bg-subtle rounded-xl border border-border p-4 space-y-3">
+        <div className="bg-[var(--surface-2)] rounded-xl border border-[var(--border-default)] p-4 space-y-3">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-semibold text-text-primary">무통장 입금 정보</span>
-            <span className="text-xs text-text-muted bg-bg-muted px-2 py-0.5 rounded-full border border-border">
+            <span className="text-sm font-semibold text-[var(--text-primary)]">무통장 입금 정보</span>
+            <span className="text-xs text-[var(--text-tertiary)] bg-[var(--surface-2)] px-2 py-0.5 rounded-full border border-[var(--border-default)]">
               유일한 결제 수단
             </span>
           </div>
           <div className="grid grid-cols-3 gap-2 text-sm">
-            <div className="bg-bg-muted rounded-lg p-3">
-              <p className="text-xs text-text-muted mb-1">은행</p>
-              <p className="font-semibold text-text-primary">{BANK_INFO.bank}</p>
+            <div className="bg-[var(--surface-2)] rounded-lg p-3">
+              <p className="text-xs text-[var(--text-tertiary)] mb-1">은행</p>
+              <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.bank}</p>
             </div>
-            <div className="bg-bg-muted rounded-lg p-3">
-              <p className="text-xs text-text-muted mb-1">계좌번호</p>
-              <p className="font-semibold text-text-primary text-xs">{BANK_INFO.account}</p>
+            <div className="bg-[var(--surface-2)] rounded-lg p-3">
+              <p className="text-xs text-[var(--text-tertiary)] mb-1">계좌번호</p>
+              <p className="font-semibold text-[var(--text-primary)] text-xs">{BANK_INFO.account}</p>
             </div>
-            <div className="bg-bg-muted rounded-lg p-3">
-              <p className="text-xs text-text-muted mb-1">예금주</p>
-              <p className="font-semibold text-text-primary">{BANK_INFO.holder}</p>
+            <div className="bg-[var(--surface-2)] rounded-lg p-3">
+              <p className="text-xs text-[var(--text-tertiary)] mb-1">예금주</p>
+              <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.holder}</p>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-text-secondary mb-1.5">입금자명 (필수)</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1.5">입금자명 (필수)</label>
             <input
               type="text"
               placeholder="입금자명을 정확히 입력하세요"
               value={depositorName}
               onChange={(e) => setDepositorName(e.target.value)}
-              className="w-full px-3 py-2.5 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
+              className="w-full px-3 py-2.5 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
             />
           </div>
         </div>
@@ -551,16 +551,16 @@ export default function Tab7Credits() {
         >
           {submitting ? '처리 중...' : `${formatCurrency(finalAmount)} 무통장 입금 신청`}
         </button>
-        <p className="text-xs text-text-muted text-center">
-          입금 확인 후 24시간 이내로 크레딧이 충전됩니다. 문의: support@mychatbot.world
+        <p className="text-xs text-[var(--text-tertiary)] text-center">
+          입금 확인 후 24시간 이내로 크레딧이 충전됩니다. 문의: support@cocobot.world
         </p>
       </div>
 
       {/* 전문 분야별 페르소나 템플릿 구매 */}
-      <div className="bg-bg-surface rounded-2xl border border-border p-6 space-y-5">
+      <div className="bg-[var(--surface-1)] rounded-2xl border border-[var(--border-default)] p-6 space-y-5">
         <div>
-          <h3 className="font-semibold text-text-primary">전문 분야별 페르소나 템플릿</h3>
-          <p className="text-xs text-text-muted mt-1">
+          <h3 className="font-semibold text-[var(--text-primary)]">전문 분야별 페르소나 템플릿</h3>
+          <p className="text-xs text-[var(--text-tertiary)] mt-1">
             전문가 수준의 코코봇 페르소나 세트를 구매해 즉시 적용하세요. 팩당 30,000원 · 일회성 구매
           </p>
         </div>
@@ -575,15 +575,15 @@ export default function Tab7Credits() {
                 'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
                 selectedTemplateId === item.id
                   ? 'border-accent bg-accent/10 shadow-accent-glow'
-                  : 'border-border bg-bg-subtle hover:border-accent/50',
+                  : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
               )}
             >
               <span className="text-2xl">{item.emoji}</span>
-              <span className="text-sm font-semibold text-text-primary leading-snug">{item.name}</span>
-              <span className="text-[11px] text-text-muted leading-snug">{item.description}</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{item.name}</span>
+              <span className="text-[11px] text-[var(--text-tertiary)] leading-snug">{item.description}</span>
               <span className={clsx(
                 'mt-1 text-sm font-bold',
-                selectedTemplateId === item.id ? 'text-accent' : 'text-text-secondary',
+                selectedTemplateId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]',
               )}>
                 {item.price.toLocaleString('ko-KR')}원
               </span>
@@ -595,35 +595,35 @@ export default function Tab7Credits() {
         {selectedTemplateId && (() => {
           const item = PERSONA_TEMPLATES.find((t) => t.id === selectedTemplateId)!;
           return (
-            <div className="bg-bg-subtle rounded-xl border border-accent/30 p-4 space-y-3">
-              <p className="text-sm font-semibold text-text-primary">
+            <div className="bg-[var(--surface-2)] rounded-xl border border-accent/30 p-4 space-y-3">
+              <p className="text-sm font-semibold text-[var(--text-primary)]">
                 선택: {item.emoji} {item.name} — {item.price.toLocaleString('ko-KR')}원
               </p>
 
               {/* 무통장 입금 정보 */}
               <div className="grid grid-cols-3 gap-2 text-sm">
-                <div className="bg-bg-muted rounded-lg p-3">
-                  <p className="text-xs text-text-muted mb-1">은행</p>
-                  <p className="font-semibold text-text-primary">{BANK_INFO.bank}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">은행</p>
+                  <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.bank}</p>
                 </div>
-                <div className="bg-bg-muted rounded-lg p-3">
-                  <p className="text-xs text-text-muted mb-1">계좌번호</p>
-                  <p className="font-semibold text-text-primary text-xs">{BANK_INFO.account}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">계좌번호</p>
+                  <p className="font-semibold text-[var(--text-primary)] text-xs">{BANK_INFO.account}</p>
                 </div>
-                <div className="bg-bg-muted rounded-lg p-3">
-                  <p className="text-xs text-text-muted mb-1">예금주</p>
-                  <p className="font-semibold text-text-primary">{BANK_INFO.holder}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">예금주</p>
+                  <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.holder}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-text-secondary mb-1.5">입금자명 (필수)</label>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">입금자명 (필수)</label>
                 <input
                   type="text"
                   placeholder="입금자명을 정확히 입력하세요"
                   value={templateDepositor}
                   onChange={(e) => setTemplateDepositor(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60"
+                  className="w-full px-3 py-2.5 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
                 />
               </div>
 
@@ -643,8 +643,8 @@ export default function Tab7Credits() {
               >
                 {templateSubmitting ? '처리 중...' : `${item.price.toLocaleString('ko-KR')}원 무통장 입금 신청`}
               </button>
-              <p className="text-xs text-text-muted text-center">
-                입금 확인 후 24시간 이내 템플릿이 지급됩니다. 문의: support@mychatbot.world
+              <p className="text-xs text-[var(--text-tertiary)] text-center">
+                입금 확인 후 24시간 이내 템플릿이 지급됩니다. 문의: support@cocobot.world
               </p>
             </div>
           );
@@ -659,17 +659,17 @@ export default function Tab7Credits() {
       </div>
 
       {/* 음성 & 아바타 팩 구매 */}
-      <div className="bg-bg-surface rounded-2xl border border-border p-6 space-y-5">
+      <div className="bg-[var(--surface-1)] rounded-2xl border border-[var(--border-default)] p-6 space-y-5">
         <div>
-          <h3 className="font-semibold text-text-primary">음성 & 아바타 팩</h3>
-          <p className="text-xs text-text-muted mt-1">
+          <h3 className="font-semibold text-[var(--text-primary)]">음성 & 아바타 팩</h3>
+          <p className="text-xs text-[var(--text-tertiary)] mt-1">
             내 코코봇에 AI 음성과 고유 아바타를 장착하세요. 일회성 구매 · 영구 사용
           </p>
         </div>
 
         {/* 음성 팩 */}
         <div>
-          <p className="text-xs font-semibold text-text-secondary mb-2">🎙️ 음성 팩</p>
+          <p className="text-xs font-semibold text-[var(--text-secondary)] mb-2">🎙️ 음성 팩</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {VOICE_PACKS.map((item) => (
               <button
@@ -679,13 +679,13 @@ export default function Tab7Credits() {
                   'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
                   selectedAddonId === item.id
                     ? 'border-accent bg-accent/10 shadow-accent-glow'
-                    : 'border-border bg-bg-subtle hover:border-accent/50',
+                    : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
                 )}
               >
                 <span className="text-2xl">{item.emoji}</span>
-                <span className="text-sm font-semibold text-text-primary leading-snug">{item.name}</span>
-                <span className="text-[11px] text-text-muted leading-snug">{item.description}</span>
-                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-accent' : 'text-text-secondary')}>
+                <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{item.name}</span>
+                <span className="text-[11px] text-[var(--text-tertiary)] leading-snug">{item.description}</span>
+                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]')}>
                   {item.price.toLocaleString('ko-KR')}원
                 </span>
               </button>
@@ -695,7 +695,7 @@ export default function Tab7Credits() {
 
         {/* 아바타 팩 */}
         <div>
-          <p className="text-xs font-semibold text-text-secondary mb-2">🖼️ 아바타 팩</p>
+          <p className="text-xs font-semibold text-[var(--text-secondary)] mb-2">🖼️ 아바타 팩</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {AVATAR_PACKS.map((item) => (
               <button
@@ -705,13 +705,13 @@ export default function Tab7Credits() {
                   'flex flex-col items-start gap-1.5 rounded-xl border p-4 text-left transition-all',
                   selectedAddonId === item.id
                     ? 'border-accent bg-accent/10 shadow-accent-glow'
-                    : 'border-border bg-bg-subtle hover:border-accent/50',
+                    : 'border-[var(--border-default)] bg-[var(--surface-2)] hover:border-[var(--border-strong)]',
                 )}
               >
                 <span className="text-2xl">{item.emoji}</span>
-                <span className="text-sm font-semibold text-text-primary leading-snug">{item.name}</span>
-                <span className="text-[11px] text-text-muted leading-snug">{item.description}</span>
-                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-accent' : 'text-text-secondary')}>
+                <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{item.name}</span>
+                <span className="text-[11px] text-[var(--text-tertiary)] leading-snug">{item.description}</span>
+                <span className={clsx('mt-1 text-sm font-bold', selectedAddonId === item.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-secondary)]')}>
                   {item.price.toLocaleString('ko-KR')}원
                 </span>
               </button>
@@ -723,32 +723,32 @@ export default function Tab7Credits() {
         {selectedAddonId && (() => {
           const item = [...VOICE_PACKS, ...AVATAR_PACKS].find((t) => t.id === selectedAddonId)!;
           return (
-            <div className="bg-bg-subtle rounded-xl border border-accent/30 p-4 space-y-3">
-              <p className="text-sm font-semibold text-text-primary">
+            <div className="bg-[var(--surface-2)] rounded-xl border border-accent/30 p-4 space-y-3">
+              <p className="text-sm font-semibold text-[var(--text-primary)]">
                 선택: {item.emoji} {item.name} — {item.price.toLocaleString('ko-KR')}원
               </p>
               <div className="grid grid-cols-3 gap-2 text-sm">
-                <div className="bg-bg-muted rounded-lg p-3">
-                  <p className="text-xs text-text-muted mb-1">은행</p>
-                  <p className="font-semibold text-text-primary">{BANK_INFO.bank}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">은행</p>
+                  <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.bank}</p>
                 </div>
-                <div className="bg-bg-muted rounded-lg p-3">
-                  <p className="text-xs text-text-muted mb-1">계좌번호</p>
-                  <p className="font-semibold text-text-primary text-xs">{BANK_INFO.account}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">계좌번호</p>
+                  <p className="font-semibold text-[var(--text-primary)] text-xs">{BANK_INFO.account}</p>
                 </div>
-                <div className="bg-bg-muted rounded-lg p-3">
-                  <p className="text-xs text-text-muted mb-1">예금주</p>
-                  <p className="font-semibold text-text-primary">{BANK_INFO.holder}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">예금주</p>
+                  <p className="font-semibold text-[var(--text-primary)]">{BANK_INFO.holder}</p>
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-text-secondary mb-1.5">입금자명 (필수)</label>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">입금자명 (필수)</label>
                 <input
                   type="text"
                   placeholder="입금자명을 정확히 입력하세요"
                   value={addonDepositor}
                   onChange={(e) => setAddonDepositor(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60"
+                  className="w-full px-3 py-2.5 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
                 />
               </div>
               {addonError && <p className="text-sm text-error">{addonError}</p>}
@@ -764,8 +764,8 @@ export default function Tab7Credits() {
               >
                 {addonSubmitting ? '처리 중...' : `${item.price.toLocaleString('ko-KR')}원 무통장 입금 신청`}
               </button>
-              <p className="text-xs text-text-muted text-center">
-                입금 확인 후 24시간 이내 적용됩니다. 문의: support@mychatbot.world
+              <p className="text-xs text-[var(--text-tertiary)] text-center">
+                입금 확인 후 24시간 이내 적용됩니다. 문의: support@cocobot.world
               </p>
             </div>
           );
@@ -779,7 +779,7 @@ export default function Tab7Credits() {
       </div>
 
       {/* 내역 */}
-      <div className="bg-bg-surface rounded-2xl border border-border p-5">
+      <div className="bg-[var(--surface-1)] rounded-2xl border border-[var(--border-default)] p-5">
         <div className="flex gap-2 mb-4">
           {(['charge', 'use'] as const).map((t) => (
             <button
@@ -788,8 +788,8 @@ export default function Tab7Credits() {
               className={clsx(
                 'px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
                 historyTab === t
-                  ? 'bg-accent/20 text-accent border border-accent/30'
-                  : 'text-text-muted border border-border hover:border-accent/30',
+                  ? 'bg-accent/20 text-[var(--interactive-primary)] border border-accent/30'
+                  : 'text-[var(--text-tertiary)] border border-[var(--border-default)] hover:border-[var(--border-default)]',
               )}
             >
               {t === 'charge' ? '충전 내역' : '사용 내역'}
@@ -798,22 +798,22 @@ export default function Tab7Credits() {
         </div>
 
         {loading ? (
-          <div className="text-center text-text-muted py-6 text-sm">불러오는 중...</div>
+          <div className="text-center text-[var(--text-tertiary)] py-6 text-sm">불러오는 중...</div>
         ) : historyTab === 'charge' ? (
           history.length === 0 ? (
-            <p className="text-center text-text-muted py-6 text-sm">충전 내역이 없습니다.</p>
+            <p className="text-center text-[var(--text-tertiary)] py-6 text-sm">충전 내역이 없습니다.</p>
           ) : (
             <div className="space-y-2">
               {history.map((h) => (
                 <div
                   key={h.id}
-                  className="flex items-center justify-between py-3 border-b border-border last:border-0"
+                  className="flex items-center justify-between py-3 border-b border-[var(--border-default)] last:border-0"
                 >
                   <div>
-                    <p className="text-sm text-text-primary font-medium">
+                    <p className="text-sm text-[var(--text-primary)] font-medium">
                       {formatCurrency(h.amount)} 충전
                     </p>
-                    <p className="text-xs text-text-muted">{formatDate(h.created_at)}{h.depositor_name ? ` · ${h.depositor_name}` : ''}</p>
+                    <p className="text-xs text-[var(--text-tertiary)]">{formatDate(h.created_at)}{h.depositor_name ? ` · ${h.depositor_name}` : ''}</p>
                   </div>
                   <PaymentStatusBadge status={h.status} />
                 </div>

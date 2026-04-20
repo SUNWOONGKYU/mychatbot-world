@@ -1,0 +1,12 @@
+{
+  "_comment": "이 내용을 ~/.claude/settings.json의 mcpServers에 추가하세요",
+  "mcpServers": {
+    "cpc": {
+      "command": "python3",
+      "args": ["{{CPC_MCP_SERVER_PATH}}/cpc_mcp_server.py"],
+      "env": {
+        "CPC_BASE_URL": "https://claude-platoons-control.vercel.app"
+      }
+    }
+  }
+}

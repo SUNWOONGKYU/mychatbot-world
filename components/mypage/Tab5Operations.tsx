@@ -1,5 +1,5 @@
 /**
- * @task S5FE11
+ * @task S7FE7 (S5FE11)
  * @description 마이페이지 탭5 — 코코봇 운영 관리 (구직/구봇/수익/통계)
  * 구직(내 코코봇 올리기), 구봇(다른 코코봇 고용), 수익 관리, 운영 통계
  */
@@ -116,7 +116,7 @@ function JobTab() {
     <div className="space-y-5">
       {/* 새 공고 등록 버튼 */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-text-secondary">
+        <p className="text-sm text-[var(--text-secondary)]">
           내 코코봇을 구봇구직에 등록하고 수익을 창출하세요.
         </p>
         <button
@@ -127,18 +127,18 @@ function JobTab() {
       </div>
 
       {loading ? (
-        <div className="text-center text-text-muted py-8 text-sm">불러오는 중...</div>
+        <div className="text-center text-[var(--text-tertiary)] py-8 text-sm">불러오는 중...</div>
       ) : postings.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-10 text-center">
-          <p className="text-text-muted text-sm">등록된 공고가 없습니다.</p>
-          <p className="text-text-muted text-xs mt-1">내 코코봇을 구봇구직에 올려보세요!</p>
+        <div className="rounded-xl border border-dashed border-[var(--border-default)] p-10 text-center">
+          <p className="text-[var(--text-tertiary)] text-sm">등록된 공고가 없습니다.</p>
+          <p className="text-[var(--text-tertiary)] text-xs mt-1">내 코코봇을 구봇구직에 올려보세요!</p>
         </div>
       ) : (
         <div className="space-y-3">
           {postings.map((p) => (
             <div
               key={p.id}
-              className="bg-bg-surface rounded-xl border border-border p-4 flex items-center justify-between gap-4"
+              className="bg-[var(--surface-1)] rounded-xl border border-[var(--border-default)] p-4 flex items-center justify-between gap-4"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-1">
@@ -147,26 +147,26 @@ function JobTab() {
                       'text-xs font-semibold px-2 py-0.5 rounded-full border',
                       p.status === 'active'
                         ? 'bg-success/15 text-success border-success/30'
-                        : 'bg-bg-muted text-text-muted border-border',
+                        : 'bg-[var(--surface-2)] text-[var(--text-tertiary)] border-[var(--border-default)]',
                     )}
                   >
                     {p.status === 'active' ? '모집중' : '마감'}
                   </span>
-                  <span className="text-xs text-text-muted">{p.bot_name}</span>
+                  <span className="text-xs text-[var(--text-tertiary)]">{p.bot_name}</span>
                 </div>
-                <p className="font-semibold text-text-primary text-sm truncate">{p.title}</p>
-                <p className="text-xs text-text-muted mt-0.5">등록일: {formatDate(p.created_at)}</p>
+                <p className="font-semibold text-[var(--text-primary)] text-sm truncate">{p.title}</p>
+                <p className="text-xs text-[var(--text-tertiary)] mt-0.5">등록일: {formatDate(p.created_at)}</p>
               </div>
               <div className="flex items-center gap-4 flex-shrink-0">
                 <div className="text-center">
                   <p className="text-lg font-bold text-primary">{p.applicants}</p>
-                  <p className="text-xs text-text-muted">지원자</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">지원자</p>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <button className="px-3 py-1.5 text-xs rounded-lg border border-border hover:border-primary/50 text-text-secondary transition-colors">
+                  <button className="px-3 py-1.5 text-xs rounded-lg border border-[var(--border-default)] hover:border-primary/50 text-[var(--text-secondary)] transition-colors">
                     지원자 보기
                   </button>
-                  <button className="px-3 py-1.5 text-xs rounded-lg border border-border hover:border-error/50 text-error transition-colors">
+                  <button className="px-3 py-1.5 text-xs rounded-lg border border-[var(--border-default)] hover:border-error/50 text-error transition-colors">
                     {p.status === 'active' ? '마감' : '재오픈'}
                   </button>
                 </div>
@@ -186,74 +186,101 @@ function HiredTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data — API 연동 시 /api/operations/hired-bots
-    setBots([
-      {
-        id: '1',
-        bot_name: '배송조회봇',
-        owner: 'user123@example.com',
-        contract_until: '2026-06-30T00:00:00Z',
-        price_per_unit: 500,
-        performance_score: 4.7,
-        cost_total: 125000,
-      },
-    ]);
-    setLoading(false);
+    let aborted = false;
+    (async () => {
+      try {
+        const { supabase } = await import('@/lib/supabase');
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        if (!token) {
+          if (!aborted) {
+            setBots([]);
+            setLoading(false);
+          }
+          return;
+        }
+
+        const res = await fetch('/api/operations/hired-bots', {
+          headers: { authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          if (!aborted) {
+            setBots([]);
+            setLoading(false);
+          }
+          return;
+        }
+        const json = await res.json();
+        if (!aborted) {
+          setBots(Array.isArray(json.hired_bots) ? json.hired_bots : []);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.warn('[HiredTab] fetch failed:', err);
+        if (!aborted) {
+          setBots([]);
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      aborted = true;
+    };
   }, []);
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-text-secondary">
+        <p className="text-sm text-[var(--text-secondary)]">
           고용한 코코봇 목록과 계약/성과를 관리합니다.
         </p>
         <a
           href="/jobs"
-          className="px-4 py-2 rounded-lg border border-border text-text-secondary text-sm hover:border-primary/50 transition-colors"
+          className="px-4 py-2 rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] text-sm hover:border-primary/50 transition-colors"
         >
           구봇구직 바로가기 →
         </a>
       </div>
 
       {loading ? (
-        <div className="text-center text-text-muted py-8 text-sm">불러오는 중...</div>
+        <div className="text-center text-[var(--text-tertiary)] py-8 text-sm">불러오는 중...</div>
       ) : bots.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-10 text-center">
-          <p className="text-text-muted text-sm">고용한 코코봇이 없습니다.</p>
+        <div className="rounded-xl border border-dashed border-[var(--border-default)] p-10 text-center">
+          <p className="text-[var(--text-tertiary)] text-sm">고용한 코코봇이 없습니다.</p>
         </div>
       ) : (
         <div className="space-y-3">
           {bots.map((b) => (
             <div
               key={b.id}
-              className="bg-bg-surface rounded-xl border border-border p-5"
+              className="bg-[var(--surface-1)] rounded-xl border border-[var(--border-default)] p-5"
             >
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <p className="font-semibold text-text-primary">{b.bot_name}</p>
-                  <p className="text-xs text-text-muted mt-0.5">소유자: {b.owner}</p>
+                  <p className="font-semibold text-[var(--text-primary)]">{b.bot_name}</p>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-0.5">소유자: {b.owner}</p>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="text-amber-400 text-sm">★</span>
-                  <span className="text-sm font-semibold text-text-primary">{b.performance_score}</span>
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">{b.performance_score}</span>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <div className="bg-bg-subtle rounded-lg p-3 text-center">
-                  <p className="text-xs text-text-muted mb-1">계약 종료</p>
-                  <p className="text-sm font-semibold text-text-primary">{formatDate(b.contract_until)}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">계약 종료</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{formatDate(b.contract_until)}</p>
                 </div>
-                <div className="bg-bg-subtle rounded-lg p-3 text-center">
-                  <p className="text-xs text-text-muted mb-1">단가</p>
-                  <p className="text-sm font-semibold text-accent">{formatCurrency(b.price_per_unit)}</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">단가</p>
+                  <p className="text-sm font-semibold text-[var(--interactive-primary)]">{formatCurrency(b.price_per_unit)}</p>
                 </div>
-                <div className="bg-bg-subtle rounded-lg p-3 text-center">
-                  <p className="text-xs text-text-muted mb-1">총 비용</p>
+                <div className="bg-[var(--surface-2)] rounded-lg p-3 text-center">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">총 비용</p>
                   <p className="text-sm font-semibold text-error">{formatCurrency(b.cost_total)}</p>
                 </div>
               </div>
               <div className="flex gap-2 mt-3">
-                <button className="flex-1 py-2 text-xs rounded-lg border border-border text-text-secondary hover:border-primary/50 transition-colors">
+                <button className="flex-1 py-2 text-xs rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:border-primary/50 transition-colors">
                   성과 상세 보기
                 </button>
                 <button className="flex-1 py-2 text-xs rounded-lg border border-error/30 text-error hover:bg-error/10 transition-colors">
@@ -334,9 +361,9 @@ function RevenueTab() {
   return (
     <div className="space-y-6">
       {/* 수익 현황 */}
-      <div className="bg-bg-surface rounded-xl border border-border p-5">
+      <div className="bg-[var(--surface-1)] rounded-xl border border-[var(--border-default)] p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-text-primary">수익 현황</h3>
+          <h3 className="font-semibold text-[var(--text-primary)]">수익 현황</h3>
           <div className="flex gap-1">
             {(['day', 'week', 'month'] as const).map((p) => (
               <button
@@ -345,8 +372,8 @@ function RevenueTab() {
                 className={clsx(
                   'px-3 py-1 text-xs rounded-full transition-colors',
                   period === p
-                    ? 'bg-accent/20 text-accent font-semibold border border-accent/30'
-                    : 'text-text-muted border border-border hover:border-accent/30',
+                    ? 'bg-accent/20 text-[var(--interactive-primary)] font-semibold border border-accent/30'
+                    : 'text-[var(--text-tertiary)] border border-[var(--border-default)] hover:border-[var(--border-strong)]',
                 )}
               >
                 {p === 'day' ? '일별' : p === 'week' ? '주별' : '월별'}
@@ -358,26 +385,26 @@ function RevenueTab() {
           <p className="text-xs text-amber-400/80 mb-1 font-medium">
             {period === 'day' ? '오늘' : period === 'week' ? '이번 주' : '이번 달'} 총 수익
           </p>
-          <p className="text-3xl font-extrabold text-accent">{formatCurrency(totalRevenue)}</p>
+          <p className="text-3xl font-extrabold text-[var(--interactive-primary)]">{formatCurrency(totalRevenue)}</p>
         </div>
         <div className="space-y-2">
           {records.map((r, i) => (
-            <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+            <div key={i} className="flex items-center justify-between py-2 border-b border-[var(--border-default)] last:border-0">
               <div>
-                <span className="text-sm text-text-primary">{r.type_name}</span>
-                <span className="text-xs text-text-muted ml-2">{formatDate(r.date)}</span>
+                <span className="text-sm text-[var(--text-primary)]">{r.type_name}</span>
+                <span className="text-xs text-[var(--text-tertiary)] ml-2">{formatDate(r.date)}</span>
               </div>
-              <span className="text-sm font-semibold text-accent">{formatCurrency(r.amount)}</span>
+              <span className="text-sm font-semibold text-[var(--interactive-primary)]">{formatCurrency(r.amount)}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* 정산 요청 */}
-      <div className="flex items-center justify-between bg-bg-surface rounded-xl border border-border p-4">
+      <div className="flex items-center justify-between bg-[var(--surface-1)] rounded-xl border border-[var(--border-default)] p-4">
         <div>
-          <p className="text-sm font-semibold text-text-primary">정산 요청</p>
-          <p className="text-xs text-text-muted">정산 가능 금액: <span className="text-accent font-bold">{formatCurrency(totalRevenue)}</span></p>
+          <p className="text-sm font-semibold text-[var(--text-primary)]">정산 요청</p>
+          <p className="text-xs text-[var(--text-tertiary)]">정산 가능 금액: <span className="text-[var(--interactive-primary)] font-bold">{formatCurrency(totalRevenue)}</span></p>
         </div>
         <button
           onClick={requestSettle}
@@ -391,41 +418,41 @@ function RevenueTab() {
       )}
 
       {/* 수익 유형 설정 */}
-      <div className="bg-bg-surface rounded-xl border border-border p-5">
+      <div className="bg-[var(--surface-1)] rounded-xl border border-[var(--border-default)] p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-text-primary">수익 유형 설정</h3>
+          <h3 className="font-semibold text-[var(--text-primary)]">수익 유형 설정</h3>
           <button
             onClick={() => setAddingType(true)}
-            className="px-3 py-1.5 text-xs rounded-lg border border-border text-text-secondary hover:border-accent/50 transition-colors"
+            className="px-3 py-1.5 text-xs rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:border-accent/50 transition-colors"
           >
             + 유형 추가
           </button>
         </div>
 
         {addingType && (
-          <div className="bg-bg-subtle rounded-xl border border-border p-4 mb-4 space-y-3">
-            <p className="text-sm font-semibold text-text-primary">새 수익 유형</p>
+          <div className="bg-[var(--surface-2)] rounded-xl border border-[var(--border-default)] p-4 mb-4 space-y-3">
+            <p className="text-sm font-semibold text-[var(--text-primary)]">새 수익 유형</p>
             <div className="grid grid-cols-3 gap-3">
               <input
                 type="text"
                 placeholder="유형명 (예: 상담료)"
                 value={newTypeName}
                 onChange={(e) => setNewTypeName(e.target.value)}
-                className="col-span-3 px-3 py-2 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
+                className="col-span-3 px-3 py-2 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
               />
               <input
                 type="number"
                 placeholder="단가"
                 value={newTypePrice}
                 onChange={(e) => setNewTypePrice(e.target.value)}
-                className="col-span-2 px-3 py-2 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
+                className="col-span-2 px-3 py-2 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
               />
               <input
                 type="text"
                 placeholder="단위 (건/시간)"
                 value={newTypeUnit}
                 onChange={(e) => setNewTypeUnit(e.target.value)}
-                className="px-3 py-2 bg-bg-muted border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary/60"
+                className="px-3 py-2 bg-[var(--surface-2)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--interactive-primary)]"
               />
             </div>
             <div className="flex gap-2">
@@ -437,7 +464,7 @@ function RevenueTab() {
               </button>
               <button
                 onClick={() => setAddingType(false)}
-                className="flex-1 py-2 text-sm rounded-lg border border-border text-text-secondary hover:border-primary/50 transition-colors"
+                className="flex-1 py-2 text-sm rounded-lg border border-[var(--border-default)] text-[var(--text-secondary)] hover:border-primary/50 transition-colors"
               >
                 취소
               </button>
@@ -447,10 +474,10 @@ function RevenueTab() {
 
         <div className="space-y-2">
           {types.map((t) => (
-            <div key={t.id} className="flex items-center justify-between bg-bg-subtle rounded-lg px-4 py-3">
+            <div key={t.id} className="flex items-center justify-between bg-[var(--surface-2)] rounded-lg px-4 py-3">
               <div>
-                <span className="text-sm font-semibold text-text-primary">{t.name}</span>
-                <span className="text-xs text-text-muted ml-2">
+                <span className="text-sm font-semibold text-[var(--text-primary)]">{t.name}</span>
+                <span className="text-xs text-[var(--text-tertiary)] ml-2">
                   {formatCurrency(t.price_per_unit)} / {t.unit}
                 </span>
               </div>
@@ -463,7 +490,7 @@ function RevenueTab() {
             </div>
           ))}
           {types.length === 0 && (
-            <p className="text-sm text-text-muted text-center py-4">
+            <p className="text-sm text-[var(--text-tertiary)] text-center py-4">
               수익 유형을 추가하세요.
             </p>
           )}
@@ -522,7 +549,7 @@ function StatsTab() {
     {
       label: '구직 수익',
       value: formatCurrency(stats.revenue_job),
-      color: 'text-accent',
+      color: 'text-[var(--interactive-primary)]',
     },
     {
       label: '구봇 비용',
@@ -535,8 +562,8 @@ function StatsTab() {
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3">
         {items.map((item) => (
-          <div key={item.label} className="bg-bg-surface rounded-xl border border-border p-4">
-            <p className="text-xs text-text-muted mb-2">{item.label}</p>
+          <div key={item.label} className="bg-[var(--surface-1)] rounded-xl border border-[var(--border-default)] p-4">
+            <p className="text-xs text-[var(--text-tertiary)] mb-2">{item.label}</p>
             <p className={clsx('text-xl font-extrabold', item.color)}>{item.value}</p>
           </div>
         ))}
@@ -549,7 +576,7 @@ function StatsTab() {
             : 'bg-error/10 border-error/30',
         )}
       >
-        <p className="text-sm text-text-secondary mb-1">순 수익 (구직 수익 − 구봇 비용)</p>
+        <p className="text-sm text-[var(--text-secondary)] mb-1">순 수익 (구직 수익 − 구봇 비용)</p>
         <p
           className={clsx(
             'text-3xl font-extrabold',
@@ -570,10 +597,10 @@ export default function Tab5Operations() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-text-primary mb-5">코코봇 운영 관리</h2>
+      <h2 className="text-xl font-bold text-[var(--text-primary)] mb-5">코코봇 운영 관리</h2>
 
       {/* 서브탭 */}
-      <div className="flex flex-wrap gap-1 mb-6 p-1 bg-bg-muted rounded-xl border border-border">
+      <div className="flex flex-wrap gap-1 mb-6 p-1 bg-[var(--surface-2)] rounded-xl border border-[var(--border-default)]">
         {SUB_TABS.map((t) => (
           <button
             key={t.id}
@@ -581,8 +608,8 @@ export default function Tab5Operations() {
             className={clsx(
               'flex-1 min-w-max px-3 py-2 text-sm rounded-lg font-medium transition-all',
               sub === t.id
-                ? 'bg-bg-surface text-text-primary shadow-sm border border-border'
-                : 'text-text-muted hover:text-text-secondary',
+                ? 'bg-[var(--surface-1)] text-[var(--text-primary)] shadow-sm border border-[var(--border-default)]'
+                : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]',
             )}
           >
             {t.label}

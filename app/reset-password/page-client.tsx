@@ -113,8 +113,9 @@ export default function ResetPasswordPageInner() {
   }>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // ── URL 파라미터 / 해시로 복구 링크 감지 + 토큰 유효성 검증 ────────────────
+  // ── URL 파라미터 / 해시로 복구 링크 감지 ────────────────────────────────────
   useEffect(() => {
+    // Next.js App Router에서는 hash를 직접 읽어야 함
     const hash = window.location.hash;
     const code = searchParams?.get('code');
 
@@ -124,24 +125,12 @@ export default function ResetPasswordPageInner() {
       !!code;
 
     if (isRecovery) {
-      // 토큰 유효성 검증: Supabase가 자동으로 세션을 복구 모드로 전환해야 함
-      supabase.auth.getSession().then(({ data, error }) => {
-        if (error || !data.session) {
-          setErrors({ general: '재설정 링크가 만료되었거나 유효하지 않습니다. 다시 요청해 주세요.' });
-          setMode('email');
-          return;
-        }
-        setMode('reset');
-      });
+      setMode('reset');
     }
 
     // Supabase auth 이벤트 리스너 (PASSWORD_RECOVERY)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
-        if (!session) {
-          setErrors({ general: '재설정 세션이 생성되지 않았습니다. 링크를 다시 요청해 주세요.' });
-          return;
-        }
         setMode('reset');
       }
     });

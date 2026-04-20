@@ -1,4 +1,4 @@
-// @task S5FE7 - 섹션2: 공지사항 관리
+// @task S7FE7 (S5FE7) - 섹션2: 공지사항 관리 (admin-* → S7 Semantic 토큰 브리지 적용)
 // 공지 CRUD + 상단 고정 핀 + 대상 설정 + 공개/비공개 토글
 'use client';
 
@@ -65,8 +65,8 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
         setNotices([
           {
             id: 'sample-1',
-            title: '[공지] CoCoBot 서비스 오픈 안내',
-            content: 'CoCoBot 서비스가 정식 오픈했습니다.',
+            title: '[공지] MCW 서비스 오픈 안내',
+            content: 'CoCoBot World 서비스가 정식 오픈했습니다.',
             category: '공지',
             target: '전체',
             is_pinned: true,
@@ -299,8 +299,8 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
 
       {/* 공지 작성/수정 모달 */}
       {showModal && (
-        <div className="admin-modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-overlay" onClick={() => setShowModal(false)} role="presentation" aria-hidden="true">
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()} role="presentation">
             <h2 className="admin-modal-title">
               {editNotice ? '공지 수정' : '공지 작성'}
             </h2>

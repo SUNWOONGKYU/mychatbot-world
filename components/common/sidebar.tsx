@@ -74,7 +74,7 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
       {/* Logo */}
       <div className="flex items-center h-header px-5 border-b border-border shrink-0">
         <span className="text-xl font-bold tracking-tight text-primary select-none">
-          CoCoBot
+          MCW
         </span>
       </div>
 

@@ -10,6 +10,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { rateLimitAsync } from '@/lib/rate-limiter';
+
+// 동일 유저 + 동일 스킬 동시 설치 방지 락 (5s window)
+const SKILL_INSTALL_LOCK = { limit: 1, windowMs: 5_000 } as const;
 
 // ============================
 // 타입 정의
@@ -167,6 +171,19 @@ export async function POST(req: NextRequest) {
     } = await supabaseUser.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // 동시 설치 요청 방지 (유저 + 스킬 단위 락)
+    const lockKey = `skill-install:${user.id}:${skill_id}`;
+    const lock = await rateLimitAsync(req, SKILL_INSTALL_LOCK, lockKey);
+    if (!lock.allowed) {
+      return NextResponse.json(
+        { error: '이미 설치 처리 중입니다. 잠시 후 다시 시도해주세요.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(lock.retryAfterSec) },
+        }
+      );
     }
 
     const supabase = getSupabaseServer();
