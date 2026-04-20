@@ -81,7 +81,7 @@ export default function AuthCallbackPage() {
           setErrMsg(error?.message ?? 'setSession returned null');
           return;
         }
-        if (!cancelled) router.replace('/home');
+        if (!cancelled) router.replace('/mypage');
         return;
       }
 
@@ -100,7 +100,7 @@ export default function AuthCallbackPage() {
           await supabase.auth.signOut();
           if (!cancelled) router.replace('/login?confirmed=1');
         } else {
-          if (!cancelled) router.replace('/home');
+          if (!cancelled) router.replace('/mypage');
         }
         return;
       }
