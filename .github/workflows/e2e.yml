@@ -1,0 +1,87 @@
+name: E2E (Playwright)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'TEST_BASE_URL (비우면 로컬 next start)'
+        required: false
+        default: ''
+
+jobs:
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TEST_BASE_URL: ${{ github.event.inputs.target_url || '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      # ── (A) target_url 미지정 시 로컬 빌드 + next start 로 테스트 ──────────
+      - name: Build Next.js
+        if: ${{ env.TEST_BASE_URL == '' }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npm run build
+
+      - name: Start Next.js (background)
+        if: ${{ env.TEST_BASE_URL == '' }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npx next start -p 3000 &
+          echo $! > next.pid
+          # 서버 부팅 대기 (최대 60초)
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/api/health >/dev/null 2>&1 \
+               || curl -sf http://localhost:3000/ >/dev/null 2>&1; then
+              echo "Next.js is up"
+              break
+            fi
+            sleep 2
+          done
+
+      # ── (B) Playwright 실행 ───────────────────────────────────────────────
+      - name: Run Playwright (production-smoke only — 5 플로우)
+        env:
+          TEST_BASE_URL: ${{ env.TEST_BASE_URL != '' && env.TEST_BASE_URL || 'http://localhost:3000' }}
+          CI: 'true'
+        run: npx playwright test tests/e2e/production-smoke.spec.ts
+
+      - name: Stop Next.js
+        if: ${{ always() && env.TEST_BASE_URL == '' }}
+        run: |
+          if [ -f next.pid ]; then
+            kill $(cat next.pid) || true
+          fi
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

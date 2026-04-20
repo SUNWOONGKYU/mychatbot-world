@@ -22,7 +22,8 @@
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
 | S7 | 프로덕션 런칭 준비 MBO | 5 | 100% (5/5 완료) |
-| **합계** | | **92** | **~52%** |
+| S8 | 프로덕션 완성도 100점 달성 MBO | 15 | 0% (0/15 Pending) |
+| **합계** | | **107** | **~45%** |
 
 ---
 
@@ -217,6 +218,31 @@
 | S7PROD3 | 프로덕션 SEO/문서 — robots.ts/sitemap.ts/.env.example/README/metadata (H6·H7·H9·M5) | DC | — | `documentation-writer-core` | Completed |
 | S7PROD4 | 프로덕션 성능/운영 — 페이지네이션 + DB 인덱스 + 런타임 env 검증 (M2·M3·M9) | BI | — | `backend-developer-core` | Completed |
 | S7PROD5 | 후속 처리 — img→Image 5파일 + middleware matcher/rate-limit 확장 + radio a11y + health env audit (M4·M6·M8) | FE | S7PROD1~4 | `frontend-developer-core` | Completed |
+
+---
+
+## S8 — 프로덕션 완성도 100점 달성 MBO (15 Tasks)
+
+> 목표: 2026-04-20 MBO "75점 → 100점" — 9개 영역(Observability/Data Integrity/Documentation/Reliability/Performance/UX·a11y/Infra·Deploy/SEO/Security) 전수 완성.
+> **배경**: S7 MBO 이후 75점 달성. 이월되었던 Sentry/E2E/RLS audit/Lighthouse 실측/Staging/JSON-LD/OpenAPI 등 전량 해소.
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S8BI1 | Sentry 통합 (error + performance + source maps) | BI | — | `backend-developer-core` | Pending |
+| S8BI2 | Log Drain + 구조화 로그 (Axiom 또는 Vercel Log Drain) | BI | S8BI1 | `backend-developer-core` | Pending |
+| S8BI3 | UptimeRobot 외부 모니터링 + Slack/이메일 알림 | BI | — | `backend-developer-core` | Pending |
+| S8BA1 | 크레딧 증가/차감 atomic RPC (add_credits_tx/deduct_credits_tx) + confirm/admin/premium/chat 전환 | BA | — | `backend-architect` | Completed |
+| S8TS1 | Playwright E2E 5 플로우 + GitHub Actions CI | TS | — | `qa-specialist` | Completed |
+| S8SC1 | Supabase RLS 전 테이블 감사 + 누락 정책 보강 | SC | — | `security-specialist-core` | Completed |
+| S8SC2 | Supabase Auth MFA(TOTP) 활성화 + origin 검증 미들웨어 | SC | — | `security-specialist-core` | Pending |
+| S8SC3 | Secret rotation 정책서 + 3개월 캘린더 알림 | SC | — | `security-specialist-core` | Pending |
+| S8DV1 | Staging 환경 (Vercel preview + Supabase Branch DB) | DV | — | `devops-troubleshooter-core` | Pending |
+| S8DV2 | Supabase PITR 백업 복구 드릴 + 결과 문서화 | DV | S8DV1 | `devops-troubleshooter-core` | Pending |
+| S8FE1 | Lighthouse 실측 + 번들 분석 + 개선 후 재측정 (90+) | FE | — | `frontend-developer-core` | Pending |
+| S8FE2 | Axe 전수 감사 + WCAG AA 위반 0건 + CI 통합 | FE | — | `frontend-developer-core` | Pending |
+| S8FE3 | JSON-LD 구조화 데이터 5+ 페이지 + 동적 OG 이미지 | FE | — | `frontend-developer-core` | Pending |
+| S8DC1 | OpenAPI 3.0 스펙 (33 엔드포인트) + Swagger UI | DC | — | `documentation-writer-core` | Pending |
+| S8DC2 | 운영 런북 (incident/backup/deploy/rollback/on-call) | DC | S8DV2 | `documentation-writer-core` | Pending |
 
 ---
 

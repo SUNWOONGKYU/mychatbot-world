@@ -102,8 +102,11 @@ export async function POST(req: NextRequest) {
 
   const cost = FEATURE_COSTS[feature];
 
-  // 크레딧 확인 및 차감 (원자적)
-  const creditResult = await checkAndDeductCredits(userId, cost);
+  // 크레딧 확인 및 차감 (원자적 — deduct_credits_tx RPC)
+  const creditResult = await checkAndDeductCredits(userId, cost, {
+    type: 'feature_activation',
+    description: `프리미엄 기능 활성화: ${FEATURE_LABEL[feature]}`,
+  });
   if (!creditResult.success) {
     return NextResponse.json(
       { error: 'Insufficient credits', balance: creditResult.balance, required: cost },
@@ -123,30 +126,19 @@ export async function POST(req: NextRequest) {
   });
 
   if (metaErr) {
-    // 메타 업데이트 실패 시 크레딧 복구
-    await supabase
-      .from('mcw_credits')
-      .update({ balance: creditResult.balance + cost, updated_at: new Date().toISOString() })
-      .eq('user_id', userId);
+    // 메타 업데이트 실패 시 크레딧 복구 (atomic refund)
+    await supabase.rpc('add_credits_tx', {
+      p_user_id: userId,
+      p_amount: cost,
+      p_type: 'refund',
+      p_description: `프리미엄 기능 활성화 실패 환불: ${FEATURE_LABEL[feature]}`,
+    });
 
     console.error('[premium/activate] metadata update failed:', metaErr.message);
     return NextResponse.json({ error: 'Activation failed. Credits refunded.' }, { status: 500 });
   }
 
-  // 크레딧 사용 내역 기록 (non-critical — 실패해도 무시)
-  try {
-    await supabase
-      .from('mcw_credit_transactions')
-      .insert({
-        user_id: userId,
-        type: 'feature_activation',
-        amount: -cost,
-        description: `프리미엄 기능 활성화: ${FEATURE_LABEL[feature]}`,
-        created_at: new Date().toISOString(),
-      });
-  } catch {
-    // 내역 기록 실패는 활성화 결과에 영향 없음
-  }
+  // 차감 이력은 deduct_credits_tx RPC 가 단일 트랜잭션에서 이미 기록함 (S8BA1)
 
   return NextResponse.json({
     success: true,

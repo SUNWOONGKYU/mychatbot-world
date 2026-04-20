@@ -33,13 +33,6 @@ interface PaymentRow {
   payment_type: string;
 }
 
-interface UserCreditRow {
-  user_id: string;
-  balance: number;
-  total_purchased: number;
-  updated_at: string;
-}
-
 interface ConfirmRequest {
   paymentId: string;
   confirmedBy?: string; // 관리자 식별자 (선택)
@@ -161,60 +154,27 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to update payment status' }, { status: 500 });
     }
 
-    // 3. user_credits.balance += amount (upsert)
-    //    기존 잔액 조회 후 합산
-    const { data: creditData, error: creditFetchError } = await (supabase as any)
-      .from('mcw_credits')
-      .select('balance, total_purchased')
-      .eq('user_id', userId)
-      .maybeSingle();
+    // 3. 크레딧 원자적 증가: balance UPSERT + credit_transactions INSERT 를 단일 TX 에서 처리
+    //    (S8BA1 — add_credits_tx RPC: FOR UPDATE 행 락으로 SELECT→UPSERT race 완전 차단)
+    const { data: rpcData, error: rpcError } = await (supabase as any).rpc('add_credits_tx', {
+      p_user_id: userId,
+      p_amount: amount,
+      p_type: 'purchase',
+      p_description: `무통장 입금 확인 (결제ID: ${paymentId})`,
+      p_reference_id: paymentId,
+      p_reference_type: 'payment',
+    });
 
-    if (creditFetchError) {
-      console.error('[PATCH /api/payments/confirm] Credit fetch error:', creditFetchError.message);
-      return NextResponse.json({ error: 'Failed to fetch current balance' }, { status: 500 });
-    }
-
-    const currentBalance = (creditData as UserCreditRow | null)?.balance ?? 0;
-    const newBalance = currentBalance + amount;
-    const now = new Date().toISOString();
-
-    const { error: upsertError } = await (supabase as any)
-      .from('mcw_credits')
-      .upsert(
-        {
-          user_id: userId,
-          balance: newBalance,
-          total_purchased: (creditData?.total_purchased ?? 0) + amount,
-          updated_at: now,
-        },
-        { onConflict: 'user_id' },
-      );
-
-    if (upsertError) {
-      console.error('[PATCH /api/payments/confirm] Upsert credits error:', upsertError.message);
-      // 결제는 완료됐으나 크레딧 반영 실패 → 긴급 알림 필요
+    if (rpcError) {
+      console.error('[PATCH /api/payments/confirm] add_credits_tx error:', rpcError.message);
       return NextResponse.json(
         { error: 'Payment confirmed but credit update failed. Contact support.' },
         { status: 500 },
       );
     }
 
-    // 4. credit_transactions에 'charge' 이력 기록
-    const { error: txError } = await (supabase as any).from('mcw_credit_transactions').insert({
-      user_id: userId,
-      type: 'purchase',
-      amount,
-      balance_after: newBalance,
-      description: `무통장 입금 확인 (결제ID: ${paymentId})`,
-      reference_id: paymentId,
-      reference_type: 'payment',
-      created_at: now,
-    });
-
-    if (txError) {
-      // 이력 기록 실패는 경고 로그만 (크레딧은 이미 충전됨)
-      console.warn('[PATCH /api/payments/confirm] Transaction log failed:', txError.message);
-    }
+    const newBalance = (rpcData as Array<{ new_balance: number }> | null)?.[0]?.new_balance ?? 0;
+    const now = new Date().toISOString();
 
     return NextResponse.json({
       paymentId,
