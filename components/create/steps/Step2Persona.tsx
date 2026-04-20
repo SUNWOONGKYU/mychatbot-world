@@ -118,7 +118,8 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
       }}>
         {(['avatar', 'helper'] as PersonaType[]).map(t => {
           const active = personaType === t;
-          const label = t === 'avatar' ? '🧑 아바타형 — 나를 대신' : '🤖 도우미형 — 나를 도와';
+          const title = t === 'avatar' ? '🧑 아바타형' : '🤖 도우미형';
+          const desc  = t === 'avatar' ? '나를 대신해 고객 응대' : '나를 도와 업무 수행';
           return (
             <button
               key={t}
@@ -126,13 +127,15 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
               onClick={() => setType(t)}
               style={{
                 flex: 1, padding: '10px 12px', borderRadius: '10px',
-                border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
+                border: 'none', cursor: 'pointer',
                 background: active ? '#6366f1' : 'transparent',
                 color: active ? 'white' : 'rgba(255,255,255,0.6)',
                 transition: 'all 0.2s',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
               }}
             >
-              {label}
+              <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{title}</span>
+              <span style={{ fontSize: '0.72rem', fontWeight: 500, opacity: active ? 0.9 : 0.7 }}>{desc}</span>
             </button>
           );
         })}

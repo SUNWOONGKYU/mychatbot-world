@@ -23,15 +23,47 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
   const [transcript, setTranscript] = useState(data.interviewText || '');
   const [textContent, setTextContent] = useState(data.interviewText || '');
   const [remainingTime, setRemainingTime] = useState(180);
+  const [voiceError, setVoiceError] = useState<string>('');
 
   const recRef = useRef<any>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isRecordingRef = useRef(false);
 
-  const startRecording = useCallback(() => {
+  const stopRecording = useCallback(() => {
+    isRecordingRef.current = false;
+    if (recRef.current) {
+      try { recRef.current.stop(); } catch {}
+      recRef.current = null;
+    }
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setIsRecording(false);
+  }, []);
+
+  const startRecording = useCallback(async () => {
+    setVoiceError('');
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
-      alert('이 브라우저는 음성 인식을 지원하지 않습니다. 텍스트 입력을 이용해주세요.');
+      setVoiceError('이 브라우저는 음성 인식을 지원하지 않습니다 (Chrome/Edge 권장). 텍스트 입력을 이용해주세요.');
       setMode('text');
+      return;
+    }
+
+    // 마이크 권한을 먼저 명시적으로 요청 — Permissions-Policy/권한 거부 시 즉시 사유 표시
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+    } catch (err: any) {
+      const name = err?.name || '';
+      if (name === 'NotAllowedError') {
+        setVoiceError('마이크 권한이 거부되었습니다. 브라우저 주소창의 자물쇠 아이콘에서 마이크를 허용해주세요.');
+      } else if (name === 'NotFoundError') {
+        setVoiceError('연결된 마이크를 찾을 수 없습니다.');
+      } else {
+        setVoiceError('마이크에 접근할 수 없습니다: ' + (err?.message || name || '알 수 없는 오류'));
+      }
       return;
     }
 
@@ -48,15 +80,36 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
       if (final) setTranscript(prev => prev + final + ' ');
     };
 
-    rec.onerror = () => { stopRecording(); };
+    rec.onerror = (e: any) => {
+      const errType = e?.error || 'unknown';
+      const map: Record<string, string> = {
+        'not-allowed': '마이크 권한이 차단되었습니다.',
+        'no-speech': '음성이 감지되지 않았습니다. 다시 시도해주세요.',
+        'audio-capture': '마이크에 접근할 수 없습니다.',
+        'network': '네트워크 오류로 음성 인식이 중단되었습니다.',
+        'aborted': '',
+      };
+      const msg = map[errType] ?? `음성 인식 오류: ${errType}`;
+      if (msg) setVoiceError(msg);
+      stopRecording();
+    };
+
     rec.onend = () => {
-      if (isRecording && recRef.current) {
+      // 사용자가 정지하지 않은 경우에만 자동 재시작 (continuous 유지)
+      if (isRecordingRef.current && recRef.current) {
         try { recRef.current.start(); } catch {}
       }
     };
 
     recRef.current = rec;
-    rec.start();
+    isRecordingRef.current = true;
+    try {
+      rec.start();
+    } catch (err: any) {
+      setVoiceError('녹음을 시작할 수 없습니다: ' + (err?.message || '알 수 없는 오류'));
+      isRecordingRef.current = false;
+      return;
+    }
     setIsRecording(true);
     setRemainingTime(180);
 
@@ -66,19 +119,7 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
         return prev - 1;
       });
     }, 1000);
-  }, [isRecording]);
-
-  const stopRecording = useCallback(() => {
-    if (recRef.current) {
-      try { recRef.current.stop(); } catch {}
-      recRef.current = null;
-    }
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    setIsRecording(false);
-  }, []);
+  }, [stopRecording]);
 
   const toggleRecording = useCallback(() => {
     if (isRecording) stopRecording();
@@ -166,13 +207,29 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
             {min}:{sec}
           </div>
 
-          <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>
+          <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem' }}>
             {isRecording
               ? '녹음 중... 탭하여 정지'
               : transcript
               ? '녹음 완료! 아래에서 AI 분석을 시작하세요.'
               : '마이크를 탭하여 녹음을 시작하세요'}
           </p>
+
+          {voiceError && (
+            <div role="alert" style={{
+              maxWidth: '480px',
+              margin: '0 auto 1.25rem',
+              padding: '12px 16px',
+              background: 'rgba(239,68,68,0.1)',
+              border: '1px solid rgba(239,68,68,0.4)',
+              borderRadius: '10px',
+              color: '#fca5a5',
+              fontSize: '0.85rem',
+              textAlign: 'left',
+            }}>
+              {voiceError}
+            </div>
+          )}
 
           {/* 가이드 */}
           <div style={{
