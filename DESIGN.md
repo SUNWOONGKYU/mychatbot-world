@@ -95,6 +95,7 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 | Body Large | 18px (1.125rem) | 400 | 1.625 | normal | 소개 텍스트, 설명 |
 | Body | 16px (1rem) | 400 | 1.625 | normal | 표준 본문 |
 | Body Medium | 16px (1rem) | 500 | 1.5 | normal | 네비게이션, 라벨 |
+| Nav Display (예외) | 18px (1.125rem) | 600 | 1.3 | -0.01em | Deep Purple Navbar 전용 — 딥 퍼플 배경 위 가독성·브랜드 존재감 확보 |
 | Body Semibold | 16px (1rem) | 600 | 1.5 | normal | 강조 라벨 |
 | Small | 14px (0.875rem) | 400 | 1.5 | normal | 캡션, 메타 |
 | Caption | 12px (0.75rem) | 500 | 1.4 | normal | 배지, 태그 |
@@ -171,6 +172,9 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 - 회원가입 버튼: 앰버 배경 + 검정 텍스트 (Accent CTA 강조)
 - 로고: "CoCoBot" 텍스트 (`font-extrabold`, `text-primary`)
 - 4대 메뉴: Birth / Skills / Jobs / Community
+  - 영문 라벨: **18px / 600** (Nav Display 예외 — 딥 퍼플 배경 가독성)
+  - 한글 라벨: 13px / 500 (부제, 영문 아래 스택)
+- 로고(BrandLogo wordmark): **40px** 높이 — 메뉴 라벨 스택과 시각 밸런스
 - 활성 메뉴: `text-primary` 색상, 밑줄 또는 퍼플 하이라이트
 - 비활성: `text-text-muted`
 - 숨김 경로: `/`, `/pricing`, `/store`, `/blog`, `/about`, `/login`, `/signup`, `/guest`, `/admin`
