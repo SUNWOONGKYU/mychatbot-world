@@ -11,11 +11,17 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('bot-avatars', 'bot-avatars', true)
 ON CONFLICT (id) DO NOTHING;
 
+-- RLS 정책 (재실행 안전: 기존 정책 DROP 후 재생성)
+DROP POLICY IF EXISTS "bot_avatars_read"   ON storage.objects;
+DROP POLICY IF EXISTS "bot_avatars_write"  ON storage.objects;
+DROP POLICY IF EXISTS "bot_avatars_update" ON storage.objects;
+DROP POLICY IF EXISTS "bot_avatars_delete" ON storage.objects;
+
 -- 읽기: 모두 허용
 CREATE POLICY "bot_avatars_read" ON storage.objects
   FOR SELECT USING (bucket_id = 'bot-avatars');
 
--- 쓰기: service-role(서버) 또는 인증 사용자만
+-- 쓰기: 인증 사용자 또는 service-role
 CREATE POLICY "bot_avatars_write" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'bot-avatars');
 
