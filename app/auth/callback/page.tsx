@@ -27,37 +27,43 @@ export default function AuthCallbackPage() {
     let cancelled = false;
 
     async function run() {
-      // Supabase 브라우저 클라이언트가 URL 에서 code 를 자동 교환한다.
-      // 약간의 지연을 둔 뒤 세션 상태를 조회.
-      await new Promise((r) => setTimeout(r, 400));
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get('code');
+      const errorDescription = url.searchParams.get('error_description');
 
-      const { data, error } = await supabase.auth.getSession();
-      if (cancelled) return;
-
-      if (error) {
+      if (errorDescription) {
         setStatus('error');
-        setErrMsg(error.message);
+        setErrMsg(decodeURIComponent(errorDescription));
         return;
       }
 
-      const session = data.session;
+      // code 가 없는 경우(이메일 verify 후 Supabase 가 단순 redirect 만 할 때 포함)
+      // → 이메일 인증 완료 안내로 로그인 유도
+      if (!code) {
+        router.replace('/login?confirmed=1');
+        return;
+      }
 
-      // 세션이 없으면: 이메일 인증 링크 클릭 직후인 경우도 있음.
-      // (Supabase verify → redirect 시 세션은 안 만들어지고 email_confirmed 만 표기)
-      if (!session) {
+      // PKCE code 를 세션으로 명시 교환 (브라우저 자동 감지 타이밍 이슈 회피)
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      if (cancelled) return;
+
+      if (error || !data.session) {
+        // 교환 실패: 대부분 이메일 인증 링크 재사용 / 만료 / code_verifier 없음
+        // → 수동 로그인으로 안내
         router.replace('/login?confirmed=1');
         return;
       }
 
       const provider =
-        (session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'email';
+        (data.session.user.app_metadata as { provider?: string } | undefined)?.provider ?? 'email';
 
       if (provider === 'email') {
-        // 이메일 회원가입 경로 → 수동 로그인 정책: 세션 종료 후 /login 으로
+        // 이메일 가입 경로 → 수동 로그인 정책 유지: 세션 종료 후 /login
         await supabase.auth.signOut();
         router.replace('/login?confirmed=1');
       } else {
-        // OAuth 등 외부 provider → 자동 로그인 유지하고 /home 으로
+        // OAuth (google 등) → 자동 로그인 상태로 /home 진입
         router.replace('/home');
       }
     }
