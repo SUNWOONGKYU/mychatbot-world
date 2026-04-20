@@ -67,19 +67,12 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
         </Link>
 
         {/* 데스크탑 내비 */}
-        <ul className="hidden items-center gap-7 text-sm font-medium sm:flex">
+        <ul className="hidden items-center gap-7 text-sm font-semibold sm:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.label}>
               <a
                 href={link.href}
-                className="transition-colors"
-                style={{ color: 'var(--text-primary)' }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--interactive-primary)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
-                }}
+                className="text-neutral-900 transition-colors hover:text-brand-600 dark:text-neutral-50 dark:hover:text-brand-400"
               >
                 {link.label}
               </a>
@@ -119,14 +112,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
             <>
               <Link
                 href="/login"
-                className="text-sm font-medium transition-colors"
-                style={{ color: 'var(--text-primary)' }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--interactive-primary)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)';
-                }}
+                className="text-sm font-semibold text-neutral-900 transition-colors hover:text-brand-600 dark:text-neutral-50 dark:hover:text-brand-400"
               >
                 로그인
               </Link>
