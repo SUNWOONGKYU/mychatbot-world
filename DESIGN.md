@@ -163,7 +163,7 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 ### Navigation
 
 **상단 Navbar (앱 내부) — Deep Purple Brand Bar**
-- Height: `64px` (`--header-height`)
+- Height: `80px` (`--header-height`) — 딥 퍼플 브랜드 바 전용 여유 레이아웃 (기존 64px → 80px 확장)
 - Background: `rgb(var(--nav-bg))` = **`primary-900`** (#1A0D68 딥 퍼플) — **라이트/다크 모드 동일**. 테마 토글해도 헤더는 변하지 않아 브랜드 정체성을 고정. (DS §7 "다크/라이트 자동 전환" 원칙의 **브랜드 고정 예외**)
 - Text: `rgb(var(--nav-text))` = `#FFFFFF`, 비활성 `rgb(var(--nav-text-muted))` (연한 라벤더 톤)
 - Active 메뉴: 흰색 + **앰버(`amber-400`) 밑줄 글로우** — 퍼플 배경 위 대비 확보 (DS §2 "앰버=가치/강조" 역할과 일치)
@@ -233,7 +233,7 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 
 ### Page Structure
 ```
-[Navbar — 64px 고정 상단]
+[Navbar — 80px 고정 상단]
 [Main — flex-1, bg-bg-base]
   [Hero Section — 그라데이션 배경]
   [Content Sections — 카드 그리드]
