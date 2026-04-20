@@ -17,7 +17,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import supabase from '@/lib/supabase';
 import { HeroSection } from '@/components/landing/hero';
-import { MarketingGNB } from '@/components/landing/marketing-gnb';
 import { LandingFooter } from '@/components/landing/footer';
 
 /* ── 6가지 코코봇 유형 ────────────────────────────── */
@@ -86,8 +85,6 @@ export default function LandingPage() {
       >
         본문으로 건너뛰기
       </a>
-
-      <MarketingGNB isLoggedIn={isLoggedIn} />
 
       <main id="main-content">
         {/* ═══ SECTION 1: Hero ═══ */}

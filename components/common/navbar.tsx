@@ -17,7 +17,7 @@ const SERVICE_ITEMS = [
 ] as const;
 
 // Navbar 숨김 경로 — 로그인/회원가입/게스트/어드민은 별도 레이아웃
-const HIDDEN_PATHS = ['/', '/pricing', '/store', '/blog', '/about', '/login', '/signup', '/guest'];
+const HIDDEN_PATHS = ['/pricing', '/store', '/blog', '/about', '/login', '/signup', '/guest'];
 
 function isHiddenPath(pathname: string): boolean {
   return HIDDEN_PATHS.some((p) => pathname === p || pathname.startsWith('/blog/'));
