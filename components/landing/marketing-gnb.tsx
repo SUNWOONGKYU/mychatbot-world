@@ -66,8 +66,8 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
           />
         </Link>
 
-        {/* 데스크탑 내비 */}
-        <ul className="hidden items-center gap-7 text-sm font-semibold sm:flex">
+        {/* 데스크탑 내비 — Tailwind sm:flex 회귀 방지: 직접 inline media query */}
+        <ul className="mcw-desktop-nav" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {NAV_LINKS.map((link) => (
             <li key={link.label}>
               <a
@@ -81,7 +81,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
         </ul>
 
         {/* CTA 영역 */}
-        <div className="hidden items-center gap-3 sm:flex">
+        <div className="mcw-desktop-cta">
           {/* 테마 토글 (Light/Dark) */}
           {mounted && (
             <button
@@ -132,7 +132,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
         </div>
 
         {/* 모바일 햄버거 */}
-        <div className="flex items-center gap-3 sm:hidden">
+        <div className="mcw-mobile-hamburger">
           {!isLoggedIn && (
             <Link
               href="/create"
@@ -170,7 +170,7 @@ export function MarketingGNB({ isLoggedIn = false }: MarketingGNBProps) {
       {/* 모바일 드로어 */}
       {mobileOpen && (
         <div
-          className="border-t px-4 pb-5 pt-3 sm:hidden"
+          className="mcw-mobile-drawer border-t px-4 pb-5 pt-3"
           style={{
             background: 'var(--surface-0)',
             borderColor: 'var(--border-subtle)',

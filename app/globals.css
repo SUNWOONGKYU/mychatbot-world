@@ -770,6 +770,32 @@
     background: rgb(var(--primary-500) / 0.25);
     color: rgb(var(--text-primary-rgb));
   }
+
+  /* 마케팅 GNB — Tailwind sm:flex 회귀 방지: 순수 CSS 미디어쿼리 */
+  .mcw-desktop-nav {
+    display: none;
+    align-items: center;
+    gap: 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .mcw-desktop-cta {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .mcw-mobile-hamburger {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .mcw-mobile-drawer { display: block; }
+  @media (min-width: 640px) {
+    .mcw-desktop-nav { display: flex; }
+    .mcw-desktop-cta { display: flex; }
+    .mcw-mobile-hamburger { display: none; }
+    .mcw-mobile-drawer { display: none; }
+  }
 }
 
 /* =============================================================
