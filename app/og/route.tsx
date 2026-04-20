@@ -14,7 +14,6 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
-export const contentType = 'image/png';
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
