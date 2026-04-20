@@ -1,8 +1,8 @@
 /**
- * @task S5FE3 - 랜딩 페이지 리디자인
+ * @task S7FE5 - P0 첫인상 페이지 리디자인
  * @component HeroSection
- * @description Hero 섹션 — 퍼플→블루 그라데이션 배경 + 이중 CTA + 신뢰 지표
- *              P4 와이어프레임 SECTION 1 기준 구현
+ * @description Hero 섹션 — Display typography 위계 강화, CTA 버튼 semantic 토큰,
+ *              신뢰 지표 배지, 반응형 4단계 (360/768/1024/1920px)
  */
 'use client';
 
@@ -13,7 +13,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
-  const primaryHref = isLoggedIn ? '/home' : '/create';
+  const primaryHref = isLoggedIn ? '/mypage' : '/create';
   const primaryLabel = isLoggedIn ? '내 코코봇 관리하기' : '5분 인터뷰로 코코봇 생성하기';
 
   return (
@@ -21,106 +21,124 @@ export function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
       className="relative overflow-hidden"
       style={{
         background:
-          'linear-gradient(135deg, rgb(var(--primary-900)) 0%, rgb(30 27 75) 40%, rgb(23 37 84) 70%, rgb(12 26 69) 100%)',
+          'linear-gradient(135deg, var(--color-brand-900) 0%, oklch(0.18 0.144 280) 40%, oklch(0.16 0.107 260) 70%, oklch(0.13 0.089 250) 100%)',
       }}
+      aria-label="메인 히어로"
     >
-      {/* 배경 장식 글로우 */}
+      {/* 배경 장식 글로우 — aria-hidden */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div
           className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full opacity-20 blur-3xl"
-          style={{ background: 'rgb(var(--primary-400))' }}
+          style={{ background: 'var(--color-brand-400)' }}
         />
         <div
           className="absolute top-1/2 -left-20 h-[350px] w-[350px] rounded-full opacity-15 blur-3xl"
-          style={{ background: 'rgb(var(--primary-500))' }}
+          style={{ background: 'var(--color-brand-500)' }}
         />
         <div
           className="absolute -bottom-20 right-1/3 h-[280px] w-[280px] rounded-full opacity-10 blur-3xl"
-          style={{ background: 'rgb(var(--amber-400))' }}
+          style={{ background: 'var(--color-accent-400)' }}
         />
-        {/* 격자 패턴 */}
+        {/* 미세 격자 패턴 */}
         <div
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'linear-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.08) 1px, transparent 1px)',
+              'linear-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.1) 1px, transparent 1px)',
             backgroundSize: '48px 48px',
           }}
         />
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 pb-0 pt-20 sm:px-6 sm:pt-28 lg:pt-36">
+      <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-20 sm:px-6 sm:pb-24 sm:pt-28 lg:pt-36 xl:max-w-6xl">
         <div className="text-center">
-          <div>
-            {/* 배지 */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-              <span className="font-medium">코코봇 라이프사이클 플랫폼</span>
-            </div>
+          {/* 라이브 배지 */}
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur-sm">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-success-300" aria-hidden="true" />
+            <span className="font-medium">코코봇 라이프사이클 플랫폼</span>
+          </div>
 
-            {/* 메인 헤드라인 — 원본 바닐라 카피 */}
-            <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl whitespace-nowrap">
-              당신의 <span className="font-black">AI</span> 코코봇이 이 세상에{' '}
-              <span
-                style={{
-                  background:
-                    'linear-gradient(90deg, rgb(var(--amber-300)), rgb(var(--amber-400)))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
+          {/* Display 헤드라인 — LCP 요소, 줄바꿈 허용 */}
+          <h1 className="text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl [word-break:keep-all]">
+            당신의{' '}
+            <span className="font-black text-white">AI Assistant</span>{' '}
+            코코봇이 이 세상에{' '}
+            <br className="hidden sm:block" />
+            <span
+              className="inline-block"
+              style={{
+                background: 'linear-gradient(90deg, var(--color-accent-300), var(--color-accent-400))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              태어납니다
+            </span>
+          </h1>
+
+          {/* 서브카피 — 가독성 향상 */}
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/75 sm:text-xl xl:text-2xl [word-break:keep-all]">
+            인터뷰 5분이면 끝.{' '}
+            <span className="font-semibold text-white/95">나머지는 AI가 다 만들어 드립니다.</span>
+            <br className="hidden sm:block" />
+            소상공인부터 전문직, 정치인까지 어떤 직업이든 OK.
+          </p>
+
+          {/* CTA 버튼 — Primary(브랜드) + Secondary(성공) 위계 */}
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            {/* Primary CTA */}
+            <Link
+              href={primaryHref}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2 sm:w-auto"
+              style={{
+                background: 'linear-gradient(135deg, var(--interactive-primary), var(--interactive-primary-hover))',
+                boxShadow: '0 8px 24px color-mix(in oklch, var(--color-brand-500) 40%, transparent)',
+              }}
+            >
+              {primaryLabel}
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                aria-hidden="true"
               >
-                태어납니다
-              </span>
-            </h1>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
 
-            {/* 서브카피 — 원본 바닐라 카피 */}
-            <p className="mt-6 text-lg leading-8 text-white/70 sm:text-xl">
-              인터뷰 5분이면 끝.{' '}
-              <br className="hidden sm:block" />
-              <span className="text-white/90 font-medium">나머지는 AI가 다 만들어 드립니다.</span>{' '}
-              <br />
-              소상공인부터 전문직, 정치인까지{' '}
-              <br className="hidden sm:block" />
-              어떤 직업이든 OK.
-            </p>
+            {/* Secondary CTA */}
+            <Link
+              href="/guest"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2 sm:w-auto"
+              style={{
+                background: 'var(--color-success-600)',
+                boxShadow: '0 8px 24px color-mix(in oklch, var(--color-success-600) 40%, transparent)',
+              }}
+            >
+              <span aria-hidden="true">⚡</span>
+              지금 무료로 체험하기
+            </Link>
+          </div>
 
-            {/* CTA 버튼 */}
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href={primaryHref}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgb(var(--primary-500)), rgb(var(--primary-400)))',
-                  boxShadow: '0 8px 24px rgb(var(--primary-500) / 0.4)',
-                }}
-              >
-                {primaryLabel}
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </Link>
-              <Link
-                href="/guest"
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                style={{ background: 'rgb(16 185 129)', boxShadow: '0 8px 24px rgb(16 185 129 / 0.4)' }}
-              >
-                ⚡ 지금 무료로 체험하기
-              </Link>
-            </div>
-
+          {/* 신뢰 지표 — 3가지 소셜 프루프 */}
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-white/50">
+            <span className="flex items-center gap-1.5">
+              <span className="text-success-300 font-semibold text-base">✓</span>
+              코딩 불필요
+            </span>
+            <span className="h-1 w-1 rounded-full bg-white/20" aria-hidden="true" />
+            <span className="flex items-center gap-1.5">
+              <span className="text-success-300 font-semibold text-base">✓</span>
+              5분 만에 생성
+            </span>
+            <span className="h-1 w-1 rounded-full bg-white/20" aria-hidden="true" />
+            <span className="flex items-center gap-1.5">
+              <span className="text-success-300 font-semibold text-base">✓</span>
+              무료로 시작
+            </span>
           </div>
         </div>
       </div>

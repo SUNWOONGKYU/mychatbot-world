@@ -8,8 +8,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>수료증 — CoCoBot World</title>
-  <meta name="description" content="코코봇스쿨 수료증 발급 확인. 전 과정 완료 시 수료증이 발급됩니다. CoCoBot World.">
+  <title>수료증 — CoCoBot</title>
+  <meta name="description" content="코코봇스쿨 수료증 발급 확인. 전 과정 완료 시 수료증이 발급됩니다. CoCoBot.">
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../css/learning.css">
   <!-- 인쇄 시 수료증만 표시 -->
@@ -29,7 +29,7 @@
 
     <!-- 사이드바 -->
     <aside class="sidebar">
-      <a href="../../index.html" class="sidebar-brand">CoCoBot World</a>
+      <a href="../../index.html" class="sidebar-brand">CoCoBot</a>
 
       <span class="sidebar-section-label">5대 메뉴</span>
       <a href="../birth/index.html"     class="sidebar-link top-level"><span class="icon">🐣</span> Birth <small style="opacity:.5">(탄생)</small></a>
@@ -93,7 +93,7 @@
   <script src="../../js/learning.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      if (typeof MCW !== 'undefined') await MCW.ready;
+      if (typeof CoCoBot !== 'undefined') await CoCoBot.ready;
       await initCertPage();
     });
   </script>
