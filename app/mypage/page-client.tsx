@@ -391,12 +391,14 @@ export default function MyPageClient() {
       {profile && <ProfileHeader profile={profile} credits={credits} />}
 
       {/* 데스크톱(sm+): 사이드바(220px) + 콘텐츠  /  모바일: 가로탭 위, 콘텐츠 아래 */}
-      <div className="sm:grid sm:grid-cols-[220px_1fr] sm:gap-6">
-        {/* 탭 네비게이션 */}
-        <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="sm:flex sm:flex-row sm:gap-6 sm:items-start">
+        {/* 탭 네비게이션 — 사이드바 폭 고정 220px */}
+        <div className="sm:w-[220px] sm:flex-shrink-0">
+          <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
 
-        {/* 탭 콘텐츠 패널 */}
-        <div className="min-w-0">
+        {/* 탭 콘텐츠 패널 — 남은 공간 차지 */}
+        <div className="flex-1 min-w-0">
         <div
           role="tabpanel"
           id={`tab-panel-profile`}
