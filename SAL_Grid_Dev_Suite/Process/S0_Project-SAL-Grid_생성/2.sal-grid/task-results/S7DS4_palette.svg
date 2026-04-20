@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1130" viewBox="0 0 1400 1130" font-family="'Pretendard','Inter','Segoe UI',sans-serif">
+<defs><style>.title{font-size:28px;font-weight:700;fill:#0B0D10}.subtitle{font-size:14px;font-weight:400;fill:#575E66}.paletteLabel{font-size:15px;font-weight:600;fill:#131619}.stepHeader{font-size:11px;font-weight:600;fill:#737B85;text-anchor:middle}.tokenName{font-size:10.5px;font-weight:600}.hexName{font-size:9.5px;font-weight:500;font-family:'JetBrains Mono','Consolas',monospace}</style></defs>
+<rect x="0" y="0" width="1400" height="1130" fill="#FAFBFC"/>
+<text x="140" y="45" class="title">MCW Primitive Palette</text>
+<text x="140" y="65" class="subtitle">S7DS4 - OKLCH 84 tokens (7 palettes x 12 steps) - Light/Dark shared primitives</text>
+<text x="190.83333333333334" y="158" class="stepHeader">50</text>
+<text x="292.5" y="158" class="stepHeader">100</text>
+<text x="394.1666666666667" y="158" class="stepHeader">200</text>
+<text x="495.8333333333333" y="158" class="stepHeader">300</text>
+<text x="597.5000000000001" y="158" class="stepHeader">400</text>
+<text x="699.1666666666667" y="158" class="stepHeader">500</text>
+<text x="800.8333333333334" y="158" class="stepHeader">600</text>
+<text x="902.5000000000001" y="158" class="stepHeader">700</text>
+<text x="1004.1666666666667" y="158" class="stepHeader">800</text>
+<text x="1105.8333333333333" y="158" class="stepHeader">900</text>
+<text x="1207.5" y="158" class="stepHeader">950</text>
+<text x="1309.1666666666667" y="158" class="stepHeader">1000</text>
+<text x="128" y="208" class="paletteLabel" text-anchor="end">Neutral (H 250)</text>
+<rect x="144" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#F3F5F8" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="202" class="tokenName" fill="#0B0D10">neutral-50</text>
+<text x="152" y="218" class="hexName" fill="#0B0D10">#F3F5F8</text>
+<text x="152" y="250" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.005</text>
+<rect x="245.66666666666669" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#E4E8ED" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="202" class="tokenName" fill="#0B0D10">neutral-100</text>
+<text x="253.66666666666669" y="218" class="hexName" fill="#0B0D10">#E4E8ED</text>
+<text x="253.66666666666669" y="250" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.008</text>
+<rect x="347.33333333333337" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#CCD2D8" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="202" class="tokenName" fill="#0B0D10">neutral-200</text>
+<text x="355.33333333333337" y="218" class="hexName" fill="#0B0D10">#CCD2D8</text>
+<text x="355.33333333333337" y="250" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.010</text>
+<rect x="449" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#B1B8BF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="202" class="tokenName" fill="#0B0D10">neutral-300</text>
+<text x="457" y="218" class="hexName" fill="#0B0D10">#B1B8BF</text>
+<text x="457" y="250" class="hexName" fill="#0B0D10" opacity="0.82">L 0.78 C 0.013</text>
+<rect x="550.6666666666667" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#9199A2" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="202" class="tokenName" fill="#FFFFFF">neutral-400</text>
+<text x="558.6666666666667" y="218" class="hexName" fill="#FFFFFF">#9199A2</text>
+<text x="558.6666666666667" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.015</text>
+<rect x="652.3333333333334" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#737B85" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="202" class="tokenName" fill="#FFFFFF">neutral-500</text>
+<text x="660.3333333333334" y="218" class="hexName" fill="#FFFFFF">#737B85</text>
+<text x="660.3333333333334" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.018</text>
+<rect x="754" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#575E66" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="202" class="tokenName" fill="#FFFFFF">neutral-600</text>
+<text x="762" y="218" class="hexName" fill="#FFFFFF">#575E66</text>
+<text x="762" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.015</text>
+<rect x="855.6666666666667" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#3D4349" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="202" class="tokenName" fill="#FFFFFF">neutral-700</text>
+<text x="863.6666666666667" y="218" class="hexName" fill="#FFFFFF">#3D4349</text>
+<text x="863.6666666666667" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.013</text>
+<rect x="957.3333333333334" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#25292E" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="202" class="tokenName" fill="#FFFFFF">neutral-800</text>
+<text x="965.3333333333334" y="218" class="hexName" fill="#FFFFFF">#25292E</text>
+<text x="965.3333333333334" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.010</text>
+<rect x="1059" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#131619" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="202" class="tokenName" fill="#FFFFFF">neutral-900</text>
+<text x="1067" y="218" class="hexName" fill="#FFFFFF">#131619</text>
+<text x="1067" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.008</text>
+<rect x="1160.6666666666667" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#050607" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="202" class="tokenName" fill="#FFFFFF">neutral-950</text>
+<text x="1168.6666666666667" y="218" class="hexName" fill="#FFFFFF">#050607</text>
+<text x="1168.6666666666667" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.005</text>
+<rect x="1262.3333333333335" y="180" width="93.66666666666667" height="80" rx="8" ry="8" fill="#000001" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="202" class="tokenName" fill="#FFFFFF">neutral-1000</text>
+<text x="1270.3333333333335" y="218" class="hexName" fill="#FFFFFF">#000001</text>
+<text x="1270.3333333333335" y="250" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.004</text>
+<text x="128" y="338" class="paletteLabel" text-anchor="end">Brand Violet (H 280)</text>
+<rect x="144" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#ECF1FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="332" class="tokenName" fill="#0B0D10">brand-50</text>
+<text x="152" y="348" class="hexName" fill="#0B0D10">#ECF1FF</text>
+<text x="152" y="380" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.065</text>
+<rect x="245.66666666666669" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#D9E1FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="332" class="tokenName" fill="#0B0D10">brand-100</text>
+<text x="253.66666666666669" y="348" class="hexName" fill="#0B0D10">#D9E1FF</text>
+<text x="253.66666666666669" y="380" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.107</text>
+<rect x="347.33333333333337" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#BFC6FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="332" class="tokenName" fill="#0B0D10">brand-200</text>
+<text x="355.33333333333337" y="348" class="hexName" fill="#0B0D10">#BFC6FF</text>
+<text x="355.33333333333337" y="380" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.144</text>
+<rect x="449" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#A3A7FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="332" class="tokenName" fill="#FFFFFF">brand-300</text>
+<text x="457" y="348" class="hexName" fill="#FFFFFF">#A3A7FF</text>
+<text x="457" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.78 C 0.177</text>
+<rect x="550.6666666666667" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#8482FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="332" class="tokenName" fill="#FFFFFF">brand-400</text>
+<text x="558.6666666666667" y="348" class="hexName" fill="#FFFFFF">#8482FF</text>
+<text x="558.6666666666667" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.204</text>
+<rect x="652.3333333333334" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#685EF7" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="332" class="tokenName" fill="#FFFFFF">brand-500</text>
+<text x="660.3333333333334" y="348" class="hexName" fill="#FFFFFF">#685EF7</text>
+<text x="660.3333333333334" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.220</text>
+<rect x="754" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#4F41CB" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="332" class="tokenName" fill="#FFFFFF">brand-600</text>
+<text x="762" y="348" class="hexName" fill="#FFFFFF">#4F41CB</text>
+<text x="762" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.204</text>
+<rect x="855.6666666666667" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#38289C" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="332" class="tokenName" fill="#FFFFFF">brand-700</text>
+<text x="863.6666666666667" y="348" class="hexName" fill="#FFFFFF">#38289C</text>
+<text x="863.6666666666667" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.177</text>
+<rect x="957.3333333333334" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#22116C" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="332" class="tokenName" fill="#FFFFFF">brand-800</text>
+<text x="965.3333333333334" y="348" class="hexName" fill="#FFFFFF">#22116C</text>
+<text x="965.3333333333334" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.144</text>
+<rect x="1059" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#120644" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="332" class="tokenName" fill="#FFFFFF">brand-900</text>
+<text x="1067" y="348" class="hexName" fill="#FFFFFF">#120644</text>
+<text x="1067" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.107</text>
+<rect x="1160.6666666666667" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#04011E" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="332" class="tokenName" fill="#FFFFFF">brand-950</text>
+<text x="1168.6666666666667" y="348" class="hexName" fill="#FFFFFF">#04011E</text>
+<text x="1168.6666666666667" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.065</text>
+<rect x="1262.3333333333335" y="310" width="93.66666666666667" height="80" rx="8" ry="8" fill="#000002" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="332" class="tokenName" fill="#FFFFFF">brand-1000</text>
+<text x="1270.3333333333335" y="348" class="hexName" fill="#FFFFFF">#000002</text>
+<text x="1270.3333333333335" y="380" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.020</text>
+<text x="128" y="468" class="paletteLabel" text-anchor="end">Accent Amber (H 75)</text>
+<rect x="144" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFF1CE" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="462" class="tokenName" fill="#0B0D10">accent-50</text>
+<text x="152" y="478" class="hexName" fill="#0B0D10">#FFF1CE</text>
+<text x="152" y="510" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.054</text>
+<rect x="245.66666666666669" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFE0A8" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="462" class="tokenName" fill="#0B0D10">accent-100</text>
+<text x="253.66666666666669" y="478" class="hexName" fill="#0B0D10">#FFE0A8</text>
+<text x="253.66666666666669" y="510" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.085</text>
+<rect x="347.33333333333337" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FDC679" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="462" class="tokenName" fill="#0B0D10">accent-200</text>
+<text x="355.33333333333337" y="478" class="hexName" fill="#0B0D10">#FDC679</text>
+<text x="355.33333333333337" y="510" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.113</text>
+<rect x="449" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#EAA944" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="462" class="tokenName" fill="#0B0D10">accent-300</text>
+<text x="457" y="478" class="hexName" fill="#0B0D10">#EAA944</text>
+<text x="457" y="510" class="hexName" fill="#0B0D10" opacity="0.82">L 0.78 C 0.138</text>
+<rect x="550.6666666666667" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#D08700" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="462" class="tokenName" fill="#FFFFFF">accent-400</text>
+<text x="558.6666666666667" y="478" class="hexName" fill="#FFFFFF">#D08700</text>
+<text x="558.6666666666667" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.158</text>
+<rect x="652.3333333333334" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#B36600" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="462" class="tokenName" fill="#FFFFFF">accent-500</text>
+<text x="660.3333333333334" y="478" class="hexName" fill="#FFFFFF">#B36600</text>
+<text x="660.3333333333334" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.170</text>
+<rect x="754" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#8F4A00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="462" class="tokenName" fill="#FFFFFF">accent-600</text>
+<text x="762" y="478" class="hexName" fill="#FFFFFF">#8F4A00</text>
+<text x="762" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.158</text>
+<rect x="855.6666666666667" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#6B3100" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="462" class="tokenName" fill="#FFFFFF">accent-700</text>
+<text x="863.6666666666667" y="478" class="hexName" fill="#FFFFFF">#6B3100</text>
+<text x="863.6666666666667" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.138</text>
+<rect x="957.3333333333334" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#471B00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="462" class="tokenName" fill="#FFFFFF">accent-800</text>
+<text x="965.3333333333334" y="478" class="hexName" fill="#FFFFFF">#471B00</text>
+<text x="965.3333333333334" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.113</text>
+<rect x="1059" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#2B0C00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="462" class="tokenName" fill="#FFFFFF">accent-900</text>
+<text x="1067" y="478" class="hexName" fill="#FFFFFF">#2B0C00</text>
+<text x="1067" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.085</text>
+<rect x="1160.6666666666667" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#110200" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="462" class="tokenName" fill="#FFFFFF">accent-950</text>
+<text x="1168.6666666666667" y="478" class="hexName" fill="#FFFFFF">#110200</text>
+<text x="1168.6666666666667" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.054</text>
+<rect x="1262.3333333333335" y="440" width="93.66666666666667" height="80" rx="8" ry="8" fill="#010000" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="462" class="tokenName" fill="#FFFFFF">accent-1000</text>
+<text x="1270.3333333333335" y="478" class="hexName" fill="#FFFFFF">#010000</text>
+<text x="1270.3333333333335" y="510" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.020</text>
+<text x="128" y="598" class="paletteLabel" text-anchor="end">Success Green (H 150)</text>
+<rect x="144" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#DDFFE2" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="592" class="tokenName" fill="#0B0D10">success-50</text>
+<text x="152" y="608" class="hexName" fill="#0B0D10">#DDFFE2</text>
+<text x="152" y="640" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.054</text>
+<rect x="245.66666666666669" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#C0F9CA" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="592" class="tokenName" fill="#0B0D10">success-100</text>
+<text x="253.66666666666669" y="608" class="hexName" fill="#0B0D10">#C0F9CA</text>
+<text x="253.66666666666669" y="640" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.085</text>
+<rect x="347.33333333333337" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#9AE6AA" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="592" class="tokenName" fill="#0B0D10">success-200</text>
+<text x="355.33333333333337" y="608" class="hexName" fill="#0B0D10">#9AE6AA</text>
+<text x="355.33333333333337" y="640" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.113</text>
+<rect x="449" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#70D087" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="592" class="tokenName" fill="#0B0D10">success-300</text>
+<text x="457" y="608" class="hexName" fill="#0B0D10">#70D087</text>
+<text x="457" y="640" class="hexName" fill="#0B0D10" opacity="0.82">L 0.78 C 0.138</text>
+<rect x="550.6666666666667" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#3DB261" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="592" class="tokenName" fill="#FFFFFF">success-400</text>
+<text x="558.6666666666667" y="608" class="hexName" fill="#FFFFFF">#3DB261</text>
+<text x="558.6666666666667" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.158</text>
+<rect x="652.3333333333334" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#00943E" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="592" class="tokenName" fill="#FFFFFF">success-500</text>
+<text x="660.3333333333334" y="608" class="hexName" fill="#FFFFFF">#00943E</text>
+<text x="660.3333333333334" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.170</text>
+<rect x="754" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#007425" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="592" class="tokenName" fill="#FFFFFF">success-600</text>
+<text x="762" y="608" class="hexName" fill="#FFFFFF">#007425</text>
+<text x="762" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.158</text>
+<rect x="855.6666666666667" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#005511" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="592" class="tokenName" fill="#FFFFFF">success-700</text>
+<text x="863.6666666666667" y="608" class="hexName" fill="#FFFFFF">#005511</text>
+<text x="863.6666666666667" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.138</text>
+<rect x="957.3333333333334" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#003602" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="592" class="tokenName" fill="#FFFFFF">success-800</text>
+<text x="965.3333333333334" y="608" class="hexName" fill="#FFFFFF">#003602</text>
+<text x="965.3333333333334" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.113</text>
+<rect x="1059" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#001F00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="592" class="tokenName" fill="#FFFFFF">success-900</text>
+<text x="1067" y="608" class="hexName" fill="#FFFFFF">#001F00</text>
+<text x="1067" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.085</text>
+<rect x="1160.6666666666667" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#000A00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="592" class="tokenName" fill="#FFFFFF">success-950</text>
+<text x="1168.6666666666667" y="608" class="hexName" fill="#FFFFFF">#000A00</text>
+<text x="1168.6666666666667" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.054</text>
+<rect x="1262.3333333333335" y="570" width="93.66666666666667" height="80" rx="8" ry="8" fill="#000100" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="592" class="tokenName" fill="#FFFFFF">success-1000</text>
+<text x="1270.3333333333335" y="608" class="hexName" fill="#FFFFFF">#000100</text>
+<text x="1270.3333333333335" y="640" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.020</text>
+<text x="128" y="728" class="paletteLabel" text-anchor="end">Warning Orange (H 60)</text>
+<rect x="144" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFEDD0" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="722" class="tokenName" fill="#0B0D10">warning-50</text>
+<text x="152" y="738" class="hexName" fill="#0B0D10">#FFEDD0</text>
+<text x="152" y="770" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.056</text>
+<rect x="245.66666666666669" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFDAAC" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="722" class="tokenName" fill="#0B0D10">warning-100</text>
+<text x="253.66666666666669" y="738" class="hexName" fill="#0B0D10">#FFDAAC</text>
+<text x="253.66666666666669" y="770" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.089</text>
+<rect x="347.33333333333337" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFBE7E" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="722" class="tokenName" fill="#0B0D10">warning-200</text>
+<text x="355.33333333333337" y="738" class="hexName" fill="#0B0D10">#FFBE7E</text>
+<text x="355.33333333333337" y="770" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.119</text>
+<rect x="449" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FA9F4C" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="722" class="tokenName" fill="#0B0D10">warning-300</text>
+<text x="457" y="738" class="hexName" fill="#0B0D10">#FA9F4C</text>
+<text x="457" y="770" class="hexName" fill="#0B0D10" opacity="0.82">L 0.78 C 0.146</text>
+<rect x="550.6666666666667" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#E07A00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="722" class="tokenName" fill="#FFFFFF">warning-400</text>
+<text x="558.6666666666667" y="738" class="hexName" fill="#FFFFFF">#E07A00</text>
+<text x="558.6666666666667" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.167</text>
+<rect x="652.3333333333334" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#C35700" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="722" class="tokenName" fill="#FFFFFF">warning-500</text>
+<text x="660.3333333333334" y="738" class="hexName" fill="#FFFFFF">#C35700</text>
+<text x="660.3333333333334" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.180</text>
+<rect x="754" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#9D3C00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="722" class="tokenName" fill="#FFFFFF">warning-600</text>
+<text x="762" y="738" class="hexName" fill="#FFFFFF">#9D3C00</text>
+<text x="762" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.167</text>
+<rect x="855.6666666666667" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#762400" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="722" class="tokenName" fill="#FFFFFF">warning-700</text>
+<text x="863.6666666666667" y="738" class="hexName" fill="#FFFFFF">#762400</text>
+<text x="863.6666666666667" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.146</text>
+<rect x="957.3333333333334" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#4F0F00" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="722" class="tokenName" fill="#FFFFFF">warning-800</text>
+<text x="965.3333333333334" y="738" class="hexName" fill="#FFFFFF">#4F0F00</text>
+<text x="965.3333333333334" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.119</text>
+<rect x="1059" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#300400" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="722" class="tokenName" fill="#FFFFFF">warning-900</text>
+<text x="1067" y="738" class="hexName" fill="#FFFFFF">#300400</text>
+<text x="1067" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.089</text>
+<rect x="1160.6666666666667" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#130100" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="722" class="tokenName" fill="#FFFFFF">warning-950</text>
+<text x="1168.6666666666667" y="738" class="hexName" fill="#FFFFFF">#130100</text>
+<text x="1168.6666666666667" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.056</text>
+<rect x="1262.3333333333335" y="700" width="93.66666666666667" height="80" rx="8" ry="8" fill="#010000" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="722" class="tokenName" fill="#FFFFFF">warning-1000</text>
+<text x="1270.3333333333335" y="738" class="hexName" fill="#FFFFFF">#010000</text>
+<text x="1270.3333333333335" y="770" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.020</text>
+<text x="128" y="858" class="paletteLabel" text-anchor="end">Danger Red (H 25)</text>
+<rect x="144" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFE5DF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="852" class="tokenName" fill="#0B0D10">danger-50</text>
+<text x="152" y="868" class="hexName" fill="#0B0D10">#FFE5DF</text>
+<text x="152" y="900" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.065</text>
+<rect x="245.66666666666669" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFCCC4" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="852" class="tokenName" fill="#0B0D10">danger-100</text>
+<text x="253.66666666666669" y="868" class="hexName" fill="#0B0D10">#FFCCC4</text>
+<text x="253.66666666666669" y="900" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.107</text>
+<rect x="347.33333333333337" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FFAAA1" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="852" class="tokenName" fill="#0B0D10">danger-200</text>
+<text x="355.33333333333337" y="868" class="hexName" fill="#0B0D10">#FFAAA1</text>
+<text x="355.33333333333337" y="900" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.144</text>
+<rect x="449" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FF847C" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="852" class="tokenName" fill="#FFFFFF">danger-300</text>
+<text x="457" y="868" class="hexName" fill="#FFFFFF">#FF847C</text>
+<text x="457" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.78 C 0.177</text>
+<rect x="550.6666666666667" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#FD5654" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="852" class="tokenName" fill="#FFFFFF">danger-400</text>
+<text x="558.6666666666667" y="868" class="hexName" fill="#FFFFFF">#FD5654</text>
+<text x="558.6666666666667" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.204</text>
+<rect x="652.3333333333334" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#DF202E" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="852" class="tokenName" fill="#FFFFFF">danger-500</text>
+<text x="660.3333333333334" y="868" class="hexName" fill="#FFFFFF">#DF202E</text>
+<text x="660.3333333333334" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.220</text>
+<rect x="754" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#B50015" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="852" class="tokenName" fill="#FFFFFF">danger-600</text>
+<text x="762" y="868" class="hexName" fill="#FFFFFF">#B50015</text>
+<text x="762" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.204</text>
+<rect x="855.6666666666667" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#890002" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="852" class="tokenName" fill="#FFFFFF">danger-700</text>
+<text x="863.6666666666667" y="868" class="hexName" fill="#FFFFFF">#890002</text>
+<text x="863.6666666666667" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.177</text>
+<rect x="957.3333333333334" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#5D0000" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="852" class="tokenName" fill="#FFFFFF">danger-800</text>
+<text x="965.3333333333334" y="868" class="hexName" fill="#FFFFFF">#5D0000</text>
+<text x="965.3333333333334" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.144</text>
+<rect x="1059" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#390000" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="852" class="tokenName" fill="#FFFFFF">danger-900</text>
+<text x="1067" y="868" class="hexName" fill="#FFFFFF">#390000</text>
+<text x="1067" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.107</text>
+<rect x="1160.6666666666667" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#180000" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="852" class="tokenName" fill="#FFFFFF">danger-950</text>
+<text x="1168.6666666666667" y="868" class="hexName" fill="#FFFFFF">#180000</text>
+<text x="1168.6666666666667" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.065</text>
+<rect x="1262.3333333333335" y="830" width="93.66666666666667" height="80" rx="8" ry="8" fill="#020000" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="852" class="tokenName" fill="#FFFFFF">danger-1000</text>
+<text x="1270.3333333333335" y="868" class="hexName" fill="#FFFFFF">#020000</text>
+<text x="1270.3333333333335" y="900" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.020</text>
+<text x="128" y="988" class="paletteLabel" text-anchor="end">Info Blue (H 240)</text>
+<rect x="144" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#D4FBFF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="152" y="982" class="tokenName" fill="#0B0D10">info-50</text>
+<text x="152" y="998" class="hexName" fill="#0B0D10">#D4FBFF</text>
+<text x="152" y="1030" class="hexName" fill="#0B0D10" opacity="0.82">L 0.97 C 0.056</text>
+<rect x="245.66666666666669" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#B1F1FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="253.66666666666669" y="982" class="tokenName" fill="#0B0D10">info-100</text>
+<text x="253.66666666666669" y="998" class="hexName" fill="#0B0D10">#B1F1FF</text>
+<text x="253.66666666666669" y="1030" class="hexName" fill="#0B0D10" opacity="0.82">L 0.93 C 0.089</text>
+<rect x="347.33333333333337" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#84DBFF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="355.33333333333337" y="982" class="tokenName" fill="#0B0D10">info-200</text>
+<text x="355.33333333333337" y="998" class="hexName" fill="#0B0D10">#84DBFF</text>
+<text x="355.33333333333337" y="1030" class="hexName" fill="#0B0D10" opacity="0.82">L 0.86 C 0.119</text>
+<rect x="449" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#4FC2FF" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="457" y="982" class="tokenName" fill="#0B0D10">info-300</text>
+<text x="457" y="998" class="hexName" fill="#0B0D10">#4FC2FF</text>
+<text x="457" y="1030" class="hexName" fill="#0B0D10" opacity="0.82">L 0.78 C 0.146</text>
+<rect x="550.6666666666667" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#00A2F4" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="558.6666666666667" y="982" class="tokenName" fill="#FFFFFF">info-400</text>
+<text x="558.6666666666667" y="998" class="hexName" fill="#FFFFFF">#00A2F4</text>
+<text x="558.6666666666667" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.68 C 0.167</text>
+<rect x="652.3333333333334" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#0083D8" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="660.3333333333334" y="982" class="tokenName" fill="#FFFFFF">info-500</text>
+<text x="660.3333333333334" y="998" class="hexName" fill="#FFFFFF">#0083D8</text>
+<text x="660.3333333333334" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.58 C 0.180</text>
+<rect x="754" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#0064B0" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="762" y="982" class="tokenName" fill="#FFFFFF">info-600</text>
+<text x="762" y="998" class="hexName" fill="#FFFFFF">#0064B0</text>
+<text x="762" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.48 C 0.167</text>
+<rect x="855.6666666666667" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#004686" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="863.6666666666667" y="982" class="tokenName" fill="#FFFFFF">info-700</text>
+<text x="863.6666666666667" y="998" class="hexName" fill="#FFFFFF">#004686</text>
+<text x="863.6666666666667" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.38 C 0.146</text>
+<rect x="957.3333333333334" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#002B5C" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="965.3333333333334" y="982" class="tokenName" fill="#FFFFFF">info-800</text>
+<text x="965.3333333333334" y="998" class="hexName" fill="#FFFFFF">#002B5C</text>
+<text x="965.3333333333334" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.28 C 0.119</text>
+<rect x="1059" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#001739" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1067" y="982" class="tokenName" fill="#FFFFFF">info-900</text>
+<text x="1067" y="998" class="hexName" fill="#FFFFFF">#001739</text>
+<text x="1067" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.20 C 0.089</text>
+<rect x="1160.6666666666667" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#000619" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1168.6666666666667" y="982" class="tokenName" fill="#FFFFFF">info-950</text>
+<text x="1168.6666666666667" y="998" class="hexName" fill="#FFFFFF">#000619</text>
+<text x="1168.6666666666667" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.12 C 0.056</text>
+<rect x="1262.3333333333335" y="960" width="93.66666666666667" height="80" rx="8" ry="8" fill="#000002" stroke="#E4E8ED" stroke-width="0.5"/>
+<text x="1270.3333333333335" y="982" class="tokenName" fill="#FFFFFF">info-1000</text>
+<text x="1270.3333333333335" y="998" class="hexName" fill="#FFFFFF">#000002</text>
+<text x="1270.3333333333335" y="1030" class="hexName" fill="#FFFFFF" opacity="0.82">L 0.05 C 0.020</text>
+<text x="140" y="1112" class="subtitle" font-size="11">Formula: OKLab (Bjorn Ottosson) - HEX is sRGB clamp approx - Use oklch() CSS fn for exact - 2026-04-20</text>
+</svg>

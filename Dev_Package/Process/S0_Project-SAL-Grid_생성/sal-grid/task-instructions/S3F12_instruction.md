@@ -10,12 +10,12 @@
 ## Task 목표
 
 Skills(스킬장터) 페이지를 정적 소개 페이지에서 실제 동작하는 마켓플레이스로 전환한다.
-`app.js`에 이미 정의된 23개 스킬 데이터(`MCW.skills`)를 활용하여 스킬 탐색, 상세 조회, 설치/제거, 마이스킬 관리 기능을 구현한다.
+`app.js`에 이미 정의된 23개 스킬 데이터(`CoCoBot.skills`)를 활용하여 스킬 탐색, 상세 조회, 설치/제거, 마이스킬 관리 기능을 구현한다.
 
 ## 배경 및 목적
 
 현재 Skills 페이지는 `js/skills.js`가 없고 4개 기능 카드와 인기 스킬 칩만 정적으로 표시된다.
-`home.js`에 `installSkill()` 로직이 이미 있으며, `app.js`의 `MCW.skills` 배열(23개)과 `MCW.skillPresets`(6종)를 프론트엔드에서 렌더링해야 한다.
+`home.js`에 `installSkill()` 로직이 이미 있으며, `app.js`의 `CoCoBot.skills` 배열(23개)과 `CoCoBot.skillPresets`(6종)를 프론트엔드에서 렌더링해야 한다.
 
 ## 기능 요구사항
 
@@ -40,11 +40,11 @@ Skills(스킬장터) 페이지를 정적 소개 페이지에서 실제 동작하
 - 빈 상태: "장착된 스킬이 없습니다. 마켓플레이스에서 스킬을 추가하세요."
 
 ### 4. `js/skills.js` (신규 생성)
-- `MCW.skills` 데이터를 렌더링하는 메인 로직
+- `CoCoBot.skills` 데이터를 렌더링하는 메인 로직
 - 필터/검색/정렬 상태 관리
 - 카드 클릭 → detail.html 이동
-- 설치/제거 → `MCW.storage` 또는 localStorage 사용
-- 프리셋 설치 → `MCW.skillPresets` 활용
+- 설치/제거 → `CoCoBot.storage` 또는 localStorage 사용
+- 프리셋 설치 → `CoCoBot.skillPresets` 활용
 
 ### 5. `css/skills.css` 확장
 - 스킬 카드 그리드 (반응형 2열→1열)
@@ -54,8 +54,8 @@ Skills(스킬장터) 페이지를 정적 소개 페이지에서 실제 동작하
 
 ## 코드 작성 기준
 - 파일 상단에 `@task S3F12` 주석 필수
-- `MCW.skills` 데이터 구조: `{ id, name, icon, category, description, systemPrompt, isFree, price, installs, rating }`
-- `MCW.skillPresets` 구조: `{ id, name, description, skills: [skillId, ...] }`
+- `CoCoBot.skills` 데이터 구조: `{ id, name, icon, category, description, systemPrompt, isFree, price, installs, rating }`
+- `CoCoBot.skillPresets` 구조: `{ id, name, description, skills: [skillId, ...] }`
 - 스킬 저장: `mcw_skills_{botId}_{personaId}` (localStorage)
 
 ## 생성/수정 파일

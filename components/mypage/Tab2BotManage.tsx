@@ -1,7 +1,7 @@
 /**
- * @task S5FE6
- * @description 마이페이지 탭2 — 코코봇 관리
- * 내 코코봇 목록(카드뷰), 페르소나 관리, per-persona 툴 6종, 복제/내보내기/삭제
+ * @task S7FE7
+ * @description 마이페이지 탭2 — 코코봇 관리 (S7 리디자인)
+ * Semantic 토큰 전용, EmptyState + Card + Badge + 반응형
  */
 'use client';
 
@@ -69,32 +69,36 @@ function UrlPanel({ url }: { url: string | null }) {
     });
   };
   return (
-    <div className="p-4 rounded-[var(--radius-md)] bg-[rgb(var(--bg-subtle))] border border-[rgb(var(--border))] space-y-3">
-      <p className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide">배포 URL</p>
+    <div className="p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)] space-y-3">
+      <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">배포 URL</p>
       {url ? (
         <>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[rgb(var(--color-primary))] truncate flex-1">{fullUrl}</span>
+            <span className="text-sm text-[var(--text-link)] truncate flex-1">{fullUrl}</span>
             <button
               type="button"
               onClick={handleCopy}
+              aria-label={copied ? '복사됨' : 'URL 복사'}
               className={clsx(
                 'text-xs px-3 py-1 rounded-[var(--radius-sm)] border transition-colors flex-shrink-0',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
                 copied
-                  ? 'border-[rgb(var(--color-success))] text-[rgb(var(--color-success))]'
-                  : 'border-[rgb(var(--border))] text-[rgb(var(--text-secondary))] hover:border-[rgb(var(--border-strong))]',
+                  ? 'border-[var(--state-success-border)] text-[var(--state-success-fg)] bg-[var(--state-success-bg)]'
+                  : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]',
               )}
             >
               {copied ? '복사됨' : '복사'}
             </button>
           </div>
-          {/* QR 코드 자리 (실제 QR 라이브러리 연동 예정) */}
-          <div className="w-24 h-24 rounded-[var(--radius-sm)] bg-[rgb(var(--bg-muted))] border border-[rgb(var(--border))] flex items-center justify-center">
-            <span className="text-xs text-[rgb(var(--text-muted))]">QR 코드</span>
+          <div
+            className="w-24 h-24 rounded-[var(--radius-sm)] bg-[var(--surface-2)] border border-[var(--border-subtle)] flex items-center justify-center"
+            aria-label="QR 코드 영역"
+          >
+            <span className="text-xs text-[var(--text-tertiary)]">QR 코드</span>
           </div>
         </>
       ) : (
-        <p className="text-sm text-[rgb(var(--text-muted))]">배포 URL이 없습니다. 코코봇을 배포해주세요.</p>
+        <p className="text-sm text-[var(--text-tertiary)]">배포 URL이 없습니다. 코코봇을 배포해주세요.</p>
       )}
     </div>
   );
@@ -142,16 +146,19 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
   };
 
   return (
-    <div className="p-4 rounded-[var(--radius-md)] bg-[rgb(var(--bg-subtle))] border border-[rgb(var(--border))] space-y-3">
+    <div className="p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)] space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide">
+        <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">
           페르소나 ({list.length}/10)
         </p>
         {list.length < 10 && (
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="text-xs text-[rgb(var(--color-primary))] hover:underline"
+            className={clsx(
+              'text-xs font-medium text-[var(--interactive-primary)]',
+              'hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--ring-focus)]',
+            )}
           >
             + 추가
           </button>
@@ -162,13 +169,14 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
         {list.map(p => (
           <div
             key={p.id}
-            className="flex items-center justify-between px-3 py-2 rounded-[var(--radius-sm)] bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))]"
+            className="flex items-center justify-between px-3 py-2 rounded-[var(--radius-sm)] bg-[var(--surface-2)] border border-[var(--border-subtle)]"
           >
-            <span className="text-sm text-[rgb(var(--text-primary))]">{p.name}</span>
+            <span className="text-sm text-[var(--text-primary)]">{p.name}</span>
             <button
               type="button"
+              aria-label={`${p.name} 페르소나 삭제`}
               onClick={() => handleDelete(p.id)}
-              className="text-xs text-[rgb(var(--color-error))] hover:underline"
+              className="text-xs text-[var(--state-danger-fg)] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--ring-focus)]"
             >
               삭제
             </button>
@@ -185,15 +193,29 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
             placeholder="페르소나 이름"
             maxLength={30}
             autoFocus
+            aria-label="새 페르소나 이름"
             onKeyDown={e => { if (e.key === 'Enter') handleAdd(); if (e.key === 'Escape') setAdding(false); }}
             className={clsx(
-              'flex-1 px-3 py-1.5 text-sm rounded-[var(--radius-sm)] border border-[rgb(var(--border))]',
-              'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))]',
-              'focus:outline-none focus:border-[rgb(var(--color-primary))]',
+              'flex-1 px-3 py-1.5 text-sm rounded-[var(--radius-sm)]',
+              'border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]',
+              'focus:outline-none focus:border-[var(--interactive-primary)]',
+              'focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
             )}
           />
-          <button type="button" onClick={handleAdd} className="text-sm text-[rgb(var(--color-primary))]">확인</button>
-          <button type="button" onClick={() => setAdding(false)} className="text-sm text-[rgb(var(--text-muted))]">취소</button>
+          <button
+            type="button"
+            onClick={handleAdd}
+            className="text-sm font-medium text-[var(--interactive-primary)] hover:underline"
+          >
+            확인
+          </button>
+          <button
+            type="button"
+            onClick={() => setAdding(false)}
+            className="text-sm text-[var(--text-tertiary)] hover:underline"
+          >
+            취소
+          </button>
         </div>
       )}
     </div>
@@ -205,40 +227,42 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
 function ToolPanel({ activeTool, onSelect }: { activeTool: ToolId | null; onSelect: (t: ToolId | null) => void }) {
   return (
     <div className="space-y-2">
-      <p className="text-xs font-medium text-[rgb(var(--text-muted))] uppercase tracking-wide">툴 (6종)</p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">툴 (6종)</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2" role="group" aria-label="코코봇 툴 선택">
         {TOOL_LIST.map(tool => (
           <button
             key={tool.id}
             type="button"
+            aria-pressed={activeTool === tool.id}
             onClick={() => onSelect(activeTool === tool.id ? null : tool.id)}
             className={clsx(
               'flex flex-col items-start px-3 py-2.5 rounded-[var(--radius-md)] border text-left transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
               activeTool === tool.id
-                ? 'border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary-muted))]'
-                : 'border-[rgb(var(--border))] bg-[rgb(var(--bg-subtle))] hover:border-[rgb(var(--border-strong))]',
+                ? 'border-[var(--interactive-primary)] bg-[var(--surface-1)]'
+                : 'border-[var(--border-default)] bg-[var(--surface-1)] hover:border-[var(--border-strong)]',
             )}
           >
-            <span className="text-base mb-0.5">{tool.icon}</span>
+            <span className="text-base mb-0.5" aria-hidden="true">{tool.icon}</span>
             <span className={clsx(
               'text-xs font-semibold',
-              activeTool === tool.id ? 'text-[rgb(var(--color-primary))]' : 'text-[rgb(var(--text-primary))]',
+              activeTool === tool.id ? 'text-[var(--interactive-primary)]' : 'text-[var(--text-primary)]',
             )}>
               {tool.label}
             </span>
-            <span className="text-[10px] text-[rgb(var(--text-muted))] leading-tight">{tool.desc}</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] leading-tight [word-break:keep-all]">{tool.desc}</span>
           </button>
         ))}
       </div>
 
       {/* 툴 패널 콘텐츠 */}
       {activeTool && (
-        <div className="mt-3 p-4 rounded-[var(--radius-md)] bg-[rgb(var(--bg-muted))] border border-[rgb(var(--border))]">
+        <div className="mt-3 p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)]">
           {activeTool === 'settings' ? (
             <BotSettingsPanel />
           ) : (
-            <div className="text-sm text-[rgb(var(--text-secondary))] text-center py-4">
-              <span className="text-2xl block mb-2">
+            <div className="text-sm text-[var(--text-secondary)] text-center py-4">
+              <span className="text-2xl block mb-2" aria-hidden="true">
                 {TOOL_LIST.find(t => t.id === activeTool)?.icon}
               </span>
               {TOOL_LIST.find(t => t.id === activeTool)?.label} 패널 — 추후 연동 예정
@@ -258,19 +282,21 @@ function BotSettingsPanel() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <p className="text-sm font-semibold text-[rgb(var(--text-primary))] mb-2">DM 보안 정책</p>
+      <fieldset>
+        <legend className="text-sm font-semibold text-[var(--text-primary)] mb-2">DM 보안 정책</legend>
         <div className="flex gap-2 flex-wrap">
           {DM_SECURITY_LEVELS.map(s => (
             <button
               key={s.level}
               type="button"
+              aria-pressed={dmLevel === s.level}
               onClick={() => setDmLevel(s.level)}
               className={clsx(
                 'px-3 py-1.5 rounded-[var(--radius-md)] text-sm border transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
                 dmLevel === s.level
-                  ? 'border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary-muted))] text-[rgb(var(--color-primary))]'
-                  : 'border-[rgb(var(--border))] text-[rgb(var(--text-secondary))] hover:border-[rgb(var(--border-strong))]',
+                  ? 'border-[var(--interactive-primary)] bg-[var(--surface-2)] text-[var(--interactive-primary)]'
+                  : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]',
               )}
             >
               {s.label}
@@ -278,16 +304,20 @@ function BotSettingsPanel() {
             </button>
           ))}
         </div>
-      </div>
+      </fieldset>
       <div>
-        <p className="text-sm font-semibold text-[rgb(var(--text-primary))] mb-2">AI 모델</p>
+        <label htmlFor="bot-ai-model" className="text-sm font-semibold text-[var(--text-primary)] mb-2 block">
+          AI 모델
+        </label>
         <select
+          id="bot-ai-model"
           value={model}
           onChange={e => setModel(e.target.value)}
           className={clsx(
-            'px-3 py-2 rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-            'bg-[rgb(var(--bg-base))] text-[rgb(var(--text-primary))] text-sm',
-            'focus:outline-none focus:border-[rgb(var(--color-primary))]',
+            'px-3 py-2 rounded-[var(--radius-md)] border border-[var(--border-default)]',
+            'bg-[var(--surface-0)] text-[var(--text-primary)] text-sm',
+            'focus:outline-none focus:border-[var(--interactive-primary)]',
+            'focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
           )}
         >
           <option value="gpt-4o">GPT-4o</option>
@@ -302,15 +332,38 @@ function BotSettingsPanel() {
 // ── 봇 카드 컴포넌트 ─────────────────────────────────────────────────────
 
 function BotStatusBadge({ status }: { status?: string }) {
-  const map: Record<string, { label: string; cls: string; dot: string }> = {
-    active: { label: '활성', cls: 'bg-[rgb(var(--color-success)/0.15)] text-[rgb(var(--color-success))] border-[rgb(var(--color-success)/0.3)]', dot: 'bg-[rgb(var(--color-success))]' },
-    draft:  { label: '초안', cls: 'bg-[rgb(var(--color-warning)/0.15)] text-[rgb(var(--color-warning))] border-[rgb(var(--color-warning)/0.3)]', dot: 'bg-[rgb(var(--color-warning))]' },
-    paused: { label: '정지', cls: 'bg-[rgb(var(--bg-surface-hover))] text-[rgb(var(--text-muted))] border-border', dot: 'bg-[rgb(var(--text-muted))]' },
+  const map: Record<string, { label: string; bg: string; fg: string; border: string; dot: string }> = {
+    active: {
+      label: '활성',
+      bg: 'bg-[var(--state-success-bg)]',
+      fg: 'text-[var(--state-success-fg)]',
+      border: 'border-[var(--state-success-border)]',
+      dot: 'bg-[var(--state-success-fg)]',
+    },
+    draft: {
+      label: '초안',
+      bg: 'bg-[var(--state-warning-bg)]',
+      fg: 'text-[var(--state-warning-fg)]',
+      border: 'border-[var(--state-warning-border)]',
+      dot: 'bg-[var(--state-warning-fg)]',
+    },
+    paused: {
+      label: '정지',
+      bg: 'bg-[var(--surface-2)]',
+      fg: 'text-[var(--text-tertiary)]',
+      border: 'border-[var(--border-default)]',
+      dot: 'bg-[var(--text-tertiary)]',
+    },
   };
   const s = map[status ?? 'draft'] ?? map.draft;
   return (
-    <span className={clsx('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold border', s.cls)}>
-      <span className={clsx('w-1.5 h-1.5 rounded-full', s.dot)} />
+    <span
+      className={clsx(
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[var(--radius-full)] text-xs font-semibold border',
+        s.bg, s.fg, s.border,
+      )}
+    >
+      <span className={clsx('w-1.5 h-1.5 rounded-full', s.dot)} aria-hidden="true" />
       {s.label}
     </span>
   );
@@ -343,42 +396,54 @@ function BotCard({ bot, onDelete, onClone }: {
   };
 
   return (
-    <div
+    <article
       className={clsx(
         'rounded-[var(--radius-xl)] border transition-all',
         bot.status === 'draft'
-          ? 'border-dashed border-[rgb(var(--border-strong))] bg-[rgb(var(--bg-subtle))]'
-          : 'border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))]',
+          ? 'border-dashed border-[var(--border-strong)] bg-[var(--surface-1)]'
+          : 'border-[var(--border-default)] bg-[var(--surface-1)]',
       )}
       style={{ boxShadow: 'var(--shadow-sm)' }}
+      aria-label={`${bot.name} 코코봇`}
     >
       {/* 카드 헤더 */}
       <div
         className="p-4 cursor-pointer"
+        role="button"
+        tabIndex={0}
+        aria-expanded={expanded}
+        aria-controls={`bot-detail-${bot.id}`}
         onClick={() => setExpanded(v => !v)}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpanded(v => !v); }}}
       >
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[rgb(var(--color-primary-muted))] flex items-center justify-center text-xl flex-shrink-0">
+          <div
+            className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--surface-2)] flex items-center justify-center text-xl flex-shrink-0"
+            aria-hidden="true"
+          >
             {bot.emoji ?? '🤖'}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-[rgb(var(--text-primary))] truncate">{bot.name}</span>
+              <span className="font-semibold text-[var(--text-primary)] truncate">{bot.name}</span>
               <BotStatusBadge status={bot.status} />
             </div>
             {bot.description && (
-              <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5 truncate">{bot.description}</p>
+              <p className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate [word-break:keep-all]">{bot.description}</p>
             )}
             <div className="flex gap-4 mt-1.5">
-              <span className="text-xs text-[rgb(var(--text-muted))]">
-                대화 <span className="text-[rgb(var(--text-secondary))] font-medium">{(bot.conversation_count ?? 0).toLocaleString()}</span>
+              <span className="text-xs text-[var(--text-tertiary)]">
+                대화 <span className="text-[var(--text-secondary)] font-medium">{(bot.conversation_count ?? 0).toLocaleString()}</span>
               </span>
-              <span className="text-xs text-[rgb(var(--text-muted))]">
-                페르소나 <span className="text-[rgb(var(--text-secondary))] font-medium">{bot.personas?.length ?? 0}</span>/10
+              <span className="text-xs text-[var(--text-tertiary)]">
+                페르소나 <span className="text-[var(--text-secondary)] font-medium">{bot.personas?.length ?? 0}</span>/10
               </span>
             </div>
           </div>
-          <span className={clsx('text-[rgb(var(--text-muted))] transition-transform flex-shrink-0', expanded && 'rotate-180')}>
+          <span
+            className={clsx('text-[var(--text-tertiary)] transition-transform flex-shrink-0 text-sm', expanded && 'rotate-180')}
+            aria-hidden="true"
+          >
             ▾
           </span>
         </div>
@@ -386,20 +451,21 @@ function BotCard({ bot, onDelete, onClone }: {
 
       {/* 카드 확장 콘텐츠 */}
       {expanded && (
-        <div className="px-4 pb-4 space-y-4 border-t border-[rgb(var(--border))] pt-4">
-          {/* URL 패널 */}
+        <div
+          id={`bot-detail-${bot.id}`}
+          className="px-4 pb-4 space-y-4 border-t border-[var(--border-default)] pt-4"
+        >
           <UrlPanel url={bot.deploy_url} />
-
-          {/* 페르소나 관리 */}
           <PersonaPanel personas={bot.personas ?? []} botId={bot.id} />
 
-          {/* AI 인사말/FAQ 자동생성 */}
+          {/* AI 자동생성 버튼 */}
           <div className="flex gap-2 flex-wrap">
             <button
               type="button"
               className={clsx(
-                'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--color-primary))]',
-                'text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-muted))] transition-colors',
+                'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)]',
+                'text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
               )}
             >
               AI 인사말 자동생성
@@ -407,26 +473,26 @@ function BotCard({ bot, onDelete, onClone }: {
             <button
               type="button"
               className={clsx(
-                'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--color-primary))]',
-                'text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-muted))] transition-colors',
+                'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)]',
+                'text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
               )}
             >
               FAQ 자동생성
             </button>
           </div>
 
-          {/* 툴 6종 패널 */}
           <ToolPanel activeTool={activeTool} onSelect={setActiveTool} />
 
           {/* 액션 버튼: 복제/내보내기/삭제 */}
-          <div className="flex gap-2 flex-wrap pt-1 border-t border-[rgb(var(--border))]">
+          <div className="flex gap-2 flex-wrap pt-1 border-t border-[var(--border-default)]">
             <button
               type="button"
               onClick={() => onClone(bot.id)}
               className={clsx(
-                'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] hover:border-[rgb(var(--border-strong))]',
-                'transition-colors',
+                'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--border-default)]',
+                'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]',
+                'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
               )}
             >
               복제
@@ -436,9 +502,9 @@ function BotCard({ bot, onDelete, onClone }: {
               onClick={handleExport}
               disabled={exporting}
               className={clsx(
-                'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--border))]',
-                'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] hover:border-[rgb(var(--border-strong))]',
-                'transition-colors disabled:opacity-50',
+                'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--border-default)]',
+                'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]',
+                'transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
               )}
             >
               {exporting ? '내보내는 중...' : '내보내기'}
@@ -449,8 +515,9 @@ function BotCard({ bot, onDelete, onClone }: {
                   type="button"
                   onClick={() => { onDelete(bot.id); setDelConfirm(false); }}
                   className={clsx(
-                    'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--color-error)/0.5)]',
-                    'bg-[rgb(var(--color-error)/0.1)] text-[rgb(var(--color-error))] transition-colors',
+                    'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border',
+                    'border-[var(--state-danger-border)] bg-[var(--state-danger-bg)] text-[var(--state-danger-fg)]',
+                    'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
                   )}
                 >
                   확인 삭제
@@ -458,7 +525,7 @@ function BotCard({ bot, onDelete, onClone }: {
                 <button
                   type="button"
                   onClick={() => setDelConfirm(false)}
-                  className="px-3 py-1.5 text-sm text-[rgb(var(--text-muted))]"
+                  className="px-3 py-1.5 text-sm text-[var(--text-tertiary)] hover:underline"
                 >
                   취소
                 </button>
@@ -468,8 +535,10 @@ function BotCard({ bot, onDelete, onClone }: {
                 type="button"
                 onClick={() => setDelConfirm(true)}
                 className={clsx(
-                  'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[rgb(var(--color-error)/0.3)]',
-                  'text-[rgb(var(--color-error))] hover:bg-[rgb(var(--color-error)/0.1)] transition-colors',
+                  'px-3 py-1.5 text-sm rounded-[var(--radius-md)] border',
+                  'border-[var(--state-danger-border)] text-[var(--state-danger-fg)]',
+                  'hover:bg-[var(--state-danger-bg)] transition-colors',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
                 )}
               >
                 삭제
@@ -478,7 +547,7 @@ function BotCard({ bot, onDelete, onClone }: {
           </div>
         </div>
       )}
-    </div>
+    </article>
   );
 }
 
@@ -508,29 +577,44 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
 
   return (
     <div className="space-y-4">
-      {/* 헤더 */}
+      {/* PageToolbar 패턴 헤더 */}
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-[rgb(var(--text-primary))]">
+        <h2 className="text-base font-semibold text-[var(--text-primary)]">
           내 코코봇 ({bots.length})
         </h2>
         <a
           href="/birth"
           className={clsx(
             'inline-flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-lg)] text-sm font-semibold',
-            'bg-[rgb(var(--color-primary))] text-[rgb(var(--text-on-primary))]',
-            'hover:bg-[rgb(var(--color-primary-hover))] transition-colors',
+            'bg-[var(--interactive-primary)] text-[var(--text-inverted)]',
+            'hover:bg-[var(--interactive-primary-hover)] transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
           )}
         >
           + 새 코코봇
         </a>
       </div>
 
-      {/* 봇 카드 목록 */}
+      {/* 봇 카드 목록 — EmptyState */}
       {bots.length === 0 ? (
-        <div className="text-center py-16 text-[rgb(var(--text-muted))]">
-          <p className="text-4xl mb-3">🤖</p>
-          <p className="font-medium">아직 코코봇이 없습니다.</p>
-          <p className="text-sm mt-1">새 코코봇을 만들어보세요!</p>
+        <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
+          <span className="text-4xl" aria-hidden="true">🤖</span>
+          <p className="font-semibold text-[var(--text-secondary)] [word-break:keep-all]">
+            아직 코코봇이 없습니다.
+          </p>
+          <p className="text-sm text-[var(--text-tertiary)] [word-break:keep-all]">
+            새 코코봇을 만들어보세요!
+          </p>
+          <a
+            href="/birth"
+            className={clsx(
+              'mt-2 px-5 py-2 rounded-[var(--radius-lg)] text-sm font-semibold',
+              'bg-[var(--interactive-primary)] text-[var(--text-inverted)]',
+              'hover:bg-[var(--interactive-primary-hover)] transition-colors',
+            )}
+          >
+            코코봇 만들기
+          </a>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
@@ -546,14 +630,14 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
       )}
 
       {/* 가져오기 */}
-      <div className="pt-2 border-t border-[rgb(var(--border))]">
+      <div className="pt-2 border-t border-[var(--border-default)]">
         <label className={clsx(
           'inline-flex items-center gap-2 cursor-pointer px-3 py-2 rounded-[var(--radius-md)]',
-          'text-sm text-[rgb(var(--text-secondary))] border border-dashed border-[rgb(var(--border))]',
-          'hover:border-[rgb(var(--border-strong))] transition-colors',
+          'text-sm text-[var(--text-secondary)] border border-dashed border-[var(--border-default)]',
+          'hover:border-[var(--border-strong)] transition-colors',
         )}>
           <span>JSON에서 코코봇 가져오기</span>
-          <input type="file" accept=".json" className="hidden" />
+          <input type="file" accept=".json" className="hidden" aria-label="JSON 파일로 코코봇 가져오기" />
         </label>
       </div>
     </div>

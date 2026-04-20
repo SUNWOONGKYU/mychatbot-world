@@ -67,7 +67,7 @@ const HELPER_CATS: Category[] = [
 const CATEGORIES: Category[] = [...AVATAR_CATS, ...HELPER_CATS];
 
 const CATEGORY_NAMES: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.id, `${c.name} AI 코코봇`])
+  CATEGORIES.map((c) => [c.id, `${c.name} AI Assistant 코코봇`])
 );
 
 /* ─────────────────────────────────────────────────────────────
@@ -511,7 +511,7 @@ export default function GuestPageInner() {
         {/* ── 헤더 ──────────────────────────────────────────────── */}
         <header className="guest-header">
           <Link href="/" className="guest-logo">
-            CoCoBot World
+            CoCoBot
           </Link>
           <div className="guest-header-actions">
             <Link href="/login" className="btn-login">로그인</Link>

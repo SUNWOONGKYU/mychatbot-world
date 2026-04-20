@@ -15,7 +15,6 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import supabase from '@/lib/supabase';
 
 interface BotInfo {
@@ -331,7 +330,7 @@ function HirePageInner() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1rem' }}>
                     <div style={{ width: 48, height: 48, borderRadius: '0.75rem', background: '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 700, color: '#6366f1', flexShrink: 0, overflow: 'hidden' }}>
                       {bot?.avatar_url && /^https?:\/\//i.test(bot.avatar_url) ? (
-                        <Image src={bot.avatar_url} alt={bot.name} width={48} height={48} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={bot.avatar_url} alt={bot.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         (bot?.name ?? '?').charAt(0).toUpperCase()
                       )}

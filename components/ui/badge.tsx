@@ -1,0 +1,132 @@
+// @task S7FE4 — Composite: Badge
+// 기반: S7FE1 Semantic 토큰 + S7DS3 원칙 (Clarity First, Tokens Are Truth)
+// variant: neutral/brand/success/warning/danger/info
+// tone: solid/subtle  (HTMLAttributes.style 충돌 회피를 위해 rename)
+// size: sm/md
+// - Primitive 직접 참조 금지 (state.xxx, text.xxx, border.xxx 토큰만 소비)
+
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const badgeVariants = cva(
+  [
+    // Base
+    'inline-flex items-center gap-1 rounded-full font-medium font-sans',
+    'transition-colors duration-200 motion-reduce:transition-none',
+    'whitespace-nowrap',
+  ],
+  {
+    variants: {
+      variant: {
+        // neutral — surface-1 기반
+        neutral: '',
+        // brand — interactive-primary 계열
+        brand: '',
+        // Semantic State 토큰 소비
+        success: '',
+        warning: '',
+        danger:  '',
+        info:    '',
+      },
+      tone: {
+        solid:  '',
+        subtle: '',
+      },
+      size: {
+        sm: 'px-2   py-0.5 text-xs',
+        md: 'px-2.5 py-1   text-sm',
+      },
+    },
+    compoundVariants: [
+      /* ── neutral ── */
+      {
+        variant: 'neutral',
+        tone:    'solid',
+        className: 'bg-surface-4 text-text-inverted border border-transparent',
+      },
+      {
+        variant: 'neutral',
+        tone:    'subtle',
+        className: 'bg-surface-1 text-text-secondary border border-border-default',
+      },
+      /* ── brand ── */
+      {
+        variant: 'brand',
+        tone:    'solid',
+        className: 'bg-interactive-primary text-text-inverted border border-transparent',
+      },
+      {
+        variant: 'brand',
+        tone:    'subtle',
+        className: 'bg-interactive-secondary text-text-link border border-ring-focus',
+      },
+      /* ── success ── */
+      {
+        variant: 'success',
+        tone:    'solid',
+        className: 'bg-state-success-fg text-text-inverted border border-transparent',
+      },
+      {
+        variant: 'success',
+        tone:    'subtle',
+        className: 'bg-state-success-bg text-state-success-fg border border-state-success-border',
+      },
+      /* ── warning ── */
+      {
+        variant: 'warning',
+        tone:    'solid',
+        className: 'bg-state-warning-fg text-text-inverted border border-transparent',
+      },
+      {
+        variant: 'warning',
+        tone:    'subtle',
+        className: 'bg-state-warning-bg text-state-warning-fg border border-state-warning-border',
+      },
+      /* ── danger ── */
+      {
+        variant: 'danger',
+        tone:    'solid',
+        className: 'bg-state-danger-fg text-text-inverted border border-transparent',
+      },
+      {
+        variant: 'danger',
+        tone:    'subtle',
+        className: 'bg-state-danger-bg text-state-danger-fg border border-state-danger-border',
+      },
+      /* ── info ── */
+      {
+        variant: 'info',
+        tone:    'solid',
+        className: 'bg-state-info-fg text-text-inverted border border-transparent',
+      },
+      {
+        variant: 'info',
+        tone:    'subtle',
+        className: 'bg-state-info-bg text-state-info-fg border border-state-info-border',
+      },
+    ],
+    defaultVariants: {
+      variant: 'neutral',
+      tone:    'subtle',
+      size:    'md',
+    },
+  }
+);
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLSpanElement>,
+    VariantProps<typeof badgeVariants> {}
+
+const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
+  ({ className, variant, tone, size, ...props }, ref) => (
+    <span
+      ref={ref}
+      className={cn(badgeVariants({ variant, tone, size, className }))}
+      {...props}
+    />
+  )
+);
+Badge.displayName = 'Badge';
+
+export { Badge, badgeVariants };

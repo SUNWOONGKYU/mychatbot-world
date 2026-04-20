@@ -1,27 +1,32 @@
 /**
- * @task S1SC1
- * @description Login page
- * Email/password login + Social login (Google, Kakao) + signup/reset-password links.
- * Uses design system Tailwind tokens (bg-bg-base, text-text-primary, etc.)
+ * @task S7FE5 - P0 첫인상 페이지 리디자인
+ * @description Login page — S7 Semantic token 기반 리디자인
+ * Google 소셜 로그인 + 이메일/비밀번호 (카카오 제거)
+ * S7FE2 Field primitive 패턴 + state.danger.* 에러 토큰
  */
 
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useId, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signInWithEmail, signInWithGoogle, signInWithKakao } from '@/lib/auth'
+import { signInWithEmail, signInWithGoogle } from '@/lib/auth'
 
 export default function LoginPage() {
   const router = useRouter()
+  const emailId = useId()
+  const passwordId = useId()
+  const emailErrorId = useId()
+  const passwordErrorId = useId()
+  const generalErrorId = useId()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loadingEmail, setLoadingEmail] = useState(false)
   const [loadingGoogle, setLoadingGoogle] = useState(false)
-  const [loadingKakao, setLoadingKakao] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const isLoading = loadingEmail || loadingGoogle || loadingKakao
+  const isLoading = loadingEmail || loadingGoogle
 
   const handleEmailLogin = async (e: FormEvent) => {
     e.preventDefault()
@@ -50,180 +55,218 @@ export default function LoginPage() {
       setLoadingGoogle(true)
       setError(null)
       await signInWithGoogle()
-      // Page will redirect automatically via OAuth flow
+      // OAuth flow 자동 리디렉션
     } catch (err) {
       setError('Google 로그인에 실패했습니다. 다시 시도해 주세요.')
       setLoadingGoogle(false)
     }
   }
 
-  const handleKakaoLogin = async () => {
-    try {
-      setLoadingKakao(true)
-      setError(null)
-      await signInWithKakao()
-      // Page will redirect automatically via OAuth flow
-    } catch (err) {
-      setError('카카오 로그인에 실패했습니다. 다시 시도해 주세요.')
-      setLoadingKakao(false)
-    }
-  }
-
   return (
-    <main className="min-h-screen flex items-center justify-center bg-bg-base px-4 py-8">
+    <main className="min-h-screen flex items-center justify-center bg-surface-0 px-4 py-8">
       <div className="w-full max-w-sm">
-        {/* Logo / Header */}
+
+        {/* 로고 / 헤더 */}
         <div className="text-center mb-8">
-          <a href="/" className="inline-block text-primary text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity">CoCoBot World</a>
+          <Link
+            href="/"
+            className="inline-block text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded-lg px-1"
+            style={{ color: 'var(--interactive-primary)' }}
+            aria-label="CoCoBot 홈으로"
+          >
+            CoCoBot
+          </Link>
           <h1 className="text-2xl font-bold text-text-primary mb-2">로그인</h1>
           <p className="text-sm text-text-secondary">
             나의 코코봇 세계로 입장하세요
           </p>
         </div>
 
-        {/* Error message */}
+        {/* 에러 배너 — state.danger 토큰 */}
         {error && (
-          <div className="mb-5 rounded-lg bg-error/10 border border-error/20 px-4 py-3" role="alert">
-            <p className="text-sm text-error">{error}</p>
+          <div
+            id={generalErrorId}
+            className="mb-5 rounded-xl px-4 py-3 flex items-start gap-2.5"
+            style={{
+              background: 'var(--state-danger-bg)',
+              border: '1px solid var(--state-danger-border)',
+            }}
+            role="alert"
+            aria-live="assertive"
+          >
+            <svg
+              className="mt-0.5 h-4 w-4 shrink-0"
+              style={{ color: 'var(--state-danger-fg)' }}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: 'var(--state-danger-fg)' }}>
+              {error}
+            </p>
           </div>
         )}
 
-        {/* Email/Password form */}
-        <form onSubmit={handleEmailLogin} noValidate className="flex flex-col gap-3">
+        {/* Google 소셜 로그인 — 최우선 위계 */}
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            className="flex items-center justify-center gap-3 w-full h-12 rounded-xl text-sm font-semibold transition-all hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            style={{
+              background: 'var(--surface-2)',
+              border: '1.5px solid var(--border-default)',
+              color: 'var(--text-primary)',
+            }}
+            aria-label="Google 계정으로 로그인"
+            aria-busy={loadingGoogle}
+          >
+            {loadingGoogle ? (
+              <LoadingSpinner />
+            ) : (
+              <GoogleIcon />
+            )}
+            {loadingGoogle ? '로그인 중...' : 'Google로 계속하기'}
+          </button>
+        </div>
+
+        {/* 구분선 */}
+        <div className="mb-6 flex items-center gap-3" aria-hidden="true">
+          <span className="h-px flex-1 bg-border-subtle" />
+          <span className="text-xs text-text-tertiary font-medium">이메일로 로그인</span>
+          <span className="h-px flex-1 bg-border-subtle" />
+        </div>
+
+        {/* 이메일/비밀번호 폼 */}
+        <form onSubmit={handleEmailLogin} noValidate className="flex flex-col gap-4">
+
+          {/* 이메일 필드 */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-sm font-medium text-text-secondary">이메일</label>
+            <label
+              htmlFor={emailId}
+              className="text-sm font-medium text-text-secondary"
+            >
+              이메일
+            </label>
             <input
-              id="email"
+              id={emailId}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일 주소를 입력하세요"
               autoComplete="email"
               disabled={isLoading}
-              className="w-full px-3.5 py-2.5 rounded-lg text-sm bg-bg-subtle border border-border-default text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors disabled:opacity-50"
+              aria-describedby={error ? generalErrorId : undefined}
+              className="w-full px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
+              style={{
+                background: 'var(--surface-1)',
+                border: '1.5px solid var(--border-default)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => { e.target.style.borderColor = 'var(--interactive-primary)'; e.target.style.boxShadow = '0 0 0 3px color-mix(in oklch, var(--color-brand-500) 20%, transparent)'; }}
+              onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
             />
           </div>
 
+          {/* 비밀번호 필드 */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-sm font-medium text-text-secondary">비밀번호</label>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor={passwordId}
+                className="text-sm font-medium text-text-secondary"
+              >
+                비밀번호
+              </label>
+              <Link
+                href="/reset-password"
+                className="text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
+                style={{ color: 'var(--text-link)' }}
+              >
+                비밀번호 찾기
+              </Link>
+            </div>
             <input
-              id="password"
+              id={passwordId}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
               autoComplete="current-password"
               disabled={isLoading}
-              className="w-full px-3.5 py-2.5 rounded-lg text-sm bg-bg-subtle border border-border-default text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors disabled:opacity-50"
+              className="w-full px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
+              style={{
+                background: 'var(--surface-1)',
+                border: '1.5px solid var(--border-default)',
+                color: 'var(--text-primary)',
+              }}
+              onFocus={(e) => { e.target.style.borderColor = 'var(--interactive-primary)'; e.target.style.boxShadow = '0 0 0 3px color-mix(in oklch, var(--color-brand-500) 20%, transparent)'; }}
+              onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
             />
           </div>
 
+          {/* 로그인 버튼 — Primary CTA */}
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-1 w-full h-11 rounded-lg text-sm font-semibold bg-primary text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="mt-1 w-full h-12 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2"
+            style={{ background: 'var(--interactive-primary)' }}
             aria-busy={loadingEmail}
           >
-            {loadingEmail ? <><LoadingSpinner /> 로그인 중...</> : '로그인'}
+            {loadingEmail ? (
+              <span className="inline-flex items-center gap-2">
+                <LoadingSpinner />
+                로그인 중...
+              </span>
+            ) : '로그인'}
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="my-5 flex items-center gap-3" aria-hidden="true">
-          <span className="h-px flex-1 bg-border-default" />
-          <span className="text-xs text-text-muted">또는</span>
-          <span className="h-px flex-1 bg-border-default" />
-        </div>
-
-        {/* Social login buttons */}
-        <div className="flex flex-col gap-3">
-          {/* Google Login */}
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            disabled={isLoading}
-            className="flex items-center justify-center gap-3 w-full h-12 rounded-lg bg-white border border-border-default text-text-primary text-sm font-medium hover:bg-bg-subtle focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-            aria-busy={loadingGoogle}
-          >
-            {loadingGoogle ? <LoadingSpinner /> : <GoogleIcon />}
-            {loadingGoogle ? '로그인 중...' : 'Google로 로그인'}
-          </button>
-
-          {/* Kakao Login */}
-          <button
-            type="button"
-            onClick={handleKakaoLogin}
-            disabled={isLoading}
-            className="flex items-center justify-center gap-3 w-full h-12 rounded-lg text-[#191919] text-sm font-medium hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-[#FEE500] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
-            style={{ backgroundColor: '#FEE500' }}
-            aria-busy={loadingKakao}
-          >
-            {loadingKakao ? <LoadingSpinner color="#191919" /> : <KakaoIcon />}
-            {loadingKakao ? '로그인 중...' : '카카오로 로그인'}
-          </button>
-        </div>
-
-        {/* Signup + reset password links */}
-        <div className="mt-6 flex flex-col items-center gap-2 text-sm">
-          <p className="text-text-secondary">
+        {/* 회원가입 링크 */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-text-secondary">
             계정이 없으신가요?{' '}
-            <Link href="/signup" className="font-semibold text-primary hover:underline">
+            <Link
+              href="/signup"
+              className="font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
+              style={{ color: 'var(--interactive-primary)' }}
+            >
               회원가입
             </Link>
           </p>
-          <Link href="/reset-password" className="text-xs text-text-muted hover:text-text-secondary transition-colors">
-            비밀번호를 잊으셨나요?
-          </Link>
         </div>
 
-        {/* Footer */}
-        <p className="mt-6 text-center text-xs text-text-tertiary">
-          로그인하면 <a href="/terms" className="underline hover:text-text-secondary">이용약관</a> 및 <a href="/privacy" className="underline hover:text-text-secondary">개인정보처리방침</a>에 동의한 것으로 간주합니다.
+        {/* 법적 동의 */}
+        <p className="mt-6 text-center text-xs text-text-tertiary [word-break:keep-all]">
+          로그인하면{' '}
+          <Link href="/terms" className="underline hover:text-text-secondary transition-colors">이용약관</Link>
+          {' '}및{' '}
+          <Link href="/privacy" className="underline hover:text-text-secondary transition-colors">개인정보처리방침</Link>
+          에 동의한 것으로 간주합니다.
         </p>
       </div>
     </main>
   )
 }
 
-// ── Icon components ──────────────────────────────────────────────
+// ── Icon 컴포넌트 ──────────────────────────────────────────
 
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
-      />
-      <path
-        fill="#34A853"
-        d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"
-      />
-      <path
-        fill="#EA4335"
-        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"
-      />
+      <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" />
+      <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" />
+      <path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" />
+      <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" />
     </svg>
   )
 }
 
-function KakaoIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M9 1C4.582 1 1 3.79 1 7.21c0 2.143 1.352 4.026 3.397 5.115L3.554 15.5a.25.25 0 0 0 .367.277L7.96 13.35A10.4 10.4 0 0 0 9 13.42c4.418 0 8-2.79 8-6.21S13.418 1 9 1z"
-        fill="#191919"
-      />
-    </svg>
-  )
-}
-
-function LoadingSpinner({ color = 'currentColor' }: { color?: string }) {
+function LoadingSpinner() {
   return (
     <svg
       className="animate-spin"
@@ -233,19 +276,8 @@ function LoadingSpinner({ color = 'currentColor' }: { color?: string }) {
       fill="none"
       aria-hidden="true"
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke={color}
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill={color}
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
   )
 }

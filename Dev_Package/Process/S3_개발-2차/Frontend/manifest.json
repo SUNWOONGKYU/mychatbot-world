@@ -1,8 +1,8 @@
 // @task S3F6
 {
-  "name": "My Chatbot World",
-  "short_name": "MCW",
-  "description": "5분 인터뷰로 나만의 AI 코코봇을 생성하고 운영하세요.",
+  "name": "CoCoBot",
+  "short_name": "CoCoBot",
+  "description": "5분 인터뷰로 나만의 AI 챗봇을 생성하고 운영하세요.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

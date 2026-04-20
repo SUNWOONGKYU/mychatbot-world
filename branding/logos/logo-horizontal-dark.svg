@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" width="720" height="200" role="img" aria-label="CoCoBot">
+  <title>CoCoBot — Dark</title>
+  <rect width="720" height="200" fill="#0F172A"/>
+  <text x="360" y="132" text-anchor="middle"
+        font-family="Pretendard, 'Pretendard Variable', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-weight="800" font-size="104" letter-spacing="-3">
+    <tspan fill="#F8FAFC">C</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#F8FAFC">C</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#F8FAFC">B</tspan><tspan fill="#F59E0B">o</tspan><tspan fill="#F8FAFC">t</tspan>
+  </text>
+</svg>

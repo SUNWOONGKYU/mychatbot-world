@@ -184,7 +184,7 @@ const DetailPage = (() => {
     if (!bot) return;
 
     /* 타이틀 */
-    document.title = `${bot.name} — 구봇구직 | CoCoBot World`;
+    document.title = `${bot.name} — 구봇구직 | CoCoBot`;
 
     /* 아바타 */
     const avatarEl = document.getElementById('detailAvatar');

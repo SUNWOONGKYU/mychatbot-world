@@ -2,7 +2,7 @@
 // @task S3F14
 /**
  * learning.js — Learning 페이지 전용 로직
- * CoCoBot World | S3F8, S3F14
+ * CoCoBot | S3F8, S3F14
  *
  * 담당:
  *  - Supabase Auth 사용자 로그인 상태 확인
@@ -164,8 +164,8 @@ const Auth = {
   /** Supabase 세션에서 현재 사용자 정보 반환 */
   async getCurrentUser() {
     try {
-      if (typeof MCW !== 'undefined' && MCW.user) {
-        const user = MCW.user.getCurrentUser();
+      if (typeof CoCoBot !== 'undefined' && CoCoBot.user) {
+        const user = CoCoBot.user.getCurrentUser();
         if (user) return user;
       }
       // Supabase 직접 조회 폴백
@@ -656,7 +656,7 @@ function renderCertificateCard(user) {
         </div>
         <div class="cert-meta-item">
           <span class="cert-meta-label">발급기관</span>
-          <span class="cert-meta-value">CoCoBot World</span>
+          <span class="cert-meta-value">CoCoBot</span>
         </div>
         <div class="cert-meta-item">
           <span class="cert-meta-label">등급</span>
@@ -1124,7 +1124,7 @@ async function shareCert() {
     try {
       await navigator.share({
         title: '코코봇스쿨 수료증',
-        text: 'CoCoBot World 코코봇스쿨 전 과정을 수료했습니다!',
+        text: 'CoCoBot 코코봇스쿨 전 과정을 수료했습니다!',
         url: window.location.href,
       });
     } catch {}

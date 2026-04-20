@@ -9,6 +9,7 @@ js/config.js
 .vercel/
 .vercel
 node_modules/
+.next/
 
 # OS files
 .DS_Store

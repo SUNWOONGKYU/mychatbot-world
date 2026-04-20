@@ -1,4 +1,4 @@
-// @task S5FE7 - 관리자 대시보드 레이아웃
+// @task S7FE7 (S5FE7) - 관리자 대시보드 레이아웃 (S7 Semantic 토큰)
 // 관리자 전용 레이아웃 — 일반 Navbar/TabBar 완전 분리
 // 다크 테마 강제 적용, 사이드바 240px + 메인 콘텐츠
 
@@ -20,7 +20,7 @@ export default function AdminLayout({
     <div
       className="admin-shell"
       data-theme="dark"
-      style={{ minHeight: '100vh', background: 'var(--admin-bg, #0d0d12)' }}
+      style={{ minHeight: '100vh', background: 'var(--surface-0)' }}
     >
       {children}
     </div>

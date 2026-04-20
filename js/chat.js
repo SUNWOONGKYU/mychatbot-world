@@ -128,7 +128,7 @@ async function loadBotData() {
             chatBotData = {
                 botName: 'Bot',
                 username: 'bot',
-                personality: 'AI 코코봇입니다.',
+                personality: 'AI Assistant 코코봇입니다.',
                 greeting: '안녕하세요! 무엇이든 물어보세요.',
                 faqs: []
             };
@@ -154,7 +154,7 @@ async function loadBotData() {
     }
     const nameEl = document.getElementById('chatBotName');
     if (nameEl) nameEl.textContent = chatBotData.botName;
-    document.title = `${chatBotData.botName} - CoCoBot World`;
+    document.title = `${chatBotData.botName} - CoCoBot`;
 
     // 봇에 저장된 음성이 있으면 기본값으로 사용
     if (chatBotData.voice) {

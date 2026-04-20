@@ -242,9 +242,9 @@ function clearDraft() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 로그인 확인
-    if (typeof MCW !== 'undefined' && MCW.ready) {
-        await MCW.ready;
-        const user = MCW.user.getCurrentUser();
+    if (typeof CoCoBot !== 'undefined' && CoCoBot.ready) {
+        await CoCoBot.ready;
+        const user = CoCoBot.user.getCurrentUser();
         if (!user) {
             alert('코코봇을 생성하려면 먼저 로그인해주세요.');
             location.href = '../login.html';
@@ -346,7 +346,7 @@ function goToStep(step) {
         }
         const finalUsername = document.getElementById('botUsername').value.trim();
         // 중복 체크
-        const existing = MCW.storage?.getBotByUsername?.(finalUsername);
+        const existing = CoCoBot.storage?.getBotByUsername?.(finalUsername);
         if (existing) {
             alert(`"${finalUsername}"은(는) 이미 사용 중인 주소입니다.\n다른 사용자명을 입력해주세요.`);
             document.getElementById('botUsername').focus();
@@ -834,7 +834,7 @@ async function completeCreation() {
     const username = document.getElementById('botUsername').value.trim() ||
         _koreanToUrl(bot.botName);
 
-    const currentUser = MCW.user.getCurrentUser();
+    const currentUser = CoCoBot.user.getCurrentUser();
     const botData = {
         id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
         username: username,
@@ -860,7 +860,7 @@ async function completeCreation() {
     botData.voice = getSelectedVoice();
 
     // 1) localStorage 저장 (기존 방식, 즉시 사용 가능)
-    MCW.storage.saveBot(botData);
+    CoCoBot.storage.saveBot(botData);
     savedBotId = botData.id;
 
     // 2) 인터뷰 텍스트 → IndexedDB 저장
@@ -903,7 +903,7 @@ function _setupDeployStep() {
     if (botUrlEl) botUrlEl.value = url;
     if (chatLinkEl) chatLinkEl.href = '/bot/' + encodeURIComponent(window._deployUsername || '');
     if (qrEl) qrEl.innerHTML =
-        '<img src="' + MCW.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
+        '<img src="' + CoCoBot.getQRCodeURL(url, 200) + '" alt="QR Code" style="width:200px;height:200px;border-radius:12px;">';
 
     // === S3F13: Step 8 완료 후 온보딩 카드 표시 ===
     _showOnboardingCards();
@@ -1020,7 +1020,7 @@ function copyUrl() {
     const input = document.getElementById('botUrl');
     input.select();
     navigator.clipboard?.writeText(input.value).then(() => {
-        MCW.showToast?.('URL이 복사되었습니다!');
+        CoCoBot.showToast?.('URL이 복사되었습니다!');
     }).catch(() => {
         document.execCommand('copy');
         alert('URL이 복사되었습니다!');

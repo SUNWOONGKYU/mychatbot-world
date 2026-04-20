@@ -1,16 +1,8 @@
 /**
- * @task S3F12
- * @description 스킬 마켓 메인 — Vanilla index.html 완전 이식
- * - 카드 그리드 (이모지 아이콘, 이름, 설명, 가격, 별점, 설치수)
- * - 카테고리 필터 탭 (chip row)
- * - 검색 (이름·설명·카테고리)
- * - 무료만 토글
- * - 정렬 (인기순 / 평점순 / 가격 낮은순 / 가격 높은순)
- * - 원클릭 프리셋 섹션
- * - 설치/제거 버튼 (카드 내 직접)
- * - 유료 스킬 구매 확인 모달
- * - Toast 알림
- * - 마이 스킬 배지
+ * @task S7FE6 — P1 리디자인: Skills 마켓
+ * 기반: S7FE1 토큰 + S7FE2 Button + S7FE3 Tabs + S7FE4 Badge/EmptyState/PageToolbar
+ * 변경: Tabs 카테고리 필터, Badge 위계, EmptyState, PageToolbar, 카드 구조 개선
+ * 비즈니스 로직 보존: fetchSkillsFromAPI, useSkillsStore, install/remove/preset 그대로 유지
  */
 'use client';
 
@@ -18,10 +10,15 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import {
   fetchSkillsFromAPI, SKILL_CATEGORIES, SKILL_PRESETS,
-  buildStars, installSkillById, removeSkillById,
+  buildStars, installSkillById,
   type SkillItem,
 } from '@/lib/skills-data';
 import { useSkillsStore } from '@/lib/use-skills-store';
+import { PageToolbar, Breadcrumb, BreadcrumbItem } from '@/components/ui/page-toolbar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 // ── 정렬 옵션 ────────────────────────────────────────────────────
 type SortOption = 'popular' | 'rating' | 'price-asc' | 'price-desc';
@@ -39,23 +36,12 @@ function Toast({ message }: { message: string }) {
     <div
       role="alert"
       aria-live="assertive"
-      style={{
-        position: 'fixed',
-        bottom: '2rem',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: 'rgba(16, 185, 129, 0.15)',
-        border: '1px solid rgba(16, 185, 129, 0.3)',
-        color: '#34d399',
-        padding: '0.75rem 1.5rem',
-        borderRadius: '999px',
-        fontSize: '0.875rem',
-        fontWeight: 600,
-        zIndex: 9998,
-        whiteSpace: 'nowrap',
-        backdropFilter: 'blur(12px)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-      }}
+      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9998]
+        bg-state-success-bg border border-state-success-border
+        text-state-success-fg
+        px-6 py-3 rounded-full text-sm font-semibold
+        shadow-[var(--shadow-lg)] backdrop-blur-sm
+        whitespace-nowrap pointer-events-none"
     >
       {message}
     </div>
@@ -85,7 +71,6 @@ interface PurchaseModalProps {
 }
 
 function PurchaseModal({ skill, onConfirm, onCancel }: PurchaseModalProps) {
-  // ESC 닫기
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
     document.addEventListener('keydown', handler);
@@ -98,64 +83,36 @@ function PurchaseModal({ skill, onConfirm, onCancel }: PurchaseModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-labelledby="modalTitle"
+      aria-labelledby="purchaseModalTitle"
       onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
-      style={{
-        position: 'fixed', inset: 0,
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 9999,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '1rem',
-      }}
+      className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm
+        flex items-center justify-center p-4"
     >
-      <div
-        style={{
-          background: '#1a1730',
-          border: '1px solid rgb(var(--border))',
-          borderRadius: '1.25rem',
-          padding: '2rem',
-          maxWidth: 400, width: '100%',
-          textAlign: 'center',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
-        }}
-      >
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{skill.icon}</div>
-        <h3 id="modalTitle" style={{ fontSize: '1.2rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>
+      <div className="bg-surface-2 border border-border-default rounded-2xl
+        p-8 max-w-[400px] w-full text-center shadow-[var(--shadow-xl)]">
+        <div className="text-5xl mb-4" aria-hidden="true">{skill.icon}</div>
+        <h3
+          id="purchaseModalTitle"
+          className="text-lg font-bold text-text-primary mb-2 [word-break:keep-all]"
+        >
           스킬 구매
         </h3>
-        <p style={{ fontSize: '1rem', color: 'rgb(var(--text-primary))', fontWeight: 600, marginBottom: '0.5rem' }}>
+        <p className="text-base font-semibold text-text-primary mb-2 [word-break:keep-all]">
           {skill.name}
         </p>
-        <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10b981', marginBottom: '0.75rem' }}>
+        <p className="text-2xl font-bold text-state-success-fg mb-2">
           ₩{(skill.price ?? 0).toLocaleString()}
         </p>
-        <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))', marginBottom: '1.5rem' }}>
+        <p className="text-sm text-text-tertiary mb-6 [word-break:keep-all]">
           실제 포인트 차감 없이 체험합니다.
         </p>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button
-            onClick={onCancel}
-            style={{
-              flex: 1, padding: '0.7rem 1rem', borderRadius: '0.75rem',
-              fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer',
-              background: 'rgb(var(--bg-surface-hover) / 0.5)', color: 'rgb(var(--text-secondary))',
-              border: '1px solid rgb(var(--border))',
-            }}
-          >
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex-1" onClick={onCancel}>
             취소
-          </button>
-          <button
-            onClick={onConfirm}
-            autoFocus
-            style={{
-              flex: 1, padding: '0.7rem 1rem', borderRadius: '0.75rem',
-              fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer',
-              background: '#10b981', color: 'white', border: 'none',
-            }}
-          >
+          </Button>
+          <Button variant="default" className="flex-1" onClick={onConfirm} autoFocus>
             구매 체험
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -176,72 +133,113 @@ function SkillCard({ skill, installed, onInstall, onRemove }: SkillCardProps) {
 
   return (
     <div
-      className={`sk-card${isLocked ? ' sk-card--locked' : ''}`}
+      className={`flex flex-col gap-3 p-5 rounded-xl
+        bg-surface-2 border border-border-default
+        transition-all duration-200
+        hover:border-interactive-primary/40 hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]
+        ${isLocked ? 'opacity-70' : ''}`}
       data-skill-id={skill.id}
     >
-      {/* 카드 본문 — 클릭 시 상세 */}
+      {/* 카드 링크 영역 */}
       {skill.isFree ? (
-        <Link className="sk-card-link" href={`/skills/${skill.id}`} aria-label={`${skill.name} 상세 보기`}>
-          <SkillCardInner skill={skill} stars={stars} />
+        <Link
+          href={`/skills/${skill.id}`}
+          className="flex flex-col gap-2.5 no-underline
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded-lg"
+          aria-label={`${skill.name} 상세 보기`}
+        >
+          <SkillCardBody skill={skill} stars={stars} installed={installed} />
         </Link>
       ) : (
-        <div className="sk-card-link" aria-label={skill.name}>
-          <SkillCardInner skill={skill} stars={stars} />
+        <div className="flex flex-col gap-2.5" aria-label={skill.name}>
+          <SkillCardBody skill={skill} stars={stars} installed={installed} />
           {!installed && (
-            <span className="sk-coming-soon">COMING SOON</span>
+            <Badge variant="neutral" tone="subtle" size="sm" className="self-start">
+              COMING SOON
+            </Badge>
           )}
         </div>
       )}
 
       {/* 푸터 */}
-      <div className="sk-card-footer">
-        <span className={`sk-price${skill.isFree ? ' free' : ' paid'}`}>
+      <div className="flex items-center justify-between mt-auto pt-3 border-t border-border-subtle gap-2">
+        <Badge
+          variant={skill.isFree ? 'success' : 'warning'}
+          tone="subtle"
+          size="sm"
+        >
           {skill.isFree ? '무료' : (installed ? `₩${(skill.price ?? 0).toLocaleString()}` : '유료')}
-        </span>
+        </Badge>
+
         {installed ? (
-          <button
-            className="sk-btn sk-btn--remove"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={(e) => { e.preventDefault(); onRemove(skill.id, skill.name); }}
             aria-label={`${skill.name} 제거`}
           >
             제거
-          </button>
+          </Button>
         ) : skill.isFree ? (
-          <button
-            className="sk-btn sk-btn--install"
+          <Button
+            variant="default"
+            size="sm"
             onClick={(e) => { e.preventDefault(); onInstall(skill); }}
             aria-label={`${skill.name} 설치`}
           >
             설치
-          </button>
+          </Button>
         ) : (
-          <button
-            className="sk-btn sk-btn--coming"
+          <Button
+            variant="secondary"
+            size="sm"
             disabled
             aria-label="출시 예정"
           >
             출시 예정
-          </button>
+          </Button>
         )}
       </div>
     </div>
   );
 }
 
-function SkillCardInner({ skill, stars }: { skill: SkillItem; stars: string }) {
+function SkillCardBody({ skill, stars, installed }: { skill: SkillItem; stars: string; installed: boolean }) {
   return (
     <>
-      <div className="sk-card-top">
-        <span className="sk-icon" aria-hidden="true">{skill.icon}</span>
-        <span className="sk-cat">{skill.category}</span>
-      </div>
-      <h3 className="sk-name">{skill.name}</h3>
-      <p className="sk-desc">{skill.description}</p>
-      <div className="sk-meta">
-        <span className="sk-stars" aria-label={`평점 ${skill.rating}`}>
-          {stars} <span className="sk-rating">{skill.rating.toFixed(1)}</span>
+      <div className="flex items-start justify-between gap-2">
+        <span
+          className="w-10 h-10 rounded-lg bg-interactive-secondary flex items-center justify-center text-xl shrink-0"
+          aria-hidden="true"
+        >
+          {skill.icon}
         </span>
-        <span className="sk-installs">{skill.installs.toLocaleString()}회 설치</span>
+        <Badge variant="brand" tone="subtle" size="sm" className="shrink-0">
+          {skill.category}
+        </Badge>
+      </div>
+
+      {/* 이름 (Heading 3) */}
+      <h3 className="text-[0.9375rem] font-bold text-text-primary leading-snug [word-break:keep-all]">
+        {skill.name}
+        {installed && (
+          <Badge variant="success" tone="subtle" size="sm" className="ml-2">
+            설치됨
+          </Badge>
+        )}
+      </h3>
+
+      {/* 설명 */}
+      <p className="text-sm text-text-secondary leading-relaxed line-clamp-2 [word-break:keep-all]">
+        {skill.description}
+      </p>
+
+      {/* 메타 */}
+      <div className="flex items-center gap-3 text-xs text-text-tertiary">
+        <span aria-label={`평점 ${skill.rating}`}>
+          {stars} <span className="font-medium text-text-secondary">{skill.rating.toFixed(1)}</span>
+        </span>
+        <span>{skill.installs.toLocaleString()}회 설치</span>
       </div>
     </>
   );
@@ -258,7 +256,6 @@ export default function SkillsMarketPageInner() {
   const [showFreeOnly, setShowFreeOnly] = useState(false);
   const [purchaseTarget, setPurchaseTarget] = useState<SkillItem | null>(null);
 
-  // DB에서 스킬 목록 로드
   useEffect(() => {
     fetchSkillsFromAPI().then(setSkills);
   }, []);
@@ -269,12 +266,9 @@ export default function SkillsMarketPageInner() {
   const filtered = useMemo(() => {
     let list = [...skills];
 
-    // 카테고리
     if (activeCategory !== 'all' && activeCategory !== '전체') {
       list = list.filter(s => s.category === activeCategory);
     }
-
-    // 검색
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
       list = list.filter(s =>
@@ -283,13 +277,9 @@ export default function SkillsMarketPageInner() {
         s.category.toLowerCase().includes(q)
       );
     }
-
-    // 무료
     if (showFreeOnly) {
       list = list.filter(s => s.isFree);
     }
-
-    // 정렬
     if (sortBy === 'popular') {
       list.sort((a, b) => b.installs - a.installs);
     } else if (sortBy === 'rating') {
@@ -305,10 +295,7 @@ export default function SkillsMarketPageInner() {
 
   // ── 설치/제거 핸들러 ─────────────────────────────────────────
   const handleInstall = useCallback((skill: SkillItem) => {
-    if (!skill.isFree) {
-      setPurchaseTarget(skill);
-      return;
-    }
+    if (!skill.isFree) { setPurchaseTarget(skill); return; }
     install(skill.id);
     showToast(`"${skill.name}" 스킬을 설치했습니다!`);
   }, [install, showToast]);
@@ -325,18 +312,13 @@ export default function SkillsMarketPageInner() {
     setPurchaseTarget(null);
   }, [purchaseTarget, install, showToast]);
 
-  // ── 프리셋 설치 ──────────────────────────────────────────────
   const handlePreset = useCallback((presetKey: string) => {
     const preset = SKILL_PRESETS[presetKey];
     if (!preset) return;
     let added = 0;
     preset.skills.forEach(id => {
-      if (!isInstalled(id)) {
-        installSkillById(id);
-        added++;
-      }
+      if (!isInstalled(id)) { installSkillById(id); added++; }
     });
-    // 스토어 새로고침
     window.dispatchEvent(new Event('mcw_skills_change'));
     showToast(
       added > 0
@@ -347,96 +329,150 @@ export default function SkillsMarketPageInner() {
 
   // ── 렌더 ─────────────────────────────────────────────────────
 
+  const ALL_CATS = ['전체', ...SKILL_CATEGORIES.filter(c => c !== '전체')];
+
   return (
-    <>
-      {/* ── 프리셋 섹션 ── */}
-      <section className="sk-preset-section">
-        <div className="container">
-          <h2 className="sk-section-title">원클릭 프리셋 설치</h2>
-          <p className="sk-section-sub">용도에 맞는 스킬 묶음을 한 번에 설치하세요</p>
-          <div className="sk-preset-grid">
+    <div className="flex flex-col min-h-full">
+      {/* PageToolbar */}
+      <PageToolbar
+        title="스킬 마켓"
+        breadcrumb={
+          <Breadcrumb>
+            <BreadcrumbItem href="/">홈</BreadcrumbItem>
+            <BreadcrumbItem current>스킬 마켓</BreadcrumbItem>
+          </Breadcrumb>
+        }
+        actions={
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/skills/my" aria-label={`내 설치 스킬 보기 (${count}개)`}>
+              내 스킬
+              {count > 0 && (
+                <Badge variant="brand" tone="solid" size="sm" className="ml-1">
+                  {count}
+                </Badge>
+              )}
+            </Link>
+          </Button>
+        }
+        divider
+      />
+
+      <div className="flex-1 space-y-5">
+        {/* 프리셋 섹션 */}
+        <section className="sk-preset-section px-4 sm:px-6 pt-5" aria-label="원클릭 프리셋">
+          <h2 className="text-base font-semibold text-text-primary mb-1 [word-break:keep-all]">
+            원클릭 프리셋 설치
+          </h2>
+          <p className="text-sm text-text-secondary mb-4 [word-break:keep-all]">
+            용도에 맞는 스킬 묶음을 한 번에 설치하세요
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {Object.entries(SKILL_PRESETS).map(([key, preset]) => (
               <button
                 key={key}
-                className="sk-preset-btn"
-                data-preset={key}
-                onClick={() => handlePreset(key)}
                 type="button"
+                onClick={() => handlePreset(key)}
+                className="flex flex-col items-center gap-1.5 p-4
+                  bg-surface-2 border border-border-default rounded-xl
+                  hover:border-interactive-primary/40 hover:bg-surface-1
+                  transition-all duration-200 text-center
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus"
+                aria-label={`${preset.label} 프리셋 설치 (${preset.skills.length}개 스킬)`}
               >
-                <span className="sk-preset-icon">{preset.icon}</span>
-                <span className="sk-preset-label">{preset.label}</span>
-                <span className="sk-preset-count">{preset.skills.length}개 스킬</span>
+                <span className="text-2xl" aria-hidden="true">{preset.icon}</span>
+                <span className="text-sm font-semibold text-text-primary [word-break:keep-all]">
+                  {preset.label}
+                </span>
+                <Badge variant="neutral" tone="subtle" size="sm">
+                  {preset.skills.length}개 스킬
+                </Badge>
               </button>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── 카테고리 필터 바 ── */}
-      <section className="sk-filter-bar" aria-label="카테고리 필터">
-        <div className="container">
-          <div className="sk-chip-row" role="group" aria-label="카테고리 선택">
-            {SKILL_CATEGORIES.map(cat => {
-              const val = cat === '전체' ? 'all' : cat;
-              return (
-                <button
-                  key={cat}
-                  className={`sk-chip${activeCategory === val ? ' sk-chip--active' : ''}`}
-                  data-cat={val}
-                  onClick={() => setActiveCategory(val)}
-                  type="button"
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 검색 + 정렬 툴바 ── */}
-      <section className="sk-toolbar">
-        <div className="container">
-          <div className="sk-toolbar-inner">
-            {/* 검색 */}
-            <div className="sk-search-wrap">
-              <svg className="sk-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-              </svg>
-              <input
-                type="search"
-                className="sk-search-input"
-                placeholder="스킬 이름, 설명 검색..."
-                autoComplete="off"
-                aria-label="스킬 검색"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
+        {/* 카테고리 Tabs + 검색/정렬 툴바 */}
+        <section className="px-4 sm:px-6 space-y-4" aria-label="스킬 필터">
+          <Tabs
+            value={activeCategory}
+            onValueChange={setActiveCategory}
+          >
+            <div className="overflow-x-auto -mx-1 px-1 pb-0.5">
+              <TabsList variant="underline" className="min-w-max">
+                {ALL_CATS.map((cat) => {
+                  const val = cat === '전체' ? 'all' : cat;
+                  return (
+                    <TabsTrigger key={val} value={val}>
+                      {cat}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
             </div>
 
-            <div className="sk-toolbar-right">
-              {/* 무료 토글 */}
-              <label className="sk-free-toggle">
+            {/* 검색 + 정렬 툴바 */}
+            <div className="flex items-center gap-3 flex-wrap mt-4">
+              {/* 검색 */}
+              <div className="relative flex-1 min-w-[160px]">
+                <span
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary pointer-events-none"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-4 h-4">
+                    <circle cx="9" cy="9" r="6"/><path d="m16 16-3.5-3.5" strokeLinecap="round"/>
+                  </svg>
+                </span>
                 <input
-                  type="checkbox"
-                  role="switch"
-                  aria-checked={showFreeOnly}
-                  checked={showFreeOnly}
-                  onChange={e => setShowFreeOnly(e.target.checked)}
+                  type="search"
+                  className="w-full pl-9 pr-4 h-9 rounded-md text-sm
+                    border border-border-default bg-surface-2 text-text-primary
+                    placeholder:text-text-tertiary
+                    focus:outline-none focus:ring-2 focus:ring-ring-focus focus:ring-offset-1 focus:ring-offset-surface-0
+                    transition-colors"
+                  placeholder="스킬 이름, 설명 검색..."
+                  autoComplete="off"
+                  aria-label="스킬 검색"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
                 />
-                <span className="sk-toggle-track" />
-                <span className="sk-toggle-label">무료만</span>
+              </div>
+
+              {/* 무료만 토글 */}
+              <label className="flex items-center gap-2 cursor-pointer select-none shrink-0">
+                <span className="relative inline-flex h-5 w-9">
+                  <input
+                    type="checkbox"
+                    role="switch"
+                    aria-checked={showFreeOnly}
+                    checked={showFreeOnly}
+                    onChange={e => setShowFreeOnly(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <span className={`w-full h-full rounded-full transition-colors duration-200
+                    ${showFreeOnly ? 'bg-interactive-primary' : 'bg-border-default'}`}
+                  />
+                  <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-text-inverted
+                    shadow transition-transform duration-200
+                    ${showFreeOnly ? 'translate-x-4' : 'translate-x-0'}`}
+                  />
+                </span>
+                <span className="text-sm text-text-secondary [word-break:keep-all]">무료만</span>
               </label>
 
               {/* 정렬 */}
-              <div className="sk-sort-wrap">
-                <label htmlFor="skillsSort" className="sk-sort-label">정렬:</label>
+              <div className="flex items-center gap-2 shrink-0">
+                <label htmlFor="skillsSort" className="text-sm text-text-tertiary shrink-0">
+                  정렬:
+                </label>
                 <select
                   id="skillsSort"
-                  className="sk-sort-select"
                   aria-label="정렬 기준"
                   value={sortBy}
                   onChange={e => setSortBy(e.target.value as SortOption)}
+                  className="h-9 px-3 rounded-md text-sm
+                    border border-border-default bg-surface-2 text-text-primary
+                    focus:outline-none focus:ring-2 focus:ring-ring-focus focus:ring-offset-1 focus:ring-offset-surface-0
+                    transition-colors cursor-pointer"
                 >
                   {SORT_OPTIONS.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -444,56 +480,74 @@ export default function SkillsMarketPageInner() {
                 </select>
               </div>
 
-              {/* 마이스킬 */}
-              <Link href="/skills/my" className="sk-my-btn" aria-label="내 설치 스킬 보기">
-                내 스킬 보기
-              </Link>
+              {/* 내 스킬 링크 */}
+              <Button asChild variant="outline" size="sm" className="shrink-0">
+                <Link href="/skills/my" aria-label="내 설치 스킬 보기">
+                  내 스킬 보기
+                </Link>
+              </Button>
             </div>
-          </div>
 
-          <p className="sk-result-count">
-            스킬 <strong>{filtered.length}</strong>개
-          </p>
-        </div>
-      </section>
+            <p className="text-xs text-text-tertiary mt-2">
+              스킬 <strong className="font-semibold text-text-secondary">{filtered.length}</strong>개
+            </p>
 
-      {/* ── 스킬 그리드 ── */}
-      <main className="sk-main">
-        <div className="container">
-          {filtered.length > 0 ? (
-            <div className="sk-grid" aria-live="polite" aria-label="스킬 목록">
-              {filtered.map(skill => (
-                <SkillCard
-                  key={skill.id}
-                  skill={skill}
-                  installed={isInstalled(skill.id)}
-                  onInstall={handleInstall}
-                  onRemove={handleRemove}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="sk-empty">
-              <div className="sk-empty-icon">🔍</div>
-              <h3 className="sk-empty-title">스킬을 찾을 수 없습니다</h3>
-              <p className="sk-empty-desc">다른 카테고리나 검색어를 시도해보세요.</p>
-              <button
-                className="sk-empty-btn"
-                onClick={() => {
-                  setSearchQuery('');
-                  setActiveCategory('all');
-                  setShowFreeOnly(false);
-                }}
-                type="button"
-              >
-                전체 보기
-              </button>
-            </div>
-          )}
-        </div>
-      </main>
+            {/* 탭 콘텐츠 — 카테고리별 그리드 */}
+            {ALL_CATS.map((cat) => {
+              const val = cat === '전체' ? 'all' : cat;
+              return (
+                <TabsContent key={val} value={val}>
+                  {/* 스킬 그리드 */}
+                  {filtered.length > 0 ? (
+                    <div
+                      className="grid gap-4"
+                      style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}
+                      aria-live="polite"
+                      aria-label={`${cat} 스킬 목록`}
+                    >
+                      {filtered.map(skill => (
+                        <SkillCard
+                          key={skill.id}
+                          skill={skill}
+                          installed={isInstalled(skill.id)}
+                          onInstall={handleInstall}
+                          onRemove={handleRemove}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <EmptyState
+                      icon={
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-7 h-7" aria-hidden="true">
+                          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" strokeLinecap="round"/>
+                        </svg>
+                      }
+                      title="스킬을 찾을 수 없습니다"
+                      description="다른 카테고리나 검색어를 시도해보세요."
+                      action={
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSearchQuery('');
+                            setActiveCategory('all');
+                            setShowFreeOnly(false);
+                          }}
+                        >
+                          전체 보기
+                        </Button>
+                      }
+                      size="lg"
+                    />
+                  )}
+                </TabsContent>
+              );
+            })}
+          </Tabs>
+        </section>
+      </div>
 
-      {/* ── 구매 확인 모달 ── */}
+      {/* 구매 확인 모달 */}
       {purchaseTarget && (
         <PurchaseModal
           skill={purchaseTarget}
@@ -502,8 +556,8 @@ export default function SkillsMarketPageInner() {
         />
       )}
 
-      {/* ── Toast ── */}
+      {/* Toast */}
       {toastVisible && <Toast message={toastMsg} />}
-    </>
+    </div>
   );
 }

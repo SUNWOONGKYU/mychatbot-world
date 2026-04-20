@@ -14,33 +14,60 @@ function getSupabaseServer() {
 
 /**
  * 크레딧 잔액 확인 후 차감 (원자적 업데이트)
- * - S8BA1: deduct_credits_tx RPC 사용 — row lock + balance 체크 + update + tx 로그 단일 TX
  * - balance: 전체 잔액에서 차감
- * - subscription_balance: 구독 잔액도 동시 차감 (0 하한, RPC 내부 처리)
+ * - subscription_balance: 구독 잔액도 동시 차감 (음수 방지, 0 하한)
  */
 export async function checkAndDeductCredits(
   userId: string,
-  cost: number,
-  opts?: { type?: string; description?: string }
+  cost: number
 ): Promise<{ success: boolean; balance: number }> {
   const supabase = getSupabaseServer();
 
-  const { data, error } = await supabase.rpc('deduct_credits_tx', {
-    p_user_id: userId,
-    p_amount: cost,
-    p_type: opts?.type ?? 'usage',
-    p_description: opts?.description ?? null,
-  });
+  const { data, error: fetchError } = await supabase
+    .from('mcw_credits')
+    .select('balance, subscription_balance')
+    .eq('user_id', userId)
+    .maybeSingle();
 
-  if (error) {
-    console.warn('[credits] deduct_credits_tx error:', error.message);
+  if (fetchError) {
+    console.warn('[credits] fetch error:', fetchError.message);
     return { success: false, balance: 0 };
   }
 
-  const row = (data as Array<{ new_balance: number; success: boolean }> | null)?.[0];
-  if (!row) return { success: false, balance: 0 };
+  const currentBalance: number = (data as any)?.balance ?? 0;
+  const currentSubBalance: number = (data as any)?.subscription_balance ?? 0;
 
-  return { success: row.success, balance: row.new_balance };
+  if (currentBalance < cost) {
+    return { success: false, balance: currentBalance };
+  }
+
+  const newBalance = currentBalance - cost;
+  // 구독 잔액은 차감하되 0 이하로 내려가지 않음
+  const newSubBalance = Math.max(0, currentSubBalance - cost);
+
+  const { data: updated, error: updateError } = await supabase
+    .from('mcw_credits')
+    .update({
+      balance: newBalance,
+      subscription_balance: newSubBalance,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', userId)
+    .gte('balance', cost)
+    .select('balance');
+
+  if (updateError) {
+    console.warn('[credits] update error:', updateError.message);
+    return { success: false, balance: currentBalance };
+  }
+
+  // .gte 필터로 인해 0행 업데이트된 경우 → 동시 요청으로 잔액 소진
+  if (!updated || (updated as any[]).length === 0) {
+    console.warn('[credits] 0-row update detected (concurrent depletion), userId:', userId);
+    return { success: false, balance: currentBalance };
+  }
+
+  return { success: true, balance: newBalance };
 }
 
 /**

@@ -1,5 +1,5 @@
 // @task S2F6 — 게스트 세션/제한 관리
-// CoCoBot World — Guest Mode Session Manager
+// CoCoBot — Guest Mode Session Manager
 
 (function (global) {
   'use strict';

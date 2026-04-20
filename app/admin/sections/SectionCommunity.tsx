@@ -65,8 +65,8 @@ function DeleteModal({ item, onClose, onConfirm }: {
 }) {
   const [reason, setReason] = useState('');
   return (
-    <div className="amodal-overlay" onClick={onClose}>
-      <div className="amodal" onClick={(e) => e.stopPropagation()}>
+    <div className="amodal-overlay" onClick={onClose} role="presentation" aria-hidden="true">
+      <div className="amodal" onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="amodal__header">
           <div className="amodal__title">🗑️ 강제 삭제 — {item.type === 'post' ? '게시글' : '댓글'}</div>
           <button className="amodal__close" onClick={onClose}>✕</button>
@@ -104,8 +104,8 @@ function WarnModal({ item, onClose, onConfirm }: {
 }) {
   const [reason, setReason] = useState('');
   return (
-    <div className="amodal-overlay" onClick={onClose}>
-      <div className="amodal" onClick={(e) => e.stopPropagation()}>
+    <div className="amodal-overlay" onClick={onClose} role="presentation" aria-hidden="true">
+      <div className="amodal" onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="amodal__header">
           <div className="amodal__title">⚠️ 경고 발송 — {item.author_name}</div>
           <button className="amodal__close" onClick={onClose}>✕</button>

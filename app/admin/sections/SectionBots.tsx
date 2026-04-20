@@ -1,5 +1,5 @@
-// @task S5FE8
-// @description 섹션5 — 코코봇 관리 (전체 목록/검색/상태변경/신고처리/데모보기)
+// @task S7FE7
+// @description 섹션5 — 코코봇 관리 (S7 리디자인 — Semantic 토큰 DataTable)
 
 'use client';
 
@@ -39,10 +39,23 @@ const STATUS_LABELS: Record<BotStatus, string> = {
   suspended: '정지',
 };
 
-const STATUS_BADGE_CLASS: Record<BotStatus, string> = {
-  active: 'abadge abadge--green',
-  inactive: 'abadge abadge--muted',
-  suspended: 'abadge abadge--red',
+// S7 Semantic 토큰 기반 배지 스타일
+const STATUS_BADGE_STYLE: Record<BotStatus, React.CSSProperties> = {
+  active: {
+    background: 'var(--state-success-bg)',
+    color: 'var(--state-success-fg)',
+    border: '1px solid var(--state-success-border)',
+  },
+  inactive: {
+    background: 'var(--surface-2)',
+    color: 'var(--text-tertiary)',
+    border: '1px solid var(--border-default)',
+  },
+  suspended: {
+    background: 'var(--state-danger-bg)',
+    color: 'var(--state-danger-fg)',
+    border: '1px solid var(--state-danger-border)',
+  },
 };
 
 // ── Mock ─────────────────────────────────────────────────────────────────────
@@ -100,8 +113,8 @@ function DemoModal({ bot, onClose }: { bot: Bot; onClose: () => void }) {
   };
 
   return (
-    <div className="amodal-overlay" onClick={onClose}>
-      <div className="amodal amodal--wide" onClick={(e) => e.stopPropagation()}>
+    <div className="amodal-overlay" onClick={onClose} role="presentation" aria-hidden="true">
+      <div className="amodal amodal--wide" onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="amodal__header">
           <div>
             <div className="amodal__title">💬 데모 테스트 — {bot.name}</div>
@@ -154,8 +167,8 @@ function StatusModal({ bot, onClose, onConfirm }: { bot: Bot; onClose: () => voi
   const [selected, setSelected] = useState<BotStatus>(bot.status);
 
   return (
-    <div className="amodal-overlay" onClick={onClose}>
-      <div className="amodal" onClick={(e) => e.stopPropagation()}>
+    <div className="amodal-overlay" onClick={onClose} role="presentation" aria-hidden="true">
+      <div className="amodal" onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="amodal__header">
           <div className="amodal__title">⚙️ 상태 변경 — {bot.name}</div>
           <button className="amodal__close" onClick={onClose}>✕</button>
@@ -305,38 +318,106 @@ export default function SectionBots({ adminKey }: Props) {
         </select>
       </div>
 
-      {/* 테이블 */}
-      <div className="atable-wrap">
+      {/* DataTable */}
+      <div
+        className="overflow-x-auto rounded-[var(--radius-xl)]"
+        style={{ border: '1px solid var(--border-default)' }}
+      >
         {filtered.length === 0 ? (
-          <div className="aempty"><span>🤖</span><span>조건에 맞는 봇이 없습니다.</span></div>
+          <div
+            className="flex flex-col items-center gap-3 py-12 px-4 text-center"
+            style={{ color: 'var(--text-tertiary)' }}
+          >
+            <span className="text-3xl" aria-hidden="true">🤖</span>
+            <span className="text-sm [word-break:keep-all]">조건에 맞는 봇이 없습니다.</span>
+          </div>
         ) : (
-          <table className="atable">
-            <thead><tr>
-              <th>봇 이름</th><th>소유자</th><th>상태</th><th>대화 수</th><th>신고</th><th>생성일</th><th>작업</th>
-            </tr></thead>
+          <table
+            className="w-full border-collapse text-sm"
+            aria-label="코코봇 목록"
+          >
+            <thead>
+              <tr style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border-default)' }}>
+                {['봇 이름', '소유자', '상태', '대화 수', '신고', '생성일', '작업'].map(h => (
+                  <th
+                    key={h}
+                    scope="col"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide whitespace-nowrap"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
             <tbody>
               {filtered.map((bot) => (
-                <tr key={bot.id}>
-                  <td>
-                    <div style={{ fontWeight: 600 }}>{bot.name}</div>
-                    <div style={{ fontSize: '0.75rem', opacity: 0.5 }}>{bot.model}</div>
+                <tr
+                  key={bot.id}
+                  style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                  className="transition-colors hover:bg-[var(--surface-2)]"
+                >
+                  <td className="px-4 py-3" style={{ color: 'var(--text-primary)' }}>
+                    <div className="font-semibold">{bot.name}</div>
+                    <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{bot.model}</div>
                   </td>
-                  <td>
+                  <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>
                     <div>{bot.owner_name}</div>
-                    <div style={{ fontSize: '0.75rem', opacity: 0.5 }}>{bot.owner_email}</div>
+                    <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{bot.owner_email}</div>
                   </td>
-                  <td><span className={STATUS_BADGE_CLASS[bot.status]}>{STATUS_LABELS[bot.status]}</span></td>
-                  <td>{(bot.conversation_count ?? 0).toLocaleString()}</td>
-                  <td>
-                    {(bot.report_count ?? 0) > 0
-                      ? <span className="abadge abadge--red">🚨 {bot.report_count}건</span>
-                      : <span style={{ opacity: 0.4 }}>없음</span>}
+                  <td className="px-4 py-3">
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded-[var(--radius-full)] text-xs font-semibold"
+                      style={STATUS_BADGE_STYLE[bot.status]}
+                    >
+                      {STATUS_LABELS[bot.status]}
+                    </span>
                   </td>
-                  <td style={{ fontSize: '0.8125rem', opacity: 0.6 }}>{new Date(bot.created_at).toLocaleDateString('ko-KR')}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button className="abtn abtn--secondary" onClick={() => setDemoBot(bot)}>💬 데모</button>
-                      <button className="abtn abtn--ghost" onClick={() => setStatusBot(bot)}>⚙️ 상태</button>
+                  <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>
+                    {(bot.conversation_count ?? 0).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-3">
+                    {(bot.report_count ?? 0) > 0 ? (
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[var(--radius-full)] text-xs font-semibold"
+                        style={STATUS_BADGE_STYLE.suspended}
+                        aria-label={`신고 ${bot.report_count}건`}
+                      >
+                        🚨 {bot.report_count}건
+                      </span>
+                    ) : (
+                      <span style={{ color: 'var(--text-disabled)', fontSize: '0.75rem' }}>없음</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                    {new Date(bot.created_at).toLocaleDateString('ko-KR')}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setDemoBot(bot)}
+                        className="px-2 py-1 text-xs rounded-[var(--radius-sm)] transition-colors"
+                        style={{
+                          background: 'var(--surface-2)',
+                          color: 'var(--text-secondary)',
+                          border: '1px solid var(--border-default)',
+                        }}
+                      >
+                        💬 데모
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setStatusBot(bot)}
+                        className="px-2 py-1 text-xs rounded-[var(--radius-sm)] transition-colors"
+                        style={{
+                          background: 'transparent',
+                          color: 'var(--text-tertiary)',
+                          border: '1px solid var(--border-subtle)',
+                        }}
+                      >
+                        ⚙️ 상태
+                      </button>
                     </div>
                   </td>
                 </tr>

@@ -44,5 +44,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "notes": "Tab5Operations: 구직/구봇/수익관리/운영통계 서브탭. Tab6Inheritance: 페르소나 단위 상속+제외항목 체크박스. Tab7Credits: 3만/5만/10만/직접입력 패키지, Anthropic 스타일 카드, 앰버 골드 강조. Tab8Security: 비밀번호 강도 표시, 로그아웃 확인, 계정삭제 2단계 인증."
+  "notes": "Tab5Operations: 구직/구봇/수익관리/운영통계 서브탭. Tab6Inheritance: 페르소나 단위 상속+제외항목 체크박스. Tab7Credits: 3만/5만/10만/직접입력 패키지, Anthropic 스타일 카드, 앰버 골드 강조. Tab8Security: 비밀번호 강도 표시, 로그아웃 확인, 계정삭제 2단계 인증.",
+  "updated_at": "2026-04-11T18:08:34.343809"
 }

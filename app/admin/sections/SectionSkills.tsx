@@ -1,4 +1,4 @@
-// @task S5FE8
+// @task S7FE7 (S5FE8)
 // @description 섹션6 — 스킬 관리 (목록/공식 등록/회원 스킬 검수)
 
 'use client';
@@ -58,8 +58,8 @@ function RegisterModal({ onClose, onRegister }: { onClose: () => void; onRegiste
   const [form, setForm] = useState({ name: '', description: '', category: '', price: '0', prompt: '' });
 
   return (
-    <div className="amodal-overlay" onClick={onClose}>
-      <div className="amodal amodal--wide" onClick={(e) => e.stopPropagation()}>
+    <div className="amodal-overlay" onClick={onClose} role="presentation" aria-hidden="true">
+      <div className="amodal amodal--wide" onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="amodal__header">
           <div className="amodal__title">⭐ 공식 스킬 등록</div>
           <button className="amodal__close" onClick={onClose}>✕</button>
@@ -117,8 +117,8 @@ function ReviewModal({ skill, onClose, onApprove, onReject }: {
   const [reason, setReason] = useState('');
 
   return (
-    <div className="amodal-overlay" onClick={onClose}>
-      <div className="amodal" onClick={(e) => e.stopPropagation()}>
+    <div className="amodal-overlay" onClick={onClose} role="presentation" aria-hidden="true">
+      <div className="amodal" onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="amodal__header">
           <div className="amodal__title">🔍 스킬 검수 — {skill.name}</div>
           <button className="amodal__close" onClick={onClose}>✕</button>

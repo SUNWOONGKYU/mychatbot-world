@@ -51,44 +51,6 @@ const SERVER_ENV: EnvSchema[] = [
     required: false,
     description: 'Upstash Redis 토큰',
   },
-  // ── 결제 (S4BA2) ─────────────────────────────────────────────
-  {
-    key: 'PAYMENT_BANK_NAME',
-    required: false,
-    description: '무통장 입금 은행명',
-  },
-  {
-    key: 'PAYMENT_ACCOUNT_NUMBER',
-    required: false,
-    description: '무통장 입금 계좌번호',
-  },
-  {
-    key: 'PAYMENT_ACCOUNT_HOLDER',
-    required: false,
-    description: '무통장 입금 예금주',
-  },
-  // ── Observability (S9BI1) ───────────────────────────────────
-  {
-    key: 'SENTRY_DSN',
-    required: false,
-    description: 'Sentry DSN (서버 측 에러 수집)',
-  },
-  {
-    key: 'NEXT_PUBLIC_SENTRY_DSN',
-    required: false,
-    description: 'Sentry DSN (클라이언트)',
-  },
-  // ── Analytics (S9BA6) ───────────────────────────────────────
-  {
-    key: 'NEXT_PUBLIC_POSTHOG_KEY',
-    required: false,
-    description: 'PostHog project key',
-  },
-  {
-    key: 'NEXT_PUBLIC_POSTHOG_HOST',
-    required: false,
-    description: 'PostHog host URL',
-  },
 ];
 
 export interface EnvCheckResult {

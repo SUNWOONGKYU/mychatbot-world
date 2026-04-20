@@ -53,6 +53,12 @@ function isProductPurchase(description?: string | null): boolean {
   return description.startsWith('[부가기능]') || description.startsWith('[페르소나 템플릿]');
 }
 
+interface UserCreditRow {
+  user_id: string;
+  balance: number;
+  total_purchased: number;
+}
+
 interface PatchBody {
   paymentId: string;
   action: 'approve' | 'reject';
@@ -230,6 +236,27 @@ export async function PATCH(req: NextRequest) {
         message: `${paymentDesc} 구매 확인 완료. 아이템을 수동 지급하세요.`,
         processedAt: now,
       });
+    }
+
+    // 동일 유저에 대한 동시 승인 직렬화 (balance SELECT→UPSERT race 완화)
+    const lock = await rateLimitAsync(req, CREDIT_ADD_LOCK, `credit-add:${userId}`);
+    if (!lock.allowed) {
+      return NextResponse.json(
+        { error: 'Another approval for this user is in progress. Retry shortly.' },
+        { status: 429, headers: { 'Retry-After': String(lock.retryAfterSec) } },
+      );
+    }
+
+    // 2. 크레딧 충전: mcw_credits.balance += amount (upsert)
+    const { data: creditData, error: creditFetchError } = await (supabase as any)
+      .from('mcw_credits')
+      .select('balance, total_purchased')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (creditFetchError) {
+      console.error('[PATCH /api/admin/payments] Credit fetch error:', creditFetchError.message);
+      return NextResponse.json({ error: 'Failed to fetch current balance' }, { status: 500 });
     }
 
     // 동일 유저에 대한 동시 승인 직렬화 (balance SELECT→UPSERT race 완화)

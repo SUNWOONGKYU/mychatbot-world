@@ -1,5 +1,5 @@
 /**
- * @task S5BA4
+ * @task S7FE7 (S5BA4)
  * @description 계정 삭제 UI 컴포넌트 (마이페이지 > 계정 보안)
  */
 'use client';
@@ -66,7 +66,7 @@ export function DeleteAccountSection() {
       <h2 id="delete-account-heading" className="text-base font-semibold text-error mb-1">
         위험 구역
       </h2>
-      <p className="text-sm text-text-secondary mb-4">
+      <p className="text-sm text-[var(--text-secondary)] mb-4">
         계정을 삭제하면 모든 코코봇, 대화 내역, 크레딧이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
       </p>
 
@@ -99,7 +99,7 @@ export function DeleteAccountSection() {
 
           <form onSubmit={handleDelete} className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <label htmlFor="delete-password" className="text-sm text-text-secondary">
+              <label htmlFor="delete-password" className="text-sm text-[var(--text-secondary)]">
                 비밀번호 확인
               </label>
               <input
@@ -109,14 +109,14 @@ export function DeleteAccountSection() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="현재 비밀번호 입력"
                 autoComplete="current-password"
-                className="w-full px-3 py-2 rounded-lg text-sm bg-bg-subtle border border-border-default
-                  text-text-primary focus:outline-none focus:ring-2 focus:ring-error focus:border-error"
+                className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border-default)]
+                  text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--state-danger-fg)] focus:border-[var(--state-danger-fg)]"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label htmlFor="delete-confirm" className="text-sm text-text-secondary">
-                확인 문구 입력: <strong className="text-text-primary">계정삭제</strong>
+              <label htmlFor="delete-confirm" className="text-sm text-[var(--text-secondary)]">
+                확인 문구 입력: <strong className="text-[var(--text-primary)]">계정삭제</strong>
               </label>
               <input
                 id="delete-confirm"
@@ -125,8 +125,8 @@ export function DeleteAccountSection() {
                 onChange={(e) => setConfirmPhrase(e.target.value)}
                 placeholder='계정삭제'
                 autoComplete="off"
-                className="w-full px-3 py-2 rounded-lg text-sm bg-bg-subtle border border-border-default
-                  text-text-primary focus:outline-none focus:ring-2 focus:ring-error focus:border-error"
+                className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border-default)]
+                  text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--state-danger-fg)] focus:border-[var(--state-danger-fg)]"
               />
             </div>
 
@@ -134,8 +134,8 @@ export function DeleteAccountSection() {
               <button
                 type="button"
                 onClick={() => { setIsOpen(false); setPassword(''); setConfirmPhrase(''); setError(''); }}
-                className="flex-1 py-2 rounded-lg text-sm font-medium border border-border-default
-                  text-text-secondary hover:bg-bg-subtle transition-colors"
+                className="flex-1 py-2 rounded-lg text-sm font-medium border border-[var(--border-default)]
+                  text-[var(--text-secondary)] hover:bg-[var(--surface-2)] transition-colors"
               >
                 취소
               </button>

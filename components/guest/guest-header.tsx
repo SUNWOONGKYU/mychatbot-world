@@ -12,6 +12,7 @@
 
 import Link from 'next/link';
 import clsx from 'clsx';
+import { BrandLogo } from '@/components/common/brand-logo';
 
 /** GuestHeader Props */
 interface GuestHeaderProps {
@@ -42,18 +43,13 @@ export function GuestHeader({ remainingCount }: GuestHeaderProps) {
       <div className="flex items-center gap-2">
         {/* Bot icon mark */}
         <div
-          className={clsx(
-            'flex items-center justify-center',
-            'w-8 h-8 rounded-lg',
-            'bg-primary text-white',
-            'text-sm font-bold select-none',
-          )}
+          className="select-none"
           aria-hidden="true"
         >
-          MC
+          <BrandLogo variant="mark" height={32} />
         </div>
-        <span className="text-sm font-semibold text-text-primary tracking-tight hidden sm:inline">
-          CoCoBot World
+        <span className="hidden sm:inline">
+          <BrandLogo variant="wordmark" height={22} style={{ color: 'var(--text-primary)' }} />
         </span>
       </div>
 

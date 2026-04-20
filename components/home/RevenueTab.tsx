@@ -95,7 +95,7 @@ export function RevenueTab() {
         <div style={S.sectionHeader}>
           <h2 style={S.h2}>수익활동 중개 서비스</h2>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginTop: 4 }}>
-            CoCoBot World가 중개하며, 발생 수익의 20%가 수수료로 차감됩니다.
+            CoCoBot가 중개하며, 발생 수익의 20%가 수수료로 차감됩니다.
           </p>
         </div>
 

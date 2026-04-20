@@ -21,10 +21,8 @@
 | S4 | 개발 마무리 | 15 | ~20% (소급 3개 완료) |
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
-| S7 | 프로덕션 런칭 준비 MBO | 5 | 100% (5/5 완료) |
-| S8 | 프로덕션 완성도 100점 달성 MBO | 15 | 100% (15/15 완료) |
-| S9 | 프로덕션 완성도 100점 달성 MBO v2 (9 영역 전수) | 27 | 0% (27/27 Pending — PO 재분류: 외부 실행·검증 대기, 2026-04-20) |
-| **합계** | | **134** | **~43%** |
+| S7 | 프로덕션 런칭 준비 MBO | 4 | 100% (4/4 완료) |
+| **합계** | | **91** | **~52%** |
 
 ---
 
@@ -207,10 +205,10 @@
 
 ---
 
-## S7 — 프로덕션 런칭 준비 MBO (5 Tasks)
+## S7 — 프로덕션 런칭 준비 MBO (4 Tasks)
 
-> 목표: 2026-04-20 MBO "프로덕션 완성도 극대화" — Security/Reliability/Data Integrity/Performance/Observability/UX·a11y/SEO/Infra/Documentation 9개 영역 일괄 감사 후 Critical·High 0 잔여, Medium 100% 해결.
-> **배경**: 컴팩션 직전 승인된 MBO 목표서 기반. Phase A(진단) → B(분류: Critical 2 / High 10 / Medium 9) → C(실행) → D(tsc 0 + next build 클린) → E(기록) + 후속 M4·M6·M8 이월 처리 완료.
+> 목표: 2026-04-20 MBO "프로덕션 완성도 극대화" — Security/Reliability/Data Integrity/Performance/Observability/UX·a11y/SEO/Infra/Documentation 9개 영역 일괄 감사 후 Critical·High 0 잔여, Medium ≥70% 해결.
+> **배경**: 컴팩션 직전 승인된 MBO 목표서 기반. Phase A(진단) → B(분류: Critical 2 / High 10 / Medium 9) → C(실행) → D(tsc 0 + next build 클린) → E(기록) 완료.
 
 | Task ID | Task명 | Area | Dependencies | Agent | Status |
 |---------|--------|------|-------------|-------|--------|
@@ -218,72 +216,6 @@
 | S7PROD2 | 프로덕션 UX/a11y 강화 — 옵티미스틱 롤백 + 키보드 접근성 + 모달 Escape (H5·H8·M7) | FE | — | `frontend-developer-core` | Completed |
 | S7PROD3 | 프로덕션 SEO/문서 — robots.ts/sitemap.ts/.env.example/README/metadata (H6·H7·H9·M5) | DC | — | `documentation-writer-core` | Completed |
 | S7PROD4 | 프로덕션 성능/운영 — 페이지네이션 + DB 인덱스 + 런타임 env 검증 (M2·M3·M9) | BI | — | `backend-developer-core` | Completed |
-| S7PROD5 | 후속 처리 — img→Image 5파일 + middleware matcher/rate-limit 확장 + radio a11y + health env audit (M4·M6·M8) | FE | S7PROD1~4 | `frontend-developer-core` | Completed |
-
----
-
-## S8 — 프로덕션 완성도 100점 달성 MBO (15 Tasks)
-
-> 목표: 2026-04-20 MBO "75점 → 100점" — 9개 영역(Observability/Data Integrity/Documentation/Reliability/Performance/UX·a11y/Infra·Deploy/SEO/Security) 전수 완성.
-> **배경**: S7 MBO 이후 75점 달성. 이월되었던 Sentry/E2E/RLS audit/Lighthouse 실측/Staging/JSON-LD/OpenAPI 등 전량 해소.
-
-| Task ID | Task명 | Area | Dependencies | Agent | Status |
-|---------|--------|------|-------------|-------|--------|
-| S8BI1 | Sentry 통합 (error + performance + source maps) | BI | — | `backend-developer-core` | Completed |
-| S8BI2 | Log Drain + 구조화 로그 (Axiom 또는 Vercel Log Drain) | BI | S8BI1 | `backend-developer-core` | Completed |
-| S8BI3 | UptimeRobot 외부 모니터링 + Slack/이메일 알림 | BI | — | `backend-developer-core` | Completed |
-| S8BA1 | 크레딧 증가/차감 atomic RPC (add_credits_tx/deduct_credits_tx) + confirm/admin/premium/chat 전환 | BA | — | `backend-architect` | Completed |
-| S8TS1 | Playwright E2E 5 플로우 + GitHub Actions CI | TS | — | `qa-specialist` | Completed |
-| S8SC1 | Supabase RLS 전 테이블 감사 + 누락 정책 보강 | SC | — | `security-specialist-core` | Completed |
-| S8SC2 | Supabase Auth MFA(TOTP) 활성화 + origin 검증 미들웨어 | SC | — | `security-specialist-core` | Completed |
-| S8SC3 | Secret rotation 정책서 + 3개월 캘린더 알림 | SC | — | `security-specialist-core` | Completed |
-| S8DV1 | Staging 환경 (Vercel preview + Supabase Branch DB) | DV | — | `devops-troubleshooter-core` | Completed |
-| S8DV2 | Supabase PITR 백업 복구 드릴 + 결과 문서화 | DV | S8DV1 | `devops-troubleshooter-core` | Completed |
-| S8FE1 | Lighthouse 실측 + 번들 분석 + 개선 후 재측정 (90+) | FE | — | `frontend-developer-core` | Completed |
-| S8FE2 | Axe 전수 감사 + WCAG AA 위반 0건 + CI 통합 | FE | — | `frontend-developer-core` | Completed |
-| S8FE3 | JSON-LD 구조화 데이터 5+ 페이지 + 동적 OG 이미지 | FE | — | `frontend-developer-core` | Completed |
-| S8DC1 | OpenAPI 3.0 스펙 (33 엔드포인트) + Swagger UI | DC | — | `documentation-writer-core` | Completed |
-| S8DC2 | 운영 런북 (incident/backup/deploy/rollback/on-call) | DC | S8DV2 | `documentation-writer-core` | Completed |
-
----
-
-## S9 — 프로덕션 완성도 100점 달성 MBO (27 Tasks, 완료)
-
-> 목표: 9개 영역(Observability 55·Data Integrity 70·Documentation 70·Reliability 75·Performance 75·UX/a11y 75·Infra/Deploy 75·SEO 80·Security 85) 평균 73.9 → 100점 달성.
-> 3 Phase 운영: 🔴 Phase 1(런칭 차단 6) → 🟡 Phase 2(안정성 8) → 🟢 Phase 3(완성도 13).
-
-| Task ID | Task명 | Area | Dependencies | Agent | Phase | Status |
-|---------|--------|------|-------------|-------|-------|--------|
-| S9DC1 | 법률 문서 3종 갱신 (이용약관/개인정보처리방침/환불정책) + 푸터 링크 | DC | — | `documentation-writer-core` | P0 | Pending |
-| S9TS2 | 실결제 E2E 검증 스크립트 + PO 체크리스트 | TS | — | `test-engineer-core` | P1 | Pending |
-| S9BI1 | Sentry SDK 통합 (server/client/edge + ErrorBoundary + PII scrubber) | BI | — | `observability-engineer` | P1 | Pending |
-| S9BI4 | UptimeRobot 6 모니터 정의 (/health·결제·챗·오리진) | BI | — | `observability-engineer` | P1 | Pending |
-| S9DB1 | RLS 정책 전수 감사 스크립트 + 41 테이블 리포트 | DB | — | `database-developer-core` | P1 | Pending |
-| S9BA4 | Vercel 환경변수 감사 (누락·deprecated 해소) | BA | — | `devops-troubleshooter-core` | P1 | Pending |
-| S9BA3 | Health check 세분화 (DB/Redis/OpenRouter 각각 status) | BA | — | `backend-developer-core` | P1 | Pending |
-| S9BI2 | Core Web Vitals 수집 API (`/api/metrics` + web-vitals) | BI | S9BI1 | `observability-engineer` | P2 | Pending |
-| S9BA1 | OpenRouter 서킷 브레이커 (연속 5xx 1분 차단) | BA | — | `backend-developer-core` | P2 | Pending |
-| S9BA2 | 재시도 정책 통일 (`lib/retry.ts` exponential backoff) | BA | — | `backend-developer-core` | P2 | Pending |
-| S9TS1 | Playwright E2E 8 핵심 시나리오 | TS | — | `test-engineer-core` | P2 | Pending |
-| S9DB2 | DB 제약·인덱스 감사 (FK/UNIQUE/NOT NULL) | DB | — | `database-developer-core` | P2 | Pending |
-| S9DB3 | PITR 복원 드릴 실행 리포트 (Staging) | DB | S9DV1 | `devops-troubleshooter-core` | P2 | Pending |
-| S9DV1 | Staging 환경 구축·검증 (Supabase Branch + Vercel Preview) | DV | — | `devops-troubleshooter-core` | P2 | Pending |
-| S9BA5 | 의존성 취약점 감사 (pnpm audit + Snyk 자동화) | BA | — | `security-specialist-core` | P2 | Pending |
-| S9FE1 | Lighthouse CI 실측 + 개선 (4 페이지 ≥90) | FE | — | `frontend-developer-core` | P3 | Pending |
-| S9FE2 | 번들 분석 + 코드 스플리팅 (@next/bundle-analyzer) | FE | S9FE1 | `frontend-developer-core` | P3 | Pending |
-| S9FE3 | axe-core 접근성 전수 감사 (critical 0) | FE | — | `frontend-developer-core` | P3 | Pending |
-| S9FE4 | 온보딩 UX (2분 첫 대화 플로우 단축) | FE | — | `ux-ui-designer-core` | P3 | Pending |
-| S9FE5 | 에러 메시지 UX 통일 (`lib/errors/user-facing.ts`) | FE | — | `frontend-developer-core` | P3 | Pending |
-| S9FE6 | JSON-LD 구조화 데이터 (Organization/WebSite/FAQPage) | FE | — | `seo-specialist` | P3 | Pending |
-| S9FE7 | 동적 OG 이미지 (`app/opengraph-image.tsx`) | FE | — | `seo-specialist` | P3 | Pending |
-| S9FE8 | sitemap.xml/robots.txt 검증 + GSC 제출 | FE | — | `seo-specialist` | P3 | Pending |
-| S9BA6 | PostHog 연동 (가입·봇 생성·결제 Funnel) | BA | — | `backend-developer-core` | P3 | Pending |
-| S9BI3 | Axiom log drain 가이드 + 쿼리 6종 | BI | — | `observability-engineer` | P3 | Pending |
-| S9DC2 | 운영 Runbook (on-call 장애 12 시나리오) | DC | S9DB3 | `documentation-writer-core` | P3 | Pending |
-| S9DC3 | API 레퍼런스 (핵심 30 엔드포인트) | DC | — | `documentation-writer-core` | P3 | Pending |
-
-### S9 Area 분포
-- BI 4 · DB 3 · DC 3 · BA 6 · FE 8 · TS 2 · DV 1 = **27 Task**
 
 ---
 

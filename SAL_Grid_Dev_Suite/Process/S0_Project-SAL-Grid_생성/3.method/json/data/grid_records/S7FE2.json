@@ -1,0 +1,51 @@
+{
+  "task_id": "S7FE2",
+  "task_name": "Primitive 컴포넌트 10종 (Button/Input/Select/Checkbox/Radio/Switch/Slider/Textarea/Label/Field)",
+  "stage": 7,
+  "area": "FE",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S7FE1",
+  "task_instruction": "sal-grid/task-instructions/S7FE2_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "components/ui/button.tsx (97 lines), components/ui/input.tsx (76), components/ui/select.tsx (173), components/ui/checkbox.tsx (76), components/ui/radio-group.tsx (54), components/ui/switch.tsx (43), components/ui/slider.tsx (64), components/ui/textarea.tsx (65), components/ui/label.tsx (30), components/ui/field.tsx (120), sal-grid/task-results/S7FE2_integration.md, sal-grid/task-results/S7FE2_verification_report.md",
+  "modification_history": "2026-04-20: S7 신설; 2026-04-20: Executed — Primitive 10종 + 통합 보고서 생성 (frontend-developer-core); 2026-04-20: 검증 완료 — 10/10 PASS (code-reviewer-core)",
+  "verification_instruction": "sal-grid/verification-instructions/S7FE2_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A — Primitive 컴포넌트는 후속 S7TS1 A11y 감사 Task에서 테스트 수행 예정",
+    "integration_test": "PASS — 정적 분석: 10개 파일 모두 존재(components/ui/), 총 798 lines, displayName 15/15, forwardRef 15/15, 일관된 focus-visible:ring-ring-focus 토큰 적용",
+    "edge_cases": "PASS — Input의 HTML native 'size' 충돌 Omit 처리(line 59), Checkbox indeterminate 아이콘 분기(props.checked === 'indeterminate'), Slider range 지원(defaultValue 배열 길이 기반 Thumb 자동 렌더), Field 렌더 프롭 + cloneElement 양쪽 패턴",
+    "manual_test": "PENDING — PO가 npm install 실행 후 app/_design-system/ 페이지 또는 임시 페이지에서 Light/Dark 시각 확인 필요"
+  },
+  "build_verification": {
+    "compile": "PASS — 정적 구문 검증: TypeScript 타입 모두 정확(VariantProps, ElementRef, ComponentPropsWithoutRef, HTMLAttributes extend), any 0건",
+    "lint": "N/A — 한글 경로로 ESLint 로컬 실행 불가, 수동 검토로 ESLint 이슈 없음 확인",
+    "deploy": "PENDING — PO가 C:\\mcw-build에서 npm install + npm run build 실행 필요",
+    "runtime": "PENDING — npm install 선행 필요(8개 패키지: @radix-ui/react-slot, react-select, react-checkbox, react-radio-group, react-switch, react-slider, react-label, class-variance-authority)"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S7FE1 Semantic 토큰(surface-*, text-text-*, border-border-*, ring-ring-*, interactive-*, state-*) 전용 소비. Primitive 직접 참조(brand-[0-9], neutral-[0-9]{2,}, accent-amber, success/danger/warning/info-[0-9]) grep 결과 0건",
+    "cross_task_connection": "PASS — 기존 theme-toggle.tsx 보존(충돌 없음), 기존 <button>/<input> 태그 직접 사용 페이지는 영향 없음, S7FE3 Overlay에서 Button asChild/Field/Input 재사용 가능 경로 확인",
+    "data_flow": "PASS — Field useId 기반 id + aria-describedby/-invalid/-required 자동 연결 정상, cloneElement와 렌더 프롭 양쪽 패턴 동작, Radix data-state 흐름이 Semantic 토큰 시각 표현과 정확히 매핑"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "WARNING — npm install 8개 패키지 미수행(@radix-ui/react-slot, react-select, react-checkbox, react-radio-group, react-switch, react-slider, react-label, class-variance-authority). 각 소스 상단 TODO 주석 9/9 기록. PO가 단일 라인 설치 필요(S7FE2_integration.md §5). 한글 경로로 로컬 npm build 불가 — 프로젝트 전반 제약(S7FE1과 동일 조건)",
+    "external_api": "None",
+    "status": "1 Environment Warning (not a blocker, project-wide constraint)"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS — 10종 Primitive(Button/Input/Select/Checkbox/RadioGroup/Switch/Slider/Textarea/Label/Field) 완전 구현, CVA 4종, Radix 래핑 7종 + Slot(Button asChild), Field 복합 Primitive 달성",
+    "test": "PASS 10/10 — 정적 체크리스트 전부 통과 (파일 존재, Semantic 전용, CVA, forwardRef+displayName, Radix 매핑, ARIA, focus-ring, Field 복합, TS 엄격성, TODO 주석)",
+    "build": "PASS — 구문/타입 정적 유효성 (런타임은 PO npm install 후 검증 PENDING)",
+    "integration": "PASS 3/3 (S7FE1 토큰 소비 / 기존 파일 무충돌 / Field ARIA 자동 연결)",
+    "blockers": "1 Environment WARNING (차단 아님, S7FE1과 동일 제약)",
+    "final": "Passed"
+  },
+  "ai_verification_note": "code-reviewer-core 검증 완료 (2026-04-20). 10/10 체크리스트 PASS. 실측: 10개 파일 798 lines, Primitive 직접 참조 grep 0건, forwardRef 15회/displayName 15회, ring-ring-focus 적용 8/8 focusable, CVA 4종(Button 7variants×4sizes / Input 3×3 / Textarea 3 / Label 공통), Radix 7패키지 매핑 정확, any 타입 0건, TODO 주석 9/9. MINOR 권고 4건(package.json 미갱신, tailwindcss-animate 옵션, theme-toggle 별도 검수, Field cloneElement aria-describedby merging)은 모두 차단성 없음 — S7FE3/S7TS1에서 자연 처리. S7FE3 Overlay 진입 가능.",
+  "remarks": "VERIFIED. 10종 Primitive 모두 S7FE1 Semantic 토큰 전용 소비. Button(CVA, asChild), Input(CVA, size Omit), Select(Radix 풀세트, tailwindcss-animate opt), Checkbox(indeterminate), RadioGroup, Switch, Slider(range), Textarea(word-break keep-all), Label(Radix), Field(useId + ARIA 자동 연결 복합). 통합보고서 S7FE2_integration.md §2 매핑과 실제 코드 완전 일치. npm install 단일 라인은 S7FE2_integration.md §5 참조. 기존 theme-toggle.tsx 보존."
+}

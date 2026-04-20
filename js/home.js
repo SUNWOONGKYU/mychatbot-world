@@ -1,5 +1,5 @@
 /* ============================================
-   CoCoBot World - My Page Logic (home.js)
+   CoCoBot - My Page Logic (home.js)
    Per-persona management structure
    ============================================ */
 
@@ -98,7 +98,7 @@ const HomePage = (() => {
         <div class="empty-state">
           <div class="empty-icon">🤖</div>
           <h3>아직 생성된 코코봇이 없습니다</h3>
-          <p>나만의 AI 코코봇을 생성하고 관리해 보세요.</p>
+          <p>나만의 AI Assistant 코코봇을 생성하고 관리해 보세요.</p>
           <button class="btn btn-primary" onclick="location.href='../create/index.html'">+ 새 코코봇 생성</button>
         </div>`;
       return;

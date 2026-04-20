@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { BrandLogo } from '@/components/common/brand-logo';
 
 interface NavItem {
   label: string;
@@ -13,7 +14,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: '대시보드',    href: '/dashboard',      icon: '◻' },
+  { label: '대시보드',    href: '/home',            icon: '◻' },
   { label: '내 봇',      href: '/bots',            icon: '🤖' },
   { label: '봇 만들기',  href: '/bots/new',        icon: '＋' },
   { label: '대화 기록',  href: '/conversations',   icon: '💬' },
@@ -80,9 +81,7 @@ export function MobileNav() {
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between h-header px-5 border-b border-border shrink-0">
-          <span className="text-xl font-bold tracking-tight text-primary select-none">
-            MCW
-          </span>
+          <BrandLogo variant="wordmark" height={26} style={{ color: 'var(--text-primary)' }} />
           <button
             type="button"
             onClick={close}

@@ -1,7 +1,7 @@
 /**
  * @task S2F8
  * @description 사이드바 메뉴 구성 — 5대 메뉴 카테고리
- * CoCoBot World — Sidebar Navigation
+ * CoCoBot — Sidebar Navigation
  *
  * 5대 메뉴:
  *   1. Birth    (탄생)    — 코코봇 생성, 성격/외형 설정, 아바타

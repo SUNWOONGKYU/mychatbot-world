@@ -1,7 +1,7 @@
 // @task S3F7
 /**
  * usage-dashboard.js
- * CoCoBot World — 사용량 대시보드 클라이언트 스크립트
+ * CoCoBot — 사용량 대시보드 클라이언트 스크립트
  *
  * - /api/usage 엔드포인트에서 사용량 데이터 fetch
  * - 월별 진행바, 통계 카드, 봇별 CSS 막대 차트 렌더링

@@ -1,6 +1,6 @@
 /**
- * @task S3FE4 (Vanilla→React 전환)
- * @description 봇카페 글쓰기 — 봇 선택 + 마당 선택 + 제목/본문/이미지
+ * @task S7FE7
+ * @description 봇카페 글쓰기 — 봇 선택 + 마당 선택 + 제목/본문/이미지 (S7 리디자인 — Semantic 토큰)
  * Route: /community/write
  * Vanilla 원본: js/community.js (CommunityWrite)
  */
@@ -190,15 +190,19 @@ function WriteInner() {
     }
   }
 
-  // ── 렌더 ─────────────────────────────────────────────────
+  // ── 공통 인풋 스타일 ─────────────────────────────────────
 
   const inputStyle: React.CSSProperties = {
-    width: '100%', padding: '0.6rem 0.9rem',
-    background: 'rgb(var(--bg-surface-hover) / 0.5)',
-    border: '1px solid rgb(var(--border))',
-    borderRadius: '8px', color: '#fff',
-    fontSize: '0.875rem', outline: 'none',
-    fontFamily: 'inherit', transition: 'border-color 0.15s',
+    width: '100%',
+    padding: '0.6rem 0.9rem',
+    background: 'var(--surface-1)',
+    border: '1px solid var(--border-default)',
+    borderRadius: 'var(--radius-md)',
+    color: 'var(--text-primary)',
+    fontSize: '0.875rem',
+    outline: 'none',
+    fontFamily: 'inherit',
+    transition: 'border-color 0.15s',
     boxSizing: 'border-box',
   };
 
@@ -212,56 +216,63 @@ function WriteInner() {
     paddingRight: '2.25rem',
   };
 
+  // ── 렌더 ─────────────────────────────────────────────────
+
   return (
-    <div style={{ maxWidth: '680px', margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
+    <main
+      aria-label="커뮤니티 글쓰기"
+      style={{
+        maxWidth: '680px',
+        margin: '0 auto',
+        padding: '1.5rem 1rem 3rem',
+      }}
+    >
       {/* 헤더 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+      <div className="flex items-center gap-3 mb-6">
         <button
+          type="button"
           onClick={() => router.back()}
-          style={{
-            background: 'none', border: 'none',
-            color: 'rgb(var(--text-muted))', cursor: 'pointer',
-            fontSize: '0.875rem', padding: 0, transition: 'color 0.15s',
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary))'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
+          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] rounded"
+          style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: '0.875rem', padding: 0 }}
+          aria-label="뒤로 가기"
         >
           ←
         </button>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'rgb(var(--text-primary))', margin: 0 }}>
+        <h1 className="text-xl font-bold m-0" style={{ color: 'var(--text-primary)' }}>
           {isEdit ? '글 수정' : '글쓰기'}
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
         {/* 봇 선택 */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-secondary))', marginBottom: '0.5rem' }}>
-            코코봇 선택 <span style={{ color: '#ef4444' }}>*</span>
+          <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+            코코봇 선택 <span style={{ color: 'var(--state-danger-fg)' }} aria-hidden="true">*</span>
           </label>
           {bots.length === 0 ? (
-            <div style={{
-              padding: '0.75rem',
-              background: 'rgba(234,179,8,0.08)',
-              border: '1px solid rgba(234,179,8,0.2)',
-              borderRadius: '8px', fontSize: '0.82rem', color: 'rgb(var(--text-secondary))',
-            }}>
+            <div
+              className="p-3 rounded-[var(--radius-md)] text-sm [word-break:keep-all]"
+              style={{
+                background: 'var(--state-warning-bg)',
+                border: '1px solid var(--state-warning-border)',
+                color: 'var(--state-warning-fg)',
+              }}
+            >
               아직 코코봇이 없습니다.{' '}
-              <a href="/birth" style={{ color: '#06b6d4', fontWeight: 600, textDecoration: 'none' }}>코코봇 만들기</a>
+              <a href="/birth" className="font-semibold hover:underline" style={{ color: 'var(--text-link)' }}>코코봇 만들기</a>
             </div>
           ) : (
             <select
               value={botId}
               onChange={e => setBotId(e.target.value)}
               required
+              aria-required="true"
               style={selectStyle}
-              onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)'; }}
-              onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; }}
             >
               <option value="">코코봇 선택 *</option>
               {bots.map(b => (
-                <option key={b.id} value={b.id} style={{ background: '#1a1a2e' }}>
+                <option key={b.id} value={b.id}>
                   {b.emoji || '🤖'} {b.bot_name || b.username}
                 </option>
               ))}
@@ -271,28 +282,27 @@ function WriteInner() {
 
         {/* 마당 선택 */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-secondary))', marginBottom: '0.5rem' }}>
-            마당 <span style={{ color: '#ef4444' }}>*</span>
+          <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+            마당 <span style={{ color: 'var(--state-danger-fg)' }} aria-hidden="true">*</span>
           </label>
           {madangs.length > 0 ? (
             <select
               value={madang}
               onChange={e => setMadang(e.target.value)}
               required
+              aria-required="true"
               style={selectStyle}
-              onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)'; }}
-              onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; }}
             >
               <option value="">마당 선택 *</option>
               {madangs.map(m => (
-                <option key={m.id} value={m.id} style={{ background: '#1a1a2e' }}>
+                <option key={m.id} value={m.id}>
                   {m.name}
                 </option>
               ))}
             </select>
           ) : (
             /* 마당 API 없을 때 fallback — 색상 버튼 */
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <div className="flex gap-2 flex-wrap" role="group" aria-label="마당 선택">
               {Object.entries({ free: '자유', tech: '기술', daily: '일상', showcase: '쇼케이스', qna: 'Q&A', tips: '팁' }).map(([id, name]) => {
                 const c = MADANG_COLORS[id];
                 const active = madang === id;
@@ -301,13 +311,12 @@ function WriteInner() {
                     key={id}
                     type="button"
                     onClick={() => setMadang(id)}
+                    aria-pressed={active}
+                    className="text-xs font-medium rounded-[var(--radius-full)] px-3 py-1.5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]"
                     style={{
-                      padding: '0.35rem 0.75rem', borderRadius: '20px',
-                      fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer',
-                      border: active ? `1px solid ${c}` : '1px solid rgb(var(--border))',
-                      background: active ? `${c}22` : 'rgb(var(--bg-surface-hover) / 0.5)',
-                      color: active ? c : 'rgb(var(--text-secondary))',
-                      transition: 'all 0.15s',
+                      border: active ? `1px solid ${c}` : '1px solid var(--border-default)',
+                      background: active ? `${c}22` : 'var(--surface-2)',
+                      color: active ? c : 'var(--text-secondary)',
                     }}
                   >
                     {name}
@@ -320,8 +329,8 @@ function WriteInner() {
 
         {/* 제목 */}
         <div>
-          <label htmlFor="postTitle" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-secondary))', marginBottom: '0.5rem' }}>
-            제목 <span style={{ color: '#ef4444' }}>*</span>
+          <label htmlFor="postTitle" className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+            제목 <span style={{ color: 'var(--state-danger-fg)' }} aria-hidden="true">*</span>
           </label>
           <input
             id="postTitle"
@@ -330,19 +339,19 @@ function WriteInner() {
             onChange={e => setTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             maxLength={200}
+            required
+            aria-required="true"
             style={inputStyle}
-            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)'; }}
-            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; }}
           />
-          <p style={{ marginTop: '0.25rem', textAlign: 'right', fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>
+          <p className="mt-1 text-right text-[0.72rem]" style={{ color: 'var(--text-tertiary)' }}>
             {title.length}/200
           </p>
         </div>
 
         {/* 본문 */}
         <div>
-          <label htmlFor="postContent" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-secondary))', marginBottom: '0.5rem' }}>
-            본문 <span style={{ color: '#ef4444' }}>*</span>
+          <label htmlFor="postContent" className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+            본문 <span style={{ color: 'var(--state-danger-fg)' }} aria-hidden="true">*</span>
           </label>
           <textarea
             id="postContent"
@@ -350,40 +359,43 @@ function WriteInner() {
             onChange={e => setContent(e.target.value)}
             placeholder="내용을 입력하세요"
             rows={12}
+            required
+            aria-required="true"
             style={{ ...inputStyle, resize: 'vertical' }}
-            onFocus={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(6,182,212,0.4)'; }}
-            onBlur={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; }}
           />
         </div>
 
         {/* 이미지 첨부 */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-secondary))', marginBottom: '0.5rem' }}>
-            이미지 첨부 <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', fontWeight: 400 }}>(선택, 최대 5장, 각 10MB)</span>
+          <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+            이미지 첨부{' '}
+            <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>(선택, 최대 5장, 각 10MB)</span>
           </label>
 
           {/* 이미지 미리보기 */}
           {previews.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+            <div className="flex flex-wrap gap-2 mb-3">
               {previews.map((src, i) => (
-                <div key={i} style={{ position: 'relative', display: 'inline-block' }}>
+                <div key={i} className="relative inline-block">
                   <img
                     src={src}
                     alt={`첨부 ${i + 1}`}
-                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgb(var(--border))' }}
+                    className="w-20 h-20 object-cover rounded-[var(--radius-md)]"
+                    style={{ border: '1px solid var(--border-default)' }}
                   />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
+                    className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 rounded-[var(--radius-full)] flex items-center justify-center text-[0.6rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]"
                     style={{
-                      position: 'absolute', top: '-6px', right: '-6px',
-                      width: '18px', height: '18px', borderRadius: '50%',
-                      background: '#ef4444', color: 'white', border: 'none',
-                      fontSize: '0.65rem', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      lineHeight: 1,
+                      background: 'var(--state-danger-fg)',
+                      color: 'var(--text-inverted)',
+                      border: 'none',
+                      width: '18px',
+                      height: '18px',
+                      cursor: 'pointer',
                     }}
-                    aria-label="이미지 제거"
+                    aria-label={`첨부 이미지 ${i + 1} 제거`}
                   >
                     ✕
                   </button>
@@ -405,14 +417,14 @@ function WriteInner() {
                   fileInputRef.current?.click();
                 }
               }}
-              onDragOver={e => { e.preventDefault(); (e.currentTarget as HTMLElement).style.borderColor = '#06b6d4'; (e.currentTarget as HTMLElement).style.background = 'rgba(6,182,212,0.05)'; }}
-              onDragLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; (e.currentTarget as HTMLElement).style.background = 'rgb(var(--bg-surface-hover) / 0.3)'; }}
-              onDrop={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--border))'; (e.currentTarget as HTMLElement).style.background = 'rgb(var(--bg-surface-hover) / 0.3)'; handleDrop(e); }}
+              onDragOver={e => { e.preventDefault(); (e.currentTarget as HTMLElement).style.borderColor = 'var(--interactive-primary)'; }}
+              onDragLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+              onDrop={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; handleDrop(e); }}
+              className="p-5 text-center cursor-pointer rounded-[var(--radius-md)] text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]"
               style={{
-                padding: '1.25rem', border: '1px dashed rgb(var(--border))',
-                borderRadius: '8px', textAlign: 'center', cursor: 'pointer',
-                background: 'rgb(var(--bg-surface-hover) / 0.3)', transition: 'all 0.15s',
-                fontSize: '0.85rem', color: 'rgb(var(--text-muted))',
+                border: '1px dashed var(--border-default)',
+                background: 'var(--surface-1)',
+                color: 'var(--text-tertiary)',
               }}
             >
               이미지를 클릭하거나 드래그하여 추가 ({images.length}/5)
@@ -425,31 +437,36 @@ function WriteInner() {
             accept="image/*"
             multiple
             onChange={e => { handleImageFiles(Array.from(e.target.files ?? [])); e.target.value = ''; }}
-            style={{ display: 'none' }}
+            className="hidden"
           />
         </div>
 
         {/* 에러 */}
         {error && (
-          <div style={{
-            padding: '0.75rem 1rem',
-            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
-            borderRadius: '8px', fontSize: '0.875rem', color: '#ef4444',
-          }}>
+          <div
+            role="alert"
+            className="px-4 py-3 rounded-[var(--radius-md)] text-sm [word-break:keep-all]"
+            style={{
+              background: 'var(--state-danger-bg)',
+              border: '1px solid var(--state-danger-border)',
+              color: 'var(--state-danger-fg)',
+            }}
+          >
             ⚠️ {error}
           </div>
         )}
 
         {/* 버튼 */}
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', paddingTop: '0.5rem' }}>
+        <div className="flex gap-3 justify-end pt-2">
           <button
             type="button"
             onClick={() => router.back()}
+            className="px-5 py-2.5 rounded-[var(--radius-md)] text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]"
             style={{
-              padding: '0.6rem 1.25rem', borderRadius: '8px',
-              background: 'none', border: '1px solid rgb(var(--border))',
-              color: 'rgb(var(--text-muted))', fontSize: '0.875rem', cursor: 'pointer',
-              transition: 'all 0.15s',
+              background: 'transparent',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
             }}
           >
             취소
@@ -457,21 +474,19 @@ function WriteInner() {
           <button
             type="submit"
             disabled={submitting || bots.length === 0}
+            className="px-6 py-2.5 rounded-[var(--radius-md)] text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] disabled:opacity-60"
             style={{
-              padding: '0.6rem 1.5rem', borderRadius: '8px',
-              background: '#06b6d4', color: 'white', border: 'none',
-              fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer',
-              opacity: (submitting || bots.length === 0) ? 0.6 : 1,
-              transition: 'all 0.15s',
+              background: 'var(--interactive-primary)',
+              color: 'var(--text-inverted)',
+              border: 'none',
+              cursor: (submitting || bots.length === 0) ? 'not-allowed' : 'pointer',
             }}
-            onMouseEnter={e => { if (!submitting && bots.length > 0) (e.currentTarget as HTMLElement).style.background = '#0891b2'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#06b6d4'; }}
           >
             {submitting ? '처리 중...' : isEdit ? '수정 완료' : '등록'}
           </button>
         </div>
       </form>
-    </div>
+    </main>
   );
 }
 
@@ -480,7 +495,7 @@ function WriteInner() {
 export default function CommunityWritePage() {
   return (
     <Suspense fallback={
-      <div style={{ textAlign: 'center', padding: '4rem', color: 'rgb(var(--text-muted))' }}>
+      <div className="text-center py-16 text-sm" style={{ color: 'var(--text-tertiary)' }}>
         불러오는 중...
       </div>
     }>
