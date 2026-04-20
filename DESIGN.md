@@ -182,6 +182,12 @@ Primary 색상은 **바이올렛 퍼플(`#5E4BFF`)** — AI/기술/창의성을 
 - Safe-area 패딩: `env(safe-area-inset-bottom)`
 - `md:` 이상에서 숨김
 
+**하단 Footer (랜딩)**
+- Background: `var(--nav-bg)` — **Navbar와 동일 토큰 참조** (헤더/푸터 한 쌍으로 브랜드 일관성 유지)
+- Border-top: `1px solid rgb(var(--primary-500) / 0.30)` — 본문과 경계
+- Text: 흰색 (헤더 예외 조항 동일 적용)
+- 원칙: 페이지 상·하단이 같은 딥 퍼플로 프레임되어 **브랜드 샌드위치** 효과
+
 ### Inputs
 
 **Text Input**

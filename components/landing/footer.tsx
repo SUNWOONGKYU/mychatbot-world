@@ -11,7 +11,8 @@ export function LandingFooter() {
   return (
     <footer
       style={{
-        background: 'linear-gradient(135deg, rgb(var(--primary-900)), rgb(var(--primary-950, 10 4 60)))',
+        background: 'var(--nav-bg)',
+        borderTop: '1px solid rgb(var(--primary-500) / 0.30)',
         paddingTop: '44px',
         paddingBottom: '44px',
       }}
