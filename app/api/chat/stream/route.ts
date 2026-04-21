@@ -28,6 +28,7 @@ import { selectModel } from '@/lib/ai-router';
 import { chatCompletionStream, formatSSE } from '@/lib/openrouter-client';
 import { loadPersona } from '@/lib/persona-loader';
 import { triggerWikiAccumulate } from '@/app/api/chat/route';
+import { generateQueryEmbedding, searchWiki, searchFaqs } from '@/lib/chat/rag';
 import type { OpenRouterMessage } from '@/types/ai';
 
 // ============================
@@ -281,19 +282,12 @@ export async function POST(req: NextRequest): Promise<Response> {
       };
 
       try {
-        // 1. 인증 확인
-        const userId = await getUserId(req);
-        if (!userId) {
-          write('error', JSON.stringify({ error: 'Unauthorized' }));
-          controller.close();
-          return;
-        }
+        // 1. 인증 확인 — 미로그인 사용자는 게스트 ID로 대화 허용 (URL/QR 접속자 정책)
+        const authedUserId = await getUserId(req);
+        const userId = authedUserId ?? `guest-${crypto.randomUUID()}`;
 
         // 2. botId 해석 (username → 실제 id) — conversations FK 및 persona 조회 공용
         const resolvedBotId = await resolveBotId(botId);
-
-        // 3. 페르소나 로딩
-        const personaCtx = await loadPersona(resolvedBotId);
 
         // 3. AI 모델 선택
         const routerResult = selectModel({
@@ -302,18 +296,56 @@ export async function POST(req: NextRequest): Promise<Response> {
         });
         const { selectedModel, emotionTier } = routerResult;
 
-        // 4. conversationId 확인 / 신규 생성 (FK 만족 위해 resolvedBotId 사용)
+        // 4. conversationId 확인 / 신규 생성 + 임베딩 생성 (병렬)
         let conversationId = inputConversationId ?? '';
-        if (!conversationId) {
-          conversationId = await createConversation(userId, resolvedBotId);
+        const [resolvedConversationId, queryEmbedding] = await Promise.all([
+          conversationId
+            ? Promise.resolve(conversationId)
+            : createConversation(userId, resolvedBotId),
+          generateQueryEmbedding(message),
+        ]);
+        conversationId = resolvedConversationId;
+
+        // 5. RAG 캐스케이드: wiki → kb 청크 → faq → AI 자유 답변
+        let wikiCtx: { content: string; titles: string[] } | null = null;
+        let faqCtx: { content: string; items: Array<{ question: string; answer: string }> } | null = null;
+
+        if (queryEmbedding) {
+          wikiCtx = await searchWiki(resolvedBotId, queryEmbedding);
         }
 
-        // 5. 대화 히스토리 로드
+        // 6. 페르소나 로딩 — 위키 히트 시 KB 청크 스킵
+        const personaCtx = await loadPersona(
+          resolvedBotId,
+          wikiCtx ? undefined : (queryEmbedding ?? undefined)
+        );
+
+        // 6.5. FAQ 캐스케이드: 위키·KB 모두 미히트 시에만
+        if (!wikiCtx && personaCtx.kbHitCount === 0 && queryEmbedding) {
+          faqCtx = await searchFaqs(resolvedBotId, queryEmbedding);
+        }
+
+        // 7. 대화 히스토리 로드
         const history = await loadConversationHistory(conversationId);
 
-        // 6. 메시지 배열 조합
-        const messages: OpenRouterMessage[] = [
+        // 8. 메시지 배열 조합 (system + wiki/faq 컨텍스트 + history + 현재 user)
+        const systemMessages: OpenRouterMessage[] = [
           { role: 'system', content: personaCtx.systemPrompt },
+        ];
+        if (wikiCtx) {
+          systemMessages.push({
+            role: 'system',
+            content: `[지식베이스 — 위키]\n다음 위키 정보를 참고하여 답변하세요:\n\n${wikiCtx.content}`,
+          });
+        } else if (faqCtx) {
+          systemMessages.push({
+            role: 'system',
+            content: `[지식베이스 — FAQ]\n다음 FAQ를 참고하여 답변하세요:\n\n${faqCtx.content}`,
+          });
+        }
+
+        const messages: OpenRouterMessage[] = [
+          ...systemMessages,
           ...history,
           { role: 'user', content: message },
         ];

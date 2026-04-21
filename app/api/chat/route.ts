@@ -613,11 +613,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // 3. 인증 확인
-    const userId = await getUserId(req);
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 3. 인증 확인 — 미로그인 사용자는 게스트 ID로 대화 허용 (URL/QR 접속자 정책)
+    const authedUserId = await getUserId(req);
+    const userId = authedUserId ?? `guest-${crypto.randomUUID()}`;
 
     // 3.5. botId 해석 (username → 실제 mcw_bots.id) — 이후 모든 조회/FK 에 사용
     botId = await resolveBotId(botId);
