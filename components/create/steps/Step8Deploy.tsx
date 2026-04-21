@@ -89,6 +89,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
       setCreating(true);
       setCreateError('');
       try {
+        console.info('[create-bot] 전송 시작', { botName: data.botName, hasBotDesc: !!data.botDesc });
         const res = await fetch('/api/create-bot', {
           method: 'POST',
           headers: authHeaders(),
@@ -108,10 +109,14 @@ export default function Step8Deploy({ data, onFinish }: Props) {
           }),
         });
         const json = await res.json().catch(() => ({}));
+        console.info('[create-bot] 응답', { status: res.status, ok: res.ok, json });
         if (!res.ok || !json.success || !json.data?.botId) {
-          setCreateError(json.error || `생성 실패 (HTTP ${res.status})`);
+          const msg = json.error || `생성 실패 (HTTP ${res.status})`;
+          console.error('[create-bot] 저장 실패:', msg, json);
+          setCreateError(msg);
           return;
         }
+        console.info('[create-bot] 저장 성공! botId =', json.data.botId);
         setCreatedBot({
           botId: json.data.botId,
           deployUrl: json.data.deployUrl ?? '',
@@ -209,22 +214,32 @@ export default function Step8Deploy({ data, onFinish }: Props) {
         <h2 className="text-xl font-bold text-text-primary [word-break:keep-all]">
           코코봇 생성에 실패했습니다
         </h2>
-        <p className="text-sm text-state-danger-fg [word-break:keep-all] max-w-md mx-auto">
-          {createError}
-        </p>
-        <Button
-          variant="default"
-          size="lg"
-          onClick={() => {
-            didCreateRef.current = false;
-            setCreateError('');
-            setCreating(true);
-            // useEffect가 재실행되도록 마운트 트리거 — 간단히 reload
-            window.location.reload();
-          }}
-        >
-          다시 시도
-        </Button>
+        <div className="mx-auto max-w-md bg-state-danger-bg border border-state-danger-border rounded-lg p-4 text-left">
+          <p className="text-sm font-semibold text-state-danger-fg mb-2">에러 메시지</p>
+          <p className="text-sm text-state-danger-fg [word-break:keep-all] whitespace-pre-wrap break-words">
+            {createError}
+          </p>
+          <p className="text-xs text-text-tertiary mt-3">
+            F12 → Console 탭에서 더 자세한 로그를 확인할 수 있습니다.
+          </p>
+        </div>
+        <div className="flex gap-3 justify-center">
+          <Button
+            variant="default"
+            size="lg"
+            onClick={() => {
+              didCreateRef.current = false;
+              setCreateError('');
+              setCreating(true);
+              window.location.reload();
+            }}
+          >
+            다시 시도
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <a href="/mypage">마이 페이지로</a>
+          </Button>
+        </div>
       </div>
     );
   }
@@ -365,7 +380,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
           </a>
         </Button>
         <Button asChild variant="outline" size="lg">
-          <a href="/home" aria-label="마이 페이지로 이동">
+          <a href="/mypage" aria-label="마이 페이지로 이동">
             마이 페이지로 가기
           </a>
         </Button>
@@ -383,7 +398,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
               icon={card.icon}
               title={card.title}
               desc={card.desc}
-              href={idx === 0 ? `/bot/${botUsername}` : '/home'}
+              href={idx === 0 ? `/bot/${botUsername}` : '/mypage'}
               variant={card.variant}
             />
           ))}

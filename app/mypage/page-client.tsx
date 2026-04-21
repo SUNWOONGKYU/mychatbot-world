@@ -286,7 +286,9 @@ export default function MyPageClient() {
 
         if (botsRes.status === 'fulfilled' && botsRes.value.ok) {
           const data = await botsRes.value.json();
-          setBots(Array.isArray(data) ? data : (data.bots ?? []));
+          // /api/bots 응답: { success, data: { bots, count } } — data.data.bots가 정답
+          // 레거시 호환을 위해 data.bots 및 배열 직접 응답도 처리
+          setBots(Array.isArray(data) ? data : (data.data?.bots ?? data.bots ?? []));
         }
 
         if (skillsRes.status === 'fulfilled' && skillsRes.value.ok) {

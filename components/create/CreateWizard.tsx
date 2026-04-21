@@ -122,11 +122,13 @@ function ProgressBar({ currentStep }: { currentStep: number }) {
                 alignItems: 'center',
                 gap: '3px',
                 fontSize: '0.6rem',
+                fontWeight: isActive ? 700 : 500,
+                // 라이트 모드: text-muted는 neutral-500 = AA 간신히. 비활성 라벨을 text-secondary로 끌어올려 가독성 확보
                 color: isActive
                   ? 'rgb(var(--text-primary-rgb))'
                   : isDone
                   ? 'rgb(var(--text-secondary-rgb))'
-                  : 'rgb(var(--text-muted))',
+                  : 'rgb(var(--text-secondary-rgb))',
               }}
             >
               <span
@@ -141,11 +143,13 @@ function ProgressBar({ currentStep }: { currentStep: number }) {
                     ? 'rgb(var(--color-primary))'
                     : isDone
                     ? 'rgb(var(--color-success))'
-                    : 'rgb(var(--bg-muted))',
+                    : 'var(--surface-1)',
+                  // 비활성 원은 라이트에서 bg-muted(#E4E8ED) + 배경 흰색 → 보더 없으면 투명하게 보임. border 추가로 가시성 확보
+                  border: isActive || isDone ? 'none' : '1.5px solid var(--border-strong)',
                   fontWeight: 700,
                   fontSize: '0.6rem',
                   flexShrink: 0,
-                  color: 'white',
+                  color: isActive || isDone ? '#ffffff' : 'var(--text-primary)',
                 }}
               >
                 {stepNum}
@@ -240,10 +244,9 @@ export default function CreateWizard({ onComplete }: Props) {
     const merged = { ...data, ...finalData };
     setData(merged);
     clearDraft();
-    if (merged.botId) {
-      onComplete(merged.botId);
-    }
-  }, [data, clearDraft, onComplete]);
+    // 생성 직후 자동 리다이렉트 금지 — Step 8 성공 화면(축하 + QR + URL)을 사용자가 반드시 보도록 함
+    // 사용자는 Step 8 내부의 "대화해보기" / "마이페이지" 버튼으로 수동 이동
+  }, [data, clearDraft]);
 
   return (
     <div>

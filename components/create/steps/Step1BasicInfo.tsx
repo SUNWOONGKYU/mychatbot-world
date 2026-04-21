@@ -87,6 +87,19 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
     }
   }, [usernameManual]);
 
+  // 음성 입력은 기존 값을 유지한 채 뒤에 이어붙여야 하므로 functional updater 사용 (stale state 방지)
+  const appendBotNameFromVoice = useCallback((text: string) => {
+    setBotName(prev => {
+      const next = prev + (prev ? ' ' : '') + text;
+      if (!usernameManual) setBotUsername(koreanToUrl(next));
+      return next;
+    });
+  }, [usernameManual]);
+
+  const appendBotDescFromVoice = useCallback((text: string) => {
+    setBotDesc(prev => prev + (prev ? ' ' : '') + text);
+  }, []);
+
   const handleNext = () => {
     if (!botName.trim()) { alert('코코봇 이름을 입력해주세요'); return; }
     let username = botUsername.trim();
@@ -130,9 +143,7 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
               maxLength={30}
               aria-required="true"
             />
-            <MicButton
-              onResult={(text) => handleNameChange(botName + (botName ? ' ' : '') + text)}
-            />
+            <MicButton onResult={appendBotNameFromVoice} />
           </div>
         </div>
 
@@ -149,9 +160,7 @@ export default function Step1BasicInfo({ data, onNext }: Props) {
               placeholder="예: 나를 대신해 24시간 소통하는 AI Assistant 코코봇"
               maxLength={100}
             />
-            <MicButton
-              onResult={(text) => setBotDesc(botDesc + (botDesc ? ' ' : '') + text)}
-            />
+            <MicButton onResult={appendBotDescFromVoice} />
           </div>
         </div>
 
