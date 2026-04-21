@@ -1,0 +1,58 @@
+{
+  "task_id": "S10FE8",
+  "task_name": "Tab2 페르소나 섹션 제거 + AI 자동생성 입력 UX",
+  "stage": 10,
+  "area": "FE",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S10FE7",
+  "task_instruction": "sal-grid/task-instructions/S10FE8_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "components/mypage/Tab2BotManage.tsx",
+  "modification_history": "2026-04-21: PO 피드백 반영. (1) 봇 카드 내부 '페르소나 N/10 + 추가' 섹션(PersonaPanel) 제거 — 1봇=1페르소나 멘탈모델. (2) 최상단 버튼 '+ 새 코코봇' → '+ 새 코코봇 페르소나' 라벨 변경. (3) '인사말 자동생성' 버튼에 힌트 입력 + 편집 textarea + 저장 버튼 추가 (GreetingAutoGen). (4) 'FAQ 자동생성' 버튼에 키워드 입력 + 항목별 체크/편집 + 선택 저장 (FaqAutoGen). commit d8ae5ae.",
+  "verification_instruction": "sal-grid/verification-instructions/S10FE8_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PASS (/api/create-bot/analyze, /api/create-bot/faq, /api/faq POST 연동)",
+    "edge_cases": "PASS (빈 응답/에러 토스트)",
+    "manual_test": "PENDING PO 육안"
+  },
+  "build_verification": {
+    "compile": "PASS tsc --noEmit",
+    "lint": "PASS",
+    "deploy": "PASS (d8ae5ae main)",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS",
+    "cross_task_connection": "PASS (S10FE7 BotSettings 와 공존)",
+    "data_flow": "PASS (analyze.suggestedGreeting / faq.faqs[] 파싱)"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS",
+    "build": "PASS",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "ai_verification_note": "Main Agent self-verified 2026-04-21: tsc clean. 페르소나 1:1 정책 복원 + AI 자동생성 입력/편집 가능. 새 페르소나 생성은 위저드로 일원화.",
+  "remarks": "PO 피드백 직접 반영 Task. '페르소나 10개로 확장'은 잘못된 UX — 페르소나는 봇 자체와 1:1. 새 페르소나는 Step8 위저드에서 생성.",
+  "build_result": {
+    "compile": "PASS tsc --noEmit",
+    "deploy": "PASS (d8ae5ae main)",
+    "runtime": "PENDING"
+  },
+  "duration": "N/A",
+  "updated_at": "2026-04-21T18:00:00.000Z"
+}

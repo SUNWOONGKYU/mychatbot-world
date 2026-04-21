@@ -300,6 +300,7 @@ S4 (개발 마무리)
 | v3.4 | 2026-04-12 | 모바일 반응형 긴급 수정(버그픽스) — S5FE2: navbar.tsx 서비스 메뉴 hidden md:flex(모바일 오버플로우 해결)+로그인 버튼 숨김+회원가입 축약, mobile-nav.tsx 드로어 max-w-[85vw] 추가. S5FE6: home/page.tsx 260px 고정 사이드바→isMobile 기반 오버레이 슬라이드 전환, 모바일 햄버거 메뉴+탭명 헤더 추가. Supabase Auth 설정: site_url=https://mychatbot.world, uri_allow_list 2개 등록. Google Cloud Console OAuth redirect URI 등록 완료. 총 76개 유지(버그픽스). |
 | v3.5 | 2026-04-21 | **S7SC1 신설** — 비밀번호 재설정 플로우 복구. `/reset-password` useEffect re-run으로 setSession이 single-use refresh_token으로 재호출되어 "재설정 링크가 만료되었거나 이미 사용되었습니다" 오류 발생. redirectTo를 `/auth/callback`으로 전환 + setSession once 보장. MBO 승인(2026-04-21 11:06) 기반 신설. Stage=S7 / Area=SC. index.json 114 tasks. |
 | v3.6 | 2026-04-21 | **S10 Stage 신설 — 마이페이지 Tab2 6도구 연동 (14 Tasks)**. QR 렌더 + 대화로그/KB/스킬/학습/커뮤니티 패널 + 설정 저장. DB 2개(S10DB1 mcw_bot_skills / S10DB2 mcw_bots 컬럼확장), BA 4개(chat-log / skills CRUD / community 필터 / bot PATCH), FE 7개(QR / 6패널), TS 1개(E2E). MBO 승인 2026-04-21 12:50. index.json 122→136 tasks. |
+| v3.7 | 2026-04-21 | **S10 Stage 추가 3 Tasks** — S10BA5 채팅 스트림 RAG 캐스케이드(버그 수정, commit c3c7231), S10BA6 게스트 대화 허용(URL/QR 접속자 정책, commit c3c7231), S10FE8 Tab2 페르소나 섹션 제거 + AI 자동생성 입력 UX(PO 피드백, commit d8ae5ae). index.json 136→139 tasks. |
 
 ---
 
@@ -324,3 +325,6 @@ S4 (개발 마무리)
 | S10FE6 | CommunityPanel 구현 (봇 작성 글/댓글/카르마 필터) | FE | S10BA3 | `frontend-developer-core` | Pending |
 | S10FE7 | BotSettings 저장 통합 (tone/persona/model PATCH 라운드트립) | FE | S10BA4 | `frontend-developer-core` | Pending |
 | S10QA1 | E2E 검증 (Playwright — 마이페이지 6도구 전체 flow) | TS | S10FE1, S10FE2, S10FE3, S10FE4, S10FE5, S10FE6, S10FE7 | `test-runner-core` | Pending |
+| S10BA5 | 채팅 스트림 RAG 캐스케이드 (/api/chat/stream 에 Wiki/KB/FAQ cascade 적용) | BA | S5BA8, S5BA9 | `api-developer-core` | Completed |
+| S10BA6 | 게스트 대화 허용 (URL/QR 접속자 401 해제, guest-UUID 폴백) | BA | S5BA8 | `api-developer-core` | Completed |
+| S10FE8 | Tab2 페르소나 섹션 제거 + AI 자동생성 입력 UX (GreetingAutoGen/FaqAutoGen) | FE | S10FE7 | `frontend-developer-core` | Completed |

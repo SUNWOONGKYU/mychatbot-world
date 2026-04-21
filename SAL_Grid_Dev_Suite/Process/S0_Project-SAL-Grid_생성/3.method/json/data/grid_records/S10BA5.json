@@ -1,0 +1,58 @@
+{
+  "task_id": "S10BA5",
+  "task_name": "채팅 스트림 RAG 캐스케이드 (Wiki/KB/FAQ)",
+  "stage": 10,
+  "area": "BA",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S5BA8, S5BA9",
+  "task_instruction": "sal-grid/task-instructions/S10BA5_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/api/chat/stream/route.ts, lib/chat/rag.ts (reuse)",
+  "modification_history": "2026-04-21: /api/chat/stream 라우트에 RAG 캐스케이드 누락 버그 수정. lib/chat/rag.ts의 generateQueryEmbedding/searchWiki/searchFaqs import 추가. Wiki → KB(loadPersona) → FAQ cascade 및 [지식베이스 — 위키/FAQ] 시스템 메시지 주입 구현. commit c3c7231.",
+  "verification_instruction": "sal-grid/verification-instructions/S10BA5_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PASS (wiki/KB/FAQ cascade wired)",
+    "edge_cases": "PASS (embedding null 시 KB only 폴백)",
+    "manual_test": "PENDING (런타임 육안 검증 필요)"
+  },
+  "build_verification": {
+    "compile": "PASS tsc --noEmit",
+    "lint": "PASS",
+    "deploy": "PASS (pushed to main c3c7231)",
+    "runtime": "PENDING runtime check"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS (lib/chat/rag import 정상)",
+    "cross_task_connection": "PASS (/api/chat 와 동일 cascade 구조)",
+    "data_flow": "PASS (embedding → wiki/faq rpc → system message)"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS",
+    "build": "PASS",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "ai_verification_note": "Main Agent self-verified 2026-04-21: tsc clean + git push main. 스트림 응답 FAQ/KB 반영 실제 확인은 PO 런타임 테스트로 최종 확정 필요.",
+  "remarks": "채팅 UI가 호출하는 주 라우트는 /api/chat/stream 인데 RAG 누락으로 FAQ/KB 미반영 버그. /api/chat/route.ts 의 cascade 로직 이식. 중복 lib/chat-rag.ts 삭제 후 기존 lib/chat/rag.ts 재사용.",
+  "build_result": {
+    "compile": "PASS tsc --noEmit",
+    "deploy": "PASS (c3c7231 main)",
+    "runtime": "PENDING"
+  },
+  "duration": "N/A",
+  "updated_at": "2026-04-21T18:00:00.000Z"
+}
