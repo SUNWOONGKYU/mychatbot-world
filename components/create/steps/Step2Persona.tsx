@@ -70,7 +70,11 @@ function getSliderPreview(val: number) {
 }
 
 export default function Step2Persona({ data, onNext, onBack }: Props) {
-  const [persona, setPersona] = useState<PersonaData>(data.persona);
+  // 페르소나 이름 초기값: 기존 persona.name이 있으면 유지, 없으면 Step1의 봇 이름을 기본값으로
+  const [persona, setPersona] = useState<PersonaData>(() => ({
+    ...data.persona,
+    name: data.persona.name?.trim() || data.botName || '',
+  }));
   const [presetOpen, setPresetOpen] = useState<boolean>(!persona.presetId);
 
   const personaType: PersonaType = persona.type ?? 'avatar';
@@ -87,9 +91,11 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
   };
 
   const selectPreset = (p: Preset) => {
+    // 페르소나 이름은 사용자가 이미 입력한 값(보통 봇 이름)을 유지.
+    // preset 선택은 role/userTitle만 자동 세팅하고, 이름을 덮어쓰지 않는다.
     update({
       presetId: p.id,
-      name: p.suggestName || persona.name,
+      name: persona.name || p.suggestName,
       userTitle: p.suggestUserTitle || persona.userTitle,
       role: p.suggestRole || persona.role,
     });
@@ -112,8 +118,8 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
       {/* ── 분류 토글 (아바타형 / 도우미형) ──────────────────────────── */}
       <div style={{
         display: 'flex', gap: '8px', padding: '4px',
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--surface-1)',
+        border: '1px solid var(--border-default)',
         borderRadius: '12px', marginBottom: '1rem',
       }}>
         {(['avatar', 'helper'] as PersonaType[]).map(t => {
@@ -129,7 +135,7 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
                 flex: 1, padding: '10px 12px', borderRadius: '10px',
                 border: 'none', cursor: 'pointer',
                 background: active ? '#6366f1' : 'transparent',
-                color: active ? 'white' : 'rgba(255,255,255,0.6)',
+                color: active ? '#ffffff' : 'var(--text-secondary)',
                 transition: 'all 0.2s',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
               }}
@@ -143,8 +149,8 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
 
       {/* ── Option C: 접힘형 6-preset 카드 ──────────────────────────── */}
       <div style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--surface-1)',
+        border: '1px solid var(--border-default)',
         borderRadius: '12px', marginBottom: '1.5rem', overflow: 'hidden',
       }}>
         <button
@@ -154,15 +160,15 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
           style={{
             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '12px 16px', background: 'transparent', border: 'none', cursor: 'pointer',
-            color: 'white', fontSize: '0.9rem', fontWeight: 600, textAlign: 'left',
+            color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 600, textAlign: 'left',
           }}
         >
           <span>
             {currentPreset
-              ? <>선택한 프리셋: <span style={{ color: '#a5b4fc' }}>{currentPreset.icon} {currentPreset.label}</span></>
+              ? <>선택한 프리셋: <span style={{ color: 'var(--interactive-primary)' }}>{currentPreset.icon} {currentPreset.label}</span></>
               : '프리셋을 선택하면 이름·호칭·역할이 자동 채워집니다'}
           </span>
-          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>
             {presetOpen ? '접기 ▲' : '펼치기 ▼'}
           </span>
         </button>
@@ -181,9 +187,10 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
                   onClick={() => selectPreset(p)}
                   style={{
                     padding: '14px 8px', borderRadius: '10px', cursor: 'pointer',
-                    background: active ? 'rgba(99,102,241,0.25)' : 'rgba(0,0,0,0.2)',
-                    border: `1px solid ${active ? '#818cf8' : 'rgba(255,255,255,0.08)'}`,
-                    color: active ? 'white' : 'rgba(255,255,255,0.85)',
+                    // 라이트 모드에서 surface-2(#FFFFFF)는 페이지 배경과 동일 → surface-1로 대비 확보
+                    background: active ? 'rgba(99,102,241,0.18)' : 'var(--surface-0)',
+                    border: `1.5px solid ${active ? '#818cf8' : 'var(--border-strong)'}`,
+                    color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
                     fontSize: '0.8rem', fontWeight: 600, textAlign: 'center',
                     transition: 'all 0.15s',
                   }}
@@ -214,8 +221,8 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
 
       {/* 페르소나 카드 */}
       <div style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--surface-1)',
+        border: '1px solid var(--border-default)',
         borderLeft: '3px solid #818cf8',
         borderRadius: '16px',
         padding: '1.25rem',
@@ -228,10 +235,10 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
             borderRadius: '10px',
             fontSize: '0.65rem',
             fontWeight: 700,
-            background: 'rgba(99,102,241,0.2)',
-            color: '#a5b4fc',
+            background: 'rgba(99,102,241,0.18)',
+            color: 'var(--interactive-primary)',
           }}>{personaType === 'avatar' ? '아바타형' : '도우미형'}</span>
-          <span style={{ color: 'white', fontWeight: 700 }}>대표 페르소나</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>대표 페르소나</span>
         </div>
 
         {/* 페르소나 이름 */}
@@ -240,7 +247,7 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input
               type="text"
-              style={{ ...formInput, flex: 1, background: 'rgba(0,0,0,0.2)' }}
+              style={{ ...formInput, flex: 1 }}
               value={persona.name}
               onChange={e => update({ name: e.target.value })}
               placeholder="예: 고객 상담, 전문 컨설팅"
@@ -255,7 +262,7 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input
               type="text"
-              style={{ ...formInput, flex: 1, background: 'rgba(0,0,0,0.2)' }}
+              style={{ ...formInput, flex: 1 }}
               value={persona.userTitle}
               onChange={e => update({ userTitle: e.target.value })}
               placeholder="예: 고객님, 대표님, 선생님"
@@ -269,7 +276,7 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
           <label style={formLabel}>역할/전문성 설명</label>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
             <textarea
-              style={{ ...formInput, flex: 1, background: 'rgba(0,0,0,0.2)', minHeight: '60px', resize: 'vertical' }}
+              style={{ ...formInput, flex: 1, minHeight: '60px', resize: 'vertical' }}
               value={persona.role}
               onChange={e => update({ role: e.target.value })}
               placeholder="이 페르소나의 역할을 설명해주세요"
@@ -283,7 +290,7 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
         <div style={formGroup}>
           <label style={formLabel}>감정 슬라이더 (IQ ↔ EQ)</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', whiteSpace: 'nowrap', minWidth: '50px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', minWidth: '50px' }}>
               💖 감성
             </span>
             <input
@@ -294,21 +301,21 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
               onChange={e => update({ iqEq: parseInt(e.target.value, 10) })}
               style={{ flex: 1, accentColor: '#6366f1', height: '8px' }}
             />
-            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
               🧠 논리
             </span>
           </div>
-          <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>
+          <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '4px' }}>
             {persona.iqEq} — {getSliderLabel(persona.iqEq)}
           </div>
           <div style={{
             marginTop: '8px',
             padding: '12px',
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--surface-2)',
+            border: '1px solid var(--border-default)',
             borderRadius: '10px',
             fontSize: '0.75rem',
-            color: 'rgba(255,255,255,0.6)',
+            color: 'var(--text-secondary)',
             fontStyle: 'italic',
             textAlign: 'center',
           }}>
@@ -327,11 +334,11 @@ export default function Step2Persona({ data, onNext, onBack }: Props) {
                   flex: 1,
                   minWidth: '70px',
                   padding: '8px',
-                  background: persona.model === opt.value ? '#6366f1' : 'rgba(255,255,255,0.05)',
-                  border: `1px solid ${persona.model === opt.value ? '#6366f1' : 'rgba(255,255,255,0.1)'}`,
+                  background: persona.model === opt.value ? '#6366f1' : 'var(--surface-2)',
+                  border: `1px solid ${persona.model === opt.value ? '#6366f1' : 'var(--border-default)'}`,
                   borderRadius: '10px',
                   fontSize: '0.75rem',
-                  color: persona.model === opt.value ? 'white' : 'rgba(255,255,255,0.6)',
+                  color: persona.model === opt.value ? '#ffffff' : 'var(--text-secondary)',
                   cursor: 'pointer',
                   textAlign: 'center',
                   transition: 'all 0.2s',
