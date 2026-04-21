@@ -95,118 +95,279 @@ function UrlPanel({ url }: { url: string | null }) {
   );
 }
 
-// ── 하위 컴포넌트: 페르소나 관리 ──────────────────────────────────────────
+// ── 하위 컴포넌트: AI 인사말 자동생성 ────────────────────────────────────
 
-function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string }) {
-  const [list, setList] = useState<Persona[]>(personas);
-  const [adding, setAdding] = useState(false);
-  const [newName, setNewName] = useState('');
+function GreetingAutoGen({ botId, botName, botDesc }: { botId: string; botName: string; botDesc: string | null }) {
+  const [open, setOpen] = useState(false);
+  const [hint, setHint] = useState('');
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
 
-  const handleAdd = async () => {
-    if (!newName.trim() || list.length >= 10) return;
-    const name = newName.trim();
-    setNewName('');
-    setAdding(false);
+  const handleGenerate = async () => {
+    setLoading(true);
+    setMsg(null);
     try {
-      const res = await fetch(`/api/bots/${botId}/personas`, {
+      const res = await fetch('/api/create-bot/analyze', {
         method: 'POST',
         headers: authHeaders(),
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({
+          name: botName,
+          description: [botDesc ?? '', hint.trim()].filter(Boolean).join(' / '),
+        }),
       });
       const d = await res.json();
-      if (res.ok && d.data) {
-        setList(prev => [...prev, { id: d.data.id, name: d.data.name }]);
-      } else {
-        setList(prev => [...prev, { id: `temp-${Date.now()}`, name }]);
-      }
+      const greeting =
+        d?.data?.suggestedGreeting ??
+        d?.suggestedGreeting ??
+        d?.data?.greeting ??
+        '';
+      if (greeting) setResult(greeting);
+      else setMsg('생성 실패 — 직접 입력해주세요');
     } catch {
-      setList(prev => [...prev, { id: `temp-${Date.now()}`, name }]);
+      setMsg('생성 실패 — 직접 입력해주세요');
     }
+    setLoading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    setList(prev => prev.filter(p => p.id !== id));
-    if (id.startsWith('temp-')) return;
+  const handleSave = async () => {
+    if (!result.trim()) return;
+    setLoading(true);
     try {
-      await fetch(`/api/bots/${botId}/personas`, {
-        method: 'DELETE',
+      const res = await fetch(`/api/bots/${botId}`, {
+        method: 'PATCH',
         headers: authHeaders(),
-        body: JSON.stringify({ personaId: id }),
+        body: JSON.stringify({ greeting: result.trim() }),
       });
-    } catch { /* silent */ }
+      setMsg(res.ok ? '인사말 저장 완료' : '저장 실패');
+    } catch {
+      setMsg('저장 실패');
+    }
+    setLoading(false);
   };
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={clsx(
+          'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)]',
+          'text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
+        )}
+      >
+        AI 인사말 자동생성
+      </button>
+    );
+  }
 
   return (
-    <div className="p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)] space-y-3">
+    <div className="w-full p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)] space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">
-          페르소나 ({list.length}/10)
-        </p>
-        {list.length < 10 && (
+        <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">AI 인사말 자동생성</p>
+        <button type="button" onClick={() => setOpen(false)} className="text-xs text-[var(--text-tertiary)] hover:underline">닫기</button>
+      </div>
+      <input
+        type="text"
+        value={hint}
+        onChange={e => setHint(e.target.value)}
+        placeholder="힌트 (선택) — 예: 친근하게, 격식있게, 타겟 연령대 등"
+        maxLength={200}
+        className={clsx(
+          'w-full px-3 py-2 text-sm rounded-[var(--radius-sm)]',
+          'border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]',
+          'focus:outline-none focus:border-[var(--interactive-primary)]',
+        )}
+      />
+      <textarea
+        value={result}
+        onChange={e => setResult(e.target.value)}
+        placeholder="AI 생성 버튼을 누르거나 직접 입력하세요"
+        rows={3}
+        maxLength={500}
+        className={clsx(
+          'w-full px-3 py-2 text-sm rounded-[var(--radius-sm)]',
+          'border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]',
+          'focus:outline-none focus:border-[var(--interactive-primary)]',
+        )}
+      />
+      <div className="flex gap-2 items-center">
+        <button
+          type="button"
+          onClick={handleGenerate}
+          disabled={loading}
+          className="px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)] text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] disabled:opacity-50"
+        >
+          {loading ? '생성중...' : 'AI 생성'}
+        </button>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={loading || !result.trim()}
+          className="px-3 py-1.5 text-sm rounded-[var(--radius-md)] bg-[var(--interactive-primary)] text-[var(--text-inverted)] hover:bg-[var(--interactive-primary-hover)] disabled:opacity-50"
+        >
+          저장
+        </button>
+        {msg && <span className="text-xs text-[var(--text-tertiary)]">{msg}</span>}
+      </div>
+    </div>
+  );
+}
+
+// ── 하위 컴포넌트: AI FAQ 자동생성 ────────────────────────────────────────
+
+interface GenFaqItem { question: string; answer: string; selected: boolean }
+
+function FaqAutoGen({ botId, botName, botDesc }: { botId: string; botName: string; botDesc: string | null }) {
+  const [open, setOpen] = useState(false);
+  const [hint, setHint] = useState('');
+  const [items, setItems] = useState<GenFaqItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    setMsg(null);
+    try {
+      const res = await fetch('/api/create-bot/faq', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          name: botName,
+          description: [botDesc ?? '', hint.trim()].filter(Boolean).join(' / '),
+          keywords: hint.split(',').map(s => s.trim()).filter(Boolean),
+        }),
+      });
+      const d = await res.json();
+      const faqs = d?.data?.faqs as Array<{ question: string; answer: string }> | undefined;
+      if (faqs && faqs.length > 0) {
+        setItems(faqs.map(f => ({ ...f, selected: true })));
+      } else {
+        setMsg('생성 실패');
+      }
+    } catch {
+      setMsg('생성 실패');
+    }
+    setLoading(false);
+  };
+
+  const handleSave = async () => {
+    const picks = items.filter(i => i.selected && i.question.trim() && i.answer.trim());
+    if (picks.length === 0) return;
+    setLoading(true);
+    setMsg(null);
+    let ok = 0;
+    for (let i = 0; i < picks.length; i++) {
+      try {
+        const res = await fetch('/api/faq', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({
+            chatbot_id: botId,
+            question: picks[i].question.trim(),
+            answer: picks[i].answer.trim(),
+            order_index: i,
+          }),
+        });
+        if (res.ok) ok++;
+      } catch { /* continue */ }
+    }
+    setMsg(`${ok}/${picks.length}개 FAQ 저장됨`);
+    setLoading(false);
+  };
+
+  const update = (idx: number, patch: Partial<GenFaqItem>) => {
+    setItems(prev => prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+  };
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={clsx(
+          'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)]',
+          'text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
+        )}
+      >
+        FAQ 자동생성
+      </button>
+    );
+  }
+
+  return (
+    <div className="w-full p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)] space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">FAQ 자동생성</p>
+        <button type="button" onClick={() => setOpen(false)} className="text-xs text-[var(--text-tertiary)] hover:underline">닫기</button>
+      </div>
+      <input
+        type="text"
+        value={hint}
+        onChange={e => setHint(e.target.value)}
+        placeholder="키워드 (쉼표 구분, 선택) — 예: 가격, 배송, 환불"
+        maxLength={200}
+        className={clsx(
+          'w-full px-3 py-2 text-sm rounded-[var(--radius-sm)]',
+          'border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]',
+          'focus:outline-none focus:border-[var(--interactive-primary)]',
+        )}
+      />
+      <div className="flex gap-2 items-center">
+        <button
+          type="button"
+          onClick={handleGenerate}
+          disabled={loading}
+          className="px-3 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)] text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] disabled:opacity-50"
+        >
+          {loading ? '생성중...' : 'AI 생성'}
+        </button>
+        {items.length > 0 && (
           <button
             type="button"
-            onClick={() => setAdding(true)}
-            className={clsx(
-              'text-xs font-medium text-[var(--interactive-primary)]',
-              'hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--ring-focus)]',
-            )}
+            onClick={handleSave}
+            disabled={loading}
+            className="px-3 py-1.5 text-sm rounded-[var(--radius-md)] bg-[var(--interactive-primary)] text-[var(--text-inverted)] hover:bg-[var(--interactive-primary-hover)] disabled:opacity-50"
           >
-            + 추가
+            선택 항목 저장
           </button>
         )}
+        {msg && <span className="text-xs text-[var(--text-tertiary)]">{msg}</span>}
       </div>
 
-      <div className="space-y-2">
-        {list.map(p => (
-          <div
-            key={p.id}
-            className="flex items-center justify-between px-3 py-2 rounded-[var(--radius-sm)] bg-[var(--surface-2)] border border-[var(--border-subtle)]"
-          >
-            <span className="text-sm text-[var(--text-primary)]">{p.name}</span>
-            <button
-              type="button"
-              aria-label={`${p.name} 페르소나 삭제`}
-              onClick={() => handleDelete(p.id)}
-              className="text-xs text-[var(--state-danger-fg)] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--ring-focus)]"
-            >
-              삭제
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {adding && (
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={newName}
-            onChange={e => setNewName(e.target.value)}
-            placeholder="페르소나 이름"
-            maxLength={30}
-            autoFocus
-            aria-label="새 페르소나 이름"
-            onKeyDown={e => { if (e.key === 'Enter') handleAdd(); if (e.key === 'Escape') setAdding(false); }}
-            className={clsx(
-              'flex-1 px-3 py-1.5 text-sm rounded-[var(--radius-sm)]',
-              'border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]',
-              'focus:outline-none focus:border-[var(--interactive-primary)]',
-              'focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
-            )}
-          />
-          <button
-            type="button"
-            onClick={handleAdd}
-            className="text-sm font-medium text-[var(--interactive-primary)] hover:underline"
-          >
-            확인
-          </button>
-          <button
-            type="button"
-            onClick={() => setAdding(false)}
-            className="text-sm text-[var(--text-tertiary)] hover:underline"
-          >
-            취소
-          </button>
+      {items.length > 0 && (
+        <div className="space-y-2 max-h-[400px] overflow-y-auto">
+          {items.map((it, idx) => (
+            <div key={idx} className="p-2 rounded-[var(--radius-sm)] bg-[var(--surface-2)] border border-[var(--border-subtle)] space-y-1">
+              <div className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  checked={it.selected}
+                  onChange={e => update(idx, { selected: e.target.checked })}
+                  className="mt-1.5"
+                  aria-label={`FAQ ${idx + 1} 선택`}
+                />
+                <div className="flex-1 space-y-1">
+                  <input
+                    type="text"
+                    value={it.question}
+                    onChange={e => update(idx, { question: e.target.value })}
+                    placeholder="질문"
+                    className="w-full px-2 py-1 text-xs rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]"
+                  />
+                  <textarea
+                    value={it.answer}
+                    onChange={e => update(idx, { answer: e.target.value })}
+                    placeholder="답변"
+                    rows={2}
+                    className="w-full px-2 py-1 text-xs rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--surface-0)] text-[var(--text-primary)]"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -382,9 +543,6 @@ function BotCard({ bot, onDelete, onClone }: {
               <span className="text-xs text-[var(--text-tertiary)]">
                 대화 <span className="text-[var(--text-secondary)] font-medium">{(bot.conversation_count ?? 0).toLocaleString()}</span>
               </span>
-              <span className="text-xs text-[var(--text-tertiary)]">
-                페르소나 <span className="text-[var(--text-secondary)] font-medium">{bot.personas?.length ?? 0}</span>/10
-              </span>
             </div>
           </div>
           <span
@@ -403,30 +561,11 @@ function BotCard({ bot, onDelete, onClone }: {
           className="px-4 pb-4 space-y-4 border-t border-[var(--border-default)] pt-4"
         >
           <UrlPanel url={bot.deploy_url} />
-          <PersonaPanel personas={bot.personas ?? []} botId={bot.id} />
 
-          {/* AI 자동생성 버튼 */}
+          {/* AI 자동생성 — 인사말 / FAQ (입력 + 생성 + 편집 + 저장) */}
           <div className="flex gap-2 flex-wrap">
-            <button
-              type="button"
-              className={clsx(
-                'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)]',
-                'text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
-              )}
-            >
-              AI 인사말 자동생성
-            </button>
-            <button
-              type="button"
-              className={clsx(
-                'px-4 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--interactive-primary)]',
-                'text-[var(--interactive-primary)] hover:bg-[var(--surface-2)] transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
-              )}
-            >
-              FAQ 자동생성
-            </button>
+            <GreetingAutoGen botId={bot.id} botName={bot.name} botDesc={bot.description} />
+            <FaqAutoGen botId={bot.id} botName={bot.name} botDesc={bot.description} />
           </div>
 
           <ToolPanel activeTool={activeTool} onSelect={setActiveTool} botId={bot.id} bot={bot} />
@@ -538,7 +677,7 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
           )}
         >
-          + 새 코코봇
+          + 새 코코봇 페르소나
         </a>
       </div>
 
