@@ -1,0 +1,19 @@
+{
+  "task_id": "S11FE1",
+  "task_name": "공통 셸/네비 모바일 최적화",
+  "stage": 11,
+  "area": "FE",
+  "task_status": "Executed",
+  "task_progress": 100,
+  "verification_status": "Not Verified",
+  "dependencies": "S11QA1",
+  "task_instruction": "sal-grid/task-instructions/S11FE1_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "Next.js, Tailwind CSS",
+  "execution_type": "AI-Only",
+  "generated_files": "components/common/navbar.tsx",
+  "verification_instruction": "sal-grid/verification-instructions/S11FE1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "ai_verification_note": "S11FE1 1차 수정 완료 — Navbar 모바일 오버플로우 근본 원인 제거.\n주요 변경:\n1) <nav> 인라인 style={display:'flex'} → className='hidden md:flex' (모바일에서 4메뉴 숨김, 가로 스크롤 주원인 해소)\n2) 헤더 높이 h-20 → h-14 md:h-20 (모바일 56px)\n3) 컨테이너 flex md:grid, justify-between (모바일 2열 분할, 데스크탑 3열 그리드 유지)\n4) 로고: 모바일 28px/데스크탑 40px\n5) 벨 아이콘 모바일 숨김 (공간 절약), 데스크탑 44px 터치 타겟\n6) MyPage 버튼 min-w-44 min-h-44 (터치 타겟)\n7) 로그인/로그아웃 min-h-44, 패딩 px-3 md:px-4, text-xs md:text-sm\n8) 회원가입 버튼 hidden sm:flex (≤390px 숨김, 로그인 페이지에서 가입 링크 있음)\n9) 구분선 hidden md:inline-block\n10) 테마 토글 w-11 h-11 (44px)\ntypecheck PASS. 런타임 검증은 배포 후 S11QA2에서 통합 측정.",
+  "remarks": "app/layout.tsx, Navbar, Header, MobileNav, MobileTabBar, Sidebar — 하위 FE Task 공통 선행"
+}

@@ -301,6 +301,7 @@ S4 (개발 마무리)
 | v3.5 | 2026-04-21 | **S7SC1 신설** — 비밀번호 재설정 플로우 복구. `/reset-password` useEffect re-run으로 setSession이 single-use refresh_token으로 재호출되어 "재설정 링크가 만료되었거나 이미 사용되었습니다" 오류 발생. redirectTo를 `/auth/callback`으로 전환 + setSession once 보장. MBO 승인(2026-04-21 11:06) 기반 신설. Stage=S7 / Area=SC. index.json 114 tasks. |
 | v3.6 | 2026-04-21 | **S10 Stage 신설 — 마이페이지 Tab2 6도구 연동 (14 Tasks)**. QR 렌더 + 대화로그/KB/스킬/학습/커뮤니티 패널 + 설정 저장. DB 2개(S10DB1 mcw_bot_skills / S10DB2 mcw_bots 컬럼확장), BA 4개(chat-log / skills CRUD / community 필터 / bot PATCH), FE 7개(QR / 6패널), TS 1개(E2E). MBO 승인 2026-04-21 12:50. index.json 122→136 tasks. |
 | v3.7 | 2026-04-21 | **S10 Stage 추가 3 Tasks** — S10BA5 채팅 스트림 RAG 캐스케이드(버그 수정, commit c3c7231), S10BA6 게스트 대화 허용(URL/QR 접속자 정책, commit c3c7231), S10FE8 Tab2 페르소나 섹션 제거 + AI 자동생성 입력 UX(PO 피드백, commit d8ae5ae). index.json 136→139 tasks. |
+| v3.8 | 2026-04-21 | **S11 Stage 신설 — 전 페이지 모바일 반응형 최적화 (14 Tasks)**. QA 2개(S11QA1 베이스라인 감사 / S11QA2 회귀 검증), FE 12개(S11FE1 공통 셸, FE2~12 카테고리별 페이지). KPI: 390px 가로 스크롤 0, 터치 타겟 ≥44px, 본문 폰트 ≥12px, Lighthouse mobile ≥80. MBO 승인 2026-04-21 19:10. index.json 139→153 tasks. |
 
 ---
 
@@ -328,3 +329,28 @@ S4 (개발 마무리)
 | S10BA5 | 채팅 스트림 RAG 캐스케이드 (/api/chat/stream 에 Wiki/KB/FAQ cascade 적용) | BA | S5BA8, S5BA9 | `api-developer-core` | Completed |
 | S10BA6 | 게스트 대화 허용 (URL/QR 접속자 401 해제, guest-UUID 폴백) | BA | S5BA8 | `api-developer-core` | Completed |
 | S10FE8 | Tab2 페르소나 섹션 제거 + AI 자동생성 입력 UX (GreetingAutoGen/FaqAutoGen) | FE | S10FE7 | `frontend-developer-core` | Completed |
+
+---
+
+## S11 — 전 페이지 모바일 반응형 최적화 (14 Tasks)
+
+> 목표: 48개 페이지 전부 390px/768px 뷰포트에서 가로 스크롤 0, 터치 타겟 ≥44px, 가독성 확보
+> MBO 승인: 2026-04-21 19:10 (PO "승인")
+> MBO 파일: `zz_KingFolder/_TalkTodoPlan/2026_04_21__19.09_MBO_모바일반응형최적화.md`
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S11QA1 | 모바일 뷰포트 감사 (베이스라인 — 48페이지 390/768 스크린샷 + KPI 4종) | TS | — | `test-runner-core` | Pending |
+| S11FE1 | 공통 셸/네비 모바일 최적화 (layout, Navbar, Header, MobileNav, Sidebar) | FE | S11QA1 | `frontend-developer-core` | Pending |
+| S11FE2 | 인증 페이지 (login, signup, reset-password, auth/callback, auth/confirm) | FE | S11QA1 | `frontend-developer-core` | Pending |
+| S11FE3 | 홈/랜딩/온보딩 (`/`, home, onboarding) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE4 | Birth/Create 위저드 흐름 | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE5 | Skills 계열 (skills, register, my, [id], learning/*) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE6 | Jobs 계열 (jobs, create, search, match, hire, [id]) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE7 | Community 계열 (community, write, gallery, [id]) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE8 | Bot/Wiki (bot/[botId]/*, bot/faq) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE9 | MyPage & Business (mypage 탭 컨텐츠 + business/*) ⚠️사이드바 유지 | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE10 | Marketplace (list/upload/[id]) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE11 | 법률/고객지원/게스트 (privacy, terms, refund, customer-service, security, guest) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11FE12 | Admin + 기타 (admin) | FE | S11FE1 | `frontend-developer-core` | Pending |
+| S11QA2 | 전체 모바일 회귀 검증 (Playwright + Lighthouse) | TS | S11FE1~12 | `test-runner-core` | Pending |

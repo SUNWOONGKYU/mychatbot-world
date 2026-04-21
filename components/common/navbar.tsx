@@ -99,20 +99,33 @@ export function Navbar() {
         borderBottomColor: scrolled ? 'var(--nav-border)' : 'transparent',
       }}
     >
-      <div className="mx-auto grid h-20 items-center px-4 md:px-6" style={{ maxWidth: '1280px', gridTemplateColumns: '1fr auto 1fr' }}>
-      {/* 로고 — CoCoBot 공식 워드마크 */}
+      <div
+        className="mx-auto flex md:grid h-14 md:h-20 items-center justify-between px-3 md:px-6 gap-2"
+        style={{ maxWidth: '1280px', gridTemplateColumns: '1fr auto 1fr' }}
+      >
+      {/* 로고 — CoCoBot 공식 워드마크 (모바일 축소) */}
       <Link
         href="/"
         className="flex items-center shrink-0 select-none"
         aria-label="메인 화면으로 이동"
       >
-        <BrandLogo variant="wordmark" height={40} style={{ color: 'rgb(var(--nav-text))' }} />
+        <BrandLogo
+          variant="wordmark"
+          height={28}
+          className="md:hidden"
+          style={{ color: 'rgb(var(--nav-text))' }}
+        />
+        <BrandLogo
+          variant="wordmark"
+          height={40}
+          className="hidden md:block"
+          style={{ color: 'rgb(var(--nav-text))' }}
+        />
       </Link>
 
-      {/* 서비스 4메뉴 — A방식: 단일 퍼플, active는 굵기+언더라인+glow */}
+      {/* 서비스 4메뉴 — 모바일에서는 숨김(하단 MobileTabBar가 대신) */}
       <nav
-        className="items-center gap-2"
-        style={{ display: 'flex' }}
+        className="hidden md:flex items-center gap-2"
         aria-label="주 메뉴"
       >
         {SERVICE_ITEMS.map((item) => {
@@ -180,13 +193,13 @@ export function Navbar() {
       </nav>
 
       {/* 우측 액션 영역 — My Page + 로그인/회원가입 */}
-      <div className="flex items-center gap-2 justify-self-end">
-        {/* 알림 벨 아이콘 */}
+      <div className="flex items-center gap-1 md:gap-2 md:justify-self-end shrink-0">
+        {/* 알림 벨 아이콘 — 데스크탑에서만 표시 (모바일 공간 절약) */}
         <button
           type="button"
           aria-label="알림"
           className={clsx(
-            'relative w-9 h-9 flex items-center justify-center rounded-lg',
+            'hidden md:flex relative w-11 h-11 items-center justify-center rounded-lg',
             'transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
           )}
@@ -217,7 +230,7 @@ export function Navbar() {
               aria-current={isActive ? 'page' : undefined}
               aria-label="마이페이지"
               className={clsx(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg',
+                'flex items-center gap-1.5 min-w-[44px] min-h-[44px] justify-center px-2 md:px-3 rounded-lg',
                 'text-xs font-semibold transition-all duration-150',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
               )}
@@ -244,8 +257,8 @@ export function Navbar() {
           );
         })()}
 
-        {/* 구분선 — My Page와 로그인/회원가입 사이 */}
-        <span className="mx-1 h-5 w-px" style={{ background: 'rgb(255 255 255 / 0.2)' }} aria-hidden="true" />
+        {/* 구분선 — My Page와 로그인/회원가입 사이 (데스크탑만) */}
+        <span className="hidden md:inline-block mx-1 h-5 w-px" style={{ background: 'rgb(255 255 255 / 0.2)' }} aria-hidden="true" />
 
         {/* 인증 상태별 버튼 — isAuthed === null 일 때는 깜빡임 방지를 위해 렌더 생략 */}
         {isAuthed === true ? (
@@ -253,8 +266,8 @@ export function Navbar() {
             type="button"
             onClick={handleSignOut}
             className={clsx(
-              'flex items-center',
-              'px-4 py-2 rounded-lg text-sm font-medium',
+              'flex items-center justify-center',
+              'min-h-[44px] px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium',
               'border transition-all duration-200',
             )}
             style={{
@@ -272,8 +285,8 @@ export function Navbar() {
             <Link
               href="/login"
               className={clsx(
-                'flex items-center',
-                'px-4 py-2 rounded-lg text-sm font-medium',
+                'flex items-center justify-center',
+                'min-h-[44px] px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium',
                 'border transition-all duration-200',
               )}
               style={{
@@ -288,8 +301,8 @@ export function Navbar() {
             <Link
               href="/signup"
               className={clsx(
-                'flex items-center',
-                'px-4 py-2 rounded-lg text-sm font-semibold',
+                'hidden sm:flex items-center justify-center',
+                'min-h-[44px] px-3 md:px-4 rounded-lg text-xs md:text-sm font-semibold',
                 'hover:-translate-y-px hover:shadow-md',
                 'active:translate-y-0 active:shadow-none',
                 'transition-all duration-200',
@@ -309,7 +322,7 @@ export function Navbar() {
           type="button"
           aria-label="테마 전환"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors"
+          className="w-11 h-11 flex items-center justify-center rounded-lg transition-colors shrink-0"
           style={{ color: 'rgb(var(--nav-text-muted))' }}
           onMouseEnter={(e) => {
             e.currentTarget.style.color = 'rgb(var(--nav-text))';

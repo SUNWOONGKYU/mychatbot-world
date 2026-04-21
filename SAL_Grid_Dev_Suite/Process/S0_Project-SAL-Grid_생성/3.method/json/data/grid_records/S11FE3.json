@@ -1,0 +1,18 @@
+{
+  "task_id": "S11FE3",
+  "task_name": "홈/랜딩/온보딩 모바일 최적화",
+  "stage": 11,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S11FE1",
+  "task_instruction": "sal-grid/task-instructions/S11FE3_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "Next.js, Tailwind CSS",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "verification_instruction": "sal-grid/verification-instructions/S11FE3_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "/ (랜딩), /home, /onboarding"
+}

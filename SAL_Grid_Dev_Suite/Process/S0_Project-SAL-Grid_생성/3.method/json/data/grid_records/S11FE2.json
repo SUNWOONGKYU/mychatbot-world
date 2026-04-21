@@ -1,0 +1,18 @@
+{
+  "task_id": "S11FE2",
+  "task_name": "인증 페이지 모바일 최적화",
+  "stage": 11,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S11QA1",
+  "task_instruction": "sal-grid/task-instructions/S11FE2_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "Next.js, Tailwind CSS",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "verification_instruction": "sal-grid/verification-instructions/S11FE2_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "login/signup/reset-password/auth/callback/auth/confirm — S7SC1/S7SC2 회귀 금지"
+}

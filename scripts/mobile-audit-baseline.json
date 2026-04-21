@@ -1,0 +1,2237 @@
+{
+  "generated_at": "2026-04-21T10:18:58.444Z",
+  "base": "https://mychatbot.world",
+  "summary": {
+    "v390": {
+      "total": 38,
+      "ok": 20,
+      "skipped": 17,
+      "horizontal_scroll_pages": [
+        "root",
+        "reset-password",
+        "onboarding",
+        "skills",
+        "learning-curriculum",
+        "jobs",
+        "jobs-search",
+        "community",
+        "community-gallery",
+        "marketplace",
+        "privacy",
+        "terms",
+        "refund",
+        "customer-service",
+        "security"
+      ],
+      "small_touch_total": 157,
+      "small_font_total": 95,
+      "top_offenders_touch": [
+        {
+          "page": "skills",
+          "count": 19
+        },
+        {
+          "page": "marketplace",
+          "count": 19
+        },
+        {
+          "page": "jobs",
+          "count": 12
+        },
+        {
+          "page": "signup",
+          "count": 9
+        },
+        {
+          "page": "onboarding",
+          "count": 9
+        }
+      ],
+      "top_offenders_font": [
+        {
+          "page": "community",
+          "count": 24
+        },
+        {
+          "page": "root",
+          "count": 17
+        },
+        {
+          "page": "jobs",
+          "count": 6
+        },
+        {
+          "page": "reset-password",
+          "count": 4
+        },
+        {
+          "page": "onboarding",
+          "count": 4
+        }
+      ]
+    },
+    "v768": {
+      "total": 38,
+      "ok": 21,
+      "skipped": 17,
+      "horizontal_scroll_pages": [
+        "root",
+        "reset-password",
+        "onboarding",
+        "skills",
+        "learning",
+        "learning-curriculum",
+        "jobs",
+        "jobs-search",
+        "community",
+        "community-gallery",
+        "marketplace",
+        "privacy",
+        "terms",
+        "refund",
+        "customer-service",
+        "security"
+      ],
+      "small_touch_total": 169,
+      "small_font_total": 111,
+      "top_offenders_touch": [
+        {
+          "page": "skills",
+          "count": 18
+        },
+        {
+          "page": "marketplace",
+          "count": 18
+        },
+        {
+          "page": "learning",
+          "count": 13
+        },
+        {
+          "page": "learning-curriculum",
+          "count": 13
+        },
+        {
+          "page": "jobs",
+          "count": 12
+        }
+      ],
+      "top_offenders_font": [
+        {
+          "page": "community",
+          "count": 36
+        },
+        {
+          "page": "root",
+          "count": 17
+        },
+        {
+          "page": "jobs",
+          "count": 6
+        },
+        {
+          "page": "reset-password",
+          "count": 4
+        },
+        {
+          "page": "onboarding",
+          "count": 4
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "page": "root",
+      "path": "/",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 6,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 1,
+            "h": 1,
+            "text": "본문으로 건너뛰기"
+          }
+        ],
+        "smallFontCount": 17
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "login",
+      "path": "/login",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 375,
+        "viewportWidth": 390,
+        "horizontalScroll": false,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 30,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "input",
+            "w": 343,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 77,
+            "h": 18,
+            "text": "비밀번호 찾기"
+          },
+          {
+            "tag": "input",
+            "w": 343,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 56,
+            "h": 18,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "signup",
+      "path": "/signup",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 375,
+        "viewportWidth": 390,
+        "horizontalScroll": false,
+        "smallTouchTargets": 9,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 30,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "input",
+            "w": 293,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "input",
+            "w": 293,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "input",
+            "w": 293,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "input",
+            "w": 293,
+            "h": 43,
+            "text": ""
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "reset-password",
+      "path": "/reset-password",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "input",
+            "w": 293,
+            "h": 43,
+            "text": ""
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "onboarding",
+      "path": "/onboarding",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 9,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 37,
+            "text": "시작하기"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "home",
+      "path": "/home",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "birth",
+      "path": "/birth",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "create",
+      "path": "/create",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "skills",
+      "path": "/skills",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 856,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 19,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 14,
+            "h": 21,
+            "text": "홈"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "skills-register",
+      "path": "/skills/register",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "skills-my",
+      "path": "/skills/my",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "learning",
+      "path": "/learning",
+      "viewport": "v390",
+      "status": "error:page.evaluate: Execution context was destroyed, most likely because of a navigat",
+      "metrics": null,
+      "console_errors": []
+    },
+    {
+      "page": "learning-curriculum",
+      "path": "/learning/curriculum",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 5,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 37,
+            "text": "로그인"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "learning-certificate",
+      "path": "/learning/certificate",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "jobs",
+      "path": "/jobs",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 856,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 12,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "button",
+            "w": 68,
+            "h": 37,
+            "text": "검색"
+          }
+        ],
+        "smallFontCount": 6
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "jobs-create",
+      "path": "/jobs/create",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "jobs-search",
+      "path": "/jobs/search",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 856,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 8,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 75,
+            "h": 21,
+            "text": "← 구봇구직"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "jobs-match",
+      "path": "/jobs/match",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "jobs-hire",
+      "path": "/jobs/hire",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "community",
+      "path": "/community",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 856,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "button",
+            "w": 69,
+            "h": 34,
+            "text": "🆕 최신"
+          }
+        ],
+        "smallFontCount": 24
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "community-write",
+      "path": "/community/write",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "community-gallery",
+      "path": "/community/gallery",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 856,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "button",
+            "w": 60,
+            "h": 23,
+            "text": "← 게시판"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "bot-faq",
+      "path": "/bot/faq",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 375,
+        "viewportWidth": 390,
+        "horizontalScroll": false,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 30,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "input",
+            "w": 343,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 77,
+            "h": 18,
+            "text": "비밀번호 찾기"
+          },
+          {
+            "tag": "input",
+            "w": 343,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 56,
+            "h": 18,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "mypage",
+      "path": "/mypage",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "mypage-inheritance",
+      "path": "/mypage/inheritance",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "business",
+      "path": "/business",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "business-revenue",
+      "path": "/business/revenue",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "business-settlement",
+      "path": "/business/settlement",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "marketplace",
+      "path": "/marketplace",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 856,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 19,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 14,
+            "h": 21,
+            "text": "홈"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "marketplace-upload",
+      "path": "/marketplace/upload",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "privacy",
+      "path": "/privacy",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 5,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 55,
+            "h": 18,
+            "text": "/support"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "terms",
+      "path": "/terms",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 4,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "refund",
+      "path": "/refund",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 8,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 59,
+            "h": 20,
+            "text": "/support"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "customer-service",
+      "path": "/customer-service",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 6,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "select",
+            "w": 245,
+            "h": 42,
+            "text": "선택해 주세요일반 문의기술 지원결제·환불계정 관련제휴·"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "security",
+      "path": "/security",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 857,
+        "viewportWidth": 390,
+        "horizontalScroll": true,
+        "smallTouchTargets": 6,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "a",
+            "w": 42,
+            "h": 30,
+            "text": "My Page"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 285,
+            "h": 29,
+            "text": "security@mychatbotworld.com"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "guest",
+      "path": "/guest",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 375,
+        "viewportWidth": 390,
+        "horizontalScroll": false,
+        "smallTouchTargets": 3,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 75,
+            "h": 29,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 39,
+            "text": "로그인"
+          },
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 39,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "guest-chat",
+      "path": "/guest/chat",
+      "viewport": "v390",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 375,
+        "viewportWidth": 390,
+        "horizontalScroll": false,
+        "smallTouchTargets": 3,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 75,
+            "h": 29,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 39,
+            "text": "로그인"
+          },
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 39,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "admin",
+      "path": "/admin",
+      "viewport": "v390",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "root",
+      "path": "/",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 9,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 1,
+            "h": 1,
+            "text": "본문으로 건너뛰기"
+          },
+          {
+            "tag": "a",
+            "w": 56,
+            "h": 23,
+            "text": "이용약관"
+          }
+        ],
+        "smallFontCount": 17
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "login",
+      "path": "/login",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 753,
+        "viewportWidth": 768,
+        "horizontalScroll": false,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 30,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "input",
+            "w": 384,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 77,
+            "h": 18,
+            "text": "비밀번호 찾기"
+          },
+          {
+            "tag": "input",
+            "w": 384,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 56,
+            "h": 18,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "signup",
+      "path": "/signup",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 753,
+        "viewportWidth": 768,
+        "horizontalScroll": false,
+        "smallTouchTargets": 9,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 30,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "input",
+            "w": 334,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "input",
+            "w": 334,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "input",
+            "w": 334,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "input",
+            "w": 334,
+            "h": 43,
+            "text": ""
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "reset-password",
+      "path": "/reset-password",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 6,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "input",
+            "w": 334,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "button",
+            "w": 334,
+            "h": 41,
+            "text": "재설정 링크 보내기"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "onboarding",
+      "path": "/onboarding",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 8,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 37,
+            "text": "시작하기"
+          },
+          {
+            "tag": "a",
+            "w": 93,
+            "h": 37,
+            "text": "대화 시작"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "home",
+      "path": "/home",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "birth",
+      "path": "/birth",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "create",
+      "path": "/create",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "skills",
+      "path": "/skills",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 898,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 18,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 14,
+            "h": 21,
+            "text": "홈"
+          },
+          {
+            "tag": "a",
+            "w": 65,
+            "h": 32,
+            "text": "내 스킬"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "skills-register",
+      "path": "/skills/register",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "skills-my",
+      "path": "/skills/my",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "learning",
+      "path": "/learning",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 13,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 37,
+            "text": "로그인"
+          },
+          {
+            "tag": "button",
+            "w": 703,
+            "h": 41,
+            "text": "👤프로필 관리"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "learning-curriculum",
+      "path": "/learning/curriculum",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 13,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 37,
+            "text": "로그인"
+          },
+          {
+            "tag": "button",
+            "w": 703,
+            "h": 41,
+            "text": "👤프로필 관리"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "learning-certificate",
+      "path": "/learning/certificate",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "jobs",
+      "path": "/jobs",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 12,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "button",
+            "w": 68,
+            "h": 37,
+            "text": "검색"
+          },
+          {
+            "tag": "button",
+            "w": 62,
+            "h": 39,
+            "text": "전체"
+          }
+        ],
+        "smallFontCount": 6
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "jobs-create",
+      "path": "/jobs/create",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "jobs-search",
+      "path": "/jobs/search",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 75,
+            "h": 21,
+            "text": "← 구봇구직"
+          },
+          {
+            "tag": "input",
+            "w": 579,
+            "h": 43,
+            "text": ""
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "jobs-match",
+      "path": "/jobs/match",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "jobs-hire",
+      "path": "/jobs/hire",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "community",
+      "path": "/community",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 898,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 6,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "button",
+            "w": 69,
+            "h": 34,
+            "text": "🆕 최신"
+          },
+          {
+            "tag": "button",
+            "w": 74,
+            "h": 34,
+            "text": "🔥 인기"
+          }
+        ],
+        "smallFontCount": 36
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "community-write",
+      "path": "/community/write",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "community-gallery",
+      "path": "/community/gallery",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 898,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 6,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "button",
+            "w": 60,
+            "h": 23,
+            "text": "← 게시판"
+          },
+          {
+            "tag": "button",
+            "w": 74,
+            "h": 36,
+            "text": "글쓰기"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "bot-faq",
+      "path": "/bot/faq",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 753,
+        "viewportWidth": 768,
+        "horizontalScroll": false,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 30,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "input",
+            "w": 384,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 77,
+            "h": 18,
+            "text": "비밀번호 찾기"
+          },
+          {
+            "tag": "input",
+            "w": 384,
+            "h": 43,
+            "text": ""
+          },
+          {
+            "tag": "a",
+            "w": 56,
+            "h": 18,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "mypage",
+      "path": "/mypage",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "mypage-inheritance",
+      "path": "/mypage/inheritance",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "business",
+      "path": "/business",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "business-revenue",
+      "path": "/business/revenue",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "business-settlement",
+      "path": "/business/settlement",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "marketplace",
+      "path": "/marketplace",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 898,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 18,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 14,
+            "h": 21,
+            "text": "홈"
+          },
+          {
+            "tag": "a",
+            "w": 65,
+            "h": 32,
+            "text": "내 스킬"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "marketplace-upload",
+      "path": "/marketplace/upload",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    },
+    {
+      "page": "privacy",
+      "path": "/privacy",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 4,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 55,
+            "h": 18,
+            "text": "/support"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "terms",
+      "path": "/terms",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 3,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "refund",
+      "path": "/refund",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 7,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 59,
+            "h": 20,
+            "text": "/support"
+          },
+          {
+            "tag": "a",
+            "w": 95,
+            "h": 20,
+            "text": "www.kca.go.kr"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "customer-service",
+      "path": "/customer-service",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 5,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "select",
+            "w": 623,
+            "h": 42,
+            "text": "선택해 주세요일반 문의기술 지원결제·환불계정 관련제휴·"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 18,
+            "text": "FAQ 페이지"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "security",
+      "path": "/security",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 899,
+        "viewportWidth": 768,
+        "horizontalScroll": true,
+        "smallTouchTargets": 5,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 177,
+            "h": 40,
+            "text": "CoCoBotCoCoBot"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "알림"
+          },
+          {
+            "tag": "button",
+            "w": 21,
+            "h": 36,
+            "text": "☀"
+          },
+          {
+            "tag": "a",
+            "w": 663,
+            "h": 29,
+            "text": "security@mychatbotworld.com"
+          },
+          {
+            "tag": "a",
+            "w": 155,
+            "h": 18,
+            "text": "/.well-known/security.txt"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "guest",
+      "path": "/guest",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 753,
+        "viewportWidth": 768,
+        "horizontalScroll": false,
+        "smallTouchTargets": 3,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 75,
+            "h": 29,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 39,
+            "text": "로그인"
+          },
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 39,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": []
+    },
+    {
+      "page": "guest-chat",
+      "path": "/guest/chat",
+      "viewport": "v768",
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 753,
+        "viewportWidth": 768,
+        "horizontalScroll": false,
+        "smallTouchTargets": 3,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 75,
+            "h": 29,
+            "text": "CoCoBot"
+          },
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 39,
+            "text": "로그인"
+          },
+          {
+            "tag": "a",
+            "w": 88,
+            "h": 39,
+            "text": "회원가입"
+          }
+        ],
+        "smallFontCount": 0
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
+    },
+    {
+      "page": "admin",
+      "path": "/admin",
+      "viewport": "v768",
+      "status": "skipped-no-auth"
+    }
+  ]
+}
