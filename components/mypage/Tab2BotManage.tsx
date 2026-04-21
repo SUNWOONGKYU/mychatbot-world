@@ -35,7 +35,7 @@ const TOOL_LIST: { id: ToolId; label: string; icon: string; desc: string }[] = [
   { id: 'chat-log',      label: '대화 로그',    icon: '💬', desc: '대화 기록 조회' },
   { id: 'kb',           label: 'KB 지식베이스', icon: '📚', desc: '지식 업로드/관리' },
   { id: 'skills',       label: '스킬 장착',     icon: '⚡', desc: '스킬 장착/해제' },
-  { id: 'chatbot-school',label: '코코봇스쿨',   icon: '🎓', desc: '학습 현황 확인' },
+  { id: 'chatbot-school',label: '학습',         icon: '🎓', desc: '학습 현황 확인' },
   { id: 'community',    label: '커뮤니티',      icon: '🌐', desc: '커뮤니티 활동 내역' },
   { id: 'settings',     label: '코코봇 설정',   icon: '⚙️', desc: 'AI 모델/DM 보안 등' },
 ];

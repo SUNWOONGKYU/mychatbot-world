@@ -52,7 +52,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { data: bots, error, count } = await supabase
     .from('mcw_bots')
-    .select('*', { count: 'exact' })
+    .select('*, personas:mcw_personas(id, name, description, user_title)', { count: 'exact' })
     .eq('owner_id', user.id)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
