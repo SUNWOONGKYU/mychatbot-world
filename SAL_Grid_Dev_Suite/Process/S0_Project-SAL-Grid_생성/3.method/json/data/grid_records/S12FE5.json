@@ -3,18 +3,56 @@
   "task_name": "+ 탭 → Birth 위저드 모달 (완료 시 신규 탭 추가+활성화)",
   "stage": 12,
   "area": "FE",
-  "task_status": "Pending",
-  "task_progress": 0,
-  "verification_status": "Not Verified",
+  "task_status": "Executed",
+  "task_progress": 100,
+  "verification_status": "In Review",
   "dependencies": "S12FE4",
   "task_instruction": "sal-grid/task-instructions/S12FE5_instruction.md",
   "task_agent": "frontend-developer-core",
   "tools": "",
   "execution_type": "AI-Only",
-  "generated_files": "",
-  "modification_history": "",
+  "generated_files": "components/hub/BirthWizardModal.tsx, app/hub/page-client.tsx",
+  "modification_history": "2026-04-21: BirthWizardModal = 전체 화면 덮는 role=dialog. CreateWizard 를 dynamic import 로 재사용(ssr:false). 스크롤 락, esc/배경클릭 close, 진행 중 confirm. HubInner 에서 onCreated → refetch → setActive(newId).",
   "verification_instruction": "sal-grid/verification-instructions/S12FE5_verification.md",
   "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PENDING — 배포 후 Playwright 로 위저드 완주",
+    "edge_cases": "PASS — 10개 상한 시 handleAddBot 가드, esc/배경클릭 시 진행 중 confirm",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS tsc --noEmit clean",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S12FE4 HubShell.onAddBot 콜백 수신",
+    "cross_task_connection": "PASS — CreateWizard onComplete 계약 재사용 (/api/bots refetch 까지)",
+    "data_flow": "PASS — 새 bot id → setActive → URL/LS 동기화(S12FE6)"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PENDING",
+    "build": "PASS compile",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Pending (S12QA1 검증 후 Verified 전환)"
+  },
+  "ai_verification_note": "Main Agent self-verified 2026-04-21: tsc clean. CreateWizard.onComplete 가 기존 /create 페이지에서 이미 동일 계약으로 호출되므로 refetch·activate 흐름 신뢰 가능. 10개 상한은 PersonaTabBar disabled + HubInner guard 2중.",
   "remarks": "+ 탭 클릭 → Birth 위저드 Step1~Step8 모달로 재사용. 완료 시 /api/bots refetch → 새 봇이 맨 오른쪽 탭으로 추가 + 자동 활성화. 10개 상한 도달 시 + 탭 비활성.",
-  "updated_at": "2026-04-21T20:03:00.000Z"
+  "build_result": {
+    "compile": "PASS tsc --noEmit",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "duration": "N/A",
+  "updated_at": "2026-04-21T20:35:00.000Z"
 }

@@ -9,7 +9,7 @@
  */
 'use client';
 
-import { useCallback, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import clsx from 'clsx';
 
 export interface BotListItem {
@@ -41,6 +41,15 @@ export default function PersonaTabBar({ bots, activeId, onSelect, onAdd }: Props
   const overflow = useMemo(() => bots.slice(VISIBLE_MAX), [bots]);
   const atLimit = bots.length >= VISIBLE_MAX;
 
+  // 모바일: 활성 탭 자동 scrollIntoView
+  useEffect(() => {
+    if (!activeId) return;
+    const idx = visible.findIndex((b) => b.id === activeId);
+    if (idx < 0) return;
+    const btn = tabRefs.current[idx];
+    btn?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }, [activeId, visible]);
+
   const handleKeyDown = useCallback(
     (e: ReactKeyboardEvent<HTMLButtonElement>, idx: number) => {
       if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
@@ -60,7 +69,7 @@ export default function PersonaTabBar({ bots, activeId, onSelect, onAdd }: Props
     <div
       role="tablist"
       aria-label="페르소나 탭"
-      className="flex items-center gap-1 px-3 py-2 border-b border-border-default bg-surface-1 overflow-x-auto"
+      className="sticky top-0 z-20 flex items-center gap-1 px-3 py-2 border-b border-border-default bg-surface-1/95 backdrop-blur-md overflow-x-auto snap-x snap-mandatory scroll-smooth"
     >
       {visible.map((bot, idx) => {
         const selected = bot.id === activeId;
@@ -75,7 +84,7 @@ export default function PersonaTabBar({ bots, activeId, onSelect, onAdd }: Props
             onClick={() => onSelect(bot.id)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
             className={clsx(
-              'flex-shrink-0 inline-flex items-center gap-1.5 h-11 min-w-[44px] px-3 rounded-md text-sm transition-colors',
+              'snap-start flex-shrink-0 inline-flex items-center gap-1.5 h-11 min-w-[44px] px-3 rounded-md text-sm transition-colors',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus',
               selected
                 ? 'bg-surface-2 text-text-primary border-b-2 border-interactive-primary'

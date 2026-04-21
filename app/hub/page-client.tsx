@@ -1,22 +1,25 @@
 /**
- * @task S12FE1, S12FE4
+ * @task S12FE1, S12FE4, S12FE5, S12FE6
  * @description 페르소나 포털 /hub 클라이언트 셸
  *
  * 역할:
  * - 인증 확인 (미로그인 → /login?redirect=/hub)
- * - /api/bots prefetch → bots[] 획득
- * - 봇 0개 → 온보딩 CTA / 봇 1개 이상 → HubShell 마운트
- * - HubProvider 로 탭별 state(Map) 감싸기
+ * - /api/bots prefetch → bots[] 획득 + refetch 함수 제공
+ * - 봇 0개 → 온보딩 CTA / 봇 1개 이상 → HubProvider + HubInner
+ * - HubInner: HubShell + BirthWizardModal + URL/localStorage 동기화
  */
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getToken, authHeaders } from '@/lib/auth-client';
-import { HubProvider } from '@/components/hub/TabContext';
+import { HubProvider, useHubContext } from '@/components/hub/TabContext';
 import HubShell from '@/components/hub/HubShell';
+import BirthWizardModal from '@/components/hub/BirthWizardModal';
 import type { BotListItem } from '@/components/hub/PersonaTabBar';
+
+const LAST_TAB_KEY = 'mcw:hub:lastTab';
 
 interface HubBot {
   id: string;
@@ -39,43 +42,46 @@ interface BotsApiResponse {
   data: { bots: HubBot[]; count: number } | null;
 }
 
-export default function HubClient() {
+// ── HubInner: HubProvider 내부에서만 실행 (useHubContext 필요) ─────────
+function HubInner({
+  bots,
+  refetch,
+}: {
+  bots: HubBot[];
+  refetch: () => Promise<HubBot[]>;
+}) {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [bots, setBots] = useState<HubBot[]>([]);
-  const [error, setError] = useState<string>('');
+  const { activeId, setActive } = useHubContext();
+  const [modalOpen, setModalOpen] = useState(false);
 
+  // ── FE6: activeId 변경 시 URL/localStorage 동기화 ───────────────
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      router.replace('/login?redirect=/hub');
-      return;
+    if (!activeId) return;
+    try {
+      localStorage.setItem(LAST_TAB_KEY, activeId);
+    } catch {
+      /* ignore */
     }
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('tab') !== activeId) {
+      url.searchParams.set('tab', activeId);
+      window.history.replaceState(null, '', url.toString());
+    }
+  }, [activeId]);
 
-    void (async () => {
+  // ── 유효하지 않은 activeId 폴백 ─────────────────────────────────
+  useEffect(() => {
+    if (!activeId) return;
+    if (!bots.some((b) => b.id === activeId)) {
       try {
-        const res = await fetch('/api/bots?limit=100', {
-          cache: 'no-store',
-          headers: authHeaders(false),
-        });
-        if (res.status === 401) {
-          router.replace('/login?redirect=/hub');
-          return;
-        }
-        const json = (await res.json()) as BotsApiResponse;
-        if (!json.success || !json.data) {
-          setError(json.error || '봇 목록을 불러오지 못했습니다.');
-          setLoading(false);
-          return;
-        }
-        setBots(json.data.bots);
-        setLoading(false);
+        localStorage.removeItem(LAST_TAB_KEY);
       } catch {
-        setError('네트워크 오류가 발생했습니다.');
-        setLoading(false);
+        /* ignore */
       }
-    })();
-  }, [router]);
+      const fallback = bots[0]?.id;
+      if (fallback) setActive(fallback);
+    }
+  }, [bots, activeId, setActive]);
 
   const tabItems: BotListItem[] = useMemo(
     () =>
@@ -88,12 +94,87 @@ export default function HubClient() {
     [bots],
   );
 
+  const handleAddBot = useCallback(() => {
+    if (bots.length >= 10) return;
+    setModalOpen(true);
+  }, [bots.length]);
+
+  const handleCreated = useCallback(
+    async (newBotId: string) => {
+      setModalOpen(false);
+      const next = await refetch();
+      if (next.some((b) => b.id === newBotId)) {
+        setActive(newBotId);
+      }
+    },
+    [refetch, setActive],
+  );
+
+  return (
+    <>
+      <HubShell bots={tabItems} onAddBot={handleAddBot} />
+      <BirthWizardModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreated={handleCreated}
+      />
+    </>
+  );
+}
+
+export default function HubClient() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [bots, setBots] = useState<HubBot[]>([]);
+  const [error, setError] = useState<string>('');
+  const mountedRef = useRef(true);
+
+  const fetchBots = useCallback(async (): Promise<HubBot[]> => {
+    const res = await fetch('/api/bots?limit=100', {
+      cache: 'no-store',
+      headers: authHeaders(false),
+    });
+    if (res.status === 401) {
+      router.replace('/login?redirect=/hub');
+      return [];
+    }
+    const json = (await res.json()) as BotsApiResponse;
+    if (!json.success || !json.data) {
+      throw new Error(json.error || '봇 목록을 불러오지 못했습니다.');
+    }
+    if (mountedRef.current) setBots(json.data.bots);
+    return json.data.bots;
+  }, [router]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const token = getToken();
+    if (!token) {
+      router.replace('/login?redirect=/hub');
+      return;
+    }
+    (async () => {
+      try {
+        await fetchBots();
+      } catch (e) {
+        if (mountedRef.current) {
+          setError(e instanceof Error ? e.message : '알 수 없는 오류');
+        }
+      } finally {
+        if (mountedRef.current) setLoading(false);
+      }
+    })();
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [router, fetchBots]);
+
   const initialActiveId = useMemo<string | null>(() => {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === 'undefined' || bots.length === 0) return null;
     const param = new URLSearchParams(window.location.search).get('tab');
     if (param && bots.some((b) => b.id === param)) return param;
     try {
-      const stored = localStorage.getItem('mcw:hub:lastTab');
+      const stored = localStorage.getItem(LAST_TAB_KEY);
       if (stored && bots.some((b) => b.id === stored)) return stored;
     } catch {
       /* ignore */
@@ -149,7 +230,7 @@ export default function HubClient() {
 
   return (
     <HubProvider initialActiveId={initialActiveId}>
-      <HubShell bots={tabItems} onAddBot={() => router.push('/create')} />
+      <HubInner bots={bots} refetch={fetchBots} />
     </HubProvider>
   );
 }
