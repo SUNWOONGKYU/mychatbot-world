@@ -29,28 +29,28 @@ export function LandingFooter() {
         <div className="flex items-center gap-8">
           <Link
             href="/terms"
-            className="text-white transition-opacity hover:opacity-100"
+            className="inline-flex items-center min-h-[44px] text-white transition-opacity hover:opacity-100"
             style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9 }}
           >
             이용약관
           </Link>
           <Link
             href="/privacy"
-            className="text-white transition-opacity hover:opacity-100"
+            className="inline-flex items-center min-h-[44px] text-white transition-opacity hover:opacity-100"
             style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9 }}
           >
             개인정보처리방침
           </Link>
           <Link
             href="/refund"
-            className="text-white transition-opacity hover:opacity-100"
+            className="inline-flex items-center min-h-[44px] text-white transition-opacity hover:opacity-100"
             style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9 }}
           >
             환불정책
           </Link>
           <Link
             href="/support"
-            className="text-white transition-opacity hover:opacity-100"
+            className="inline-flex items-center min-h-[44px] text-white transition-opacity hover:opacity-100"
             style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9 }}
           >
             고객센터
@@ -58,12 +58,12 @@ export function LandingFooter() {
         </div>
 
         {/* 저작권 */}
-        <p style={{ fontSize: '11px', color: 'rgb(255 255 255 / 0.6)', margin: 0 }}>
+        <p style={{ fontSize: '12px', color: 'rgb(255 255 255 / 0.6)', margin: 0 }}>
           © 2026 CoCoBot. All rights reserved.
         </p>
 
         {/* 특허 출원 */}
-        <p style={{ fontSize: '10px', color: 'rgb(255 255 255 / 0.45)', margin: 0, lineHeight: 1.6 }}>
+        <p style={{ fontSize: '12px', color: 'rgb(255 255 255 / 0.45)', margin: 0, lineHeight: 1.6 }}>
           특허출원번호: 10-2026-0038658 | 멀티 페르소나와 감성·비용 조건 기반 멀티 AI 자동 라우팅을 구비한 AI 챗봇의 생성·학습·성장·수익활동·피상속으로 이어지는 라이프사이클 지원 시스템 및 방법
         </p>
 

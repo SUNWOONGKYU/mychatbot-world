@@ -221,7 +221,7 @@ export default function LoginPage() {
               </label>
               <Link
                 href="/reset-password"
-                className="text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
+                className="inline-flex items-center min-h-[44px] text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
                 style={{ color: 'var(--text-link)' }}
               >
                 비밀번호 찾기
@@ -269,7 +269,7 @@ export default function LoginPage() {
             계정이 없으신가요?{' '}
             <Link
               href="/signup"
-              className="font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
+              className="inline-flex items-center min-h-[44px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
               style={{ color: 'var(--interactive-primary)' }}
             >
               회원가입

@@ -106,7 +106,7 @@ export function Navbar() {
       {/* 로고 — CoCoBot 공식 워드마크 (모바일 축소) */}
       <Link
         href="/"
-        className="flex items-center shrink-0 select-none"
+        className="flex items-center shrink-0 select-none min-h-[44px]"
         aria-label="메인 화면으로 이동"
       >
         <BrandLogo
