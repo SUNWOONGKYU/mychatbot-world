@@ -997,8 +997,8 @@ export default function ChatWindow({
           overscrollBehaviorY: 'contain',
         }}
       >
-        {/* 환영 화면 */}
-        {showWelcome && (
+        {/* 환영 화면 — embedded 모드에서는 외부 래퍼(/hub TabChatWindow)가 대신 렌더하므로 숨김 */}
+        {showWelcome && !embedded && (
           <div className="text-center" style={{ padding: '12px 16px' }}>
             <h2 style={{ color: 'rgb(var(--text-primary-rgb))', marginBottom: 8 }}>
               {welcomeTitle}

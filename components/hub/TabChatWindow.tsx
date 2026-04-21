@@ -110,40 +110,36 @@ export default function TabChatWindow({ botId }: Props) {
     );
   }
 
-  // 페르소나 정보 — 메인 페르소나(공개 + 기본) 우선
-  const primaryPersona = botData.personas.find((p) => p.isPublic !== false && p.isVisible !== false)
-    ?? botData.personas[0];
-  const personaName = primaryPersona?.name || botData.botName;
-  const personaRole = primaryPersona?.role || botData.personality || '';
+  // 봇 이름 우선(페르소나 이름 아님) — 사용자 멘탈모델에 맞춤
+  const displayName = botData.botName;
+  const displayDesc = botData.personality || '';
 
   return (
     <div className="flex h-full flex-col">
-      {/* ── 페르소나 정보 헤더 ────────────────────────────────── */}
+      {/* ── 코코봇 헤더 — 중앙 정렬, 이름+상태+설명 ─────────── */}
       <header
-        className="flex flex-shrink-0 items-center gap-3 border-b border-border-default bg-surface-1 px-4 py-3"
-        aria-label={`활성 페르소나: ${personaName}`}
+        className="flex flex-shrink-0 flex-col items-center gap-1 border-b border-border-default bg-surface-1 px-4 py-3 text-center"
+        aria-label={`활성 코코봇: ${displayName}`}
       >
-        <div
-          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-surface-2 text-2xl"
-          aria-hidden="true"
-        >
-          🤖
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h2 className="truncate text-base font-semibold text-text-primary">
-              {personaName}
-            </h2>
-            <span className="flex-shrink-0 text-xs text-state-success-fg">
-              ● 대화할 준비가 되었습니다
-            </span>
+        <div className="flex items-center justify-center gap-3">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-2 text-xl"
+            aria-hidden="true"
+          >
+            🤖
           </div>
-          {personaRole && (
-            <p className="truncate text-xs text-text-secondary [word-break:keep-all]">
-              저는 {personaRole}
-            </p>
-          )}
+          <h2 className="text-base font-bold text-text-primary [word-break:keep-all]">
+            {displayName}
+          </h2>
+          <span className="text-xs text-state-success-fg">
+            ● 대화할 준비가 되었습니다
+          </span>
         </div>
+        {displayDesc && (
+          <p className="max-w-2xl text-xs text-text-secondary [word-break:keep-all]">
+            저는 {displayDesc}
+          </p>
+        )}
       </header>
 
       {/* ── 대화 영역 (embedded 모드) ───────────────────────── */}
