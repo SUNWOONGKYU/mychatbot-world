@@ -215,14 +215,12 @@ export default function LoginClient() {
               disabled={isLoading}
               aria-describedby={emailFieldError ? emailErrorId : error ? generalErrorId : undefined}
               aria-invalid={!!emailFieldError}
-              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:border-[color:var(--interactive-primary)]"
               style={{
                 background: 'var(--surface-1)',
                 border: emailFieldError ? '1.5px solid var(--state-danger-border)' : '1.5px solid var(--border-default)',
                 color: 'var(--text-primary)',
               }}
-              onFocus={(e) => { e.target.style.borderColor = 'var(--interactive-primary)'; e.target.style.boxShadow = '0 0 0 3px color-mix(in oklch, var(--color-brand-500) 20%, transparent)'; }}
-              onBlur={(e) => { e.target.style.borderColor = emailFieldError ? 'var(--state-danger-border)' : 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
             />
             {emailFieldError && (
               <p id={emailErrorId} className="text-xs font-medium" style={{ color: 'var(--state-danger-fg)' }} role="alert">
@@ -258,14 +256,12 @@ export default function LoginClient() {
               disabled={isLoading}
               aria-describedby={passwordFieldError ? passwordErrorId : error ? generalErrorId : undefined}
               aria-invalid={!!passwordFieldError}
-              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:border-[color:var(--interactive-primary)]"
               style={{
                 background: 'var(--surface-1)',
                 border: passwordFieldError ? '1.5px solid var(--state-danger-border)' : '1.5px solid var(--border-default)',
                 color: 'var(--text-primary)',
               }}
-              onFocus={(e) => { e.target.style.borderColor = 'var(--interactive-primary)'; e.target.style.boxShadow = '0 0 0 3px color-mix(in oklch, var(--color-brand-500) 20%, transparent)'; }}
-              onBlur={(e) => { e.target.style.borderColor = passwordFieldError ? 'var(--state-danger-border)' : 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
             />
             {passwordFieldError && (
               <p id={passwordErrorId} className="text-xs font-medium" style={{ color: 'var(--state-danger-fg)' }} role="alert">

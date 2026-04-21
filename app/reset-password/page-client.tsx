@@ -249,7 +249,7 @@ export default function ResetPasswordPageInner() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
 
       if (error) {
-        const code = (error as { code?: string }).code || '';
+        const code = typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string' ? error.code : '';
         const msg = error.message || '';
         let friendly = '비밀번호 변경에 실패했습니다.';
         if (code === 'same_password' || /should be different/i.test(msg) || /same.*password/i.test(msg)) {

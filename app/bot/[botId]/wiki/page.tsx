@@ -172,12 +172,12 @@ export default function WikiManagePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[rgb(var(--bg-base))]">
+    <div className="min-h-screen bg-bg-base">
       {/* 헤더 */}
-      <div className="bg-[rgb(var(--bg-surface))] border-b border-[rgb(var(--border))] px-6 py-4 flex items-center justify-between">
+      <div className="bg-bg-surface border-b border-border px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-[rgb(var(--text-primary-rgb))]">Wiki 관리</h1>
-          <p className="text-sm text-[rgb(var(--text-secondary-rgb))] mt-0.5">
+          <h1 className="text-xl font-semibold text-text-primary">Wiki 관리</h1>
+          <p className="text-sm text-text-secondary mt-0.5">
             총 {pages.length}개 위키 페이지
           </p>
         </div>
@@ -200,14 +200,14 @@ export default function WikiManagePage() {
             placeholder="제목 또는 내용 검색..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] placeholder:text-[rgb(var(--text-muted))] rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border border-border bg-bg-surface text-text-primary placeholder:text-text-muted rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
           />
           <label htmlFor={filterSelectId} className="sr-only">페이지 유형 필터</label>
           <select
             id={filterSelectId}
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as FilterType)}
-            className="border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg px-3 py-2 text-sm outline-none"
+            className="border border-border bg-bg-surface text-text-primary rounded-lg px-3 py-2 text-sm outline-none"
           >
             {(Object.keys(PAGE_TYPE_LABELS) as FilterType[]).map((k) => (
               <option key={k} value={k}>
@@ -217,7 +217,7 @@ export default function WikiManagePage() {
           </select>
           <button
             onClick={loadPages}
-            className="inline-flex items-center min-h-[44px] px-4 py-2 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
+            className="inline-flex items-center min-h-[44px] px-4 py-2 text-sm border border-border bg-bg-surface text-text-primary rounded-lg hover:bg-bg-subtle"
           >
             새로고침
           </button>
@@ -241,21 +241,21 @@ export default function WikiManagePage() {
 
         {/* 로딩 */}
         {loading && (
-          <div className="text-center py-16 text-[rgb(var(--text-secondary-rgb))]">로딩 중...</div>
+          <div className="text-center py-16 text-text-secondary">로딩 중...</div>
         )}
 
         {/* 목록 */}
         {!loading && (
           <div className="grid gap-3">
             {filtered.length === 0 && (
-              <div className="text-center py-16 text-[rgb(var(--text-secondary-rgb))]">
+              <div className="text-center py-16 text-text-secondary">
                 위키 페이지가 없습니다.
               </div>
             )}
             {filtered.map((page) => (
               <div
                 key={page.id}
-                className={`bg-[rgb(var(--bg-surface))] rounded-lg border border-[rgb(var(--border))] p-4 cursor-pointer hover:border-blue-400 transition ${
+                className={`bg-bg-surface rounded-lg border border-border p-4 cursor-pointer hover:border-blue-400 transition ${
                   page.is_stale ? 'border-orange-300' : ''
                 }`}
                 onClick={() => setSelected(page)}
@@ -277,19 +277,19 @@ export default function WikiManagePage() {
                           오래된 콘텐츠
                         </span>
                       )}
-                      <span className="text-xs text-[rgb(var(--text-muted))]">
+                      <span className="text-xs text-text-muted">
                         조회 {page.view_count}회
                       </span>
                       {page.quality_score > 0 && (
-                        <span className="text-xs text-[rgb(var(--text-muted))]">
+                        <span className="text-xs text-text-muted">
                           품질 {Math.round(page.quality_score * 100)}%
                         </span>
                       )}
                     </div>
-                    <h3 className="font-medium text-[rgb(var(--text-primary-rgb))] truncate">
+                    <h3 className="font-medium text-text-primary truncate">
                       {page.title}
                     </h3>
-                    <p className="text-sm text-[rgb(var(--text-secondary-rgb))] mt-1 line-clamp-2">
+                    <p className="text-sm text-text-secondary mt-1 line-clamp-2">
                       {page.content.slice(0, 120)}...
                     </p>
                   </div>
@@ -323,16 +323,16 @@ export default function WikiManagePage() {
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-[rgb(var(--bg-surface))] rounded-xl max-w-2xl w-full max-h-[80vh] overflow-auto p-6 border border-[rgb(var(--border))]"
+            className="bg-bg-surface rounded-xl max-w-2xl w-full max-h-[80vh] overflow-auto p-6 border border-border"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-[rgb(var(--text-primary-rgb))]">
+              <h2 className="text-lg font-semibold text-text-primary">
                 {selected.title}
               </h2>
               <button
                 onClick={() => setSelected(null)}
-                className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-[rgb(var(--text-secondary-rgb))] hover:text-[rgb(var(--text-primary-rgb))] text-xl rounded"
+                className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-text-secondary hover:text-text-primary text-xl rounded"
               >
                 ×
               </button>
@@ -344,14 +344,14 @@ export default function WikiManagePage() {
               >
                 {PAGE_TYPE_LABELS[selected.page_type as FilterType]}
               </span>
-              <span className="text-xs text-[rgb(var(--text-muted))] self-center">
+              <span className="text-xs text-text-muted self-center">
                 슬러그: {selected.slug}
               </span>
             </div>
-            <pre className="whitespace-pre-wrap text-sm text-[rgb(var(--text-primary-rgb))] bg-[rgb(var(--bg-subtle))] rounded-lg p-4 overflow-auto">
+            <pre className="whitespace-pre-wrap text-sm text-text-primary bg-bg-subtle rounded-lg p-4 overflow-auto">
               {selected.content}
             </pre>
-            <div className="mt-4 flex justify-between items-center text-xs text-[rgb(var(--text-muted))]">
+            <div className="mt-4 flex justify-between items-center text-xs text-text-muted">
               <span>
                 생성: {new Date(selected.created_at).toLocaleDateString()}
               </span>
@@ -375,10 +375,10 @@ export default function WikiManagePage() {
       {/* 삭제 확인 모달 — replaces confirm() */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-xl bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))] shadow-xl p-6 space-y-4">
+          <div className="w-full max-w-sm rounded-xl bg-bg-surface border border-border shadow-xl p-6 space-y-4">
             <div>
-              <h3 className="text-base font-semibold text-[rgb(var(--text-primary-rgb))]">위키 페이지 삭제</h3>
-              <p className="mt-1 text-sm text-[rgb(var(--text-secondary-rgb))]">
+              <h3 className="text-base font-semibold text-text-primary">위키 페이지 삭제</h3>
+              <p className="mt-1 text-sm text-text-secondary">
                 이 위키 페이지를 삭제하시겠습니까? 삭제된 항목은 복구할 수 없습니다.
               </p>
             </div>
@@ -386,7 +386,7 @@ export default function WikiManagePage() {
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(null)}
-                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium border border-[rgb(var(--border))] text-[rgb(var(--text-secondary-rgb))] hover:bg-[rgb(var(--bg-subtle))] transition-colors"
+                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium border border-border text-text-secondary hover:bg-bg-subtle transition-colors"
               >
                 취소
               </button>
@@ -406,9 +406,9 @@ export default function WikiManagePage() {
       {/* 알림 모달 — replaces alert() */}
       {alertMessage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-xl bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))] shadow-xl p-6 space-y-4">
+          <div className="w-full max-w-sm rounded-xl bg-bg-surface border border-border shadow-xl p-6 space-y-4">
             <div>
-              <h3 className="text-base font-semibold text-[rgb(var(--text-primary-rgb))]">오류</h3>
+              <h3 className="text-base font-semibold text-text-primary">오류</h3>
               <p className="mt-1 text-sm" style={{ color: 'var(--state-danger-fg)' }}>
                 {alertMessage}
               </p>
@@ -417,7 +417,7 @@ export default function WikiManagePage() {
               <button
                 type="button"
                 onClick={() => setAlertMessage(null)}
-                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium border border-[rgb(var(--border))] text-[rgb(var(--text-secondary-rgb))] hover:bg-[rgb(var(--bg-subtle))] transition-colors"
+                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium border border-border text-text-secondary hover:bg-bg-subtle transition-colors"
               >
                 확인
               </button>
