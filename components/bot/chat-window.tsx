@@ -27,6 +27,7 @@ import {
   useCallback,
   KeyboardEvent,
 } from 'react';
+import { authHeadersFormData } from '@/lib/auth-client';
 
 // ============================================================
 // HTML Sanitizer (XSS 방지)
@@ -311,24 +312,46 @@ function useSTT(onTranscript: (text: string) => void) {
         if (chunksRef.current.length === 0) return;
         const blob = new Blob(chunksRef.current, { type: mimeType });
         chunksRef.current = [];
-        if (blob.size < 5000) return;
+        if (blob.size < 5000) {
+          alert('녹음이 너무 짧습니다. 1초 이상 말씀해주세요.');
+          return;
+        }
 
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          const base64 = (reader.result as string).split(',')[1];
-          try {
-            const res = await fetch('/api/stt', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ audio: base64, language: 'ko' }),
-            });
-            if (res.ok) {
-              const data = (await res.json()) as { text?: string };
-              if (data.text?.trim()) onTranscript(data.text.trim());
+        try {
+          const form = new FormData();
+          const ext = mimeType.includes('webm') ? 'webm' : 'ogg';
+          form.append('audio', new File([blob], `voice.${ext}`, { type: mimeType }));
+          form.append('language', 'ko');
+
+          const res = await fetch('/api/stt', {
+            method: 'POST',
+            headers: authHeadersFormData(),
+            body: form,
+          });
+
+          if (!res.ok) {
+            let message = `음성 인식 실패 (${res.status})`;
+            try {
+              const errData = (await res.json()) as { error?: string };
+              if (errData.error) message = `음성 인식 실패: ${errData.error}`;
+            } catch { /* non-JSON error body */ }
+            if (res.status === 401) {
+              message = '로그인이 필요합니다. 다시 로그인 후 시도해주세요.';
             }
-          } catch { /* ignore */ }
-        };
-        reader.readAsDataURL(blob);
+            alert(message);
+            return;
+          }
+
+          const data = (await res.json()) as { text?: string };
+          if (data.text?.trim()) {
+            onTranscript(data.text.trim());
+          } else {
+            alert('음성에서 텍스트를 추출하지 못했습니다. 다시 시도해주세요.');
+          }
+        } catch (err) {
+          console.error('[STT] fetch failed:', err);
+          alert('음성 인식 중 네트워크 오류가 발생했습니다.');
+        }
       };
 
       recorder.start();
