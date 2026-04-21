@@ -48,7 +48,7 @@ export default function OnboardingHubPage() {
               </div>
               <Link
                 href={step.nextPath}
-                className="shrink-0 rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                className="shrink-0 inline-flex items-center justify-center min-h-[44px] rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
               >
                 {step.cta}
               </Link>
@@ -58,7 +58,7 @@ export default function OnboardingHubPage() {
       </ol>
 
       <footer className="mt-8 text-center text-sm text-gray-500">
-        <Link href="/my" className="underline">
+        <Link href="/my" className="inline-flex items-center justify-center min-h-[44px] underline">
           건너뛰고 대시보드로
         </Link>
       </footer>

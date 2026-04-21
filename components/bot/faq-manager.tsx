@@ -323,7 +323,7 @@ export function FaqManager({
             onClick={generateWithAI}
             disabled={aiLoading || saving}
             className="
-              flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
+              inline-flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
               bg-bg-subtle border border-border text-text-secondary
               hover:bg-bg-muted hover:text-text-primary
               disabled:opacity-50 disabled:cursor-not-allowed
@@ -343,7 +343,7 @@ export function FaqManager({
             onClick={startNew}
             disabled={editing !== null || aiLoading}
             className="
-              flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
+              inline-flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
               bg-primary text-white
               hover:bg-primary-hover
               disabled:opacity-50 disabled:cursor-not-allowed
@@ -435,7 +435,7 @@ export function FaqManager({
                         onClick={cancelEdit}
                         disabled={saving}
                         className="
-                          px-3 py-1.5 rounded-md text-sm font-medium
+                          inline-flex items-center min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
                           border border-border text-text-secondary
                           hover:bg-bg-subtle disabled:opacity-50
                           transition-colors
@@ -448,7 +448,7 @@ export function FaqManager({
                         onClick={saveEdit}
                         disabled={saving}
                         className="
-                          flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
+                          inline-flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
                           bg-primary text-white hover:bg-primary-hover
                           disabled:opacity-50 disabled:cursor-not-allowed
                           transition-colors
@@ -539,7 +539,7 @@ export function FaqManager({
                 type="button"
                 onClick={cancelDelete}
                 className="
-                  px-4 py-2 rounded-md text-sm font-medium
+                  inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium
                   border border-border text-text-secondary
                   hover:bg-bg-subtle transition-colors
                 "
@@ -550,7 +550,7 @@ export function FaqManager({
                 type="button"
                 onClick={executeDelete}
                 className="
-                  px-4 py-2 rounded-md text-sm font-medium
+                  inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium
                   bg-red-600 text-white hover:bg-red-700
                   transition-colors
                 "
