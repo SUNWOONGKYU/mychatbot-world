@@ -160,7 +160,7 @@ export default function Step7Theme({ data, onNext, onBack }: Props) {
         <StepActions
           onBack={onBack}
           onNext={() => onNext({ themeMode, themeColor })}
-          nextLabel="다음: 배포 →"
+          nextLabel="다음: 생성 →"
         />
       </div>
     </div>
