@@ -442,7 +442,7 @@ export default function SignupPage() {
           이미 계정이 있으신가요?{' '}
           <Link
             href="/login"
-            className="font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
+            className="inline-flex items-center min-h-[44px] px-2 font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
             style={{ color: 'var(--interactive-primary)' }}
           >
             로그인
@@ -451,7 +451,7 @@ export default function SignupPage() {
         <p className="mt-3 text-center">
           <Link
             href="/"
-            className="text-xs text-text-tertiary hover:text-text-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
+            className="inline-flex items-center min-h-[44px] px-2 text-xs text-text-tertiary hover:text-text-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded"
           >
             ← 홈으로 돌아가기
           </Link>
