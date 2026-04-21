@@ -64,7 +64,7 @@ function ReviewCard({ review }: { review: typeof DUMMY_REVIEWS[0] }) {
           }}>
             {review.userName[0]}
           </div>
-          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'white' }}>{review.userName}</span>
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))' }}>{review.userName}</span>
         </div>
         <StarDisplay rating={review.rating} size="sm" />
       </div>
@@ -326,7 +326,7 @@ export default function SkillDetailPage() {
                   marginBottom: '1rem',
                 }}>
                   <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', lineHeight: 1 }}>
+                    <p style={{ fontSize: '2.5rem', fontWeight: 800, color: 'rgb(var(--text-primary-rgb))', lineHeight: 1 }}>
                       {skill.rating.toFixed(1)}
                     </p>
                     <StarDisplay rating={skill.rating} size="lg" />

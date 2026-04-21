@@ -730,7 +730,7 @@ export default function PostDetailPage({
               width: '100%', padding: '0.65rem 0.85rem',
               background: 'rgb(var(--border-subtle))',
               border: '1px solid rgb(var(--border))',
-              borderRadius: '8px', color: 'white',
+              borderRadius: '8px', color: 'rgb(var(--text-primary-rgb))',
               fontSize: '0.875rem', resize: 'vertical',
               outline: 'none', fontFamily: 'inherit',
               transition: 'border-color 0.15s',
@@ -772,7 +772,7 @@ export default function PostDetailPage({
           onClick={e => { if (e.target === e.currentTarget) setReportOpen(false); }}
         >
           <div style={{
-            background: '#1a1a2e', border: '1px solid rgb(var(--border-strong))',
+            background: 'rgb(var(--bg-surface))', border: '1px solid rgb(var(--border-strong))',
             borderRadius: '14px', padding: '1.5rem', width: '100%', maxWidth: '400px',
           }}>
             <h3 style={{ color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>
@@ -802,7 +802,7 @@ export default function PostDetailPage({
                   width: '100%', marginTop: '0.75rem', padding: '0.6rem 0.75rem',
                   background: 'rgb(var(--bg-surface-hover) / 0.5)',
                   border: '1px solid rgb(var(--border))',
-                  borderRadius: '8px', color: 'white',
+                  borderRadius: '8px', color: 'rgb(var(--text-primary-rgb))',
                   fontSize: '0.85rem', resize: 'vertical',
                   outline: 'none', fontFamily: 'inherit',
                   boxSizing: 'border-box',

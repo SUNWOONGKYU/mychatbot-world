@@ -71,12 +71,12 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
       <div style={{
         marginTop: '1.5rem',
         padding: '1.5rem',
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--surface-1)',
+        border: '1px solid var(--border-default)',
         borderRadius: '16px',
         textAlign: 'center',
       }}>
-        <h3 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>코코봇 목소리를 선택하세요</h3>
+        <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '1rem' }}>코코봇 목소리를 선택하세요</h3>
 
         <div style={{
           display: 'grid',
@@ -94,16 +94,16 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
                 alignItems: 'center',
                 gap: '4px',
                 padding: '12px',
-                background: selectedVoice === v.value ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.05)',
-                border: `2px solid ${selectedVoice === v.value ? '#6366f1' : 'rgba(255,255,255,0.1)'}`,
+                background: selectedVoice === v.value ? 'rgba(99,102,241,0.15)' : 'var(--surface-2)',
+                border: `2px solid ${selectedVoice === v.value ? '#6366f1' : 'var(--border-default)'}`,
                 borderRadius: '10px',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
               }}
             >
               <input type="radio" name="botVoice" value={v.value} checked={selectedVoice === v.value} onChange={() => setSelectedVoice(v.value)} style={{ display: 'none' }} />
-              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'white' }}>{v.name}</span>
-              <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>{v.desc}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>{v.name}</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>{v.desc}</span>
             </label>
           ))}
         </div>
@@ -112,10 +112,10 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
           onClick={handlePreview}
           style={{
             padding: '8px 20px',
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.15)',
+            background: 'var(--surface-2)',
+            border: '1px solid var(--border-default)',
             borderRadius: '8px',
-            color: 'white',
+            color: 'var(--text-primary)',
             fontSize: '0.875rem',
             cursor: 'pointer',
           }}
@@ -130,10 +130,10 @@ export default function Step5Voice({ data, onNext, onBack }: Props) {
           onClick={onBack}
           style={{
             padding: '12px 24px',
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.15)',
+            background: 'var(--surface-2)',
+            border: '1px solid var(--border-default)',
             borderRadius: '10px',
-            color: 'rgba(255,255,255,0.8)',
+            color: 'var(--text-primary)',
             fontSize: '0.95rem',
             fontWeight: 600,
             cursor: 'pointer',

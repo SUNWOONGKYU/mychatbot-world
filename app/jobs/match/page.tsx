@@ -296,7 +296,7 @@ export default function JobsMatchPage() {
                           <span style={{ color: 'rgb(var(--text-secondary-rgb))' }}>{f.label}</span>
                           <span style={{ color: f.color }}>{f.weight}%</span>
                         </div>
-                        <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 4 }}>
+                        <div style={{ height: 6, background: 'rgb(var(--bg-muted))', borderRadius: 4 }}>
                           <div style={{ height: '100%', width: `${f.weight}%`,
                             background: f.color, borderRadius: 4, transition: 'width .5s' }} />
                         </div>
@@ -426,7 +426,7 @@ export default function JobsMatchPage() {
                           <span>매칭 점수</span>
                           <span style={{ color: scoreColor(sc), fontWeight: 700 }}>{sc}%</span>
                         </div>
-                        <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 4 }}>
+                        <div style={{ height: 6, background: 'rgb(var(--bg-muted))', borderRadius: 4 }}>
                           <div style={{
                             height: '100%', width: `${sc}%`,
                             background: scoreColor(sc),
@@ -439,8 +439,8 @@ export default function JobsMatchPage() {
                       {m.reason && (
                         <p style={{
                           fontSize: '.8125rem', color: 'rgb(var(--text-muted))',
-                          background: 'rgba(255,255,255,0.03)',
-                          border: '1px solid rgba(255,255,255,0.06)',
+                          background: 'rgb(var(--bg-base))',
+                          border: '1px solid rgb(var(--border-subtle))',
                           borderRadius: 8, padding: '.625rem .875rem',
                           lineHeight: 1.6, margin: 0,
                         }}>
@@ -450,7 +450,7 @@ export default function JobsMatchPage() {
 
                       {/* 매칭 일시 */}
                       <div style={{ marginTop: '.75rem', fontSize: '.75rem',
-                        color: 'rgba(255,255,255,0.25)', textAlign: 'right' }}>
+                        color: 'rgb(var(--text-muted))', textAlign: 'right' }}>
                         매칭: {new Date(m.matched_at).toLocaleDateString('ko-KR')}
                       </div>
                     </div>

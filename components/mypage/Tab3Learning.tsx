@@ -9,11 +9,12 @@ import { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import { getToken, authHeadersFormData as authHeaders } from '@/lib/auth-client';
 
-type KbTab = 'file' | 'text' | 'obsidian';
+type KbTab = 'file' | 'url' | 'text' | 'obsidian';
 type WikiSection = 'ingest' | 'pages' | 'graph' | 'lint' | 'growth';
 
 const KB_TABS: { id: KbTab; label: string; icon: string }[] = [
   { id: 'file',     label: '파일 업로드',  icon: '📁' },
+  { id: 'url',      label: 'URL 학습',     icon: '🔗' },
   { id: 'text',     label: '텍스트 입력',  icon: '✏️' },
   { id: 'obsidian', label: 'Obsidian .md', icon: '🌿' },
 ];
@@ -31,10 +32,24 @@ const WIKI_SECTIONS: { id: WikiSection; label: string; icon: string; desc: strin
 function KbInjectPanel() {
   const [activeTab, setActiveTab] = useState<KbTab>('file');
   const [text, setText] = useState('');
+  const [url, setUrl] = useState('');
+  const [urlTitle, setUrlTitle] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState('');
+  const [activeBotId, setActiveBotId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const obsidianRef = useRef<HTMLInputElement>(null);
+
+  // 사용자의 첫 봇 ID를 KB 대상 기본값으로 가져옴
+  useEffect(() => {
+    fetch('/api/bots', { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const bots = d?.data?.bots ?? d?.bots ?? d?.data ?? [];
+        if (Array.isArray(bots) && bots.length > 0) setActiveBotId(bots[0].id);
+      })
+      .catch(() => { /* silent */ });
+  }, []);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'file' | 'obsidian') => {
     const files = e.target.files;
@@ -55,6 +70,45 @@ function KbInjectPanel() {
       setUploadResult('업로드 완료! KB에 반영되었습니다.');
     } catch {
       setUploadResult('업로드 중 오류가 발생했습니다.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleUrlSubmit = async () => {
+    if (!url.trim() || uploading) return;
+    if (!activeBotId) {
+      setUploadResult('먼저 코코봇을 생성해주세요.');
+      return;
+    }
+    setUploading(true);
+    setUploadResult('');
+    try {
+      const token = getToken();
+      const res = await fetch('/api/kb/url', {
+        method: 'POST',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: url.trim(),
+          chatbot_id: activeBotId,
+          title: urlTitle.trim() || undefined,
+          auto_embed: true,
+        }),
+      });
+      const d = await res.json().catch(() => null);
+      if (!res.ok) {
+        setUploadResult(d?.error || 'URL 학습 중 오류가 발생했습니다.');
+      } else {
+        const chars = d?.data?.char_count ?? 0;
+        setUploadResult(`URL 본문이 KB에 추가되었습니다 (${chars.toLocaleString()}자).`);
+        setUrl('');
+        setUrlTitle('');
+      }
+    } catch {
+      setUploadResult('URL 학습 중 오류가 발생했습니다.');
     } finally {
       setUploading(false);
     }
@@ -131,6 +185,50 @@ function KbInjectPanel() {
             className="hidden"
             onChange={e => handleFileUpload(e, 'file')}
           />
+        </div>
+      )}
+
+      {activeTab === 'url' && (
+        <div className="space-y-3">
+          <input
+            type="url"
+            value={url}
+            onChange={e => setUrl(e.target.value)}
+            placeholder="https://example.com/article"
+            className={clsx(
+              'w-full px-3 py-2.5 rounded-[var(--radius-md)] border border-[var(--border-default)]',
+              'bg-[var(--surface-0)] text-[var(--text-primary)]',
+              'placeholder:text-[var(--text-tertiary)]',
+              'focus:outline-none focus:border-[var(--interactive-primary)]',
+            )}
+          />
+          <input
+            type="text"
+            value={urlTitle}
+            onChange={e => setUrlTitle(e.target.value)}
+            placeholder="제목 (선택 — 비우면 페이지 제목 사용)"
+            className={clsx(
+              'w-full px-3 py-2.5 rounded-[var(--radius-md)] border border-[var(--border-default)]',
+              'bg-[var(--surface-0)] text-[var(--text-primary)]',
+              'placeholder:text-[var(--text-tertiary)]',
+              'focus:outline-none focus:border-[var(--interactive-primary)]',
+            )}
+          />
+          <p className="text-xs text-[var(--text-tertiary)]">
+            웹 페이지 본문을 자동 추출해 KB에 저장합니다. (최대 5MB · 100,000자)
+          </p>
+          <button
+            type="button"
+            onClick={handleUrlSubmit}
+            disabled={uploading || !url.trim()}
+            className={clsx(
+              'px-4 py-2 rounded-[var(--radius-md)] text-sm font-semibold transition-colors',
+              'bg-[var(--interactive-primary)] text-[var(--text-inverted)]',
+              'hover:bg-[var(--interactive-hover)] disabled:opacity-50',
+            )}
+          >
+            {uploading ? '학습 중...' : 'URL 학습 실행'}
+          </button>
         </div>
       )}
 

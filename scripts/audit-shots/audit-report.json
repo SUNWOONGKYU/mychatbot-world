@@ -1,0 +1,1277 @@
+[
+  {
+    "path": "/",
+    "shot": "scripts/audit-shots/home-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "a",
+        "text": "본문으로 건너뛰기",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.59"
+      },
+      {
+        "tag": "span",
+        "text": "AI Assistant 코코봇",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "태어납니다",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "나머지는 AI가 다 만들어 드립니다.",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "5분 인터뷰로 코코봇 생성하기",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "여정",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "p",
+        "text": "CoCoBot에서 코코봇은 태어나고, 배우고, 능력을 키우고, 교류하며 성장합니다",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "🐣",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,75,0)",
+        "ratio": "1.99"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,7,0)",
+        "ratio": "1.02"
+      },
+      {
+        "tag": "span",
+        "text": "🔧",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,7,0)",
+        "ratio": "1.02"
+      },
+      {
+        "tag": "span",
+        "text": "🤝",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,72,0)",
+        "ratio": "1.91"
+      },
+      {
+        "tag": "span",
+        "text": "🔗",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,78,0)",
+        "ratio": "2.07"
+      },
+      {
+        "tag": "span",
+        "text": "AI Assistant 코코봇 생성",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "p",
+        "text": "기본정보 입력, 페르소나 설정, 음성 인터뷰 — 5분이면 당신만의 코코봇이 생성됩니다",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "01",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "02",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "03",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "04",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "05",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "h3",
+        "text": "6가지 코코봇 유형",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      }
+    ]
+  },
+  {
+    "path": "/birth",
+    "shot": "scripts/audit-shots/birth-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED",
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "My Page",
+        "fg": "rgb(251,191,36)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.67"
+      },
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🪙",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "크레딧·요금제",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🛒",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 상점",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/create",
+    "shot": "scripts/audit-shots/create-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "a",
+        "text": "CoCoBot",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "h1",
+        "text": "로그인",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "나의 코코봇 세계로 입장하세요",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "span",
+        "text": "이메일로 로그인",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "label",
+        "text": "이메일",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "label",
+        "text": "비밀번호",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "비밀번호 찾기",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "회원가입",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "a",
+        "text": "이용약관",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "a",
+        "text": "개인정보처리방침",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      }
+    ]
+  },
+  {
+    "path": "/skills",
+    "shot": "scripts/audit-shots/skills-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "스킬 마켓",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "a",
+        "text": "내 스킬",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "분신 아바타 기본",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "4개 스킬",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "비즈니스 상담",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "💙",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "심리 상담",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "🎧",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "고객 지원",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "🛍️",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "커머스 운영",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "AI 도우미",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "option",
+        "text": "인기순",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "option",
+        "text": "평점순",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "option",
+        "text": "가격 낮은순",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "option",
+        "text": "가격 높은순",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(1,0,0)",
+        "ratio": "1.01"
+      },
+      {
+        "tag": "span",
+        "text": "🛡️",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "보안",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/jobs",
+    "shot": "scripts/audit-shots/jobs-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "button",
+        "text": "전체",
+        "fg": "rgb(94,75,255)",
+        "bg": "rgb(94,75,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "button",
+        "text": "전체 보기",
+        "fg": "rgb(94,75,255)",
+        "bg": "rgb(94,75,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "button",
+        "text": "전체 보기",
+        "fg": "rgb(96,165,250)",
+        "bg": "rgb(59,130,246)",
+        "ratio": "1.45"
+      }
+    ]
+  },
+  {
+    "path": "/jobs/hire",
+    "shot": "scripts/audit-shots/jobs-hire-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "이용약관",
+        "fg": "rgb(99,102,241)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "4.47"
+      },
+      {
+        "tag": "span",
+        "text": "개인정보처리방침",
+        "fg": "rgb(99,102,241)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "4.47"
+      },
+      {
+        "tag": "span",
+        "text": "☆☆☆☆☆",
+        "fg": "rgb(245,158,11)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "2.15"
+      },
+      {
+        "tag": "strong",
+        "text": "10%",
+        "fg": "rgb(99,102,241)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "4.47"
+      }
+    ]
+  },
+  {
+    "path": "/community",
+    "shot": "scripts/audit-shots/community-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🏠",
+        "fg": "rgb(94,75,255)",
+        "bg": "rgb(94,75,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "전체",
+        "fg": "rgb(94,75,255)",
+        "bg": "rgb(94,75,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "button",
+        "text": "🆕 최신",
+        "fg": "rgb(94,75,255)",
+        "bg": "rgb(94,75,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "span",
+        "text": "⭐0",
+        "fg": "rgb(234,179,8)",
+        "bg": "rgb(248,250,252)",
+        "ratio": "1.83"
+      }
+    ]
+  },
+  {
+    "path": "/community/gallery",
+    "shot": "scripts/audit-shots/community-gallery-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "button",
+        "text": "글쓰기",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(6,182,212)",
+        "ratio": "2.43"
+      },
+      {
+        "tag": "a",
+        "text": "첫 이미지 게시글 작성하기 →",
+        "fg": "rgb(6,182,212)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "2.43"
+      }
+    ]
+  },
+  {
+    "path": "/business",
+    "shot": "scripts/audit-shots/business-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "My Page",
+        "fg": "rgb(251,191,36)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.67"
+      },
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🪙",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "크레딧·요금제",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🛒",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 상점",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/business/revenue",
+    "shot": "scripts/audit-shots/business-revenue-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "My Page",
+        "fg": "rgb(251,191,36)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.67"
+      },
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🪙",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "크레딧·요금제",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🛒",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 상점",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/business/settlement",
+    "shot": "scripts/audit-shots/business-settlement-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "My Page",
+        "fg": "rgb(251,191,36)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.67"
+      },
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🪙",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "크레딧·요금제",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🛒",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 상점",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage",
+    "shot": "scripts/audit-shots/mypage-light.png",
+    "errors": [
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "My Page",
+        "fg": "rgb(251,191,36)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.67"
+      },
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🪙",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "크레딧·요금제",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🛒",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 상점",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/onboarding",
+    "shot": "scripts/audit-shots/onboarding-light.png",
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Access to font at 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2' from origin 'https://mychatbot.world' has been blocked by CORS policy: Request header field cache-control is not allowed by Access-Control-Allow-Headers in preflight response."
+    ],
+    "contrastIssues": []
+  }
+]

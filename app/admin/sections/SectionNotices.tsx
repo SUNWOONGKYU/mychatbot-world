@@ -47,7 +47,7 @@ export default function SectionNotices({ adminKey }: SectionNoticesProps) {
   const { showToast, ToastEl } = useAdminToast();
 
   const apiHeaders = useCallback(
-    () => ({ 'X-Admin-Key': adminKey, 'Content-Type': 'application/json' }),
+    () => ({ Authorization: `Bearer ${adminKey}`, 'Content-Type': 'application/json' }),
     [adminKey],
   );
 

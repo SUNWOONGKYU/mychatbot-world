@@ -161,9 +161,9 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
             style={{
               padding: '10px 24px',
               borderRadius: '999px',
-              border: `1px solid ${mode === m ? '#6366f1' : 'rgba(255,255,255,0.1)'}`,
-              background: mode === m ? '#6366f1' : 'rgba(255,255,255,0.06)',
-              color: mode === m ? 'white' : 'rgba(255,255,255,0.5)',
+              border: `1px solid ${mode === m ? '#6366f1' : 'var(--border-default)'}`,
+              background: mode === m ? '#6366f1' : 'var(--surface-1)',
+              color: mode === m ? '#ffffff' : 'var(--text-secondary)',
               fontSize: '0.875rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -203,11 +203,11 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
           </div>
 
           {/* 타이머 */}
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
             {min}:{sec}
           </div>
 
-          <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)', marginBottom: '1rem' }}>
             {isRecording
               ? '녹음 중... 탭하여 정지'
               : transcript
@@ -233,16 +233,16 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
 
           {/* 가이드 */}
           <div style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'var(--surface-1)',
+            border: '1px solid var(--border-default)',
             borderRadius: '16px',
             padding: '1.5rem',
             textAlign: 'left',
           }}>
-            <h4 style={{ color: 'white', marginBottom: '0.75rem', fontSize: '0.875rem' }}>이런 내용을 말해주세요:</h4>
+            <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.75rem', fontSize: '0.875rem' }}>이런 내용을 말해주세요:</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {['자기소개와 업무 소개', '고객이 자주 묻는 질문과 답변', '전문 분야와 강점', '원하는 대화 스타일'].map(item => (
-                <li key={item} style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.875rem', padding: '6px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <li key={item} style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', padding: '6px 0', borderBottom: '1px solid var(--border-default)' }}>
                   • {item}
                 </li>
               ))}
@@ -252,15 +252,15 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
           {/* 녹음 전사 */}
           {transcript && (
             <div style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-default)',
               borderRadius: '16px',
               padding: '1.5rem',
               marginTop: '1rem',
               textAlign: 'left',
             }}>
-              <h4 style={{ color: 'white', marginBottom: '0.75rem' }}>녹음 내용:</h4>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem', lineHeight: 1.7 }}>{transcript}</p>
+              <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.75rem' }}>녹음 내용:</h4>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.7 }}>{transcript}</p>
             </div>
           )}
         </div>
@@ -273,11 +273,11 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
             style={{
               width: '100%',
               minHeight: '200px',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.12)',
+              background: 'var(--surface-0)',
+              border: '1px solid var(--border-default)',
               borderRadius: '10px',
               padding: '14px',
-              color: 'white',
+              color: 'var(--text-primary)',
               fontSize: '0.9rem',
               resize: 'vertical',
               outline: 'none',
@@ -288,7 +288,7 @@ export default function Step3Interview({ data, onBack, onNext }: Props) {
             placeholder="자기소개, 주요 업무, 자주 받는 질문과 답변을 자유롭게 작성해주세요..."
             rows={10}
           />
-          <p style={{ textAlign: 'right', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
+          <p style={{ textAlign: 'right', fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '4px' }}>
             {textContent.length}/2000
           </p>
         </div>

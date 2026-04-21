@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { BrandLogo } from '@/components/common/brand-logo';
 import supabase from '@/lib/supabase';
+import { syncSessionCookie, clearSessionCookie } from '@/lib/auth-client';
 
 // 서비스 4메뉴 — DESIGN.md 원칙에 따라 Primary 퍼플 단일색으로 통일
 const SERVICE_ITEMS = [
@@ -52,13 +53,24 @@ export function Navbar() {
   }, []);
 
   // 세션 상태 감지 — 초기 조회 + 변경 구독
+  // + 세션 access_token 을 sb-access-token 쿠키에 동기화 → 서버 라우트 폴백 인증 보장
   useEffect(() => {
     let mounted = true;
     supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setIsAuthed(!!data.session);
+      if (!mounted) return;
+      setIsAuthed(!!data.session);
+      if (data.session?.access_token) {
+        syncSessionCookie(data.session.access_token, data.session.expires_at);
+      }
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted) setIsAuthed(!!session);
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      setIsAuthed(!!session);
+      if (session?.access_token) {
+        syncSessionCookie(session.access_token, session.expires_at);
+      } else if (event === 'SIGNED_OUT') {
+        clearSessionCookie();
+      }
     });
     return () => {
       mounted = false;

@@ -62,6 +62,8 @@ export function authHeadersFormData(): HeadersInit {
  * getToken() 의 localStorage 스캔 방식은 키 패턴/파싱 실패/타이밍에 취약.
  * 이 함수는 supabase-js 인스턴스에게 세션을 물어 안정적으로 토큰을 얻는다.
  * Bearer 필수 엔드포인트(/api/chat, /api/chat/stream 등)에 사용 권장.
+ *
+ * 부수효과: 세션이 있으면 sb-access-token 쿠키에도 동기화 → 서버 쿠키 폴백 보장.
  */
 export async function authHeadersAsync(json = true): Promise<HeadersInit> {
   const base: HeadersInit = json ? { 'Content-Type': 'application/json' } : {};
@@ -69,9 +71,44 @@ export async function authHeadersAsync(json = true): Promise<HeadersInit> {
     const { supabase } = await import('@/lib/supabase');
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token || getToken();
+    if (token) syncSessionCookie(token, data.session?.expires_at);
     return token ? { ...base, Authorization: `Bearer ${token}` } : base;
   } catch {
     const token = getToken();
+    if (token) syncSessionCookie(token);
     return token ? { ...base, Authorization: `Bearer ${token}` } : base;
   }
+}
+
+/**
+ * Supabase 세션 access_token 을 브라우저 쿠키(sb-access-token)로 동기화.
+ *
+ * Supabase-js v2 는 기본적으로 localStorage 에만 세션을 저장한다.
+ * Next.js 서버 라우트(/api/chat/stream 등)는 localStorage 를 읽을 수 없으므로,
+ * 클라이언트가 쿠키로 토큰을 실어 서버 폴백 인증 경로가 동작하도록 한다.
+ *
+ * 보안: SameSite=Lax + Secure(프로덕션) + Path=/; HttpOnly 는 불가(클라에서 써야 하므로).
+ * Bearer 토큰과 동일한 JWT 이므로 추가 노출 위험 없음 (XSS 면에선 localStorage 와 동급).
+ */
+export function syncSessionCookie(accessToken: string, expiresAt?: number): void {
+  if (typeof document === 'undefined') return;
+  if (!accessToken) return;
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const secure = isHttps ? '; Secure' : '';
+  // 기본 만료: 1시간. expires_at (초 단위 unix) 있으면 그 시각까지.
+  let expires = '';
+  if (expiresAt && expiresAt * 1000 > Date.now()) {
+    expires = `; Expires=${new Date(expiresAt * 1000).toUTCString()}`;
+  } else {
+    expires = `; Max-Age=3600`;
+  }
+  document.cookie = `sb-access-token=${accessToken}; Path=/; SameSite=Lax${secure}${expires}`;
+}
+
+/**
+ * 로그아웃 시 호출 — sb-access-token 쿠키 제거.
+ */
+export function clearSessionCookie(): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = 'sb-access-token=; Path=/; Max-Age=0; SameSite=Lax';
 }

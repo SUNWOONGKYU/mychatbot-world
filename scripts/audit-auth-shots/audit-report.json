@@ -1,0 +1,1958 @@
+[
+  {
+    "path": "/mypage",
+    "shot": "scripts/audit-auth-shots/mypage-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?_=1776735277110",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=profile",
+    "shot": "scripts/audit-auth-shots/mypage-profile-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=profile&_=1776735279057",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=bots",
+    "shot": "scripts/audit-auth-shots/mypage-bots-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=bots&_=1776735280572",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=learning",
+    "shot": "scripts/audit-auth-shots/mypage-learning-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=learning&_=1776735282153",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=skills",
+    "shot": "scripts/audit-auth-shots/mypage-skills-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=skills&_=1776735283712",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=business",
+    "shot": "scripts/audit-auth-shots/mypage-business-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=business&_=1776735285147",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=inherit",
+    "shot": "scripts/audit-auth-shots/mypage-inherit-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=inherit&_=1776735287100",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=credits",
+    "shot": "scripts/audit-auth-shots/mypage-credits-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=credits&_=1776735288575",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=shop",
+    "shot": "scripts/audit-auth-shots/mypage-shop-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=shop&_=1776735290069",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/mypage?tab=security",
+    "shot": "scripts/audit-auth-shots/mypage-security-light.png",
+    "finalUrl": "https://mychatbot.world/mypage?tab=security&_=1776735291502",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/birth",
+    "shot": "scripts/audit-auth-shots/birth-light.png",
+    "finalUrl": "https://mychatbot.world/mypage",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/create",
+    "shot": "scripts/audit-auth-shots/create-light.png",
+    "finalUrl": "https://mychatbot.world/login?returnTo=%2Fcreate",
+    "bouncedToLogin": true,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "a",
+        "text": "CoCoBot",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "h1",
+        "text": "로그인",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "나의 코코봇 세계로 입장하세요",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "span",
+        "text": "이메일로 로그인",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "label",
+        "text": "이메일",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "label",
+        "text": "비밀번호",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "비밀번호 찾기",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "회원가입",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "a",
+        "text": "이용약관",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "a",
+        "text": "개인정보처리방침",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.69"
+      }
+    ]
+  },
+  {
+    "path": "/skills",
+    "shot": "scripts/audit-auth-shots/skills-light.png",
+    "finalUrl": "https://mychatbot.world/skills?_=1776735297449",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "4개 스킬",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🛡️",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "보안",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "무료",
+        "fg": "rgb(0,38,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.12"
+      },
+      {
+        "tag": "button",
+        "text": "설치",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🌍",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "UI",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "😊",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "분석",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🚫",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "지식",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🔊",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "😀",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "📧",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "2.54"
+      },
+      {
+        "tag": "span",
+        "text": "비즈니스",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/skills/my",
+    "shot": "scripts/audit-auth-shots/skills-my-light.png",
+    "finalUrl": "https://mychatbot.world/skills/my?_=1776735303706",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "a",
+        "text": "스킬 마켓 보기",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      }
+    ]
+  },
+  {
+    "path": "/jobs",
+    "shot": "scripts/audit-auth-shots/jobs-light.png",
+    "finalUrl": "https://mychatbot.world/jobs?_=1776735305933",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": []
+  },
+  {
+    "path": "/jobs/hire",
+    "shot": "scripts/audit-auth-shots/jobs-hire-light.png",
+    "finalUrl": "https://mychatbot.world/jobs/hire?_=1776735308696",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "이용약관",
+        "fg": "rgb(99,102,241)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "4.47"
+      },
+      {
+        "tag": "span",
+        "text": "개인정보처리방침",
+        "fg": "rgb(99,102,241)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "4.47"
+      },
+      {
+        "tag": "span",
+        "text": "☆☆☆☆☆",
+        "fg": "rgb(245,158,11)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "2.15"
+      },
+      {
+        "tag": "strong",
+        "text": "10%",
+        "fg": "rgb(99,102,241)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "4.47"
+      }
+    ]
+  },
+  {
+    "path": "/jobs/match",
+    "shot": "scripts/audit-auth-shots/jobs-match-light.png",
+    "finalUrl": "https://mychatbot.world/jobs/match?_=1776735310684",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "div",
+        "text": "job_id 파라미터가 없습니다.",
+        "fg": "rgb(248,113,113)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "2.77"
+      }
+    ]
+  },
+  {
+    "path": "/community",
+    "shot": "scripts/audit-auth-shots/community-light.png",
+    "finalUrl": "https://mychatbot.world/community?_=1776735312706",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "⭐0",
+        "fg": "rgb(234,179,8)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.92"
+      }
+    ]
+  },
+  {
+    "path": "/community/gallery",
+    "shot": "scripts/audit-auth-shots/community-gallery-light.png",
+    "finalUrl": "https://mychatbot.world/community/gallery?_=1776735315428",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": []
+  },
+  {
+    "path": "/community/write",
+    "shot": "scripts/audit-auth-shots/community-write-light.png",
+    "finalUrl": "https://mychatbot.world/community/write?_=1776735318695",
+    "bouncedToLogin": false,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 401 ()"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "a",
+        "text": "코코봇 만들기",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "div",
+        "text": "이미지를 클릭하거나 드래그하여 추가 (0/5)",
+        "fg": "rgb(0,58,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.60"
+      },
+      {
+        "tag": "button",
+        "text": "등록",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      }
+    ]
+  },
+  {
+    "path": "/business",
+    "shot": "scripts/audit-auth-shots/business-light.png",
+    "finalUrl": "https://mychatbot.world/mypage",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/business/revenue",
+    "shot": "scripts/audit-auth-shots/business-revenue-light.png",
+    "finalUrl": "https://mychatbot.world/mypage",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/business/settlement",
+    "shot": "scripts/audit-auth-shots/business-settlement-light.png",
+    "finalUrl": "https://mychatbot.world/mypage",
+    "bouncedToLogin": false,
+    "errors": [],
+    "contrastIssues": [
+      {
+        "tag": "span",
+        "text": "🔒",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "로그인하면 실제 데이터가 표시됩니다",
+        "fg": "rgb(0,2,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "2.69"
+      },
+      {
+        "tag": "p",
+        "text": "지금은 미리보기 모드입니다. 로그인 후 내 코코봇, 스킬, 크레딧을 관리하세요.",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,97,0)",
+        "ratio": "1.90"
+      },
+      {
+        "tag": "a",
+        "text": "로그인",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "👤",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "프로필 관리",
+        "fg": "rgb(0,97,0)",
+        "bg": "rgb(0,58,0)",
+        "ratio": "1.69"
+      },
+      {
+        "tag": "span",
+        "text": "🤖",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "📚",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 학습",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "스킬 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "💼",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "코코봇 운영 관리",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "🏛️",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      },
+      {
+        "tag": "span",
+        "text": "상속",
+        "fg": "rgb(0,48,0)",
+        "bg": "rgb(0,93,0)",
+        "ratio": "1.80"
+      }
+    ]
+  },
+  {
+    "path": "/onboarding",
+    "shot": "scripts/audit-auth-shots/onboarding-light.png",
+    "finalUrl": "https://mychatbot.world/onboarding?_=1776735327622",
+    "bouncedToLogin": false,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "contrastIssues": [
+      {
+        "tag": "a",
+        "text": "시작하기",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "a",
+        "text": "대화 시작",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      },
+      {
+        "tag": "a",
+        "text": "내 봇 만들기",
+        "fg": "rgb(255,255,255)",
+        "bg": "rgb(255,255,255)",
+        "ratio": "1.00"
+      }
+    ]
+  }
+]

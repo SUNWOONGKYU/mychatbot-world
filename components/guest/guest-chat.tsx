@@ -37,10 +37,32 @@ const MAX_TURNS = 10;
 /* ── GuestChat Props ─────────────────────────────────────────── */
 
 interface GuestChatProps {
-  /** 데모 코코봇 ID (없으면 기본 데모봇) */
+  /** 데모용 CoCoBot ID (없으면 기본 데모봇) */
   botId?: string;
   /** 10회 한도 초과 시 콜백 */
   onLimitReached: () => void;
+}
+
+/* ── 카테고리별 페르소나 인삿말 ──────────────────────────────────────────── */
+
+const CATEGORY_WELCOME: Record<string, string> = {
+  avatar_executive:    '안녕하세요. 저는 어느 기업 경영자를 대신하는 데모용 CoCoBot입니다. 회사 비전, 사업 영역, 채용 등 무엇이든 편하게 물어보세요.',
+  avatar_smallbiz:     '어서오세요! 저는 소상공인 사장님을 대신하는 데모용 CoCoBot이에요. 메뉴, 영업시간, 예약 같은 거 다 안내해드릴게요 😊',
+  avatar_professional: '안녕하세요. 저는 전문직(변호사·세무사·의사 등)을 대신하는 데모용 CoCoBot입니다. 상담 예약·업무 영역·비용 등을 안내해드립니다.',
+  avatar_freelancer:   '반가워요! 저는 프리랜서를 대신하는 데모용 CoCoBot이에요. 포트폴리오·작업 스타일·의뢰 절차 무엇이든 물어보세요 🎨',
+  avatar_politician:   '안녕하세요. 저는 정치인을 대신하는 데모용 CoCoBot입니다. 공약, 의정 활동, 지역구 민원 등을 안내해드립니다.',
+  helper_work:         '안녕하세요! 저는 업무를 도와드리는 데모용 CoCoBot입니다. 보고서·이메일·회의록 등 업무 관련 무엇이든 도와드릴게요 💼',
+  helper_learning:     '반가워요! 저는 학습을 도와드리는 데모용 CoCoBot이에요. 어떤 과목이나 주제를 공부 중이신가요? 📚',
+  helper_creative:     '안녕하세요! 저는 창작을 도와드리는 데모용 CoCoBot입니다. 글쓰기·아이디어 발상·캐릭터 등 함께 브레인스토밍해요 ✨',
+  helper_health:       '안녕하세요! 저는 건강 코칭을 도와드리는 데모용 CoCoBot이에요. 운동·식단·수면 무엇이든 편하게 물어보세요 💪',
+  helper_life:         '안녕하세요! 저는 일상 생활을 도와드리는 데모용 CoCoBot입니다. 살림·요리·정리·민원 등 무엇이든 물어보세요 🏠',
+};
+
+const LS_CATEGORY_KEY = 'mcw_guest_category';
+
+function getCategoryFromLS(): string | null {
+  if (typeof window === 'undefined') return null;
+  try { return localStorage.getItem(LS_CATEGORY_KEY); } catch { return null; }
 }
 
 /* ── 헬퍼: 고유 ID ───────────────────────────────────────────── */
@@ -95,11 +117,15 @@ export function GuestChat({ botId, onLimitReached }: GuestChatProps) {
       const userCount = stored.filter((m) => m.role === 'user').length;
       setTurnCount(userCount);
     } else {
-      // 웰컴 메시지
+      // 웰컴 메시지 — 카테고리에 맞는 페르소나 인삿말
+      const cat = getCategoryFromLS();
+      const personaWelcome = (cat && CATEGORY_WELCOME[cat])
+        ? CATEGORY_WELCOME[cat]
+        : '안녕하세요! 저는 데모용 CoCoBot이에요. 무엇이든 물어보세요.';
       const welcome: ChatMessage = {
         id: genId(),
         role: 'bot',
-        content: '안녕하세요! 저는 CoCoBot 데모 코코봇이에요. 무엇이든 물어보세요. 회원가입 없이 10회까지 무료로 체험할 수 있어요.',
+        content: `${personaWelcome} (회원가입 없이 10회까지 무료로 체험할 수 있어요.)`,
         createdAt: new Date().toISOString(),
       };
       setMessages([welcome]);
@@ -150,6 +176,9 @@ export function GuestChat({ botId, onLimitReached }: GuestChatProps) {
         body: JSON.stringify({
           message: text,
           botId: botId ?? 'demo',
+          // 게스트 모드: localStorage에 저장된 신 분류 카테고리를 서버에 전달
+          // → guest-chat API가 DB의 구 분류 대신 신 분류 페르소나 프롬프트를 사용
+          categoryOverride: getCategoryFromLS() ?? undefined,
           history: nextMessages.slice(-10).map((m) => ({
             role: m.role === 'user' ? 'user' : 'assistant',
             content: m.content,

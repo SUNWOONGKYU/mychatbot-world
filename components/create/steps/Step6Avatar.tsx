@@ -78,15 +78,15 @@ export default function Step6Avatar({ data, onNext, onBack }: Props) {
                   alignItems: 'center',
                   gap: '8px',
                   padding: '16px 8px',
-                  background: selectedEmoji === em.key ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.03)',
-                  border: `2px solid ${selectedEmoji === em.key ? '#6366f1' : 'rgba(255,255,255,0.08)'}`,
+                  background: selectedEmoji === em.key ? 'rgba(99,102,241,0.15)' : 'var(--surface-2)',
+                  border: `2px solid ${selectedEmoji === em.key ? '#6366f1' : 'var(--border-default)'}`,
                   borderRadius: '12px',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                 }}
               >
                 <span style={{ fontSize: '2rem', lineHeight: 1 }}>{em.icon}</span>
-                <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)' }}>{em.label}</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{em.label}</span>
               </div>
             ))}
           </div>
@@ -98,7 +98,7 @@ export default function Step6Avatar({ data, onNext, onBack }: Props) {
           <div
             onClick={() => fileRef.current?.click()}
             style={{
-              border: '2px dashed rgba(255,255,255,0.15)',
+              border: '2px dashed var(--border-default)',
               borderRadius: '12px',
               padding: '2rem',
               textAlign: 'center',
@@ -119,7 +119,7 @@ export default function Step6Avatar({ data, onNext, onBack }: Props) {
             ) : (
               <div>
                 <span style={{ fontSize: '2rem' }}>📷</span>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginTop: '8px' }}>
+                <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', marginTop: '8px' }}>
                   클릭하여 이미지 업로드<br />JPG, PNG, GIF (최대 2MB)
                 </p>
               </div>

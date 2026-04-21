@@ -180,7 +180,7 @@ export default function SectionSkills({ adminKey, onBadgeChange }: Props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch('/api/admin/skills', { headers: { 'X-Admin-Key': adminKey } })
+    fetch('/api/admin/skills', { headers: { Authorization: `Bearer ${adminKey}` } })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         const raw = d?.skills ?? mockSkills();
@@ -201,7 +201,7 @@ export default function SectionSkills({ adminKey, onBadgeChange }: Props) {
     try {
       const res = await fetch('/api/admin/skills', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminKey}` },
         body: JSON.stringify({ name: newSkill.name, description: newSkill.description, category: newSkill.category, price: newSkill.price }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -236,7 +236,7 @@ export default function SectionSkills({ adminKey, onBadgeChange }: Props) {
     try {
       const res = await fetch('/api/admin/skills', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminKey}` },
         body: JSON.stringify({ skillId: skill.id, mode: 'soft' }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

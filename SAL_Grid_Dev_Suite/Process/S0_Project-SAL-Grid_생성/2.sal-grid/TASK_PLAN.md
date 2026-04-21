@@ -299,3 +299,28 @@ S4 (개발 마무리)
 | v3.3 | 2026-04-11 | S5FE1~10+FE11 완료 처리 — 디자인 혁신 FE Task 전체 Completed. S5FE11 TASK_PLAN.md 등록(마이페이지 탭5~8). S5 Stage Gate AI Verified (35/35). 크레딧 차감 시스템(S2BA5) 통합 기록. 총 75개→76개. |
 | v3.4 | 2026-04-12 | 모바일 반응형 긴급 수정(버그픽스) — S5FE2: navbar.tsx 서비스 메뉴 hidden md:flex(모바일 오버플로우 해결)+로그인 버튼 숨김+회원가입 축약, mobile-nav.tsx 드로어 max-w-[85vw] 추가. S5FE6: home/page.tsx 260px 고정 사이드바→isMobile 기반 오버레이 슬라이드 전환, 모바일 햄버거 메뉴+탭명 헤더 추가. Supabase Auth 설정: site_url=https://mychatbot.world, uri_allow_list 2개 등록. Google Cloud Console OAuth redirect URI 등록 완료. 총 76개 유지(버그픽스). |
 | v3.5 | 2026-04-21 | **S7SC1 신설** — 비밀번호 재설정 플로우 복구. `/reset-password` useEffect re-run으로 setSession이 single-use refresh_token으로 재호출되어 "재설정 링크가 만료되었거나 이미 사용되었습니다" 오류 발생. redirectTo를 `/auth/callback`으로 전환 + setSession once 보장. MBO 승인(2026-04-21 11:06) 기반 신설. Stage=S7 / Area=SC. index.json 114 tasks. |
+| v3.6 | 2026-04-21 | **S10 Stage 신설 — 마이페이지 Tab2 6도구 연동 (14 Tasks)**. QR 렌더 + 대화로그/KB/스킬/학습/커뮤니티 패널 + 설정 저장. DB 2개(S10DB1 mcw_bot_skills / S10DB2 mcw_bots 컬럼확장), BA 4개(chat-log / skills CRUD / community 필터 / bot PATCH), FE 7개(QR / 6패널), TS 1개(E2E). MBO 승인 2026-04-21 12:50. index.json 122→136 tasks. |
+
+---
+
+## S10 — 마이페이지 Tab2 6도구 연동 (14 Tasks)
+
+> 목표: 봇 카드 하단 6개 도구 패널 + QR을 플레이스홀더에서 실 기능으로 전환
+> MBO 승인: 2026-04-21 12:50 (PO "14 Task S10 Stage, 승인")
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S10DB1 | mcw_bot_skills 테이블 생성 (봇-스킬 마운트 메타데이터) | DB | — | `database-developer-core` | Pending |
+| S10DB2 | mcw_bots 컬럼 확장 (tone, persona_traits, learning_sources JSONB) | DB | — | `database-developer-core` | Pending |
+| S10BA1 | 봇별 chat_logs 조회/삭제 API (/api/bots/[id]/chat-logs) | BA | — | `api-developer-core` | Pending |
+| S10BA2 | bot-skills CRUD API (/api/bots/[id]/skills GET/POST/DELETE) | BA | S10DB1 | `api-developer-core` | Pending |
+| S10BA3 | community 필터 API (/api/community/posts?bot_id=) | BA | — | `api-developer-core` | Pending |
+| S10BA4 | bot PATCH 설정 저장 API (/api/bots/[id] PATCH) | BA | S10DB2 | `api-developer-core` | Pending |
+| S10FE1 | QR 코드 렌더 (qrcode pkg, mypage+Step8 공용 컴포넌트) | FE | — | `frontend-developer-core` | Completed |
+| S10FE2 | ChatLogPanel 구현 (봇별 대화 로그 리스트/검색/삭제) | FE | S10BA1 | `frontend-developer-core` | Pending |
+| S10FE3 | KbPanel 구현 (kb_items 표/추가/삭제) | FE | — | `frontend-developer-core` | Pending |
+| S10FE4 | SkillsMountPanel 구현 (마운트된 스킬 목록 + 장착/해제) | FE | S10BA2 | `frontend-developer-core` | Pending |
+| S10FE5 | LearningPanel 구현 (학습 진도/통계) | FE | — | `frontend-developer-core` | Pending |
+| S10FE6 | CommunityPanel 구현 (봇 작성 글/댓글/카르마 필터) | FE | S10BA3 | `frontend-developer-core` | Pending |
+| S10FE7 | BotSettings 저장 통합 (tone/persona/model PATCH 라운드트립) | FE | S10BA4 | `frontend-developer-core` | Pending |
+| S10QA1 | E2E 검증 (Playwright — 마이페이지 6도구 전체 flow) | TS | S10FE1, S10FE2, S10FE3, S10FE4, S10FE5, S10FE6, S10FE7 | `test-runner-core` | Pending |

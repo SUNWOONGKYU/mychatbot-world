@@ -204,7 +204,7 @@ export default function SectionDashboard({ adminKey, onBadgeChange }: SectionDas
   const signupData = [12, 8, 15, 22, 18, 31, 27];
 
   const apiHeaders = useCallback(
-    () => ({ 'X-Admin-Key': adminKey, 'Content-Type': 'application/json' }),
+    () => ({ Authorization: `Bearer ${adminKey}`, 'Content-Type': 'application/json' }),
     [adminKey],
   );
 

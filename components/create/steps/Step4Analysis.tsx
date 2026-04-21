@@ -202,8 +202,8 @@ export default function Step4Analysis({ data, onNext }: Props) {
                     color: doneSteps.includes(i)
                       ? '#22c55e'
                       : activeStep === i
-                      ? 'white'
-                      : 'rgba(255,255,255,0.3)',
+                      ? 'var(--text-primary)'
+                      : 'var(--text-tertiary)',
                     transition: 'color 0.5s ease',
                   }}
                 >
@@ -219,21 +219,21 @@ export default function Step4Analysis({ data, onNext }: Props) {
 
           {/* 결과 미리보기 */}
           <div style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'var(--surface-1)',
+            border: '1px solid var(--border-default)',
             borderRadius: '16px',
             padding: '1.5rem',
-            color: 'white',
+            color: 'var(--text-primary)',
           }}>
             <div style={{ marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                 대표 페르소나
               </div>
               <div>{data.persona.name || '(없음)'}</div>
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                 인사말
               </div>
               <div>&ldquo;{greeting}&rdquo;</div>
@@ -241,12 +241,12 @@ export default function Step4Analysis({ data, onNext }: Props) {
 
             {faqs.length > 0 && (
               <div>
-                <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                   예상 Q&A
                 </div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                   {faqs.slice(0, 5).map((f, i) => (
-                    <li key={i} style={{ padding: '8px 0', fontSize: '0.875rem', color: 'rgba(255,255,255,0.7)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <li key={i} style={{ padding: '8px 0', fontSize: '0.875rem', color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-default)' }}>
                       <strong>Q:</strong> {f.q}
                       {f.a && <><br /><strong>A:</strong> {f.a}</>}
                     </li>
@@ -262,10 +262,10 @@ export default function Step4Analysis({ data, onNext }: Props) {
               onClick={handlePreviewGreeting}
               style={{
                 padding: '8px 16px',
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
+                background: 'var(--surface-2)',
+                border: '1px solid var(--border-default)',
                 borderRadius: '8px',
-                color: 'white',
+                color: 'var(--text-primary)',
                 fontSize: '0.85rem',
                 cursor: 'pointer',
               }}
@@ -273,7 +273,7 @@ export default function Step4Analysis({ data, onNext }: Props) {
               {isPlaying ? '⏸ 정지' : '▶ 인사말 듣기'}
             </button>
             {playStatus && (
-              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>{playStatus}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>{playStatus}</span>
             )}
           </div>
 

@@ -243,7 +243,7 @@ export default function SectionBots({ adminKey }: Props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch('/api/admin/bots', { headers: { 'X-Admin-Key': adminKey } })
+    fetch('/api/admin/bots', { headers: { Authorization: `Bearer ${adminKey}` } })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => setBots(d?.bots ?? mockBots()))
       .catch(() => setBots(mockBots()))
@@ -259,7 +259,7 @@ export default function SectionBots({ adminKey }: Props) {
     try {
       const res = await fetch('/api/admin/bots', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminKey}` },
         body: JSON.stringify({ botId: bot.id, status: newStatus }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

@@ -58,7 +58,7 @@ export default function SectionPayments({ adminKey, onBadgeChange }: SectionPaym
   const { showToast, ToastEl } = useAdminToast();
 
   const apiHeaders = useCallback(
-    () => ({ 'X-Admin-Key': adminKey, 'Content-Type': 'application/json' }),
+    () => ({ Authorization: `Bearer ${adminKey}`, 'Content-Type': 'application/json' }),
     [adminKey],
   );
 

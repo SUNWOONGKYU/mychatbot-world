@@ -2,7 +2,7 @@
  * @task S5FE3 - 랜딩 페이지 리디자인
  * @component DemoSection
  * @description 라이프사이클 소개 + 인터랙티브 코코봇 데모 통합 섹션
- *              Birth → Skills → Jobs → Community 4단계 + 실시간 채팅 체험
+ *              Birth → Skills → Jobs → Community 4단계 + 실시간 데모용 CoCoBot 채팅 체험
  *              P4 와이어프레임 SECTION 3 (데모) 기준
  */
 'use client';
@@ -18,7 +18,7 @@ interface ChatMessage {
 const DEMO_SCRIPT: { trigger: string; response: string }[] = [
   {
     trigger: '안녕',
-    response: '안녕하세요! 저는 CoCoBot 데모 코코봇입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
+    response: '안녕하세요! 저는 데모용 CoCoBot입니다. 5분 인터뷰로 탄생한 AI예요 🤖 무엇이든 물어보세요!',
   },
   {
     trigger: '수익',
@@ -415,7 +415,7 @@ export function DemoSection() {
                       className="text-sm font-bold"
                       style={{ color: 'rgb(var(--text-primary-rgb))' }}
                     >
-                      CoCoBot 데모 코코봇
+                      데모용 CoCoBot
                     </p>
                     <p className="text-xs text-green-500">● 온라인</p>
                   </div>
