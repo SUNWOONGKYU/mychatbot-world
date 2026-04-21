@@ -1,5 +1,6 @@
 /**
- * @task S5F1
+ * @task S5FE1
+ * @modified-by S11FE8 (2026-04-21): useId 라벨 연결 + S7 semantic tokens + 터치타겟 44px
  * @description Wiki 관리 페이지 — 봇별 위키 목록/검색/삭제
  *
  * 경로: /bot/[botId]/wiki
@@ -13,7 +14,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useId } from 'react';
 import { useParams } from 'next/navigation';
 
 // ============================
@@ -36,6 +37,47 @@ interface WikiPage {
 
 type FilterType = 'all' | 'manual' | 'auto_generated' | 'faq';
 
+// S7 semantic token map for TYPE_BADGE
+const TYPE_BADGE_STYLE: Record<string, React.CSSProperties> = {
+  manual: {
+    background: 'var(--state-info-bg)',
+    color: 'var(--state-info-fg)',
+    borderColor: 'var(--state-info-border)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  auto_generated: {
+    background: 'var(--state-success-bg)',
+    color: 'var(--state-success-fg)',
+    borderColor: 'var(--state-success-border)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  faq: {
+    background: 'var(--state-warning-bg)',
+    color: 'var(--state-warning-fg)',
+    borderColor: 'var(--state-warning-border)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+};
+
+const FALLBACK_BADGE_STYLE: React.CSSProperties = {
+  background: 'var(--surface-1)',
+  color: 'var(--text-secondary)',
+  borderWidth: 1,
+  borderStyle: 'solid',
+  borderColor: 'var(--border)',
+};
+
+const STALE_BADGE_STYLE: React.CSSProperties = {
+  background: 'var(--state-warning-bg)',
+  color: 'var(--state-warning-fg)',
+  borderColor: 'var(--state-warning-border)',
+  borderWidth: 1,
+  borderStyle: 'solid',
+};
+
 // ============================
 // 컴포넌트
 // ============================
@@ -43,6 +85,8 @@ type FilterType = 'all' | 'manual' | 'auto_generated' | 'faq';
 export default function WikiManagePage() {
   const params = useParams<{ botId: string }>();
   const botId = params?.botId ?? '';
+  const searchId = useId();
+  const filterSelectId = useId();
 
   const [pages, setPages] = useState<WikiPage[]>([]);
   const [filtered, setFiltered] = useState<WikiPage[]>([]);
@@ -52,6 +96,10 @@ export default function WikiManagePage() {
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [selected, setSelected] = useState<WikiPage | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+
+  // inline modal state — replaces confirm() / alert()
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   // 목록 로드
   const loadPages = async () => {
@@ -63,7 +111,7 @@ export default function WikiManagePage() {
       if (!json.success) throw new Error(json.error ?? '위키 목록 로드 실패');
       setPages(json.data ?? []);
     } catch (e) {
-      setError((e as Error).message);
+      setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setLoading(false);
     }
@@ -90,9 +138,14 @@ export default function WikiManagePage() {
     setFiltered(list);
   }, [pages, filterType, search]);
 
-  // 삭제
-  const handleDelete = async (id: string) => {
-    if (!confirm('이 위키 페이지를 삭제하시겠습니까?')) return;
+  // 삭제 요청 — confirm() 대신 inline modal
+  const handleDelete = (id: string) => {
+    setShowDeleteConfirm(id);
+  };
+
+  // 삭제 실행
+  const executeDelete = async (id: string) => {
+    setShowDeleteConfirm(null);
     setDeleting(id);
     try {
       const resp = await fetch('/api/wiki/pages', {
@@ -105,7 +158,7 @@ export default function WikiManagePage() {
       setPages((prev) => prev.filter((p) => p.id !== id));
       if (selected?.id === id) setSelected(null);
     } catch (e) {
-      alert((e as Error).message);
+      setAlertMessage(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setDeleting(null);
     }
@@ -116,12 +169,6 @@ export default function WikiManagePage() {
     manual: '수동',
     auto_generated: '자동 생성',
     faq: 'FAQ',
-  };
-
-  const TYPE_BADGE: Record<string, string> = {
-    manual: 'bg-blue-100 text-blue-800',
-    auto_generated: 'bg-green-100 text-green-800',
-    faq: 'bg-yellow-100 text-yellow-800',
   };
 
   return (
@@ -136,7 +183,8 @@ export default function WikiManagePage() {
         </div>
         <a
           href={`/bot/${botId}/wiki/lint`}
-          className="px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700"
+          className="inline-flex items-center min-h-[44px] px-4 py-2 text-sm text-white rounded-lg"
+          style={{ background: 'var(--state-warning-fg)' }}
         >
           Lint 대시보드
         </a>
@@ -145,14 +193,18 @@ export default function WikiManagePage() {
       <div className="px-6 py-4">
         {/* 검색 + 필터 */}
         <div className="flex gap-3 mb-4">
+          <label htmlFor={searchId} className="sr-only">위키 검색</label>
           <input
+            id={searchId}
             type="text"
             placeholder="제목 또는 내용 검색..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] placeholder:text-[rgb(var(--text-muted))] rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <label htmlFor={filterSelectId} className="sr-only">페이지 유형 필터</label>
           <select
+            id={filterSelectId}
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as FilterType)}
             className="border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg px-3 py-2 text-sm outline-none"
@@ -165,7 +217,7 @@ export default function WikiManagePage() {
           </select>
           <button
             onClick={loadPages}
-            className="px-4 py-2 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
+            className="inline-flex items-center min-h-[44px] px-4 py-2 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
           >
             새로고침
           </button>
@@ -173,7 +225,16 @@ export default function WikiManagePage() {
 
         {/* 에러 */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+          <div
+            className="mb-4 p-3 rounded-lg text-sm"
+            style={{
+              background: 'var(--state-danger-bg)',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderColor: 'var(--state-danger-border)',
+              color: 'var(--state-danger-fg)',
+            }}
+          >
             {error}
           </div>
         )}
@@ -203,14 +264,16 @@ export default function WikiManagePage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span
-                        className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          TYPE_BADGE[page.page_type] ?? 'bg-gray-100 text-gray-700'
-                        }`}
+                        className="px-2 py-0.5 rounded text-xs font-medium"
+                        style={TYPE_BADGE_STYLE[page.page_type] ?? FALLBACK_BADGE_STYLE}
                       >
                         {PAGE_TYPE_LABELS[page.page_type as FilterType] ?? page.page_type}
                       </span>
                       {page.is_stale && (
-                        <span className="px-2 py-0.5 rounded text-xs bg-orange-100 text-orange-800">
+                        <span
+                          className="px-2 py-0.5 rounded text-xs"
+                          style={STALE_BADGE_STYLE}
+                        >
                           오래된 콘텐츠
                         </span>
                       )}
@@ -236,7 +299,13 @@ export default function WikiManagePage() {
                       handleDelete(page.id);
                     }}
                     disabled={deleting === page.id}
-                    className="ml-3 px-3 py-1.5 text-xs text-red-700 border border-red-300 rounded hover:bg-red-50 disabled:opacity-50"
+                    className="inline-flex items-center ml-3 px-3 min-h-[44px] text-xs rounded disabled:opacity-50"
+                    style={{
+                      color: 'var(--state-danger-fg)',
+                      borderWidth: 1,
+                      borderStyle: 'solid',
+                      borderColor: 'var(--state-danger-border)',
+                    }}
                   >
                     {deleting === page.id ? '삭제 중...' : '삭제'}
                   </button>
@@ -263,16 +332,15 @@ export default function WikiManagePage() {
               </h2>
               <button
                 onClick={() => setSelected(null)}
-                className="text-[rgb(var(--text-secondary-rgb))] hover:text-[rgb(var(--text-primary-rgb))] text-xl"
+                className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-[rgb(var(--text-secondary-rgb))] hover:text-[rgb(var(--text-primary-rgb))] text-xl rounded"
               >
                 ×
               </button>
             </div>
             <div className="flex gap-2 mb-4">
               <span
-                className={`px-2 py-0.5 rounded text-xs font-medium ${
-                  TYPE_BADGE[selected.page_type] ?? 'bg-gray-100 text-gray-700'
-                }`}
+                className="px-2 py-0.5 rounded text-xs font-medium"
+                style={TYPE_BADGE_STYLE[selected.page_type] ?? FALLBACK_BADGE_STYLE}
               >
                 {PAGE_TYPE_LABELS[selected.page_type as FilterType]}
               </span>
@@ -289,9 +357,69 @@ export default function WikiManagePage() {
               </span>
               <button
                 onClick={() => handleDelete(selected.id)}
-                className="px-3 py-1.5 text-red-700 border border-red-300 rounded hover:bg-red-50"
+                className="inline-flex items-center px-3 min-h-[44px] text-xs rounded"
+                style={{
+                  color: 'var(--state-danger-fg)',
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                  borderColor: 'var(--state-danger-border)',
+                }}
               >
                 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 삭제 확인 모달 — replaces confirm() */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-xl bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))] shadow-xl p-6 space-y-4">
+            <div>
+              <h3 className="text-base font-semibold text-[rgb(var(--text-primary-rgb))]">위키 페이지 삭제</h3>
+              <p className="mt-1 text-sm text-[rgb(var(--text-secondary-rgb))]">
+                이 위키 페이지를 삭제하시겠습니까? 삭제된 항목은 복구할 수 없습니다.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(null)}
+                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium border border-[rgb(var(--border))] text-[rgb(var(--text-secondary-rgb))] hover:bg-[rgb(var(--bg-subtle))] transition-colors"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={() => executeDelete(showDeleteConfirm)}
+                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                style={{ background: 'var(--state-danger-fg)', color: '#fff' }}
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 알림 모달 — replaces alert() */}
+      {alertMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-xl bg-[rgb(var(--bg-surface))] border border-[rgb(var(--border))] shadow-xl p-6 space-y-4">
+            <div>
+              <h3 className="text-base font-semibold text-[rgb(var(--text-primary-rgb))]">오류</h3>
+              <p className="mt-1 text-sm" style={{ color: 'var(--state-danger-fg)' }}>
+                {alertMessage}
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setAlertMessage(null)}
+                className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium border border-[rgb(var(--border))] text-[rgb(var(--text-secondary-rgb))] hover:bg-[rgb(var(--bg-subtle))] transition-colors"
+              >
+                확인
               </button>
             </div>
           </div>

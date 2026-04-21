@@ -1,5 +1,6 @@
 /**
  * @task S5FE5
+ * @modified-by S11FE8 (2026-04-21): 터치타겟 44px + S7 semantic tokens
  * @description Obsidian Graph View — force-directed 위키 링크 그래프 (Canvas + CDN D3)
  *
  * 경로: /bot/[botId]/wiki/graph
@@ -277,7 +278,7 @@ export default function WikiGraphPage() {
           </div>
           <a
             href={`/bot/${botId}/wiki`}
-            className="px-3 py-1.5 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
+            className="inline-flex items-center min-h-[44px] px-3 py-1.5 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
           >
             목록으로
           </a>
@@ -293,7 +294,10 @@ export default function WikiGraphPage() {
             </div>
           )}
           {error && (
-            <div className="absolute inset-0 flex items-center justify-center text-red-600 px-8 text-center">
+            <div
+              className="absolute inset-0 flex items-center justify-center px-8 text-center text-sm"
+              style={{ color: 'var(--state-danger-fg)' }}
+            >
               {error}
             </div>
           )}
@@ -309,7 +313,7 @@ export default function WikiGraphPage() {
           <div className="w-72 bg-[rgb(var(--bg-surface))] border-l border-[rgb(var(--border))] p-4 flex-shrink-0 overflow-y-auto">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-[rgb(var(--text-primary-rgb))] text-sm">페이지 정보</h3>
-              <button onClick={() => setSelected(null)} className="text-[rgb(var(--text-secondary-rgb))] hover:text-[rgb(var(--text-primary-rgb))]">
+              <button onClick={() => setSelected(null)} className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-[rgb(var(--text-secondary-rgb))] hover:text-[rgb(var(--text-primary-rgb))] rounded">
                 ×
               </button>
             </div>

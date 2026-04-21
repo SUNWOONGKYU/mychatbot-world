@@ -1,5 +1,6 @@
 /**
  * @task S2FE2
+ * @modified-by S11FE8 (2026-04-21): text-[11px]/text-[10px] → text-xs (12px 최소 폰트)
  * @description 감성 슬라이더 컴포넌트
  *
  * 기능:
@@ -103,14 +104,14 @@ export default function EmotionSlider({ value, onChange }: EmotionSliderProps) {
     <div className="w-full select-none">
       {/* 레이블 행 */}
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[11px] text-neutral-400 font-medium">
+        <span className="text-xs text-neutral-400 font-medium">
           이성적 · 간결
         </span>
 
         {/* 현재 모델 계층 배지 */}
         <span
           className={[
-            'text-[11px] font-semibold px-2 py-0.5 rounded-full border',
+            'text-xs font-semibold px-2 py-0.5 rounded-full border',
             tierInfo.badgeClass,
           ].join(' ')}
           title={tierInfo.description}
@@ -118,7 +119,7 @@ export default function EmotionSlider({ value, onChange }: EmotionSliderProps) {
           {tierInfo.label}
         </span>
 
-        <span className="text-[11px] text-neutral-400 font-medium">
+        <span className="text-xs text-neutral-400 font-medium">
           감성적 · 풍부
         </span>
       </div>
@@ -138,7 +139,7 @@ export default function EmotionSlider({ value, onChange }: EmotionSliderProps) {
 
       {/* 하단 값 표시 */}
       <div className="flex justify-center mt-1">
-        <span className="text-[10px] text-neutral-400">
+        <span className="text-xs text-neutral-400">
           감성 수준 {value} · {tierInfo.description}
         </span>
       </div>

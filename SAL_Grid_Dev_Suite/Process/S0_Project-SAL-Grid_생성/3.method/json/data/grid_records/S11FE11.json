@@ -3,18 +3,21 @@
   "task_name": "법률/고객지원/게스트 모바일 최적화",
   "stage": 11,
   "area": "FE",
+  "level": 3,
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S11FE1",
   "task_instruction": "sal-grid/task-instructions/S11FE11_instruction.md",
   "task_agent": "frontend-developer-core",
-  "tools": "Next.js, Tailwind CSS",
+  "tools": "Next.js, Tailwind CSS, Playwright",
   "execution_type": "AI-Only",
-  "generated_files": "components/landing/footer.tsx, components/common/navbar.tsx",
+  "generated_files": "components/landing/footer.tsx, components/common/navbar.tsx (전역 Footer/Navbar 개선으로 privacy/terms/refund/customer-service/security/guest 6개 페이지에 자동 전파)",
+  "duration": "약 1시간 (footer legal link 4 + navbar logo 1 → inline-flex + min-h-[44px])",
+  "build_result": "PASS (npx tsc --noEmit 0 errors, Vercel production HTTP 200)",
   "verification_instruction": "sal-grid/verification-instructions/S11FE11_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "privacy/terms/refund/customer-service/security/guest(+chat)",
+  "remarks": "privacy/terms/refund/customer-service/security/guest(+chat) | 검증 경로: scripts/mobile-audit-baseline.json (Playwright 38pages×2viewports 실측)",
   "test_result": {
     "unit_test": "N/A (UI)",
     "integration_test": "PASS (Playwright 38x2 측정)",
@@ -46,6 +49,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "ai_verification_note": "법적 링크 4개 inline-flex + min-h-[44px]. 네비 로고 Link min-h-[44px]. 저작권/특허 폰트 12px.",
+  "ai_verification_note": "법적 링크 4개 inline-flex + min-h-[44px]. 네비 로고 Link min-h-[44px]. 저작권/특허 폰트 12px. KPI 기여 (Playwright 실측, scripts/mobile-audit-baseline.json): 전역 Footer + Navbar 개선으로 모든 페이지에서 v390/v768 small_touch 각 5건 제거 (로고 1 + legal link 4).",
   "updated_at": "2026-04-21T11:20:24.347Z"
 }

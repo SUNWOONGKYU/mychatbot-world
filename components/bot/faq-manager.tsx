@@ -1,5 +1,6 @@
 /**
  * @task S2FE7
+ * @modified-by S11FE8 (2026-04-21): useId + htmlFor 라벨 연결 + S7 semantic tokens + 터치타겟 44px
  * @description FAQ 관리 컴포넌트
  *
  * 기능:
@@ -14,7 +15,7 @@
 
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useId } from 'react';
 import type { FaqRecord } from '@/app/api/faq/route';
 
 // ────────────────────────────────────────────────────────────────
@@ -66,6 +67,9 @@ export function FaqManager({
   botName = '',
   botDescription = '',
 }: FaqManagerProps) {
+  // ── 편집 폼 접근성용 id 접두사 ────────────────────────────────
+  const fieldBaseId = useId();
+
   // ── 상태 ──────────────────────────────────────────────────────
   const [faqs, setFaqs] = useState<FaqRecord[]>(initialFaqs);
   const [editing, setEditing] = useState<EditingState | null>(null);
@@ -150,8 +154,12 @@ export function FaqManager({
         if (!json.success) throw new Error(json.error ?? '추가 실패');
 
         // 임시 ID → 실제 ID로 교체
+        if (!json.data || typeof json.data !== 'object' || !('id' in json.data)) {
+          throw new Error('Invalid FAQ response');
+        }
+        const addedRecord = json.data as FaqRecord;
         setFaqs((prev) =>
-          prev.map((f) => (f.id === id ? (json.data as FaqRecord) : f))
+          prev.map((f) => (f.id === id ? addedRecord : f))
         );
       } else {
         // ── 수정 ─────────────────────────────────────────────────
@@ -163,8 +171,12 @@ export function FaqManager({
         const json = await res.json();
         if (!json.success) throw new Error(json.error ?? '수정 실패');
 
+        if (!json.data || typeof json.data !== 'object' || !('id' in json.data)) {
+          throw new Error('Invalid FAQ response');
+        }
+        const updatedRecord = json.data as FaqRecord;
         setFaqs((prev) =>
-          prev.map((f) => (f.id === id ? (json.data as FaqRecord) : f))
+          prev.map((f) => (f.id === id ? updatedRecord : f))
         );
       }
 
@@ -248,7 +260,7 @@ export function FaqManager({
           }),
         });
         const json2 = await res2.json();
-        if (json2.success && json2.data) {
+        if (json2.success && json2.data && typeof json2.data === 'object' && 'id' in json2.data) {
           currentFaqs = [...currentFaqs, json2.data as FaqRecord];
         }
       }
@@ -322,10 +334,12 @@ export function FaqManager({
             type="button"
             onClick={generateWithAI}
             disabled={aiLoading || saving}
+            style={{ background: 'var(--surface-1)', borderColor: 'var(--border)', borderWidth: 1, borderStyle: 'solid' }}
+            onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(0.95)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.filter = ''; }}
             className="
               inline-flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
-              bg-bg-subtle border border-border text-text-secondary
-              hover:bg-bg-muted hover:text-text-primary
+              text-text-secondary hover:text-text-primary
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors duration-150
             "
@@ -342,10 +356,11 @@ export function FaqManager({
             type="button"
             onClick={startNew}
             disabled={editing !== null || aiLoading}
+            style={{ background: 'var(--interactive-primary)', color: '#fff' }}
+            onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(0.9)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.filter = ''; }}
             className="
               inline-flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
-              bg-primary text-white
-              hover:bg-primary-hover
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors duration-150
             "
@@ -358,8 +373,14 @@ export function FaqManager({
 
       {/* 에러 메시지 */}
       {error && (
-        <div className="rounded-md bg-red-50 border border-red-200 px-4 py-2.5">
-          <p className="text-sm text-red-700">{error}</p>
+        <div
+          className="rounded-md border px-4 py-2.5"
+          style={{
+            background: 'var(--state-danger-bg)',
+            borderColor: 'var(--state-danger-border)',
+          }}
+        >
+          <p className="text-sm" style={{ color: 'var(--state-danger-fg)' }}>{error}</p>
         </div>
       )}
 
@@ -396,8 +417,14 @@ export function FaqManager({
                   // ── 편집 모드 ───────────────────────────────────
                   <div className="p-4 space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-text-secondary">질문</label>
+                      <label
+                        htmlFor={`${fieldBaseId}-q-${faq.id}`}
+                        className="text-xs font-medium text-text-secondary"
+                      >
+                        질문
+                      </label>
                       <textarea
+                        id={`${fieldBaseId}-q-${faq.id}`}
                         value={editing.question}
                         onChange={(e) =>
                           setEditing((prev) => prev ? { ...prev, question: e.target.value } : prev)
@@ -405,16 +432,22 @@ export function FaqManager({
                         placeholder="고객이 자주 묻는 질문을 입력하세요"
                         rows={2}
                         className="
-                          w-full resize-none rounded-md border border-border bg-bg-base
+                          w-full resize-none rounded-md border border-border bg-surface-1
                           px-3 py-2 text-sm text-text-primary placeholder:text-text-muted
-                          focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
+                          focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]
                           transition-colors
                         "
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-text-secondary">답변</label>
+                      <label
+                        htmlFor={`${fieldBaseId}-a-${faq.id}`}
+                        className="text-xs font-medium text-text-secondary"
+                      >
+                        답변
+                      </label>
                       <textarea
+                        id={`${fieldBaseId}-a-${faq.id}`}
                         value={editing.answer}
                         onChange={(e) =>
                           setEditing((prev) => prev ? { ...prev, answer: e.target.value } : prev)
@@ -422,9 +455,9 @@ export function FaqManager({
                         placeholder="질문에 대한 답변을 입력하세요"
                         rows={4}
                         className="
-                          w-full resize-none rounded-md border border-border bg-bg-base
+                          w-full resize-none rounded-md border border-border bg-surface-1
                           px-3 py-2 text-sm text-text-primary placeholder:text-text-muted
-                          focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
+                          focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]
                           transition-colors
                         "
                       />
@@ -434,10 +467,12 @@ export function FaqManager({
                         type="button"
                         onClick={cancelEdit}
                         disabled={saving}
+                        style={{ borderColor: 'var(--border)', borderWidth: 1, borderStyle: 'solid' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--surface-1)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = ''; }}
                         className="
                           inline-flex items-center min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
-                          border border-border text-text-secondary
-                          hover:bg-bg-subtle disabled:opacity-50
+                          text-text-secondary disabled:opacity-50
                           transition-colors
                         "
                       >
@@ -447,9 +482,11 @@ export function FaqManager({
                         type="button"
                         onClick={saveEdit}
                         disabled={saving}
+                        style={{ background: 'var(--interactive-primary)', color: '#fff' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(0.9)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.filter = ''; }}
                         className="
                           inline-flex items-center gap-1.5 min-h-[44px] px-3 py-1.5 rounded-md text-sm font-medium
-                          bg-primary text-white hover:bg-primary-hover
                           disabled:opacity-50 disabled:cursor-not-allowed
                           transition-colors
                         "
@@ -464,7 +501,7 @@ export function FaqManager({
                   <div className="flex items-start gap-3 p-4">
                     {/* 드래그 핸들 */}
                     <span
-                      className="mt-0.5 cursor-grab active:cursor-grabbing text-text-muted hover:text-text-secondary shrink-0"
+                      className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] cursor-grab active:cursor-grabbing text-text-muted hover:text-text-secondary shrink-0"
                       title="드래그하여 순서 변경"
                     >
                       <DragIcon />
@@ -485,14 +522,15 @@ export function FaqManager({
                       </p>
                     </div>
 
-                    {/* 버튼 */}
-                    <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {/* 버튼 — 항상 노출(모바일 터치), hover 시 색상 강조 */}
+                    <div className="flex gap-1 shrink-0">
                       <button
                         type="button"
                         onClick={() => startEdit(faq)}
                         disabled={editing !== null}
+                        aria-label="FAQ 수정"
                         className="
-                          p-1.5 rounded-md text-text-secondary
+                          inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md text-text-secondary
                           hover:bg-bg-subtle hover:text-text-primary
                           disabled:opacity-40
                           transition-colors
@@ -505,12 +543,20 @@ export function FaqManager({
                         type="button"
                         onClick={() => confirmDelete(faq.id)}
                         disabled={editing !== null}
+                        aria-label="FAQ 삭제"
                         className="
-                          p-1.5 rounded-md text-text-secondary
-                          hover:bg-red-50 hover:text-red-600
+                          inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md text-text-secondary
                           disabled:opacity-40
                           transition-colors
                         "
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'var(--state-danger-bg)';
+                          e.currentTarget.style.color = 'var(--state-danger-fg)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = '';
+                          e.currentTarget.style.color = '';
+                        }}
                         title="삭제"
                       >
                         <TrashIcon />
@@ -551,9 +597,16 @@ export function FaqManager({
                 onClick={executeDelete}
                 className="
                   inline-flex items-center min-h-[44px] px-4 py-2 rounded-md text-sm font-medium
-                  bg-red-600 text-white hover:bg-red-700
                   transition-colors
                 "
+                /* text-white: --state-danger-fg(빨간 배경)에 대한 대비색 — 의도적 하드코딩 */
+                style={{ background: 'var(--state-danger-fg)', color: '#fff' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = 'brightness(0.88)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = '';
+                }}
               >
                 삭제
               </button>

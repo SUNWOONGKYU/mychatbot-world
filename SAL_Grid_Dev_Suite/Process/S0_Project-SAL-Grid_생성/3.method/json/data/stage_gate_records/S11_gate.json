@@ -3,11 +3,11 @@
   "stage_name": "모바일 반응형 최적화 (48개 페이지)",
   "stage_name_en": "Mobile Responsive Optimization",
   "total_tasks": 14,
-  "completed_tasks": 9,
-  "verification_status": "AI Verified (Partial)",
-  "ai_verification_note": "S11 Stage — 14 Tasks 중 9 Completed+Verified (QA1, FE1-3, FE5-7, FE10-11). 1 Executed (FE8 In Review). 4 Pending (FE4 Birth/Create, FE9 MyPage 사이드바 제약, FE12 Admin, QA2 Lighthouse 회귀). KPI 대폭 개선 — v390 small_touch 157→50 (-68%), v768 small_touch 169→69 (-59%), v390 font 95→60 (-37%), v768 font 111→60 (-46%), horizontal_scroll 모든 페이지 0. 핵심 전파는 UI Primitive 계층 (button/input/tabs size variant min-h-11)으로 하위 모든 페이지 자동 개선. Auth 페이지는 native <input> 사용으로 개별 수정 (signup/login/reset-password/onboarding). Community 인라인 폰트 0.7/0.72/0.68/0.65rem 일괄 0.75rem. Footer legal link + Navbar logo link 44px. 남은 잔여 50/69 small_touch는 대부분 본문 내 inline text-link (refund/terms 참조 링크)로 44px 강제 시 가독성 훼손 우려 — UX 판단상 primary CTA만 적용 방침. 배포 커밋 4729b1e 프로덕션 HTTP 200.",
+  "completed_tasks": 10,
+  "verification_status": "AI Verified",
+  "ai_verification_note": "S11 Stage — 14 Tasks 중 10 Completed+Verified (QA1, FE1-3, FE5-8, FE10-11). 4 Pending (FE4/FE9/FE12/QA2). KPI 대폭 개선 — v390 small_touch 157→50 (-68%), v768 small_touch 169→69 (-59%), v390 font 95→60 (-37%), v768 font 111→60 (-46%), horizontal_scroll 모든 페이지 0. 핵심 전파는 UI Primitive 계층 (button/input/tabs size variant min-h-11)으로 하위 모든 페이지 자동 개선. Auth 페이지는 native <input> 사용으로 개별 수정 (signup/login/reset-password/onboarding). Community 인라인 폰트 0.7/0.72/0.68/0.65rem 일괄 0.75rem. Footer legal link + Navbar logo link 44px. 남은 잔여 50/69 small_touch는 대부분 본문 내 inline text-link (refund/terms 참조 링크)로 44px 강제 시 가독성 훼손 우려 — UX 판단상 primary CTA만 적용 방침. 배포 커밋 4729b1e 프로덕션 HTTP 200.",
   "ai_verification_date": "2026-04-21",
-  "verification_report_path": "stage-gates/S11GATE_verification_report.md",
+  "verification_report_path": "SAL_Grid_Dev_Suite/Process/S0_Project-SAL-Grid_생성/2.sal-grid/stage-gates/S11GATE_verification_report.md",
   "stage_gate_status": "AI Verified",
   "po_approval_status": "Not Started",
   "po_approval_user": "",
@@ -20,5 +20,5 @@
     "build_success": true,
     "test_success": true
   },
-  "remarks": "2026-04-21: S11 Stage MBO 14 Tasks 중 9 완료+검증. 나머지 4(FE4/FE9/FE12/QA2)는 S12 또는 별도 Task로 연기 권고 — FE4는 위저드 대형 페이지, FE9는 '사이드바 수정 금지' 제약, FE12는 관리자 전용 (모바일 우선도 낮음), QA2는 Lighthouse CI 스크립트 통합 필요. Mobile Audit 실측 도구(scripts/mobile-audit.mjs)로 KPI 개선 입증. PO 부분 승인 권고."
+  "remarks": "2026-04-21: S11 Stage Partial (10/14 Completed + 4 Pending). MBO 14 Tasks 중 10 완료+검증. 나머지 4(FE4/FE9/FE12/QA2)는 S12 또는 별도 Task로 연기 권고 — FE4는 위저드 대형 페이지, FE9는 '사이드바 수정 금지' 제약, FE12는 관리자 전용 (모바일 우선도 낮음), QA2는 Lighthouse CI 스크립트 통합 필요. Mobile Audit 실측 도구(scripts/mobile-audit.mjs)로 KPI 개선 입증. PO 부분 승인 권고. | checklist 근거: all_tasks_completed=false — FE4/FE9/FE12/QA2 Pending 4건. all_verifications_passed=false — 4 Pending Tasks (FE4/FE9/FE12/QA2). no_blockers=true — dependency/environment/external_api 모두 None (S11QA2 Lighthouse CI는 미실행이나 차단 요인 아님). build_success=true — npx tsc --noEmit PASS, Vercel production HTTP 200 (커밋 4729b1e). test_success=true — Playwright 38pages×2viewports 실측 완료, scripts/mobile-audit-baseline.json 기록."
 }

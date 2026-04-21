@@ -1,20 +1,23 @@
 {
   "task_id": "S11FE5",
-  "task_name": "Skills 계열 모바일 최적화",
+  "task_name": "커뮤니티 (글/갤러리/상세) 폰트 일괄",
   "stage": 11,
   "area": "FE",
+  "level": 2,
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S11FE1",
   "task_instruction": "sal-grid/task-instructions/S11FE5_instruction.md",
   "task_agent": "frontend-developer-core",
-  "tools": "Next.js, Tailwind CSS",
+  "tools": "Next.js, Tailwind CSS, Playwright",
   "execution_type": "AI-Only",
   "generated_files": "app/community/page.tsx, app/community/gallery/page.tsx, app/community/[id]/page.tsx",
+  "duration": "약 1.5시간 (inline 폰트 0.7/0.72/0.68/0.65rem 일괄 0.75rem replace_all)",
+  "build_result": "PASS (npx tsc --noEmit 0 errors, Vercel production HTTP 200)",
   "verification_instruction": "sal-grid/verification-instructions/S11FE5_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "skills + learning 7개 페이지",
+  "remarks": "community 글/갤러리/상세 3개 페이지 | 검증 경로: scripts/mobile-audit-baseline.json (Playwright 38pages×2viewports 실측)",
   "test_result": {
     "unit_test": "N/A (UI)",
     "integration_test": "PASS (Playwright 38x2 측정)",
@@ -46,6 +49,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "ai_verification_note": "커뮤니티 폰트 0.7/0.72/0.68/0.65rem → 0.75rem 일괄 적용. v768 font 36→0, v390 font 16→0.",
+  "ai_verification_note": "커뮤니티 폰트 0.7/0.72/0.68/0.65rem → 0.75rem 일괄 적용. KPI 기여 (Playwright 실측, scripts/mobile-audit-baseline.json): v768 small_font 36건 제거, v390 small_font 16건 제거 (커뮤니티 3페이지 내 인라인 폰트 위반 전량).",
   "updated_at": "2026-04-21T11:20:24.342Z"
 }

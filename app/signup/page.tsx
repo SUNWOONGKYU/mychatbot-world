@@ -286,7 +286,7 @@ export default function SignupPage() {
             </p>
             <Link
               href="/login"
-              className="inline-block w-full py-2.5 rounded-xl text-sm font-bold text-center text-white transition-all hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2"
+              className="inline-flex items-center justify-center w-full min-h-[44px] py-2.5 rounded-xl text-sm font-bold text-center text-white transition-all hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2"
               style={{ background: 'var(--interactive-primary)' }}
             >
               로그인 페이지로 이동
@@ -427,7 +427,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading || googleLoading}
-              className="mt-1 w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2"
+              className="mt-1 w-full min-h-[44px] py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus focus-visible:ring-offset-2"
               style={{ background: 'var(--interactive-primary)' }}
               aria-busy={isLoading}
             >

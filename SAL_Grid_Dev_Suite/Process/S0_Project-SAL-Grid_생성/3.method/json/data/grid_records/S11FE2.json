@@ -1,20 +1,23 @@
 {
   "task_id": "S11FE2",
-  "task_name": "인증 페이지 모바일 최적화",
+  "task_name": "공통 UI Primitives (button/input/tabs) 터치 타겟",
   "stage": 11,
   "area": "FE",
+  "level": 3,
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S11QA1",
   "task_instruction": "sal-grid/task-instructions/S11FE2_instruction.md",
   "task_agent": "frontend-developer-core",
-  "tools": "Next.js, Tailwind CSS",
+  "tools": "Next.js, Tailwind CSS, Playwright",
   "execution_type": "AI-Only",
   "generated_files": "components/ui/button.tsx, components/ui/input.tsx, components/ui/tabs.tsx",
+  "duration": "약 2시간 (button/input/tabs size variant 설계 + 전파 테스트)",
+  "build_result": "PASS (npx tsc --noEmit 0 errors, Vercel production HTTP 200 커밋 4729b1e)",
   "verification_instruction": "sal-grid/verification-instructions/S11FE2_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "login/signup/reset-password/auth/callback/auth/confirm — S7SC1/S7SC2 회귀 금지",
+  "remarks": "login/signup/reset-password/auth/callback/auth/confirm — S7SC1/S7SC2 회귀 금지 | 검증 경로: scripts/mobile-audit-baseline.json (Playwright 38pages×2viewports 실측)",
   "test_result": {
     "unit_test": "N/A (UI)",
     "integration_test": "PASS (Playwright 38x2 측정)",
@@ -46,6 +49,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "ai_verification_note": "UI Primitives 터치 타겟 min-h-11/min-h-12/min-h-[44px] 적용 (size sm/md/lg/icon). Tabs underline variant h-11 + min-w-[44px]. 모든 페이지 하위 상속.",
+  "ai_verification_note": "UI Primitives 터치 타겟 min-h-11/min-h-12/min-h-[44px] 적용 (size sm/md/lg/icon). Tabs underline variant h-11 + min-w-[44px]. 모든 페이지 하위 상속. KPI 기여 (Playwright 실측, scripts/mobile-audit-baseline.json): Primitive 계층 전파로 S11 누적 v390 small_touch 157→50 / v768 169→69 개선의 가장 큰 기여분 (Button/Input/Tabs 사용처 전역, 약 40-50% 기여).",
   "updated_at": "2026-04-21T11:20:24.331Z"
 }

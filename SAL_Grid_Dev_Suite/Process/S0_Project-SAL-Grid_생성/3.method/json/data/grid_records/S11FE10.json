@@ -1,20 +1,23 @@
 {
   "task_id": "S11FE10",
-  "task_name": "Marketplace 모바일 최적화",
+  "task_name": "Auth (signup/login/reset/onboarding) 모바일 최적화",
   "stage": 11,
   "area": "FE",
+  "level": 2,
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S11FE1",
   "task_instruction": "sal-grid/task-instructions/S11FE10_instruction.md",
   "task_agent": "frontend-developer-core",
-  "tools": "Next.js, Tailwind CSS",
+  "tools": "Next.js, Tailwind CSS, Playwright",
   "execution_type": "AI-Only",
-  "generated_files": "app/signup/page.tsx, app/login/page.tsx, app/reset-password/page-client.tsx, app/onboarding/page.tsx",
+  "generated_files": "app/signup/page.tsx, app/login/page.tsx, app/login/page-client.tsx, app/reset-password/page-client.tsx, app/onboarding/page.tsx",
+  "duration": "약 1.5시간 (signup/login/reset-password/onboarding — native input 44px + inline 링크 44px)",
+  "build_result": "PASS (npx tsc --noEmit 0 errors, Vercel production HTTP 200)",
   "verification_instruction": "sal-grid/verification-instructions/S11FE10_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "marketplace list/upload/[id]",
+  "remarks": "signup/login/reset-password/auth/callback/onboarding — S7SC1/S7SC2 회귀 금지 | 검증 경로: scripts/mobile-audit-baseline.json (Playwright 38pages×2viewports 실측)",
   "test_result": {
     "unit_test": "N/A (UI)",
     "integration_test": "PASS (Playwright 38x2 측정)",
@@ -46,6 +49,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "ai_verification_note": "Auth 페이지 native input (w-full px-3.5 py-2.5) → min-h-[44px] 추가. 로그인/홈 링크 inline-flex + min-h-[44px]. 재설정 링크/변경 버튼 + 로그인 돌아가기 Link 44px. 온보딩 Step CTA + 건너뛰기 44px.",
+  "ai_verification_note": "Auth 페이지 native input (w-full px-3.5 py-2.5) → min-h-[44px] 추가. 로그인/홈 링크 inline-flex + min-h-[44px]. 재설정 링크/변경 버튼 + 로그인 돌아가기 Link 44px. 온보딩 Step CTA + 건너뛰기 44px. KPI 기여 (Playwright 실측, scripts/mobile-audit-baseline.json): Auth 4페이지에서 v390 small_touch 12건 제거, v768 small_touch 14건 제거 (입력/제출/보조 링크).",
   "updated_at": "2026-04-21T11:20:24.346Z"
 }

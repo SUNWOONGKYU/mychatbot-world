@@ -1,5 +1,6 @@
 /**
  * @task S5F3
+ * @modified-by S11FE8 (2026-04-21): 터치타겟 44px + S7 semantic tokens (red/orange/yellow/green → var(--state-*))
  * @description Wiki Lint 대시보드 — 고아/오래된/중복 위키 감지 및 수동 실행
  *
  * 경로: /bot/[botId]/wiki/lint
@@ -113,14 +114,14 @@ export default function WikiLintPage() {
         <div className="flex gap-2">
           <a
             href={`/bot/${botId}/wiki`}
-            className="px-4 py-2 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
+            className="inline-flex items-center min-h-[44px] px-4 py-2 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
           >
             Wiki 목록
           </a>
           <button
             onClick={runLint}
             disabled={running || !botId}
-            className="px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
+            className="inline-flex items-center min-h-[44px] px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
           >
             {running ? 'Lint 실행 중...' : 'Lint 실행'}
           </button>
@@ -130,7 +131,16 @@ export default function WikiLintPage() {
       <div className="px-6 py-4 space-y-6">
         {/* 에러 */}
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+          <div
+            className="p-3 rounded-lg text-sm"
+            style={{
+              background: 'var(--state-danger-bg)',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderColor: 'var(--state-danger-border)',
+              color: 'var(--state-danger-fg)',
+            }}
+          >
             {error}
           </div>
         )}
@@ -148,10 +158,22 @@ export default function WikiLintPage() {
 
             {result.orphan_pages.length > 0 && (
               <div className="mb-4">
-                <h3 className="text-sm font-medium text-red-700 mb-2">고아 페이지 (KB 없이 존재)</h3>
+                <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--state-danger-fg)' }}>
+                  고아 페이지 (KB 없이 존재)
+                </h3>
                 <div className="space-y-1">
                   {result.orphan_pages.map((p) => (
-                    <div key={p.id} className="text-sm text-red-900 bg-red-50 border border-red-200 px-3 py-1.5 rounded">
+                    <div
+                      key={p.id}
+                      className="text-sm px-3 py-1.5 rounded"
+                      style={{
+                        background: 'var(--state-danger-bg)',
+                        borderWidth: 1,
+                        borderStyle: 'solid',
+                        borderColor: 'var(--state-danger-border)',
+                        color: 'var(--state-danger-fg)',
+                      }}
+                    >
                       {p.title}
                     </div>
                   ))}
@@ -161,10 +183,22 @@ export default function WikiLintPage() {
 
             {result.stale_pages.length > 0 && (
               <div className="mb-4">
-                <h3 className="text-sm font-medium text-orange-700 mb-2">오래된 페이지 (30일 이상 미조회)</h3>
+                <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--state-warning-fg)' }}>
+                  오래된 페이지 (30일 이상 미조회)
+                </h3>
                 <div className="space-y-1">
                   {result.stale_pages.map((p) => (
-                    <div key={p.id} className="text-sm text-orange-900 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded">
+                    <div
+                      key={p.id}
+                      className="text-sm px-3 py-1.5 rounded"
+                      style={{
+                        background: 'var(--state-warning-bg)',
+                        borderWidth: 1,
+                        borderStyle: 'solid',
+                        borderColor: 'var(--state-warning-border)',
+                        color: 'var(--state-warning-fg)',
+                      }}
+                    >
                       {p.title}
                     </div>
                   ))}
@@ -174,12 +208,24 @@ export default function WikiLintPage() {
 
             {result.conflict_groups.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-yellow-700 mb-2">중복 의심 제목</h3>
+                <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--state-warning-fg)' }}>
+                  중복 의심 제목
+                </h3>
                 <div className="space-y-1">
                   {result.conflict_groups.map((g) => (
-                    <div key={g.title} className="text-sm text-yellow-900 bg-yellow-50 border border-yellow-200 px-3 py-1.5 rounded flex justify-between">
+                    <div
+                      key={g.title}
+                      className="text-sm px-3 py-1.5 rounded flex justify-between"
+                      style={{
+                        background: 'var(--state-warning-bg)',
+                        borderWidth: 1,
+                        borderStyle: 'solid',
+                        borderColor: 'var(--state-warning-border)',
+                        color: 'var(--state-warning-fg)',
+                      }}
+                    >
                       <span>{g.title}</span>
-                      <span className="text-yellow-700">{g.count}개</span>
+                      <span>{g.count}개</span>
                     </div>
                   ))}
                 </div>
@@ -189,7 +235,7 @@ export default function WikiLintPage() {
             {result.orphan_pages.length === 0 &&
               result.stale_pages.length === 0 &&
               result.conflict_groups.length === 0 && (
-                <div className="text-center py-6 text-green-700 font-medium">
+                <div className="text-center py-6 font-medium" style={{ color: 'var(--state-success-fg)' }}>
                   문제 없음 — 위키 상태 양호
                 </div>
               )}
@@ -227,24 +273,36 @@ export default function WikiLintPage() {
                         {new Date(log.created_at).toLocaleString('ko-KR')}
                       </td>
                       <td className="py-2 pr-4">
-                        <span className={log.orphan_count > 0 ? 'text-red-700 font-medium' : 'text-[rgb(var(--text-muted))]'}>
+                        <span
+                          className={log.orphan_count > 0 ? 'font-medium' : 'text-[rgb(var(--text-muted))]'}
+                          style={log.orphan_count > 0 ? { color: 'var(--state-danger-fg)' } : undefined}
+                        >
                           {log.orphan_count}
                         </span>
                       </td>
                       <td className="py-2 pr-4">
-                        <span className={log.stale_count > 0 ? 'text-orange-700 font-medium' : 'text-[rgb(var(--text-muted))]'}>
+                        <span
+                          className={log.stale_count > 0 ? 'font-medium' : 'text-[rgb(var(--text-muted))]'}
+                          style={log.stale_count > 0 ? { color: 'var(--state-warning-fg)' } : undefined}
+                        >
                           {log.stale_count}
                         </span>
                       </td>
                       <td className="py-2 pr-4">
-                        <span className={log.conflict_count > 0 ? 'text-yellow-700 font-medium' : 'text-[rgb(var(--text-muted))]'}>
+                        <span
+                          className={log.conflict_count > 0 ? 'font-medium' : 'text-[rgb(var(--text-muted))]'}
+                          style={log.conflict_count > 0 ? { color: 'var(--state-warning-fg)' } : undefined}
+                        >
                           {log.conflict_count}
                         </span>
                       </td>
                       <td className="py-2 pr-4 text-[rgb(var(--text-secondary-rgb))]">
                         {log.quality_avg > 0 ? `${Math.round(log.quality_avg * 100)}%` : '-'}
                       </td>
-                      <td className="py-2 text-green-700">
+                      <td
+                        className="py-2"
+                        style={log.fixed_count > 0 ? { color: 'var(--state-success-fg)' } : { color: 'rgb(var(--text-muted))' }}
+                      >
                         {log.fixed_count > 0 ? log.fixed_count : '-'}
                       </td>
                     </tr>

@@ -1,5 +1,6 @@
 /**
  * @task S4GA1
+ * @modified-by S11FE10 (2026-04-21): S7 semantic tokens (var(--state-*)) + 모바일 터치타겟 44px
  * @description 비밀번호 재설정 페이지 — 2단계 흐름
  *
  * Mode 1 (기본): 이메일 입력 → auth.resetPasswordForEmail() → 성공 메시지
@@ -7,14 +8,14 @@
  *   → 새 비밀번호 입력 폼 → auth.updateUser() → 로그인 페이지 이동
  *
  * - 공개 페이지 (인증 불필요)
- * - 디자인 토큰(Tailwind) 사용
+ * - CSS custom property 기반 디자인 토큰 사용 (var(--*) 형식)
  */
 'use client';
 
 
 
 
-import { Suspense, useState, useEffect, useRef, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import supabase from '@/lib/supabase';
@@ -51,24 +52,24 @@ function InputField({
         id={id}
         type={type}
         value={value}
-        onChange={(e: any) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
         autoComplete={autoComplete}
         aria-describedby={error ? `${id}-error` : undefined}
         aria-invalid={!!error}
-        className={[
-          'w-full min-h-[44px] px-3.5 py-2.5 rounded-lg text-sm',
-          'bg-bg-subtle border',
-          'text-text-primary placeholder:text-text-muted',
-          'focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          'transition-colors',
-          error ? 'border-error ring-1 ring-error' : 'border-border-default',
-        ].join(' ')}
+        className="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none"
+        style={{
+          background: 'var(--surface-1)',
+          border: error ? '1.5px solid var(--state-danger-border)' : '1.5px solid var(--border-default)',
+          color: 'var(--text-primary)',
+          boxShadow: error ? '0 0 0 1px var(--state-danger-border)' : undefined,
+        }}
+        onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--interactive-primary)'; e.currentTarget.style.boxShadow = '0 0 0 3px color-mix(in oklch, var(--color-brand-500) 20%, transparent)'; }}
+        onBlur={(e) => { e.currentTarget.style.borderColor = error ? 'var(--state-danger-border)' : 'var(--border-default)'; e.currentTarget.style.boxShadow = error ? '0 0 0 1px var(--state-danger-border)' : 'none'; }}
       />
       {error && (
-        <p id={`${id}-error`} className="text-xs text-error" role="alert">
+        <p id={`${id}-error`} className="text-xs" style={{ color: 'var(--state-danger-fg)' }} role="alert">
           {error}
         </p>
       )}
@@ -248,7 +249,7 @@ export default function ResetPasswordPageInner() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
 
       if (error) {
-        const code = (error as any).code || '';
+        const code = (error as { code?: string }).code || '';
         const msg = error.message || '';
         let friendly = '비밀번호 변경에 실패했습니다.';
         if (code === 'same_password' || /should be different/i.test(msg) || /same.*password/i.test(msg)) {
@@ -288,11 +289,13 @@ export default function ResetPasswordPageInner() {
       return (
         <div className="text-center py-2">
           <div
-            className="mx-auto mb-4 flex items-center justify-center w-14 h-14 rounded-full bg-success/10"
+            className="mx-auto mb-4 flex items-center justify-center w-14 h-14 rounded-full"
+            style={{ background: 'var(--state-success-bg)' }}
             aria-hidden="true"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success">
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: 'var(--state-success-fg)' }}>
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
               <polyline points="22,6 12,13 2,6" />
             </svg>
@@ -304,8 +307,8 @@ export default function ResetPasswordPageInner() {
           </p>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold
-              bg-primary text-white hover:opacity-90 transition-opacity"
+            className="inline-flex items-center justify-center w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+            style={{ background: 'var(--interactive-primary)' }}
           >
             로그인으로 돌아가기
           </Link>
@@ -318,11 +321,13 @@ export default function ResetPasswordPageInner() {
       return (
         <div className="text-center py-2">
           <div
-            className="mx-auto mb-4 flex items-center justify-center w-14 h-14 rounded-full bg-success/10"
+            className="mx-auto mb-4 flex items-center justify-center w-14 h-14 rounded-full"
+            style={{ background: 'var(--state-success-bg)' }}
             aria-hidden="true"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success">
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: 'var(--state-success-fg)' }}>
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
@@ -339,7 +344,15 @@ export default function ResetPasswordPageInner() {
       return (
         <form onSubmit={handleResetPassword} noValidate className="flex flex-col gap-4">
           {errors.general && (
-            <div className="px-4 py-3 rounded-lg bg-error/10 border border-error/20 text-sm text-error" role="alert">
+            <div
+              className="px-4 py-3 rounded-lg text-sm"
+              style={{
+                background: 'var(--state-danger-bg)',
+                border: '1px solid var(--state-danger-border)',
+                color: 'var(--state-danger-fg)',
+              }}
+              role="alert"
+            >
               {errors.general}
             </div>
           )}
@@ -349,7 +362,7 @@ export default function ResetPasswordPageInner() {
             label="새 비밀번호"
             type="password"
             value={newPassword}
-            onChange={(v: any) => { setNewPassword(v); if (errors.newPassword) setErrors((e: any) => ({ ...e, newPassword: undefined })); }}
+            onChange={(v) => { setNewPassword(v); if (errors.newPassword) setErrors((e) => ({ ...e, newPassword: undefined })); }}
             placeholder="새 비밀번호를 입력하세요 (6자 이상)"
             error={errors.newPassword}
             autoComplete="new-password"
@@ -360,7 +373,7 @@ export default function ResetPasswordPageInner() {
             label="새 비밀번호 확인"
             type="password"
             value={newPasswordConfirm}
-            onChange={(v: any) => { setNewPasswordConfirm(v); if (errors.newPasswordConfirm) setErrors((e: any) => ({ ...e, newPasswordConfirm: undefined })); }}
+            onChange={(v) => { setNewPasswordConfirm(v); if (errors.newPasswordConfirm) setErrors((e) => ({ ...e, newPasswordConfirm: undefined })); }}
             placeholder="비밀번호를 다시 입력하세요"
             error={errors.newPasswordConfirm}
             autoComplete="new-password"
@@ -369,11 +382,11 @@ export default function ResetPasswordPageInner() {
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-2 w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold
-              bg-primary text-white hover:opacity-90
+            className="mt-2 w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-opacity focus-visible:outline-none focus-visible:ring-2
-              focus-visible:ring-primary focus-visible:ring-offset-2"
+              focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+            style={{ background: 'var(--interactive-primary)' }}
             aria-busy={isLoading}
           >
             {isLoading && <LoadingSpinner />}
@@ -387,7 +400,15 @@ export default function ResetPasswordPageInner() {
     return (
       <form onSubmit={handleSendEmail} noValidate className="flex flex-col gap-4">
         {errors.general && (
-          <div className="px-4 py-3 rounded-lg bg-error/10 border border-error/20 text-sm text-error" role="alert">
+          <div
+            className="px-4 py-3 rounded-lg text-sm"
+            style={{
+              background: 'var(--state-danger-bg)',
+              border: '1px solid var(--state-danger-border)',
+              color: 'var(--state-danger-fg)',
+            }}
+            role="alert"
+          >
             {errors.general}
           </div>
         )}
@@ -397,7 +418,7 @@ export default function ResetPasswordPageInner() {
           label="이메일"
           type="email"
           value={email}
-          onChange={(v: any) => { setEmail(v); if (errors.email) setErrors((e: any) => ({ ...e, email: undefined })); }}
+          onChange={(v) => { setEmail(v); if (errors.email) setErrors((e) => ({ ...e, email: undefined })); }}
           placeholder="가입한 이메일을 입력하세요"
           error={errors.email}
           autoComplete="email"
@@ -406,11 +427,11 @@ export default function ResetPasswordPageInner() {
         <button
           type="submit"
           disabled={isLoading}
-          className="mt-2 w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold
-            bg-primary text-white hover:opacity-90
+          className="mt-2 w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-opacity focus-visible:outline-none focus-visible:ring-2
-            focus-visible:ring-primary focus-visible:ring-offset-2"
+            focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+          style={{ background: 'var(--interactive-primary)' }}
           aria-busy={isLoading}
         >
           {isLoading && <LoadingSpinner />}
@@ -430,7 +451,7 @@ export default function ResetPasswordPageInner() {
   }[mode];
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-bg-base px-4 py-8">
+    <main className="min-h-screen flex items-center justify-center px-4 py-8" style={{ background: 'var(--surface-0)' }}>
       <div className="w-full max-w-sm">
         {/* 헤더 */}
         <div className="text-center mb-8">
@@ -441,14 +462,14 @@ export default function ResetPasswordPageInner() {
         </div>
 
         {/* 카드 */}
-        <div className="bg-surface rounded-2xl border border-border-default p-6 shadow-sm">
+        <div className="rounded-2xl border border-border-default p-6 shadow-sm" style={{ background: 'var(--surface-1)' }}>
           {cardContent()}
         </div>
 
         {/* 하단 링크 */}
         {(mode === 'email' || mode === 'reset') && (
           <p className="mt-5 text-center">
-            <Link href="/login" className="text-sm font-semibold text-primary hover:underline">
+            <Link href="/login" className="inline-flex items-center justify-center min-h-[44px] px-3 text-sm font-semibold hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2" style={{ color: 'var(--interactive-primary)' }}>
               ← 로그인으로 돌아가기
             </Link>
           </p>

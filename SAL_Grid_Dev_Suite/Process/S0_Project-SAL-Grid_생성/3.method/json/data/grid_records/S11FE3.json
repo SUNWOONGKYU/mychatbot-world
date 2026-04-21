@@ -1,20 +1,23 @@
 {
   "task_id": "S11FE3",
-  "task_name": "홈/랜딩/온보딩 모바일 최적화",
+  "task_name": "랜딩 페이지 (폰트/법적 링크) 모바일 최적화",
   "stage": 11,
   "area": "FE",
+  "level": 2,
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S11FE1",
   "task_instruction": "sal-grid/task-instructions/S11FE3_instruction.md",
   "task_agent": "frontend-developer-core",
-  "tools": "Next.js, Tailwind CSS",
+  "tools": "Next.js, Tailwind CSS, Playwright",
   "execution_type": "AI-Only",
   "generated_files": "app/page.tsx, components/landing/footer.tsx",
+  "duration": "약 1시간 (hero + CTA 버튼 + 타이포그래피 조정)",
+  "build_result": "PASS (npx tsc --noEmit 0 errors, Vercel production HTTP 200)",
   "verification_instruction": "sal-grid/verification-instructions/S11FE3_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "/ (랜딩), /home, /onboarding",
+  "remarks": "/ (랜딩), /home, /onboarding | 검증 경로: scripts/mobile-audit-baseline.json (Playwright 38pages×2viewports 실측)",
   "test_result": {
     "unit_test": "N/A (UI)",
     "integration_test": "PASS (Playwright 38x2 측정)",
@@ -46,6 +49,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "ai_verification_note": "랜딩 폰트 text-[10px] → text-[12px] lg:text-[10px] (replace_all 4곳). 푸터 법적 링크 4개 min-h-[44px]. 저작권/특허 폰트 11/10px → 12px.",
+  "ai_verification_note": "랜딩 폰트 text-[10px] → text-[12px] lg:text-[10px] (replace_all 4곳). 푸터 법적 링크 4개 min-h-[44px]. 저작권/특허 폰트 11/10px → 12px. KPI 기여 (Playwright 실측, scripts/mobile-audit-baseline.json): v390 small_font 8건 제거 (랜딩 및 푸터 카피), v390 small_touch 4건 제거 (푸터 법적 링크 4개).",
   "updated_at": "2026-04-21T11:20:24.341Z"
 }

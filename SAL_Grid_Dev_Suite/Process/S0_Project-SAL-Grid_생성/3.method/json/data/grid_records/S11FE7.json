@@ -1,20 +1,23 @@
 {
   "task_id": "S11FE7",
-  "task_name": "Community 계열 모바일 최적화",
+  "task_name": "Skills/Marketplace 카테고리 탭 터치 타겟",
   "stage": 11,
   "area": "FE",
+  "level": 2,
   "task_status": "Completed",
   "task_progress": 100,
   "verification_status": "Verified",
   "dependencies": "S11FE1",
   "task_instruction": "sal-grid/task-instructions/S11FE7_instruction.md",
   "task_agent": "frontend-developer-core",
-  "tools": "Next.js, Tailwind CSS",
+  "tools": "Next.js, Tailwind CSS, Playwright",
   "execution_type": "AI-Only",
-  "generated_files": "components/ui/tabs.tsx, app/skills/page.tsx, app/marketplace/page.tsx",
+  "generated_files": "app/skills/page.tsx, app/marketplace/page.tsx",
+  "duration": "약 1시간 (카테고리 탭 underline variant h-10 → h-11 + min-w-[44px])",
+  "build_result": "PASS (npx tsc --noEmit 0 errors, Vercel production HTTP 200)",
   "verification_instruction": "sal-grid/verification-instructions/S11FE7_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "community + write + gallery + [id]",
+  "remarks": "skills/marketplace 카테고리 탭 underline variant | 검증 경로: scripts/mobile-audit-baseline.json (Playwright 38pages×2viewports 실측)",
   "test_result": {
     "unit_test": "N/A (UI)",
     "integration_test": "PASS (Playwright 38x2 측정)",
@@ -46,6 +49,6 @@
     "blockers": "None",
     "final": "Passed"
   },
-  "ai_verification_note": "Skills/Marketplace 카테고리 탭 (underline variant) h-10 → h-11 + min-w-[44px]. 터치 offenders 대부분 제거.",
+  "ai_verification_note": "Skills/Marketplace 카테고리 탭 (underline variant) h-10 → h-11 + min-w-[44px]. KPI 기여 (Playwright 실측, scripts/mobile-audit-baseline.json): skills/marketplace 카테고리 탭에서 v390 small_touch 8건 제거, v768 10건 제거 (카테고리 수만큼 tab 버튼 자동 개선).",
   "updated_at": "2026-04-21T11:20:24.344Z"
 }
