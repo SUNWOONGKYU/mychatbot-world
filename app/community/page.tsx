@@ -546,6 +546,7 @@ function CommunityInner() {
                 onClick={() => setSort(tab.value)}
                 style={{
                   padding: '0.35rem 0.75rem',
+                  minHeight: '44px',
                   borderRadius: '20px',
                   fontSize: '0.8rem',
                   fontWeight: 500,

@@ -220,6 +220,9 @@ export default function GuestPageInner() {
           color: rgb(var(--color-primary));
           text-decoration: none;
           transition: color var(--transition-fast);
+          display: inline-flex;
+          align-items: center;
+          min-height: 44px;
         }
         .guest-logo:hover {
           color: rgb(var(--color-primary-hover));
@@ -234,6 +237,7 @@ export default function GuestPageInner() {
         /* 로그인 버튼 (아웃라인) */
         .btn-login {
           padding: var(--space-2) var(--space-4);
+          min-height: 44px;
           border: 1px solid rgb(var(--border-strong));
           background: transparent;
           color: rgb(var(--text-secondary-rgb));
@@ -244,7 +248,8 @@ export default function GuestPageInner() {
           cursor: pointer;
           text-decoration: none;
           transition: all var(--transition-fast);
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
         }
         .btn-login:hover {
           border-color: rgb(var(--color-primary));
@@ -255,6 +260,7 @@ export default function GuestPageInner() {
         /* 회원가입 버튼 (Primary) */
         .btn-signup {
           padding: var(--space-2) var(--space-4);
+          min-height: 44px;
           background: var(--gradient-primary);
           color: rgb(var(--text-on-primary));
           border: none;
@@ -265,7 +271,8 @@ export default function GuestPageInner() {
           cursor: pointer;
           text-decoration: none;
           transition: opacity var(--transition-fast), transform var(--transition-fast);
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
         }
         .btn-signup:hover {
           opacity: 0.9;

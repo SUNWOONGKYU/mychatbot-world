@@ -424,7 +424,7 @@ export default function SkillsMarketPageInner() {
                 </span>
                 <input
                   type="search"
-                  className="w-full pl-9 pr-4 h-9 rounded-md text-sm
+                  className="w-full pl-9 pr-4 min-h-[44px] rounded-md text-sm
                     border border-border-default bg-surface-2 text-text-primary
                     placeholder:text-text-tertiary
                     focus:outline-none focus:ring-2 focus:ring-ring-focus focus:ring-offset-1 focus:ring-offset-surface-0
@@ -469,7 +469,7 @@ export default function SkillsMarketPageInner() {
                   aria-label="정렬 기준"
                   value={sortBy}
                   onChange={e => setSortBy(e.target.value as SortOption)}
-                  className="h-9 px-3 rounded-md text-sm
+                  className="min-h-[44px] px-3 rounded-md text-sm
                     border border-border-default bg-surface-2 text-text-primary
                     focus:outline-none focus:ring-2 focus:ring-ring-focus focus:ring-offset-1 focus:ring-offset-surface-0
                     transition-colors cursor-pointer"

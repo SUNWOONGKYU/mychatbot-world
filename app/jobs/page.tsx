@@ -807,7 +807,7 @@ export default function JobsPage() {
           <div className="ml-auto flex gap-2 items-center">
             <button
               onClick={() => router.push('/jobs/create')}
-              className="px-4 py-2 text-sm font-semibold transition-all"
+              className="px-4 py-2 min-h-[44px] text-sm font-semibold transition-all"
               style={{
                 borderRadius: 'var(--radius-xl)',
                 background: 'rgb(var(--color-primary))',
@@ -841,7 +841,7 @@ export default function JobsPage() {
                 value={botSort}
                 onChange={e => handleBotSortChange(e.target.value as BotSort)}
                 aria-label="정렬 기준"
-                className="px-3 py-2 rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
+                className="px-3 py-2 min-h-[44px] rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
                 style={{
                   background: 'rgb(var(--bg-surface))',
                   border: '1px solid rgb(var(--border))',
@@ -923,7 +923,7 @@ export default function JobsPage() {
                 value={jobSort}
                 onChange={e => handleJobSortChange(e.target.value as JobSort)}
                 aria-label="정렬 기준"
-                className="px-3 py-2 rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
+                className="px-3 py-2 min-h-[44px] rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
                 style={{
                   background: 'rgb(var(--bg-surface))',
                   border: '1px solid rgb(var(--border))',

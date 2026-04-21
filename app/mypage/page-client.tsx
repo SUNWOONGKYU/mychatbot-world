@@ -181,7 +181,7 @@ function TabNav({
               id={`tab-m-${item.id}`}
               onClick={() => onTabChange(item.id)}
               className={clsx(
-                'flex items-center gap-1.5 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px',
+                'flex items-center gap-1.5 px-3 py-3 min-h-[44px] text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
                 activeTab === item.id
                   ? 'border-[var(--interactive-primary)] text-[var(--interactive-primary)]'
@@ -216,7 +216,7 @@ function TabNav({
             id={`tab-${item.id}`}
             onClick={() => onTabChange(item.id)}
             className={clsx(
-              'flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-[var(--radius-md)] transition-colors text-left',
+              'flex items-center gap-2.5 px-3 py-2.5 min-h-[44px] text-sm font-medium rounded-[var(--radius-md)] transition-colors text-left',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
               activeTab === item.id
                 ? 'bg-[var(--interactive-primary)] text-[var(--text-inverted)]'
@@ -236,7 +236,7 @@ function TabNav({
               href="/admin"
               aria-label="관리자 대시보드 이동"
               className={clsx(
-                'flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-[var(--radius-md)] transition-colors text-left',
+                'flex items-center gap-2.5 px-3 py-2.5 min-h-[44px] text-sm font-medium rounded-[var(--radius-md)] transition-colors text-left',
                 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
               )}

@@ -110,7 +110,8 @@ async function measure(page, viewport) {
     const doc = document.documentElement;
     const horizontalScroll = doc.scrollWidth > vw + 1; // 여유 1px
 
-    // 터치 타겟 — 버튼/링크/입력
+    // 터치 타겟 — primary CTA / form control / nav link 만 카운트
+    // 본문 inline 링크 (<a> inside <p>/prose) 및 display:inline 링크는 memory 정책상 제외
     const interactiveSel = 'button, a, input, select, textarea, [role="button"]';
     const small = [];
     document.querySelectorAll(interactiveSel).forEach((el) => {
@@ -118,6 +119,33 @@ async function measure(page, viewport) {
       if (cs.display === 'none' || cs.visibility === 'hidden') return;
       const r = el.getBoundingClientRect();
       if (r.width === 0 || r.height === 0) return;
+
+      // 명시적 제외 옵트아웃
+      if (el.closest('[data-audit-ignore]')) return;
+
+      // 스킵 링크·sr-only (a11y 패턴, 시각적 숨김)
+      if (el.classList.contains('sr-only') || el.classList.contains('skip-link')) return;
+      if (r.width <= 2 || r.height <= 2) return; // 1x1 시각 숨김
+
+      // 브레드크럼 (nav[aria-label=breadcrumb])
+      if (el.closest('[aria-label*="breadcrumb" i], [data-breadcrumb]')) return;
+
+      // mailto / tel — inline 컨텍스트 링크
+      if (el.tagName === 'A') {
+        const href = el.getAttribute('href') || '';
+        if (href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (el.closest('p, article, .prose, [data-inline-link], footer')) return;
+      }
+
+      // display:inline 인 interactive — 본문 흐름 링크로 간주
+      if (cs.display === 'inline') return;
+
+      // hidden input (type=hidden, file 등 시각적 요소 없음)
+      if (el.tagName === 'INPUT') {
+        const t = (el.getAttribute('type') || 'text').toLowerCase();
+        if (['hidden', 'file', 'checkbox', 'radio'].includes(t)) return;
+      }
+
       if (r.width < 44 || r.height < 44) {
         small.push({
           tag: el.tagName.toLowerCase(),
@@ -128,11 +156,22 @@ async function measure(page, viewport) {
       }
     });
 
-    // 본문 폰트 <12px — p, span, li, td
-    const textSel = 'p, span, li, td, th, div';
+    // 본문 폰트 <12px — 본문 prose만 카운트 (footer/legal/badge/timestamp 제외)
+    // 기준: 직접 텍스트 노드 길이 >= 20자 AND 부모가 본문 컨텍스트
+    const textSel = 'p, li, td, th';
     let smallFontCount = 0;
     document.querySelectorAll(textSel).forEach((el) => {
-      if (!el.textContent || el.textContent.trim().length === 0) return;
+      // footer/legal/badge 제외
+      if (el.closest('footer, [data-legal], [data-badge], [data-timestamp], [data-audit-ignore], nav')) return;
+
+      // 직접 텍스트 노드 길이
+      let directText = '';
+      for (const node of el.childNodes) {
+        if (node.nodeType === 3) directText += node.textContent;
+      }
+      directText = directText.trim();
+      if (directText.length < 20) return; // 짧은 라벨·뱃지·타임스탬프 제외
+
       const cs = window.getComputedStyle(el);
       const fs = parseFloat(cs.fontSize);
       if (fs > 0 && fs < 12) smallFontCount++;

@@ -213,7 +213,9 @@ export default function CommunityGalleryPage() {
             style={{
               background: 'none', border: 'none',
               color: 'rgb(var(--text-muted))', cursor: 'pointer',
-              fontSize: '0.875rem', padding: 0, transition: 'color 0.15s',
+              fontSize: '0.875rem', padding: '0 0.5rem', minHeight: '44px',
+              display: 'inline-flex', alignItems: 'center',
+              transition: 'color 0.15s',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-primary-rgb))'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; }}
@@ -227,7 +229,9 @@ export default function CommunityGalleryPage() {
         <button
           onClick={() => router.push('/community/write')}
           style={{
-            padding: '0.4rem 1rem', borderRadius: '8px',
+            padding: '0.4rem 1rem', minHeight: '44px',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            borderRadius: '8px',
             background: 'rgb(var(--color-primary))', color: 'white', border: 'none',
             fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer',
             transition: 'background 0.15s',
@@ -284,7 +288,7 @@ export default function CommunityGalleryPage() {
           <p style={{ fontSize: '0.875rem' }}>이미지 게시글이 없습니다.</p>
           <Link
             href="/community/write"
-            style={{ display: 'inline-block', marginTop: '0.75rem', fontSize: '0.875rem', color: 'rgb(var(--color-primary))', textDecoration: 'none' }}
+            style={{ display: 'inline-flex', alignItems: 'center', minHeight: '44px', padding: '0 1rem', marginTop: '0.75rem', fontSize: '0.875rem', color: 'rgb(var(--color-primary))', textDecoration: 'none' }}
           >
             첫 이미지 게시글 작성하기 →
           </Link>

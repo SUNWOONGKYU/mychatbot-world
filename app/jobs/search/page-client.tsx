@@ -352,13 +352,13 @@ function SearchContent() {
                 onChange={e => setInputValue(e.target.value)}
                 placeholder="코코봇 이름, 기능, 카테고리 검색..."
                 autoComplete="off"
-                className="w-full pl-9 pr-4 py-2.5 bg-white/[0.08] border border-white/15 rounded-xl text-white placeholder-white/35 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/15 transition-all"
+                className="w-full pl-9 pr-4 py-2.5 min-h-[44px] bg-white/[0.08] border border-white/15 rounded-xl text-white placeholder-white/35 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/15 transition-all"
                 autoFocus
               />
             </div>
             <button
               type="submit"
-              className="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-xl transition-colors flex-shrink-0"
+              className="px-5 py-2.5 min-h-[44px] bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-xl transition-colors flex-shrink-0"
             >
               검색
             </button>
@@ -369,7 +369,7 @@ function SearchContent() {
               onClick={() => setFilterOpen(o => !o)}
               aria-expanded={filterOpen}
               aria-controls="filterPanel"
-              className="lg:hidden px-3 py-2.5 bg-white/[0.06] border border-white/10 text-white/60 rounded-xl text-sm relative"
+              className="lg:hidden px-3 py-2.5 min-h-[44px] min-w-[44px] bg-white/[0.06] border border-white/10 text-white/60 rounded-xl text-sm relative"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
                 <line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="18" x2="20" y2="18" />

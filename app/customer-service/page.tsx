@@ -336,6 +336,7 @@ export default function CustomerServicePage() {
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 14px',
+  minHeight: '44px',
   background: 'rgb(var(--bg-base))',
   border: '1px solid rgb(var(--text-muted) / 0.25)',
   borderRadius: '8px',
