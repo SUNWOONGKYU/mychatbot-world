@@ -27,7 +27,7 @@ const tabsListVariants = cva(
           'h-10 rounded-md bg-surface-1 p-1 gap-1',
         ],
         underline: [
-          'h-10 border-b border-border-default gap-4 w-full',
+          'h-11 border-b border-border-default gap-4 w-full',
         ],
         pills: [
           'h-auto rounded-full bg-surface-1 p-1 gap-1',
@@ -57,7 +57,7 @@ const tabsTriggerVariants = cva(
           'data-[state=active]:shadow-sm',
         ],
         underline: [
-          'h-10 px-1 border-b-2 border-transparent -mb-px',
+          'h-11 px-3 min-w-[44px] border-b-2 border-transparent -mb-px',
           'data-[state=active]:border-interactive-primary data-[state=active]:text-text-primary',
           'hover:text-text-primary',
         ],
