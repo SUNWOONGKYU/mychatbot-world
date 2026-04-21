@@ -63,7 +63,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   education: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25',
   marketing: 'bg-orange-500/10 text-orange-400 border-orange-500/25',
   development: 'bg-violet-500/10 text-violet-400 border-violet-500/25',
-  etc: 'bg-white/[0.06] text-white/50 border-white/10',
+  etc: 'bg-slate-500/10 text-slate-500 border-slate-500/25',
 };
 
 // ── 데모 데이터 (Supabase 연결 실패 시 폴백) ─────────────────
