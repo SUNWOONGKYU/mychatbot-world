@@ -18,9 +18,9 @@ interface Props {
 }
 
 const CHANNELS = [
-  { value: 'web', icon: '🌐', label: '웹', desc: 'cocobot.world' },
-  { value: 'kakao', icon: '💬', label: '카카오톡', desc: '카카오 채널 연동' },
-  { value: 'telegram', icon: '✈️', label: '텔레그램', desc: '텔레그램 봇 연동' },
+  { value: 'web', icon: '🌐', label: '웹', desc: 'mychatbot.world', disabled: false },
+  { value: 'kakao', icon: '💬', label: '카카오톡', desc: '준비중', disabled: true },
+  { value: 'telegram', icon: '✈️', label: '텔레그램', desc: '준비중', disabled: true },
 ];
 
 const ONBOARDING_CARDS = [
@@ -245,22 +245,22 @@ export default function Step8Deploy({ data, onFinish }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* 완료 축하 헤더 */}
-      <div className="text-center space-y-3 py-2">
-        <div className="text-5xl animate-bounce" aria-hidden="true">🎉</div>
+      <div className="text-center space-y-2 py-1">
+        <div className="text-4xl" aria-hidden="true">🎉</div>
         <div className="space-y-1">
-          <h2 className="text-2xl font-bold text-text-primary [word-break:keep-all]">
+          <h2 className="text-xl font-bold text-text-primary [word-break:keep-all]">
             축하합니다! 코코봇 생성 완료!
           </h2>
-          <Badge variant="success" tone="subtle" size="md">
+          <Badge variant="success" tone="subtle" size="sm">
             배포 준비 완료
           </Badge>
         </div>
       </div>
 
       {/* 배포 채널 선택 */}
-      <div className="bg-surface-2 border border-border-default rounded-xl p-5 space-y-3">
+      <div className="bg-surface-2 border border-border-default rounded-xl p-4 space-y-2">
         <p className="text-sm font-semibold text-text-primary [word-break:keep-all]">
           배포 채널 선택
         </p>
@@ -271,16 +271,20 @@ export default function Step8Deploy({ data, onFinish }: Props) {
         >
           {CHANNELS.map(ch => {
             const isSelected = channels.includes(ch.value);
+            const isDisabled = ch.disabled;
             return (
               <label
                 key={ch.value}
+                aria-disabled={isDisabled}
+                title={isDisabled ? '아직 연동되지 않은 채널입니다' : undefined}
                 className={`flex flex-col items-center gap-1.5 p-4 rounded-xl
-                  border-2 cursor-pointer text-center
-                  transition-all duration-200
+                  border-2 text-center transition-all duration-200
                   focus-within:ring-2 focus-within:ring-ring-focus
-                  ${isSelected
-                    ? 'bg-interactive-secondary border-interactive-primary'
-                    : 'bg-surface-1 border-border-default hover:border-border-strong'
+                  ${isDisabled
+                    ? 'bg-surface-1 border-border-subtle opacity-50 cursor-not-allowed'
+                    : isSelected
+                      ? 'bg-interactive-secondary border-interactive-primary cursor-pointer'
+                      : 'bg-surface-1 border-border-default hover:border-border-strong cursor-pointer'
                   }`}
               >
                 <input
@@ -288,7 +292,8 @@ export default function Step8Deploy({ data, onFinish }: Props) {
                   name="deployChannel"
                   value={ch.value}
                   checked={isSelected}
-                  onChange={() => toggleChannel(ch.value)}
+                  disabled={isDisabled}
+                  onChange={() => !isDisabled && toggleChannel(ch.value)}
                   className="sr-only"
                   aria-label={ch.label}
                 />
@@ -306,7 +311,7 @@ export default function Step8Deploy({ data, onFinish }: Props) {
       </div>
 
       {/* URL + QR 섹션 */}
-      <div className="bg-surface-2 border border-border-default rounded-xl p-5 space-y-4">
+      <div className="bg-surface-2 border border-border-default rounded-xl p-4 space-y-3">
         {/* URL 복사 */}
         <div>
           <label
@@ -340,9 +345,9 @@ export default function Step8Deploy({ data, onFinish }: Props) {
         </div>
 
         {/* QR 코드 */}
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-2">
           <div
-            className="w-48 h-48 bg-text-inverted rounded-xl overflow-hidden flex items-center justify-center
+            className="w-36 h-36 bg-text-inverted rounded-xl overflow-hidden flex items-center justify-center
               border border-border-default shadow-[var(--shadow-sm)]"
             aria-label="QR 코드"
           >
