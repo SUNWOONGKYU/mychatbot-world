@@ -27,7 +27,7 @@ import {
   useCallback,
   KeyboardEvent,
 } from 'react';
-import { authHeadersFormData } from '@/lib/auth-client';
+import { authHeaders, authHeadersFormData } from '@/lib/auth-client';
 
 // ============================================================
 // HTML Sanitizer (XSS 방지)
@@ -673,7 +673,7 @@ export default function ChatWindow({
     try {
       const streamRes = await fetch('/api/chat/stream', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify(payload),
       });
 
@@ -739,7 +739,7 @@ export default function ChatWindow({
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify(payload),
       });
       if (res.ok) {

@@ -8,6 +8,7 @@
 import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { authHeaders } from '@/lib/auth-client';
+import QRImage from '@/components/common/qr-image';
 
 // ── 타입 ─────────────────────────────────────────────────────────────────
 
@@ -81,10 +82,10 @@ function UrlPanel({ url }: { url: string | null }) {
             </button>
           </div>
           <div
-            className="w-24 h-24 rounded-[var(--radius-sm)] bg-[var(--surface-2)] border border-[var(--border-subtle)] flex items-center justify-center"
-            aria-label="QR 코드 영역"
+            className="w-24 h-24 rounded-[var(--radius-sm)] bg-white border border-[var(--border-subtle)] flex items-center justify-center p-1"
+            aria-label="QR 코드"
           >
-            <span className="text-xs text-[var(--text-tertiary)]">QR 코드</span>
+            <QRImage value={fullUrl} size={92} alt={`${fullUrl} QR 코드`} className="w-full h-full object-contain" />
           </div>
         </>
       ) : (

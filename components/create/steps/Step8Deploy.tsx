@@ -11,6 +11,7 @@ import type { WizardData } from '../CreateWizard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { authHeaders } from '@/lib/auth-client';
+import QRImage from '@/components/common/qr-image';
 
 interface Props {
   data: WizardData;
@@ -165,16 +166,25 @@ export default function Step8Deploy({ data, onFinish }: Props) {
     }
   };
 
+  const qrPngRef = useRef<string>('');
   const handleDownloadQR = async () => {
     const svg = createdBot?.qrSvg || data.qrSvg;
-    if (!svg) return;
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
+    if (svg) {
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'chatbot-qr.svg';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    }
+    // 서버 SVG 없으면 클라이언트 PNG 다운로드
+    if (!qrPngRef.current) return;
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'chatbot-qr.svg';
+    a.href = qrPngRef.current;
+    a.download = 'chatbot-qr.png';
     a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(deployUrl)}`;
@@ -357,14 +367,15 @@ export default function Step8Deploy({ data, onFinish }: Props) {
                 className="w-full h-full"
                 aria-hidden="true"
               />
-            ) : (
-              <img
-                src={qrImageUrl}
-                alt="코코봇 QR 코드"
+            ) : deployUrl ? (
+              <QRImage
+                value={deployUrl.startsWith('http') ? deployUrl : `https://${deployUrl}`}
+                size={144}
                 className="w-full h-full object-contain"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                alt="코코봇 QR 코드"
+                onReady={(url) => { qrPngRef.current = url; }}
               />
-            )}
+            ) : null}
           </div>
           <Button
             variant="outline"
