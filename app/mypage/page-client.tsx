@@ -39,7 +39,12 @@ interface BotItem {
   name: string;
   description: string | null;
   emoji?: string | null;
+  category?: string | null;
   deploy_url: string | null;
+  avatar_url?: string | null;
+  username?: string | null;
+  voice?: string | null;
+  greeting?: string | null;
   created_at: string;
   status?: 'active' | 'draft' | 'paused';
   conversation_count?: number;
@@ -308,8 +313,25 @@ export default function MyPageClient() {
         if (botsRes.status === 'fulfilled' && botsRes.value.ok) {
           const data = await botsRes.value.json();
           // /api/bots 응답: { success, data: { bots, count } } — data.data.bots가 정답
-          // 레거시 호환을 위해 data.bots 및 배열 직접 응답도 처리
-          setBots(Array.isArray(data) ? data : (data.data?.bots ?? data.bots ?? []));
+          const rawBots = Array.isArray(data) ? data : (data.data?.bots ?? data.bots ?? []);
+          // DB 컬럼(bot_name/bot_desc/emoji=카테고리슬러그) → UI 필드(name/description/emoji=이모지)
+          const mappedBots: BotItem[] = rawBots.map((b: any) => ({
+            id: b.id,
+            name: b.bot_name ?? b.name ?? '(이름 없음)',
+            description: b.bot_desc ?? b.description ?? null,
+            emoji: b.avatar_emoji ?? null,
+            category: b.emoji ?? b.category ?? null,
+            deploy_url: b.deploy_url ?? (b.username ? `mychatbot.world/bot/${b.username}` : null),
+            avatar_url: b.avatar_url ?? null,
+            username: b.username ?? null,
+            voice: b.voice ?? null,
+            greeting: b.greeting ?? null,
+            created_at: b.created_at,
+            status: b.status ?? 'active',
+            conversation_count: b.conversation_count ?? 0,
+            personas: b.personas ?? [],
+          }));
+          setBots(mappedBots);
         }
 
         if (skillsRes.status === 'fulfilled' && skillsRes.value.ok) {
