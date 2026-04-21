@@ -174,7 +174,7 @@ export default function LandingPage() {
                         {step.icon}
                       </span>
                       <div
-                        className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em]"
+                        className="mt-3 text-[12px] lg:text-[10px] font-bold uppercase tracking-[0.2em]"
                         style={{ color: step.tint }}
                       >
                         {i + 1} · {step.label}
@@ -417,7 +417,7 @@ export default function LandingPage() {
                       {f.icon}
                     </span>
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+                      <div className="text-[12px] lg:text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
                         0{i + 1}
                       </div>
                       <h3 className="mt-1 text-lg font-bold text-white">{f.title}</h3>
@@ -584,7 +584,7 @@ export default function LandingPage() {
                     >
                       {f.icon}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
+                    <span className="text-[12px] lg:text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
                       0{i + 1}
                     </span>
                   </div>
@@ -663,7 +663,7 @@ export default function LandingPage() {
                   >
                     {item.icon}
                   </div>
-                  <div className="mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+                  <div className="mt-4 text-[12px] lg:text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
                     STEP 0{i + 1}
                   </div>
                   <h3 className="mt-1 text-base font-bold text-white">{item.title}</h3>
