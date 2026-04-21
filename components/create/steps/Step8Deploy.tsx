@@ -263,9 +263,9 @@ export default function Step8Deploy({ data, onFinish }: Props) {
           <h2 className="text-xl font-bold text-text-primary [word-break:keep-all]">
             축하합니다! 코코봇 생성 완료!
           </h2>
-          <Badge variant="success" tone="subtle" size="sm">
-            배포 준비 완료
-          </Badge>
+          <p className="text-sm text-text-secondary [word-break:keep-all]">
+            코코봇 URL과 QR 코드를 활용해서 배포를 해보세요
+          </p>
         </div>
       </div>
 
