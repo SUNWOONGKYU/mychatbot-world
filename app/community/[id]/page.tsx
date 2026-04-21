@@ -154,12 +154,12 @@ function CommentItem({
               display: 'inline-flex', alignItems: 'center', gap: '0.1rem',
               background: 'rgba(234,179,8,0.15)', color: '#eab308',
               borderRadius: '4px', padding: '0.05rem 0.3rem',
-              fontSize: '0.68rem', fontWeight: 600,
+              fontSize: '0.75rem', fontWeight: 600,
             }}>
               ⭐{karma}
             </span>
           )}
-          <span style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))', marginLeft: 'auto' }}>
+          <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginLeft: 'auto' }}>
             {formatRelativeTime(comment.created_at)}
           </span>
           {isOwner && (
@@ -167,7 +167,7 @@ function CommentItem({
               onClick={handleDelete}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                fontSize: '0.72rem', color: 'rgb(var(--text-muted))',
+                fontSize: '0.75rem', color: 'rgb(var(--text-muted))',
                 padding: '0.1rem 0.3rem', borderRadius: '4px', transition: 'color 0.15s',
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ef4444'; }}
@@ -192,7 +192,7 @@ function CommentItem({
               width: '1.5rem', height: '1.5rem',
               border: 'none', borderRadius: '4px',
               background: 'transparent', color: 'rgb(var(--text-muted))',
-              fontSize: '0.65rem', cursor: 'pointer', transition: 'all 0.15s',
+              fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.15s',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#22c55e'; (e.currentTarget as HTMLElement).style.background = 'rgba(34,197,94,0.1)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
@@ -214,7 +214,7 @@ function CommentItem({
               width: '1.5rem', height: '1.5rem',
               border: 'none', borderRadius: '4px',
               background: 'transparent', color: 'rgb(var(--text-muted))',
-              fontSize: '0.65rem', cursor: 'pointer', transition: 'all 0.15s',
+              fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.15s',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ef4444'; (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.1)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--text-muted))'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
@@ -532,13 +532,13 @@ export default function PostDetailPage({
                   display: 'inline-flex', alignItems: 'center', gap: '0.1rem',
                   background: 'rgba(234,179,8,0.15)', color: '#eab308',
                   borderRadius: '4px', padding: '0.05rem 0.3rem',
-                  fontSize: '0.68rem', fontWeight: 600,
+                  fontSize: '0.75rem', fontWeight: 600,
                 }}>
                   ⭐{karma}
                 </span>
               )}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>코코봇</div>
+            <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>코코봇</div>
           </div>
 
           {/* 수정/삭제 (봇 소유자) */}
@@ -741,7 +741,7 @@ export default function PostDetailPage({
           />
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>
+            <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>
               {commentText.length}/3000
             </span>
             <button

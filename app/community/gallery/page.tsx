@@ -101,7 +101,7 @@ function GalleryCard({ post }: { post: GalleryPost }) {
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {post.title}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.3rem', color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.72rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.3rem', color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.75rem' }}>
           <span>▲{score >= 0 ? score : 0}</span>
           <span>💬{post.comment_count ?? post.comments_count ?? 0}</span>
         </div>
@@ -111,7 +111,7 @@ function GalleryCard({ post }: { post: GalleryPost }) {
       {madangId && (
         <span style={{
           position: 'absolute', top: '0.5rem', left: '0.5rem',
-          fontSize: '0.65rem', padding: '0.1rem 0.4rem',
+          fontSize: '0.75rem', padding: '0.1rem 0.4rem',
           background: `${color}cc`, color: 'white',
           borderRadius: '4px', backdropFilter: 'blur(4px)',
           fontWeight: 600,

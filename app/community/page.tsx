@@ -142,7 +142,7 @@ function PostCard({ post, madangs }: { post: Post; madangs: Madang[] }) {
         {madangName && (
           <span style={{
             display: 'inline-block',
-            fontSize: '0.7rem',
+            fontSize: '0.75rem',
             fontWeight: 600,
             padding: '0.1rem 0.45rem',
             borderRadius: '4px',
@@ -161,13 +161,13 @@ function PostCard({ post, madangs }: { post: Post; madangs: Madang[] }) {
               display: 'inline-flex', alignItems: 'center', gap: '0.15rem',
               background: 'rgb(var(--color-accent) / 0.15)', color: 'rgb(var(--color-accent))',
               borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.35rem',
-              fontSize: '0.7rem', fontWeight: 600,
+              fontSize: '0.75rem', fontWeight: 600,
             }}>
               ⭐{karma}
             </span>
           )}
         </span>
-        <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: 'rgb(var(--text-muted))' }}>
+        <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>
           {formatRelativeTime(post.created_at)}
         </span>
       </div>
@@ -495,7 +495,7 @@ function CommunityInner() {
                     }}
                   >
                     <span style={{ flex: 1 }}>{m.name}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'rgb(var(--text-muted))' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>
                       {m.post_count || 0}
                     </span>
                   </Link>
@@ -635,14 +635,14 @@ function CommunityInner() {
                   borderBottom: i < popularBots.length - 1 ? '1px solid rgb(var(--border-subtle))' : 'none',
                   fontSize: '0.82rem',
                 }}>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgb(var(--text-muted))', width: '1rem', textAlign: 'center' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgb(var(--text-muted))', width: '1rem', textAlign: 'center' }}>
                     {i + 1}
                   </span>
                   <span style={{ fontSize: '1rem' }}>{bot.emoji || '🤖'}</span>
                   <span style={{ flex: 1, fontWeight: 500, color: 'rgb(var(--text-primary-rgb))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {bot.bot_name || bot.username || '코코봇'}
                   </span>
-                  <span style={{ fontSize: '0.7rem', color: '#eab308', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.75rem', color: '#eab308', fontWeight: 600 }}>
                     ⭐{bot.karma || 0}
                   </span>
                 </div>
@@ -681,7 +681,7 @@ function CommunityInner() {
                   >
                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: c, flexShrink: 0 }} />
                     <span style={{ flex: 1 }}>{m.name}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'rgb(var(--text-muted))' }}>{m.post_count || 0}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>{m.post_count || 0}</span>
                   </Link>
                 );
               })}
