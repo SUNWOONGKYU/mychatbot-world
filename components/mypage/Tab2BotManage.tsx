@@ -9,6 +9,12 @@ import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { authHeaders } from '@/lib/auth-client';
 import QRImage from '@/components/common/qr-image';
+import ChatLogPanel from '@/components/mypage/panels/ChatLogPanel';
+import KbPanel from '@/components/mypage/panels/KbPanel';
+import SkillsMountPanel from '@/components/mypage/panels/SkillsMountPanel';
+import LearningPanel from '@/components/mypage/panels/LearningPanel';
+import CommunityPanel from '@/components/mypage/panels/CommunityPanel';
+import BotSettings from '@/components/mypage/panels/BotSettings';
 
 // ── 타입 ─────────────────────────────────────────────────────────────────
 
@@ -39,12 +45,6 @@ const TOOL_LIST: { id: ToolId; label: string; icon: string; desc: string }[] = [
   { id: 'chatbot-school',label: '학습',         icon: '🎓', desc: '학습 현황 확인' },
   { id: 'community',    label: '커뮤니티',      icon: '🌐', desc: '커뮤니티 활동 내역' },
   { id: 'settings',     label: '코코봇 설정',   icon: '⚙️', desc: 'AI 모델/DM 보안 등' },
-];
-
-const DM_SECURITY_LEVELS = [
-  { level: 1, label: '공개', desc: '누구나 DM 가능' },
-  { level: 2, label: '팔로워', desc: '팔로워만 DM 가능' },
-  { level: 3, label: '비공개', desc: 'DM 수신 차단' },
 ];
 
 // ── 하위 컴포넌트: QR + URL 패널 ─────────────────────────────────────────
@@ -215,7 +215,12 @@ function PersonaPanel({ personas, botId }: { personas: Persona[]; botId: string 
 
 // ── 하위 컴포넌트: per-persona 툴 6종 패널 ──────────────────────────────
 
-function ToolPanel({ activeTool, onSelect }: { activeTool: ToolId | null; onSelect: (t: ToolId | null) => void }) {
+function ToolPanel({ activeTool, onSelect, botId, bot }: {
+  activeTool: ToolId | null;
+  onSelect: (t: ToolId | null) => void;
+  botId: string;
+  bot: BotItem;
+}) {
   return (
     <div className="space-y-2">
       <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">툴 (6종)</p>
@@ -246,76 +251,27 @@ function ToolPanel({ activeTool, onSelect }: { activeTool: ToolId | null; onSele
         ))}
       </div>
 
-      {/* 툴 패널 콘텐츠 */}
+      {/* 툴 패널 콘텐츠 — S10 6도구 연동 */}
       {activeTool && (
         <div className="mt-3 p-4 rounded-[var(--radius-md)] bg-[var(--surface-1)] border border-[var(--border-default)]">
-          {activeTool === 'settings' ? (
-            <BotSettingsPanel />
-          ) : (
-            <div className="text-sm text-[var(--text-secondary)] text-center py-4">
-              <span className="text-2xl block mb-2" aria-hidden="true">
-                {TOOL_LIST.find(t => t.id === activeTool)?.icon}
-              </span>
-              {TOOL_LIST.find(t => t.id === activeTool)?.label} 패널 — 추후 연동 예정
-            </div>
+          {activeTool === 'chat-log' && <ChatLogPanel botId={botId} />}
+          {activeTool === 'kb' && <KbPanel botId={botId} />}
+          {activeTool === 'skills' && <SkillsMountPanel botId={botId} />}
+          {activeTool === 'chatbot-school' && <LearningPanel botId={botId} />}
+          {activeTool === 'community' && <CommunityPanel botId={botId} />}
+          {activeTool === 'settings' && (
+            <BotSettings
+              botId={botId}
+              initial={{
+                tone: (bot as BotItem & { tone?: string | null }).tone ?? null,
+                model: (bot as BotItem & { model?: string | null }).model ?? null,
+                greeting: (bot as BotItem & { greeting?: string | null }).greeting ?? null,
+                persona_traits: (bot as BotItem & { persona_traits?: Record<string, unknown> | null }).persona_traits ?? null,
+              }}
+            />
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-// ── 하위 컴포넌트: 코코봇 설정 (DM 보안 + AI 모델) ───────────────────────
-
-function BotSettingsPanel() {
-  const [dmLevel, setDmLevel] = useState(1);
-  const [model, setModel] = useState('gpt-4o-mini');
-
-  return (
-    <div className="space-y-4">
-      <fieldset>
-        <legend className="text-sm font-semibold text-[var(--text-primary)] mb-2">DM 보안 정책</legend>
-        <div className="flex gap-2 flex-wrap">
-          {DM_SECURITY_LEVELS.map(s => (
-            <button
-              key={s.level}
-              type="button"
-              aria-pressed={dmLevel === s.level}
-              onClick={() => setDmLevel(s.level)}
-              className={clsx(
-                'px-3 py-1.5 rounded-[var(--radius-md)] text-sm border transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
-                dmLevel === s.level
-                  ? 'border-[var(--interactive-primary)] bg-[var(--surface-2)] text-[var(--interactive-primary)]'
-                  : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]',
-              )}
-            >
-              {s.label}
-              <span className="block text-[10px] opacity-70">{s.desc}</span>
-            </button>
-          ))}
-        </div>
-      </fieldset>
-      <div>
-        <label htmlFor="bot-ai-model" className="text-sm font-semibold text-[var(--text-primary)] mb-2 block">
-          AI 모델
-        </label>
-        <select
-          id="bot-ai-model"
-          value={model}
-          onChange={e => setModel(e.target.value)}
-          className={clsx(
-            'px-3 py-2 rounded-[var(--radius-md)] border border-[var(--border-default)]',
-            'bg-[var(--surface-0)] text-[var(--text-primary)] text-sm',
-            'focus:outline-none focus:border-[var(--interactive-primary)]',
-            'focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
-          )}
-        >
-          <option value="gpt-4o">GPT-4o</option>
-          <option value="gpt-4o-mini">GPT-4o Mini</option>
-          <option value="gpt-4-turbo">GPT-4 Turbo</option>
-        </select>
-      </div>
     </div>
   );
 }
@@ -473,7 +429,7 @@ function BotCard({ bot, onDelete, onClone }: {
             </button>
           </div>
 
-          <ToolPanel activeTool={activeTool} onSelect={setActiveTool} />
+          <ToolPanel activeTool={activeTool} onSelect={setActiveTool} botId={bot.id} bot={bot} />
 
           {/* 액션 버튼: 복제/내보내기/삭제 */}
           <div className="flex gap-2 flex-wrap pt-1 border-t border-[var(--border-default)]">

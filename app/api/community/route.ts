@@ -133,6 +133,12 @@ export async function GET(req: NextRequest) {
       query = query.eq('madang', madang);
     }
 
+    // S10BA3: 특정 봇이 작성한 글만 필터링
+    const botIdFilter = searchParams.get('bot_id');
+    if (botIdFilter) {
+      query = query.eq('bot_id', botIdFilter);
+    }
+
     const { data: posts, count, error: listError } = await query;
     if (listError) {
       console.error('[community/route] list error:', listError.message);
