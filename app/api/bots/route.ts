@@ -29,6 +29,9 @@ interface BotItem {
   category: string | null;
   created_at: string;
   updated_at: string;
+  order_index: number;
+  last_active: string | null;
+  unread_count: number;
 }
 
 // ── GET /api/bots ─────────────────────────────────────────────
@@ -50,10 +53,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const limit = Math.min(parseInt(searchParams.get('limit') ?? '50'), 100);
   const offset = parseInt(searchParams.get('offset') ?? '0');
 
+  // S12BA1: order_index ASC, then created_at DESC (fallback)
   const { data: bots, error, count } = await supabase
     .from('mcw_bots')
     .select('*, personas:mcw_personas(id, name, role, user_title, greeting, tone, personality)', { count: 'exact' })
     .eq('owner_id', user.id)
+    .order('order_index', { ascending: true })
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -61,10 +66,36 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: error.message, data: null }, { status: 500 });
   }
 
+  // S12BA1: last_active = conversations.updated_at 최신 (봇별)
+  // user_id TEXT(guest-* 포함) 이므로 auth 사용자만 대상
+  const botIds = (bots ?? []).map((b) => (b as { id: string }).id);
+  const lastActiveMap = new Map<string, string>();
+  if (botIds.length > 0) {
+    const { data: convs } = await supabase
+      .from('conversations')
+      .select('bot_id, updated_at')
+      .in('bot_id', botIds)
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false });
+    for (const c of (convs ?? []) as Array<{ bot_id: string; updated_at: string }>) {
+      if (!lastActiveMap.has(c.bot_id)) lastActiveMap.set(c.bot_id, c.updated_at);
+    }
+  }
+
+  const enriched = (bots ?? []).map((b) => {
+    const bot = b as BotItem;
+    return {
+      ...bot,
+      order_index: typeof bot.order_index === 'number' ? bot.order_index : 0,
+      last_active: lastActiveMap.get(bot.id) ?? null,
+      unread_count: 0, // 현 Stage 미구현, 후속 Task 에서 마지막 읽음 시점 비교
+    };
+  });
+
   return NextResponse.json({
     success: true,
     data: {
-      bots: bots as BotItem[],
+      bots: enriched as BotItem[],
       count: count ?? 0,
     },
   });
