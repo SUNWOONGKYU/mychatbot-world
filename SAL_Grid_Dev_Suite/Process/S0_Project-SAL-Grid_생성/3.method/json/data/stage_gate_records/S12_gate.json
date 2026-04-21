@@ -1,0 +1,24 @@
+{
+  "stage": 12,
+  "stage_name": "페르소나 포털 /hub",
+  "stage_name_en": "Persona Portal Hub",
+  "total_tasks": 11,
+  "completed_tasks": 0,
+  "verification_status": "Not Verified",
+  "ai_verification_note": "",
+  "ai_verification_date": "",
+  "verification_report_path": "stage-gates/S12GATE_verification_report.md",
+  "stage_gate_status": "Not Started",
+  "po_approval_status": "Not Started",
+  "po_approval_user": "",
+  "po_approval_note": "",
+  "po_approval_date": "",
+  "checklist": {
+    "all_tasks_completed": false,
+    "all_verifications_passed": false,
+    "no_blockers": false,
+    "build_success": false,
+    "test_success": false
+  },
+  "remarks": "MBO 승인 2026-04-21 20:03. PO 기준: '사용자 입장에서 가장 편리하고 보기 좋고 쉽게 사용할 수 있는 방식'. 사용자 여정 KPI 4종 포함(탭 전환 <150ms, 상태 복원 100%, 딥링크 100%, 모바일 390 가로 스크롤 0). MBO 파일: zz_KingFolder/_TalkTodoPlan/2026_04_21__20.03_MBO_페르소나포털.md"
+}

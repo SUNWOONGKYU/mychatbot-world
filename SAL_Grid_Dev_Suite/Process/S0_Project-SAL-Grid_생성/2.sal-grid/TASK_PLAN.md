@@ -302,6 +302,7 @@ S4 (개발 마무리)
 | v3.6 | 2026-04-21 | **S10 Stage 신설 — 마이페이지 Tab2 6도구 연동 (14 Tasks)**. QR 렌더 + 대화로그/KB/스킬/학습/커뮤니티 패널 + 설정 저장. DB 2개(S10DB1 mcw_bot_skills / S10DB2 mcw_bots 컬럼확장), BA 4개(chat-log / skills CRUD / community 필터 / bot PATCH), FE 7개(QR / 6패널), TS 1개(E2E). MBO 승인 2026-04-21 12:50. index.json 122→136 tasks. |
 | v3.7 | 2026-04-21 | **S10 Stage 추가 3 Tasks** — S10BA5 채팅 스트림 RAG 캐스케이드(버그 수정, commit c3c7231), S10BA6 게스트 대화 허용(URL/QR 접속자 정책, commit c3c7231), S10FE8 Tab2 페르소나 섹션 제거 + AI 자동생성 입력 UX(PO 피드백, commit d8ae5ae). index.json 136→139 tasks. |
 | v3.8 | 2026-04-21 | **S11 Stage 신설 — 전 페이지 모바일 반응형 최적화 (14 Tasks)**. QA 2개(S11QA1 베이스라인 감사 / S11QA2 회귀 검증), FE 12개(S11FE1 공통 셸, FE2~12 카테고리별 페이지). KPI: 390px 가로 스크롤 0, 터치 타겟 ≥44px, 본문 폰트 ≥12px, Lighthouse mobile ≥80. MBO 승인 2026-04-21 19:10. index.json 139→153 tasks. |
+| v3.9 | 2026-04-21 | **S12 Stage 신설 — 페르소나 포털 `/hub` (11 Tasks)**. DS 1개(와이어프레임), DB 1개(order_index), BA 1개(/api/bots 확장), FE 7개(/hub skeleton, PersonaTabBar, TabContext, 활성탭 마운트, + 탭 Birth 모달, 딥링크, 모바일 탭바), TS 1개(E2E). KPI: 탭 전환 <150ms, 상태 복원 100%, 딥링크 100%, 모바일 390 가로 스크롤 0. 사용자 편의성 기준(PO 20:03 승인). MBO 파일 `zz_KingFolder/_TalkTodoPlan/2026_04_21__20.03_MBO_페르소나포털.md`. index.json 153→164 tasks. |
 
 ---
 
@@ -354,3 +355,25 @@ S4 (개발 마무리)
 | S11FE11 | 법률/고객지원/게스트 (privacy, terms, refund, customer-service, security, guest) | FE | S11FE1 | `frontend-developer-core` | Pending |
 | S11FE12 | Admin + 기타 (admin) | FE | S11FE1 | `frontend-developer-core` | Pending |
 | S11QA2 | 전체 모바일 회귀 검증 (Playwright + Lighthouse) | TS | S11FE1~12 | `test-runner-core` | Pending |
+
+---
+
+## S12 — 페르소나 포털 `/hub` (11 Tasks)
+
+> 목표: 한 사용자의 코코봇 최대 10개를 `/hub` 페이지의 탭 UI 로 동시 노출, 탭 전환 시 대화 상태 100% 보존
+> MBO 승인: 2026-04-21 20:03 (PO "사용자 입장에서 가장 편리한 방식")
+> MBO 파일: `zz_KingFolder/_TalkTodoPlan/2026_04_21__20.03_MBO_페르소나포털.md`
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S12DS1 | 포털 와이어프레임 (390/768/1440 + 상태 다이어그램) | DS | — | `ux-ui-designer-core` | Pending |
+| S12DB1 | mcw_bots.order_index INT 컬럼 추가 (탭 순서) | DB | — | `database-developer-core` | Pending |
+| S12BA1 | /api/bots 응답 확장 (last_active, unread_count, order_index) | BA | S12DB1 | `api-developer-core` | Pending |
+| S12FE1 | /hub 라우트 스켈레톤 (인증 게이트 + 초기 데이터 fetch) | FE | S12BA1 | `frontend-developer-core` | Pending |
+| S12FE2 | PersonaTabBar (최대 10 탭 + `...▼` 오버플로우 + `+` 탭) | FE | S12FE1 | `frontend-developer-core` | Pending |
+| S12FE3 | TabContext (탭별 conv_id/messages/scrollTop/inputDraft Map) | FE | S12FE2 | `frontend-developer-core` | Pending |
+| S12FE4 | 활성 탭 전용 ChatWindow 마운트 (lazy + state 보존) | FE | S12FE3 | `frontend-developer-core` | Pending |
+| S12FE5 | `+` 탭 → Birth 위저드 모달 (완료 시 신규 탭 추가+활성화) | FE | S12FE4 | `frontend-developer-core` | Pending |
+| S12FE6 | 딥링크 `?tab=botId` ↔ state + localStorage 마지막 탭 복원 | FE | S12FE4 | `frontend-developer-core` | Pending |
+| S12FE7 | 모바일 가로 스크롤 sticky 탭바 + GNB "포털" 진입점 | FE | S12FE4 | `frontend-developer-core` | Pending |
+| S12QA1 | Playwright E2E (생성/전환 150ms/삭제/딥링크/모바일/10개 경계) | TS | S12FE5, S12FE6, S12FE7 | `test-runner-core` | Pending |

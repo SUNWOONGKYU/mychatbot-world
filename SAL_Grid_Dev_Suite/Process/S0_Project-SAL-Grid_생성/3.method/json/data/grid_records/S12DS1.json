@@ -1,0 +1,20 @@
+{
+  "task_id": "S12DS1",
+  "task_name": "포털 와이어프레임 (390/768/1440 + 상태 다이어그램)",
+  "stage": 12,
+  "area": "DS",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "",
+  "task_instruction": "sal-grid/task-instructions/S12DS1_instruction.md",
+  "task_agent": "ux-ui-designer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12DS1_verification.md",
+  "verification_agent": "qa-specialist",
+  "remarks": "사용자 편의성 기준(PO 2026-04-21 20:03). 390/768/1440 3뷰포트 와이어프레임 + 탭 상태 전이 다이어그램.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

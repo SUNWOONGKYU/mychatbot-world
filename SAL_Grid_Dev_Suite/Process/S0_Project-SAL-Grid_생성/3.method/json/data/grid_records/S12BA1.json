@@ -1,0 +1,20 @@
+{
+  "task_id": "S12BA1",
+  "task_name": "/api/bots 응답 확장 (last_active, unread_count, order_index)",
+  "stage": 12,
+  "area": "BA",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12DB1",
+  "task_instruction": "sal-grid/task-instructions/S12BA1_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12BA1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "GET /api/bots 응답 객체에 last_active(conversations.updated_at 최신), unread_count(0 fallback), order_index 추가. Bearer 인증 유지.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

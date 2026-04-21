@@ -1,0 +1,20 @@
+{
+  "task_id": "S12FE3",
+  "task_name": "TabContext (탭별 conv_id/messages/scrollTop/inputDraft Map)",
+  "stage": 12,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12FE2",
+  "task_instruction": "sal-grid/task-instructions/S12FE3_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12FE3_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "components/hub/TabContext.tsx. useRef<Map<botId, TabState>>. 탭 이탈 시 AbortController.abort() + state 저장.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

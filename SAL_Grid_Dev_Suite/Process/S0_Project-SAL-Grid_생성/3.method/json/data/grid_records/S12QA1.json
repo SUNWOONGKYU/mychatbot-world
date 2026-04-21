@@ -1,0 +1,20 @@
+{
+  "task_id": "S12QA1",
+  "task_name": "Playwright E2E (생성/전환 150ms/삭제/딥링크/모바일/10개 경계)",
+  "stage": 12,
+  "area": "TS",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12FE5, S12FE6, S12FE7",
+  "task_instruction": "sal-grid/task-instructions/S12QA1_instruction.md",
+  "task_agent": "test-runner-core",
+  "tools": "playwright-mcp",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12QA1_verification.md",
+  "verification_agent": "qa-specialist",
+  "remarks": "tests/e2e/hub-persona-portal.spec.ts. 시나리오: (1) 봇 2개 생성 후 탭 전환 <150ms, (2) 탭1에서 스크롤/입력 중 상태 → 탭2 전환 → 탭1 복귀 → 상태 유지, (3) /hub?tab=botId 접속 시 즉시 해당 탭 활성, (4) 모바일 390 가로 스크롤 0, (5) 봇 10개 초과 생성 시 + 탭 비활성 + ...▼ 드롭다운 노출.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

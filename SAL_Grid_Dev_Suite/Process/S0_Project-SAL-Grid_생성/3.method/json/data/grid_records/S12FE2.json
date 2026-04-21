@@ -1,0 +1,20 @@
+{
+  "task_id": "S12FE2",
+  "task_name": "PersonaTabBar (최대 10 탭 + ...▼ 오버플로우 + + 탭)",
+  "stage": 12,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12FE1",
+  "task_instruction": "sal-grid/task-instructions/S12FE2_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12FE2_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "components/hub/PersonaTabBar.tsx. 10탭 초과 시 ...▼ 드롭다운. 마지막에 항상 + 탭. 44px 터치.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

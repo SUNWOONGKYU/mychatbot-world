@@ -58,7 +58,7 @@ function InputField({
         aria-describedby={error ? `${id}-error` : undefined}
         aria-invalid={!!error}
         className={[
-          'w-full px-3.5 py-2.5 rounded-lg text-sm',
+          'w-full min-h-[44px] px-3.5 py-2.5 rounded-lg text-sm',
           'bg-bg-subtle border',
           'text-text-primary placeholder:text-text-muted',
           'focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
@@ -304,7 +304,7 @@ export default function ResetPasswordPageInner() {
           </p>
           <Link
             href="/login"
-            className="inline-block w-full py-2.5 rounded-lg text-sm font-semibold text-center
+            className="inline-flex items-center justify-center w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold
               bg-primary text-white hover:opacity-90 transition-opacity"
           >
             로그인으로 돌아가기
@@ -369,7 +369,7 @@ export default function ResetPasswordPageInner() {
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-2 w-full py-2.5 rounded-lg text-sm font-semibold
+            className="mt-2 w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold
               bg-primary text-white hover:opacity-90
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-opacity focus-visible:outline-none focus-visible:ring-2
@@ -406,7 +406,7 @@ export default function ResetPasswordPageInner() {
         <button
           type="submit"
           disabled={isLoading}
-          className="mt-2 w-full py-2.5 rounded-lg text-sm font-semibold
+          className="mt-2 w-full min-h-[44px] py-2.5 rounded-lg text-sm font-semibold
             bg-primary text-white hover:opacity-90
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-opacity focus-visible:outline-none focus-visible:ring-2

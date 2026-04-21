@@ -1,0 +1,20 @@
+{
+  "task_id": "S12FE7",
+  "task_name": "모바일 가로 스크롤 sticky 탭바 + GNB \"포털\" 진입점",
+  "stage": 12,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12FE4",
+  "task_instruction": "sal-grid/task-instructions/S12FE7_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12FE7_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "components/common/navbar.tsx 에 '포털' 또는 '내 봇' 링크 추가 (4대 메뉴 Birth/Skills/Jobs/Community 와 별개의 보조 링크). 모바일 탭바는 overflow-x-auto + scroll-snap-x. sticky top-0. 44px 터치.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

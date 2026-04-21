@@ -1,0 +1,20 @@
+{
+  "task_id": "S12DB1",
+  "task_name": "mcw_bots.order_index INT 컬럼 추가 (탭 순서)",
+  "stage": 12,
+  "area": "DB",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "",
+  "task_instruction": "sal-grid/task-instructions/S12DB1_instruction.md",
+  "task_agent": "database-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12DB1_verification.md",
+  "verification_agent": "database-developer-core",
+  "remarks": "탭 순서 보존용. DEFAULT 0, NULLABLE. owner_id+order_index 보조 인덱스.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

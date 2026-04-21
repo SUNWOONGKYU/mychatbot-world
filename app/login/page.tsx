@@ -199,7 +199,7 @@ export default function LoginPage() {
               autoComplete="email"
               disabled={isLoading}
               aria-describedby={error ? generalErrorId : undefined}
-              className="w-full px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
               style={{
                 background: 'var(--surface-1)',
                 border: '1.5px solid var(--border-default)',
@@ -235,7 +235,7 @@ export default function LoginPage() {
               placeholder="비밀번호를 입력하세요"
               autoComplete="current-password"
               disabled={isLoading}
-              className="w-full px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all disabled:opacity-50 focus-visible:outline-none"
               style={{
                 background: 'var(--surface-1)',
                 border: '1.5px solid var(--border-default)',

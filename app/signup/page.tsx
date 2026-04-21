@@ -55,7 +55,7 @@ function Field({
         autoComplete={autoComplete}
         aria-describedby={error ? errorId : undefined}
         aria-invalid={!!error}
-        className="w-full px-3.5 py-2.5 rounded-xl text-sm transition-all focus-visible:outline-none"
+        className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl text-sm transition-all focus-visible:outline-none"
         style={{
           background: error ? 'var(--state-danger-bg)' : 'var(--surface-1)',
           border: error

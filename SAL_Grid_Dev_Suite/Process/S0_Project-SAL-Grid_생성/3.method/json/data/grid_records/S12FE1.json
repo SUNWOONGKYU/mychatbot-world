@@ -1,0 +1,20 @@
+{
+  "task_id": "S12FE1",
+  "task_name": "/hub 라우트 스켈레톤 (인증 게이트 + 초기 데이터 fetch)",
+  "stage": 12,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12BA1",
+  "task_instruction": "sal-grid/task-instructions/S12FE1_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12FE1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "app/hub/page.tsx + app/hub/page-client.tsx. 미로그인 시 /login?redirect=/hub. 봇 0개 시 온보딩 CTA.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}

@@ -1,0 +1,20 @@
+{
+  "task_id": "S12FE4",
+  "task_name": "활성 탭 전용 ChatWindow 마운트 (lazy + state 보존)",
+  "stage": 12,
+  "area": "FE",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S12FE3",
+  "task_instruction": "sal-grid/task-instructions/S12FE4_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "",
+  "modification_history": "",
+  "verification_instruction": "sal-grid/verification-instructions/S12FE4_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "remarks": "활성 botId 의 ChatWindow 만 DOM 에 마운트. React.lazy + Suspense. 비활성 탭 state 는 Context Map 에 유지. 탭 전환 <150ms 목표.",
+  "updated_at": "2026-04-21T20:03:00.000Z"
+}
