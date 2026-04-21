@@ -42,9 +42,9 @@ const inputVariants = cva(
         ],
       },
       size: {
-        sm: 'h-8 px-2.5 text-xs',
-        md: 'h-10 px-3 text-sm',
-        lg: 'h-12 px-4 text-base',
+        sm: 'min-h-11 px-2.5 text-xs',
+        md: 'min-h-11 px-3 text-sm',
+        lg: 'min-h-12 px-4 text-base',
       },
     },
     defaultVariants: {

@@ -156,16 +156,16 @@ function BotCard({ bot }: { bot: BotItem }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap gap-1.5 mb-1">
-              <span className={`text-[0.7rem] font-semibold px-2 py-0.5 rounded-full border ${catColor}`}>
+              <span className={`text-[0.75rem] font-semibold px-2 py-0.5 rounded-full border ${catColor}`}>
                 {catLabel}
               </span>
               {bot.isNew && (
-                <span className="text-[0.7rem] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                <span className="text-[0.75rem] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
                   NEW
                 </span>
               )}
               {bot.isFeatured && (
-                <span className="text-[0.7rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+                <span className="text-[0.75rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
                   추천
                 </span>
               )}
@@ -191,7 +191,7 @@ function BotCard({ bot }: { bot: BotItem }) {
             {bot.skills.slice(0, 3).map(s => (
               <span
                 key={s}
-                className="text-[0.7rem] font-semibold px-2 py-0.5"
+                className="text-[0.75rem] font-semibold px-2 py-0.5"
                 style={{
                   borderRadius: 'var(--radius-full)',
                   background: 'rgb(var(--color-primary) / 0.1)',
@@ -215,7 +215,7 @@ function BotCard({ bot }: { bot: BotItem }) {
             <span>({bot.reviewCount.toLocaleString('ko-KR')})</span>
           </div>
           <div className="text-right">
-            <span className="text-[0.7rem] mr-0.5">월</span>
+            <span className="text-[0.75rem] mr-0.5">월</span>
             <span className="font-medium" style={{ color: 'rgb(var(--text-secondary-rgb))' }}>{formatPrice(bot.price)}</span>
           </div>
         </div>
@@ -252,11 +252,11 @@ function JobCard({ job }: { job: JobItem }) {
       >
         {/* 헤더 */}
         <div className="flex flex-wrap gap-1.5">
-          <span className={`text-[0.7rem] font-semibold px-2 py-0.5 rounded-full border ${catColor}`}>
+          <span className={`text-[0.75rem] font-semibold px-2 py-0.5 rounded-full border ${catColor}`}>
             {catLabel}
           </span>
           {isUrgent && (
-            <span className="text-[0.7rem] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
+            <span className="text-[0.75rem] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
               마감임박
             </span>
           )}
@@ -284,7 +284,7 @@ function JobCard({ job }: { job: JobItem }) {
             {job.requiredSkills.slice(0, 4).map(s => (
               <span
                 key={s}
-                className="text-[0.7rem] font-semibold px-2 py-0.5"
+                className="text-[0.75rem] font-semibold px-2 py-0.5"
                 style={{
                   borderRadius: 'var(--radius-full)',
                   background: 'rgb(var(--color-accent) / 0.1)',
@@ -694,7 +694,7 @@ export default function JobsPage() {
             />
             <button
               type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 text-sm font-semibold transition-all"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] px-5 py-2 text-sm font-semibold transition-all"
               style={{
                 background: 'rgb(var(--color-primary))',
                 color: 'rgb(var(--text-on-primary))',
@@ -729,7 +729,7 @@ export default function JobsPage() {
               key={cat}
               onClick={() => handleCategoryChange(cat)}
               data-category={cat}
-              className="flex-shrink-0 px-4 py-2 text-sm font-medium transition-all whitespace-nowrap"
+              className="flex-shrink-0 min-h-[44px] px-4 py-2 text-sm font-medium transition-all whitespace-nowrap"
               style={{
                 borderRadius: 'var(--radius-full)',
                 border: '1px solid',
@@ -769,7 +769,7 @@ export default function JobsPage() {
             </svg>
             코코봇 찾기
             <span
-              className="text-[0.7rem] px-2 py-0.5 rounded-full"
+              className="text-[0.75rem] px-2 py-0.5 rounded-full"
               style={{ background: 'rgb(var(--bg-muted))' }}
             >
               {botTotal.toLocaleString('ko-KR')}
@@ -796,7 +796,7 @@ export default function JobsPage() {
             </svg>
             일감 찾기
             <span
-              className="text-[0.7rem] px-2 py-0.5 rounded-full"
+              className="text-[0.75rem] px-2 py-0.5 rounded-full"
               style={{ background: 'rgb(var(--bg-muted))' }}
             >
               {jobTotal.toLocaleString('ko-KR')}
