@@ -101,6 +101,25 @@ async function getUserId(req: NextRequest): Promise<string | null> {
 }
 
 /**
+ * botId 를 mcw_bots 의 실제 id 로 해석
+ * URL path 의 botId 는 사실 username 일 수 있으므로 (예: "seonhoegyesa")
+ * conversations.bot_id FK 및 persona-loader 가 요구하는 실제 id 로 변환해 준다.
+ */
+async function resolveBotId(rawBotId: string): Promise<string> {
+  try {
+    const supabase = getSupabaseServer();
+    const { data } = await supabase
+      .from('mcw_bots')
+      .select('id')
+      .or(`id.eq.${rawBotId},username.eq.${rawBotId}`)
+      .maybeSingle();
+    return data?.id || rawBotId;
+  } catch {
+    return rawBotId;
+  }
+}
+
+/**
  * 대화 히스토리 로드 (최근 N개)
  */
 async function loadConversationHistory(
@@ -270,8 +289,11 @@ export async function POST(req: NextRequest): Promise<Response> {
           return;
         }
 
-        // 2. 페르소나 로딩
-        const personaCtx = await loadPersona(botId);
+        // 2. botId 해석 (username → 실제 id) — conversations FK 및 persona 조회 공용
+        const resolvedBotId = await resolveBotId(botId);
+
+        // 3. 페르소나 로딩
+        const personaCtx = await loadPersona(resolvedBotId);
 
         // 3. AI 모델 선택
         const routerResult = selectModel({
@@ -280,10 +302,10 @@ export async function POST(req: NextRequest): Promise<Response> {
         });
         const { selectedModel, emotionTier } = routerResult;
 
-        // 4. conversationId 확인 / 신규 생성
+        // 4. conversationId 확인 / 신규 생성 (FK 만족 위해 resolvedBotId 사용)
         let conversationId = inputConversationId ?? '';
         if (!conversationId) {
-          conversationId = await createConversation(userId, botId);
+          conversationId = await createConversation(userId, resolvedBotId);
         }
 
         // 5. 대화 히스토리 로드
@@ -338,7 +360,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
         // 12. Wiki accumulate 비동기 호출 (복리 축적, 실패해도 무시)
         const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
-        triggerWikiAccumulate(botId, message, fullReply, appUrl, conversationId);
+        triggerWikiAccumulate(resolvedBotId, message, fullReply, appUrl, conversationId);
 
         // 13. done 이벤트 전송
         write('done', JSON.stringify({ messageId }));

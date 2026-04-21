@@ -197,6 +197,23 @@ async function getUserId(req: NextRequest): Promise<string | null> {
   }
 }
 
+/**
+ * botId 를 mcw_bots.id 로 해석 (username 입력도 수용)
+ */
+async function resolveBotId(rawBotId: string): Promise<string> {
+  try {
+    const supabase = getSupabaseServer();
+    const { data } = await supabase
+      .from('mcw_bots')
+      .select('id')
+      .or(`id.eq.${rawBotId},username.eq.${rawBotId}`)
+      .maybeSingle();
+    return data?.id || rawBotId;
+  } catch {
+    return rawBotId;
+  }
+}
+
 // ============================
 // RAG: 쿼리 임베딩 생성
 // ============================
@@ -565,8 +582,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const {
+    let {
       botId,
+    } = body;
+    const {
       message,
       emotionLevel,
       conversationId: inputConversationId,
@@ -599,6 +618,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // 3.5. botId 해석 (username → 실제 mcw_bots.id) — 이후 모든 조회/FK 에 사용
+    botId = await resolveBotId(botId);
 
     // 4. AI 모델 선택 (emotionLevel 기반) — 페르소나 로딩 전에 수행하여 병렬화 가능
     const routerResult = selectModel({ emotionSlider: emotionLevel, costTier });

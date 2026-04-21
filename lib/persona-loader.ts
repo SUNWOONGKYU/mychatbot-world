@@ -204,14 +204,58 @@ export async function loadPersona(
 
   const supabase = getSupabaseServer();
 
-  // mcw_personas 테이블 조회
-  const { data, error } = await supabase
+  // 1) 먼저 botId 그대로 mcw_personas.bot_id 조회
+  //    페르소나가 여러 개인 봇도 있으므로 limit(1) — 첫 페르소나 사용
+  let { data, error } = await supabase
     .from('mcw_personas')
     .select('*')
     .eq('bot_id', botId)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
-  if (error || !data) {
+  // 2) 없으면: botId 가 사실은 username 일 수 있음 → mcw_bots 에서 실제 id 해석
+  if (!data) {
+    const { data: botRow } = await supabase
+      .from('mcw_bots')
+      .select('id')
+      .or(`id.eq.${botId},username.eq.${botId}`)
+      .maybeSingle();
+
+    if (botRow?.id && botRow.id !== botId) {
+      const alt = await supabase
+        .from('mcw_personas')
+        .select('*')
+        .eq('bot_id', botRow.id)
+        .limit(1)
+        .maybeSingle();
+      data = alt.data ?? null;
+      error = alt.error ?? null;
+
+      // 3) 여전히 없으면: 봇은 존재하므로 mcw_bots 필드로 기본 페르소나 합성
+      if (!data) {
+        const { data: botFull } = await supabase
+          .from('mcw_bots')
+          .select('id, bot_name, bot_desc, tone, greeting, category')
+          .eq('id', botRow.id)
+          .maybeSingle();
+
+        if (botFull) {
+          data = {
+            id: `synthesized_${botFull.id}`,
+            bot_id: botFull.id,
+            name: botFull.bot_name || '코코봇',
+            personality: botFull.bot_desc || 'A helpful AI assistant',
+            tone: botFull.tone || 'friendly',
+            greeting: botFull.greeting ?? null,
+            role: botFull.category ?? null,
+            category: botFull.category ?? null,
+          } as PersonaRow;
+        }
+      }
+    }
+  }
+
+  if (!data) {
     throw new Error(
       `Persona not found for botId "${botId}": ${error?.message ?? 'No data returned'}`
     );
