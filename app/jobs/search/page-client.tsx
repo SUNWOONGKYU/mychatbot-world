@@ -332,7 +332,7 @@ function SearchContent() {
       <div className="sticky top-0 z-20 bg-[rgba(15,12,41,0.95)] backdrop-blur-xl border-b border-white/[0.06]">
         <div className="max-w-[1200px] mx-auto px-6 py-4">
           <div className="flex items-center gap-3 mb-3">
-            <Link href="/jobs" className="text-white/40 hover:text-blue-400 text-sm transition-colors">
+            <Link href="/jobs" className="inline-flex items-center min-h-[44px] text-white/40 hover:text-blue-400 text-sm transition-colors">
               ← 구봇구직
             </Link>
             <h1 className="text-lg font-bold text-white">코코봇 검색</h1>

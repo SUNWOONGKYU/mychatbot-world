@@ -37,6 +37,7 @@ const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
       <nav
         ref={ref}
         aria-label="이동 경로"
+        data-breadcrumb=""
         className={cn('flex items-center flex-wrap gap-0', className)}
         {...props}
       >

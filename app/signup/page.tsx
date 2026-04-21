@@ -306,7 +306,7 @@ export default function SignupPage() {
         <div className="text-center mb-8">
           <Link
             href="/"
-            className="inline-block text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded-lg px-1"
+            className="inline-flex items-center justify-center min-h-[44px] text-xl font-extrabold tracking-tight mb-4 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-focus rounded-lg px-1"
             style={{ color: 'var(--interactive-primary)' }}
             aria-label="CoCoBot 홈으로"
           >
