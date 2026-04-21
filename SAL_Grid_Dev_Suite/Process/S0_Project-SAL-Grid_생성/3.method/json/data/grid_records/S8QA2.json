@@ -1,0 +1,51 @@
+{
+  "task_id": "S8QA2",
+  "task_name": "프로덕션 E2E 검증 (봇·음성·관리자 플로우)",
+  "stage": 8,
+  "area": "QA",
+  "task_status": "Pending",
+  "task_progress": 0,
+  "verification_status": "Not Verified",
+  "dependencies": "S8QA1",
+  "task_instruction": "sal-grid/task-instructions/S8QA2_instruction.md",
+  "task_agent": "test-runner-core",
+  "tools": "playwright-mcp",
+  "execution_type": "Human-AI",
+  "generated_files": "",
+  "modification_history": "2026-04-21: 신설 — 배포 후 3가지 플로우(비로그인 봇 조회 / 음성-텍스트 모드 전환 / 관리자 자동 로그인) 실측",
+  "verification_instruction": "sal-grid/verification-instructions/S8QA2_verification.md",
+  "verification_agent": "qa-specialist",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PENDING",
+    "edge_cases": "PENDING",
+    "manual_test": "PENDING — PO 검증 필요"
+  },
+  "build_verification": {
+    "compile": "PASS",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PENDING",
+    "cross_task_connection": "PENDING",
+    "data_flow": "PENDING"
+  },
+  "blockers": {
+    "dependency": "S8QA1 완료 필요",
+    "environment": "None",
+    "external_api": "None",
+    "status": "1 Blocker"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PENDING",
+    "test": "PENDING",
+    "build": "PENDING",
+    "integration": "PENDING",
+    "blockers": "1",
+    "final": "PENDING"
+  },
+  "ai_verification_note": "",
+  "remarks": "wksun999 계정 + 신규 봇 생성·열람 경로 전수 확인."
+}

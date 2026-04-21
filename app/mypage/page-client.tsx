@@ -150,9 +150,11 @@ function ProfileHeader({
 function TabNav({
   activeTab,
   onTabChange,
+  isAdmin = false,
 }: {
   activeTab: TabId;
   onTabChange: (t: TabId) => void;
+  isAdmin?: boolean;
 }) {
   // 모바일(<640px): 가로 스크롤 / 데스크톱(sm+, ≥640px): 세로 사이드바
   return (
@@ -220,6 +222,25 @@ function TabNav({
             <span className="truncate">{item.label}</span>
           </button>
         ))}
+
+        {/* 관리자 전용 메뉴 — 사이드바 하단 (is_admin 일 때만) */}
+        {isAdmin && (
+          <>
+            <div className="my-1 border-t border-[var(--border-default)]" aria-hidden="true" />
+            <a
+              href="/admin"
+              aria-label="관리자 대시보드 이동"
+              className={clsx(
+                'flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium rounded-[var(--radius-md)] transition-colors text-left',
+                'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] focus-visible:ring-offset-1',
+              )}
+            >
+              <span className="text-base leading-none flex-shrink-0" aria-hidden="true">🔒</span>
+              <span className="truncate">관리자 대시보드</span>
+            </a>
+          </>
+        )}
       </div>
     </nav>
   );
@@ -397,7 +418,11 @@ export default function MyPageClient() {
       <div className="sm:flex sm:flex-row sm:gap-6 sm:items-start">
         {/* 탭 네비게이션 — 사이드바 폭 고정 220px */}
         <div className="sm:w-[220px] sm:flex-shrink-0">
-          <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+          <TabNav
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            isAdmin={!!profile?.is_admin}
+          />
         </div>
 
         {/* 탭 콘텐츠 패널 — 남은 공간 차지 */}
@@ -489,23 +514,7 @@ export default function MyPageClient() {
           {activeTab === 'security' && <Tab8Security />}
         </div>
 
-        {/* 관리자 링크 — 관리자 계정에만 뚜렷하게 표시 */}
-        {profile?.is_admin && (
-          <div className="mt-12 mb-4 text-center">
-            <a
-              href="/admin"
-              aria-label="관리자 대시보드"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full transition-all"
-              style={{
-                background: 'rgb(var(--color-primary) / 0.12)',
-                color: 'rgb(var(--color-primary))',
-                border: '1.5px solid rgb(var(--color-primary) / 0.4)',
-              }}
-            >
-              🔒 관리자 대시보드
-            </a>
-          </div>
-        )}
+        {/* 관리자 대시보드 링크는 TabNav 하단 메뉴 항목으로 통합됨 */}
       </div>
       </div>
     </main>

@@ -408,6 +408,7 @@ export default function ChatWindow({
 
   // ── 입력 ───────────────────────────────────────────────────
   const [inputText, setInputText] = useState('');
+  const [inputMode, setInputMode] = useState<'text' | 'voice'>('text');
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const convIdRef = useRef<string>(conversationId);
@@ -1062,13 +1063,62 @@ export default function ChatWindow({
       <div
         className="flex-shrink-0"
         style={{
-          padding: '12px 16px',
+          padding: '8px 16px 12px',
           paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
           background: 'rgb(var(--bg-muted) / 0.95)',
           borderTop: '1px solid rgb(var(--border))',
           zIndex: 20,
         }}
       >
+        {/* 모드 토글 pill — 텍스트 ↔ 음성 */}
+        <div
+          role="tablist"
+          aria-label="입력 모드 선택"
+          style={{
+            display: 'inline-flex',
+            gap: 4,
+            padding: 4,
+            borderRadius: 999,
+            background: 'rgb(var(--bg-subtle))',
+            border: '1px solid rgb(var(--border))',
+            marginBottom: 8,
+          }}
+        >
+          {(['text', 'voice'] as const).map((m) => {
+            const active = inputMode === m;
+            const label = m === 'text' ? '⌨️ 텍스트' : '🎙️ 음성';
+            return (
+              <button
+                key={m}
+                role="tab"
+                aria-selected={active}
+                onClick={() => {
+                  unlockAudio();
+                  // 음성 → 텍스트 전환 시 녹음 중이면 즉시 정지
+                  if (m === 'text' && isRecording) toggleStt();
+                  setInputMode(m);
+                  if (m === 'text') {
+                    setTimeout(() => inputRef.current?.focus(), 0);
+                  }
+                }}
+                style={{
+                  padding: '6px 14px',
+                  border: 'none',
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  background: active ? 'rgb(var(--color-primary))' : 'transparent',
+                  color: active ? 'white' : 'rgb(var(--text-secondary-rgb))',
+                  transition: 'all 150ms',
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
         <div
           className="flex items-end gap-2"
           style={{
@@ -1078,34 +1128,51 @@ export default function ChatWindow({
             padding: '4px 8px',
           }}
         >
-          {/* STT (음성 입력) 버튼 */}
+          {/* STT (음성 입력) 버튼 — 음성 모드에서만 활성 / 텍스트 모드에서는 반투명 */}
           <button
-            onClick={() => { unlockAudio(); toggleStt(); }}
-            title="음성 입력"
+            onClick={() => {
+              unlockAudio();
+              // 음성 버튼을 직접 누르면 자동으로 음성 모드로 전환
+              if (inputMode !== 'voice') setInputMode('voice');
+              toggleStt();
+            }}
+            title={isRecording ? '녹음 정지' : '음성 입력 시작'}
+            aria-label={isRecording ? '녹음 정지' : '음성 입력 시작'}
             className="flex-shrink-0 flex items-center justify-center"
             style={{
               width: 40,
               height: 40,
               borderRadius: '50%',
               border: 'none',
-              background: isRecording ? 'rgba(239,68,68,0.2)' : 'transparent',
+              background: isRecording
+                ? 'rgba(239,68,68,0.2)'
+                : inputMode === 'voice'
+                  ? 'rgb(var(--color-primary) / 0.12)'
+                  : 'transparent',
               fontSize: '1.2rem',
               cursor: 'pointer',
+              opacity: inputMode === 'text' ? 0.5 : 1,
               animation: isRecording ? 'pulse-record 1.5s infinite' : undefined,
+              transition: 'all 150ms',
             }}
           >
-            🎙️
+            {isRecording ? '⏹️' : '🎙️'}
           </button>
 
-          {/* 텍스트 입력 */}
+          {/* 텍스트 입력 — 모드에 따라 placeholder / disabled 상태 변경 */}
           <textarea
             ref={inputRef}
             value={inputText}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder={isRecording ? '음성 입력 중...' : '메시지를 입력하세요...'}
+            placeholder={
+              inputMode === 'voice'
+                ? (isRecording ? '🔴 녹음 중 — 버튼을 다시 누르면 정지' : '🎙️ 버튼을 눌러 음성 입력을 시작하세요')
+                : '메시지를 입력하세요...'
+            }
             rows={1}
             disabled={isSending}
+            readOnly={inputMode === 'voice' && !inputText}
             style={{
               flex: 1,
               background: 'transparent',
@@ -1119,6 +1186,7 @@ export default function ChatWindow({
               outline: 'none',
               fontFamily: 'inherit',
               lineHeight: 1.5,
+              cursor: inputMode === 'voice' && !inputText ? 'default' : 'text',
             }}
             onFocus={() => {
               setTimeout(() => {

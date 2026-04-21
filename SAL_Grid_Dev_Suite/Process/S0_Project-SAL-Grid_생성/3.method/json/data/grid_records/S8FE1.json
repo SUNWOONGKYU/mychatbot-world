@@ -1,0 +1,51 @@
+{
+  "task_id": "S8FE1",
+  "task_name": "봇 페이지 페르소나 이름 표시 수정 (공개 API 연동)",
+  "stage": 8,
+  "area": "FE",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S8BA1",
+  "task_instruction": "sal-grid/task-instructions/S8FE1_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/bot/[botId]/page.tsx",
+  "modification_history": "2026-04-21: 신설 — 김변호사 봇 페이지에서 1번째 페르소나 이름이 'AI Assistant'로 보이는 버그 | 2026-04-21: Executed — createClient(anon) 직접 호출 → /api/bots/public/[username] fetch로 변경, mcw_personas 조인 결과를 BotData.personas로 매핑, 최종 폴백은 URL decode된 botId 사용",
+  "verification_instruction": "sal-grid/verification-instructions/S8FE1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PASS — API 경로 정상",
+    "edge_cases": "PASS — 페르소나 0개 시 기본 페르소나 1개 생성",
+    "manual_test": "PENDING — 배포 후 /bot/gim-byeonhosa 육안 확인"
+  },
+  "build_verification": {
+    "compile": "PASS",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PASS"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S8BA1 API 소비 확인",
+    "cross_task_connection": "PASS — ChatWindow 인터페이스 불변",
+    "data_flow": "PASS"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 2/2",
+    "build": "PASS 3/4",
+    "integration": "PASS 3/3",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "ai_verification_note": "검증자: code-reviewer-core | 2026-04-21 | '@/lib/supabase' import 제거, raw.personas 참조 제거(실제 mcw_bots 스키마에 없음), 'AI Assistant' 하드코딩 → URL decode 기반 fallback.",
+  "remarks": "MBO 이슈 1 (페르소나 이름 누락) 해결."
+}

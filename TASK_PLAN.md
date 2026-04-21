@@ -2,9 +2,9 @@
 
 > **작성일**: 2026-03-31
 > **수정일**: 2026-04-21
-> **버전**: v4.6
+> **버전**: v4.7
 > **프로젝트**: My Chatbot World (mychatbot.world)
-> **총 Task 수**: 87개 (v4.5 Round 5 — health check 고도화)
+> **총 Task 수**: 99개 (v4.7 — S8 런칭 후 사용자 피드백 8개 신설)
 > **아키텍처**: Vanilla → React/Next.js 점진적 전환
 > **배포**: Vercel | **DB**: Supabase
 > **현황**: 170+ 파일, 52페이지, 33 API 엔드포인트, 6 DB 테이블
@@ -22,7 +22,8 @@
 | S5 | 디자인 혁신 + Wiki-e-RAG | 35 | 100% (35/35 완료) |
 | S6 | 사용자 플로우 E2E + 프로덕션 블로커 해결 | 11 | 91% (10/11 완료, S6QA1 Pending) |
 | S7 | 프로덕션 런칭 준비 MBO | 4 | 100% (4/4 완료) |
-| **합계** | | **91** | **~52%** |
+| S8 | 런칭 후 사용자 피드백 대응 MBO | 8 | 0% (0/8) |
+| **합계** | | **99** | **~53%** |
 
 ---
 
@@ -219,6 +220,24 @@
 
 ---
 
+## S8 — 런칭 후 사용자 피드백 대응 MBO (8 Tasks)
+
+> 목표: 2026-04-21 MBO "봇 공개 조회 + 음성/텍스트 모드 UX + 관리자 자동 인증" — PO 직접 E2E 테스트 중 발견된 3건(봇 페이지 AI Assistant 오표시 / 입력 모드 전환 UI 부재 / 관리자 비밀번호 폼 잔존)을 일괄 해결.
+> **배경**: S7 런칭 직후 PO가 wksun999 계정으로 직접 봇 생성 → 접속 → 관리자 진입 흐름을 테스트하며 실측 피드백 수집. Critical UX 이슈를 MBO 목표서 단일 사이클로 묶어 처리.
+
+| Task ID | Task명 | Area | Dependencies | Agent | Status |
+|---------|--------|------|-------------|-------|--------|
+| S8BA1 | 공개 봇 조회 API (service role, RLS 우회) — `/api/bots/public/[username]` | BA | — | `backend-developer-core` | Completed |
+| S8FE1 | 봇 상세 페이지 공개 API 전환 + mcw_personas 정규화 (AI Assistant 폴백 제거) | FE | S8BA1 | `frontend-developer-core` | Completed |
+| S8FE2 | 채팅 입력 영역 음성/텍스트 모드 토글 pill + 녹음 상태 표시 | FE | — | `frontend-developer-core` | Completed |
+| S8FE3 | 관리자 페이지 비밀번호 폼 제거 + Bearer/is_admin 자동 인증 | FE | — | `frontend-developer-core` | Completed |
+| S8FE4 | 마이페이지 관리자 대시보드 링크 → 사이드바 하단 메뉴로 이동 | FE | — | `frontend-developer-core` | Completed |
+| S8QA1 | 커밋·푸시·Vercel 배포 (S8 전체 변경 일괄) | QA | S8BA1·S8FE1·S8FE2·S8FE3·S8FE4 | `devops-engineer-core` | Pending |
+| S8QA2 | 프로덕션 E2E 검증 (wksun999 계정 + 신규 봇 생성·열람·관리자 진입) | QA | S8QA1 | `qa-engineer-core` | Pending |
+| S8SC1 | SAL Grid 기록 동기화 + MBO 결과 보고서 작성 | SC | — | `documentation-writer-core` | In Progress |
+
+---
+
 ## 의존성 요약 다이어그램
 
 ```
@@ -343,3 +362,4 @@ S4 (개발 마무리)
 | v4.4 | 2026-04-20 | 프로덕션 블로커 Round 4 — 성능 이슈 수정. S6BA5: GET /api/skills/my N+1 쿼리(installations.map(loadSkillMeta) → 단일 .in) 제거, 쿼리 수 installations+2 → 3 고정. 데드 코드 loadSkillMeta 헬퍼 삭제. payment idempotency는 pending+admin approval 플로우로 실질 위험 낮아 스킵. S6 9→10 Tasks. 총 85개→86개. |
 | v4.5 | 2026-04-20 | 프로덕션 블로커 Round 5 — 운영 가시성 강화. S6BI2: /api/health 단순 {status:'ok'} → REQUIRED_ENVS 누락 검사 + Supabase count head 경량 쿼리 검증 → 정상 200 / 실패 503 + checks 상세 + missingEnvs 노출. 로드밸런서·uptime 서비스가 DB 장애/설정 누락을 정확히 감지 가능. S6 10→11 Tasks. 총 86개→87개. |
 | v4.6 | 2026-04-21 | 위저드 페르소나 분류 + 게스트 페이지 정렬 (기존 Task 수정, 신규 Task 없음). **S2FE1**: app/create/page.tsx 인증 게이트 추가(미로그인 → /login?returnTo=/create), CreateWizard.tsx PersonaData에 type:'avatar'\|'helper'+presetId 필드, Step2Persona.tsx 분류 토글+Option C 접힘형 6-preset 카드(이름·호칭·역할 자동 채움). **S5FE9**: app/guest/page-client.tsx 카테고리 5+5 → SVG 다이어그램과 동일한 6+6 분류(아바타형: 🏢기업경영자/🍱소상공인/⚖️전문직 종사자/🎨프리랜서/🗳️정치인/⚙️기타, 도우미형: 💼업무/📚학습/🎨창작/💪건강/🏠생활/⚙️기타) + 배너 카피 분류 기준 한 줄 추가. app/api/guest-create/route.ts TEMPLATE_BOT_MAP에 신 분류 12개 templateId 추가(기존 데모 봇 ID 재사용), 구 분류 호환성 유지. 총 87개 유지. |
+| v4.7 | 2026-04-21 | **S8 Stage 신설 — 런칭 후 사용자 피드백 대응 MBO 8개 Task**. 배경: PO가 wksun999 계정으로 E2E 테스트 중 3건 Critical UX 이슈 보고. **S8BA1**: `/api/bots/public/[username]` 공개 조회 API 신설(service role로 RLS 우회, `mcw_bots` + `mcw_personas` 조인). **S8FE1**: `app/bot/[botId]/page.tsx` anon Supabase 직접쿼리(RLS 차단) 제거 → 공개 API로 전환, personas 정규화, "AI Assistant" 하드코딩 폴백을 URL slug 기반으로 교체. **S8FE2**: `components/bot/chat-window.tsx` 입력 영역에 `⌨️ 텍스트 \| 🎙️ 음성` 모드 토글 pill 추가, 녹음 중 🔴/⏹️ 상태 표시. **S8FE3**: `app/admin/page.tsx` AdminLoginForm + loginStyles + sessionStorage('mcw-admin-key') 제거 → `getToken()` + Bearer `/api/admin/stats` 검증으로 자동 인증. **S8FE4**: `app/mypage/page-client.tsx` 하단 중앙 관리자 링크 → TabNav 사이드바 하단 메뉴 항목으로 이동(profile.is_admin 조건부). 총 87개→95개. tsc 0 errors. |

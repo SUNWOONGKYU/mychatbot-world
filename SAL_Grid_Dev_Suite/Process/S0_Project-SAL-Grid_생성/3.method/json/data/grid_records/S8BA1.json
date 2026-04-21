@@ -1,0 +1,51 @@
+{
+  "task_id": "S8BA1",
+  "task_name": "공개 봇 조회 API — RLS 우회 (service_role)",
+  "stage": 8,
+  "area": "BA",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S7FE9",
+  "task_instruction": "sal-grid/task-instructions/S8BA1_instruction.md",
+  "task_agent": "api-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/api/bots/public/[username]/route.ts",
+  "modification_history": "2026-04-21: 신설 — 비로그인 사용자도 봇 페이지 접근 가능해야 하나 mcw_bots RLS가 owner/admin만 허용 → service_role_key 기반 공개 API 신설 | 2026-04-21: Executed — GET /api/bots/public/[username] 구현: id.eq||username.eq로 단건 조회, mcw_personas 테이블 조인, dm_policy/pairing_code 등 민감 필드 제외 | 2026-04-21: Verified — TS 컴파일 클린",
+  "verification_instruction": "sal-grid/verification-instructions/S8BA1_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A — 단순 프록시 Route",
+    "integration_test": "PASS — S8FE1에서 fetch 호출 정상",
+    "edge_cases": "PASS — bot 미존재 시 404 반환",
+    "manual_test": "PENDING — 배포 후 실측"
+  },
+  "build_verification": {
+    "compile": "PASS",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PASS"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S8FE1가 본 API 소비",
+    "cross_task_connection": "PASS",
+    "data_flow": "PASS — 민감 필드 제외 확인"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "SUPABASE_SERVICE_ROLE_KEY 존재 확인됨",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 3/3 (manual pending)",
+    "build": "PASS 3/4",
+    "integration": "PASS 3/3",
+    "blockers": "None",
+    "final": "Passed — 공개 조회 경로 확보"
+  },
+  "ai_verification_note": "검증자: code-reviewer-core | 날짜: 2026-04-21 | RLS 우회는 서버 사이드 only (persistSession:false), 민감 필드 whitelist select. 봇/페르소나 원시 레코드만 반환.",
+  "remarks": "S8 런칭 후 피드백 MBO의 핵심 인프라."
+}

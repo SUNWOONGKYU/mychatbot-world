@@ -1,0 +1,51 @@
+{
+  "task_id": "S8FE3",
+  "task_name": "관리자 페이지 비밀번호 폼 제거 + Bearer 자동 인증",
+  "stage": 8,
+  "area": "FE",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S7FE9",
+  "task_instruction": "sal-grid/task-instructions/S8FE3_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/admin/page.tsx",
+  "modification_history": "2026-04-21: 신설 — 관리자로 로그인한 이메일이면 이중 비밀번호 없이 접근되어야 함(사용자 피드백) | 2026-04-21: Executed — AdminLoginForm 컴포넌트 삭제(152-206줄), loginStyles 상수 삭제(738-833줄), useEffect 재작성: getToken() → Authorization: Bearer → /api/admin/stats 403/200 분기, !authed 브랜치는 🔒 권한부족 메시지로 교체, onLogout은 /login 리다이렉트",
+  "verification_instruction": "sal-grid/verification-instructions/S8FE3_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PASS — /api/admin/stats Bearer 검증 경로 동일",
+    "edge_cases": "PASS — 토큰 없음→/login, 403→권한 메시지, 기타→'인증 확인 실패'",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PASS"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — lib/admin-auth.ts (is_admin 체크) 불변",
+    "cross_task_connection": "PASS",
+    "data_flow": "PASS"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 2/2",
+    "build": "PASS 3/4",
+    "integration": "PASS 3/3",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "ai_verification_note": "검증자: code-reviewer-core | 2026-04-21 | 833→737줄 축소. profiles.is_admin 기반 서버 권한 체크는 유지(클라이언트 UI만 단순화).",
+  "remarks": "MBO 이슈 3 (관리자 비밀번호 폼) 해결."
+}

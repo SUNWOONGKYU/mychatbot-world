@@ -1,5 +1,6 @@
 // @task S5FE7 - 관리자 대시보드 메인 페이지 (섹션1~4)
 // @task S5FE8 - 관리자 대시보드 섹션5~8 (코코봇/스킬/구봇구직/커뮤니티) 추가
+// @update 2026-04-21 - Admin Key 폼 제거, Supabase 세션 + profiles.is_admin 기반 자동 인증
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -12,6 +13,7 @@ import SectionBots from './sections/SectionBots';
 import SectionSkills from './sections/SectionSkills';
 import SectionJobs from './sections/SectionJobs';
 import SectionCommunity from './sections/SectionCommunity';
+import { getToken } from '@/lib/auth-client';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────
 export type AdminSection =
@@ -38,22 +40,41 @@ export default function AdminPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [authed, setAuthed] = useState(false);
 
-  // ── 관리자 키 검증 ──────────────────────────────────────────────────────
+  const [authError, setAuthError] = useState<string>('');
+
+  // ── Supabase 세션 기반 자동 인증 (profiles.is_admin 검증) ───────────────
   useEffect(() => {
-    // 세션스토리지에서 관리자 키 복원
-    const storedKey = sessionStorage.getItem('mcw-admin-key') || '';
-    if (storedKey) {
-      setAdminKey(storedKey);
-      setAuthed(true);
-    }
-    setAuthChecked(true);
+    (async () => {
+      const token = getToken();
+      if (!token) {
+        window.location.href = '/login?next=/admin';
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin/stats', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          setAdminKey(token);
+          setAuthed(true);
+        } else if (res.status === 403) {
+          setAuthError('관리자 권한이 없습니다.');
+        } else {
+          setAuthError('인증 확인에 실패했습니다.');
+        }
+      } catch {
+        setAuthError('네트워크 오류가 발생했습니다.');
+      } finally {
+        setAuthChecked(true);
+      }
+    })();
   }, []);
 
   // ── 배지 로드 ─────────────────────────────────────────────────────────
-  const loadBadges = useCallback(async (key: string) => {
+  const loadBadges = useCallback(async (token: string) => {
     try {
       const res = await fetch('/api/admin/stats', {
-        headers: { 'X-Admin-Key': key },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) return;
       const d = await res.json();
@@ -73,7 +94,7 @@ export default function AdminPage() {
     }
   }, [authed, adminKey, loadBadges]);
 
-  // ── 로그인 폼 ─────────────────────────────────────────────────────────
+  // ── 인증 체크 중 로딩 ─────────────────────────────────────────────────
   if (!authChecked) {
     return (
       <div className="admin-loading">
@@ -82,12 +103,39 @@ export default function AdminPage() {
     );
   }
 
+  // ── 권한 없음: /mypage 로 돌아가는 안내 ──────────────────────────────
   if (!authed) {
-    return <AdminLoginForm onAuth={(key) => {
-      sessionStorage.setItem('mcw-admin-key', key);
-      setAdminKey(key);
-      setAuthed(true);
-    }} />;
+    return (
+      <div className="admin-loading" style={{ flexDirection: 'column', gap: '1rem', padding: '2rem' }}>
+        <div style={{ fontSize: '2.5rem' }}>🔒</div>
+        <p style={{ color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem', fontWeight: 600 }}>
+          {authError || '관리자 권한이 없습니다.'}
+        </p>
+        <a
+          href="/mypage"
+          style={{
+            padding: '0.6rem 1.2rem',
+            background: '#818cf8',
+            color: '#fff',
+            borderRadius: 8,
+            textDecoration: 'none',
+            fontSize: '0.875rem',
+            fontWeight: 600,
+          }}
+        >
+          마이페이지로 돌아가기
+        </a>
+        <style>{`
+          .admin-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: rgb(var(--bg-base));
+          }
+        `}</style>
+      </div>
+    );
   }
 
   // ── 메인 대시보드 ─────────────────────────────────────────────────────
@@ -99,9 +147,8 @@ export default function AdminPage() {
         badges={badges}
         adminKey={adminKey}
         onLogout={() => {
-          sessionStorage.removeItem('mcw-admin-key');
-          setAuthed(false);
-          setAdminKey('');
+          // Supabase 세션 로그아웃 — /login으로 이동
+          window.location.href = '/login';
         }}
       />
       <main className="admin-main">
@@ -144,61 +191,6 @@ export default function AdminPage() {
 
       {/* 관리자 전용 스타일 */}
       <style>{adminStyles}</style>
-    </div>
-  );
-}
-
-// ── 로그인 폼 컴포넌트 ─────────────────────────────────────────────────────
-function AdminLoginForm({ onAuth }: { onAuth: (key: string) => void }) {
-  const [key, setKey] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!key.trim()) return;
-    setLoading(true);
-    setError('');
-    try {
-      const res = await fetch('/api/admin/stats', {
-        headers: { 'X-Admin-Key': key.trim() },
-      });
-      if (res.status === 403) {
-        setError('관리자 키가 올바르지 않습니다.');
-      } else if (res.ok) {
-        onAuth(key.trim());
-      } else {
-        setError('서버 오류가 발생했습니다.');
-      }
-    } catch {
-      setError('네트워크 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="admin-login-wrap">
-      <form className="admin-login-form" onSubmit={handleSubmit}>
-        <div className="admin-login-logo">MCW Admin</div>
-        <p className="admin-login-sub">관리자 전용 대시보드</p>
-        <div className="admin-login-field">
-          <label htmlFor="adminKey">Admin Key</label>
-          <input
-            id="adminKey"
-            type="password"
-            placeholder="관리자 키를 입력하세요"
-            value={key}
-            onChange={e => setKey(e.target.value)}
-            autoComplete="off"
-          />
-        </div>
-        {error && <p className="admin-login-error">{error}</p>}
-        <button type="submit" disabled={loading || !key.trim()} className="admin-login-btn">
-          {loading ? '확인 중...' : '로그인'}
-        </button>
-      </form>
-      <style>{loginStyles}</style>
     </div>
   );
 }
@@ -743,99 +735,3 @@ const adminStyles = `
   }
 `;
 
-const loginStyles = `
-  .admin-login-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: rgb(var(--bg-base));
-    font-family: 'PretendardVariable', 'Pretendard', 'Malgun Gothic', sans-serif;
-  }
-
-  .admin-login-form {
-    background: rgb(var(--surface-1));
-    border: 1px solid rgb(var(--border-subtle-rgb));
-    border-radius: 16px;
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 380px;
-  }
-
-  .admin-login-logo {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #818cf8;
-    text-align: center;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
-  }
-
-  .admin-login-sub {
-    text-align: center;
-    font-size: 0.83rem;
-    color: rgb(var(--text-muted));
-    margin-bottom: 2rem;
-  }
-
-  .admin-login-field {
-    margin-bottom: 1rem;
-  }
-
-  .admin-login-field label {
-    display: block;
-    font-size: 0.78rem;
-    color: rgb(var(--text-secondary-rgb));
-    margin-bottom: 0.35rem;
-    font-weight: 500;
-  }
-
-  .admin-login-field input {
-    width: 100%;
-    background: rgb(var(--bg-muted));
-    border: 1px solid rgb(var(--border-subtle-rgb));
-    border-radius: 8px;
-    padding: 0.65rem 0.9rem;
-    color: rgb(var(--text-primary-rgb));
-    font-size: 0.9rem;
-    outline: none;
-    font-family: inherit;
-    box-sizing: border-box;
-    transition: border-color 0.15s;
-  }
-
-  .admin-login-field input:focus {
-    border-color: #818cf8;
-  }
-
-  .admin-login-error {
-    font-size: 0.8rem;
-    color: #f87171;
-    margin-bottom: 0.75rem;
-    text-align: center;
-  }
-
-  .admin-login-btn {
-    width: 100%;
-    padding: 0.7rem;
-    background: #818cf8;
-    color: rgb(var(--text-primary-rgb));
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.15s;
-    margin-top: 0.5rem;
-  }
-
-  .admin-login-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .admin-login-btn:hover:not(:disabled) {
-    opacity: 0.85;
-  }
-`;

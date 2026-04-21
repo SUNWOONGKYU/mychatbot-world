@@ -14,7 +14,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import ChatWindow, { type BotData } from '@/components/bot/chat-window';
-import { createClient } from '@/lib/supabase';
 
 // ============================
 // 상수
@@ -67,46 +66,60 @@ export default function BotChatPage() {
     loadedRef.current = true;
 
     async function fetchBot() {
-      // 1차: Supabase mcw_bots 테이블
+      // 1차: 공개 조회 API (service role로 RLS 우회 — 로그인 여부 무관)
       try {
-        const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
-        const { data, error } = await supabase
-          .from('mcw_bots')
-          .select('*')
-          .or(`id.eq.${botId},username.eq.${botId}`)
-          .single();
-
-        if (!error && data) {
-          const raw = data as Record<string, unknown>;
-          let personas = (raw.personas as BotData['personas']) || [];
-          if (!personas || personas.length === 0) {
-            personas = [{
-              id: 'default',
-              name: (raw.bot_name as string) || (raw.botName as string) || 'Bot',
-              role: (raw.personality as string) || 'AI Assistant',
-              model: 'logic',
-              isVisible: true,
-            }];
+        const res = await fetch(`/api/bots/public/${encodeURIComponent(botId)}`, {
+          cache: 'no-store',
+        });
+        if (res.ok) {
+          const json = (await res.json()) as {
+            success: boolean;
+            data?: {
+              bot: Record<string, unknown>;
+              personas: Array<Record<string, unknown>>;
+            };
+          };
+          if (json.success && json.data?.bot) {
+            const raw = json.data.bot;
+            const botName =
+              (raw.bot_name as string) || (raw.botName as string) || 'Bot';
+            // mcw_personas 테이블에서 직접 로드한 페르소나 목록을 BotData 스키마로 변환
+            let personas: BotData['personas'] = (json.data.personas || []).map((p) => ({
+              id: String(p.id ?? ''),
+              name: (p.name as string) || botName,
+              role: (p.role as string) || '',
+              model: (p.model as string) || 'logic',
+              category: (p.category as string) || undefined,
+              isVisible: p.is_visible !== false,
+              isPublic: p.is_public !== false,
+              userTitle: (p.user_title as string) || '',
+              greeting: (p.greeting as string) || '',
+              faqs: (p.faqs as BotData['faqs']) || [],
+            }));
+            // 페르소나가 없으면 봇 이름 기반 기본 페르소나 1개 생성
+            if (personas.length === 0) {
+              personas = [{
+                id: 'default',
+                name: botName,
+                role: (raw.category as string) || '',
+                model: 'logic',
+                isVisible: true,
+              }];
+            }
+            setBotData({
+              id: (raw.id as string) || botId,
+              botName,
+              username: (raw.username as string) || '',
+              personality: (raw.bot_desc as string) || '',
+              greeting: (raw.greeting as string) || '',
+              tone: (raw.tone as string) || '',
+              voice: (raw.voice as string) || '',
+              faqs: (raw.faqs as BotData['faqs']) || [],
+              personas,
+              ownerId: (raw.owner_id as string) || '',
+            });
+            return;
           }
-          setBotData({
-            id: (raw.id as string) || botId,
-            botName: (raw.bot_name as string) || (raw.botName as string) || 'Bot',
-            username: (raw.username as string) || '',
-            personality: (raw.personality as string) || '',
-            greeting: (raw.greeting as string) || '',
-            tone: (raw.tone as string) || '',
-            voice: (raw.voice as string) || '',
-            faqs: (raw.faqs as BotData['faqs']) || [],
-            personas,
-            ownerId: (raw.owner_id as string) || (raw.ownerId as string) || '',
-            dmPolicy: (raw.dm_policy as string) || (raw.dmPolicy as string) || '',
-            allowedUsers: (raw.allowed_users as string[]) || [],
-            pairingCode: (raw.pairing_code as string) || (raw.pairingCode as string) || '',
-          });
-          return;
         }
       } catch { /* fallback */ }
 
@@ -134,18 +147,20 @@ export default function BotChatPage() {
         }
       } catch { /* fallback */ }
 
-      // 3차: 기본 봇
+      // 3차: 최종 폴백 — 네트워크·저장소 모두 실패한 경우에만
+      //   URL의 botId를 봇 이름으로 대체해, "AI Assistant" 같은 오인 라벨이 보이지 않도록 함
+      const fallbackName = decodeURIComponent(botId).replace(/-/g, ' ') || '코코봇';
       setBotData({
         id: botId,
-        botName: 'Bot',
+        botName: fallbackName,
         username: botId,
-        personality: 'AI Assistant 코코봇입니다.',
+        personality: '',
         greeting: '안녕하세요! 무엇이든 물어보세요.',
         faqs: [],
         personas: [{
           id: 'default',
-          name: 'AI Assistant',
-          role: 'AI Assistant 코코봇입니다.',
+          name: fallbackName,
+          role: '',
           model: 'logic',
           isVisible: true,
           category: 'avatar',

@@ -1,0 +1,51 @@
+{
+  "task_id": "S8FE4",
+  "task_name": "마이페이지 관리자 링크 사이드바 이동",
+  "stage": 8,
+  "area": "FE",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S8FE3",
+  "task_instruction": "sal-grid/task-instructions/S8FE4_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/mypage/page-client.tsx",
+  "modification_history": "2026-04-21: 신설 — 기존 /mypage 하단 중앙 관리자 링크를 사이드바 메뉴 하단으로 이동(사용자 요청) | 2026-04-21: Executed — TabNav signature에 isAdmin prop 추가, 데스크탑 사이드바 NAV_ITEMS.map 종료 직후 is_admin일 때 구분선 + 🔒 관리자 대시보드 링크 삽입, 기존 하단 중앙 블록(513-529줄) 삭제",
+  "verification_instruction": "sal-grid/verification-instructions/S8FE4_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PASS — profile.is_admin boolean 전달",
+    "edge_cases": "PASS — 비관리자는 링크 비노출",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PASS"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS",
+    "cross_task_connection": "PASS — 네비 4대 메뉴 규칙 준수(메모리)",
+    "data_flow": "PASS"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 2/2",
+    "build": "PASS 3/4",
+    "integration": "PASS 3/3",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "ai_verification_note": "검증자: code-reviewer-core | 2026-04-21 | aria-label='관리자 대시보드 이동' 추가. 220px 사이드바 레이아웃(recent commit 2d3c7c5) 유지.",
+  "remarks": "관리자 접근 UX 개선."
+}

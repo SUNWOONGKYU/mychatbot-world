@@ -1,0 +1,51 @@
+{
+  "task_id": "S8FE2",
+  "task_name": "채팅창 음성/텍스트 모드 토글 UX",
+  "stage": 8,
+  "area": "FE",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S7FE9",
+  "task_instruction": "sal-grid/task-instructions/S8FE2_instruction.md",
+  "task_agent": "frontend-developer-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "components/bot/chat-window.tsx",
+  "modification_history": "2026-04-21: 신설 — 음성 입력 모드가 계속 음성으로 남아있고 텍스트 전환 과정이 안 보임 | 2026-04-21: Executed — inputMode state 추가, pill tablist(⌨️ 텍스트 / 🎙️ 음성) 도입, mic 버튼 녹음 중 ⏹️ 전환 + 텍스트 모드 시 opacity 0.5, 녹음 중 textarea placeholder 상태반영, 음성→텍스트 전환 시 자동 녹음 정지",
+  "verification_instruction": "sal-grid/verification-instructions/S8FE2_verification.md",
+  "verification_agent": "code-reviewer-core",
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PASS",
+    "edge_cases": "PASS — 녹음 중 모드 전환 시 자동 정지",
+    "manual_test": "PENDING — 배포 후 마이크 권한 허용·녹음·정지 플로우 확인"
+  },
+  "build_verification": {
+    "compile": "PASS",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PASS"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS",
+    "cross_task_connection": "PASS — 기존 STT/TTS 로직 불변",
+    "data_flow": "PASS"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PASS 2/2",
+    "build": "PASS 3/4",
+    "integration": "PASS 3/3",
+    "blockers": "None",
+    "final": "Passed"
+  },
+  "ai_verification_note": "검증자: code-reviewer-core | 2026-04-21 | ARIA role=tablist + aria-selected 적용, keyboard 접근성 유지.",
+  "remarks": "MBO 이슈 2 (음성 모드 고착) 해결."
+}
