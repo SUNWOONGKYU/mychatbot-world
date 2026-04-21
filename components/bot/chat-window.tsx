@@ -997,7 +997,7 @@ export default function ChatWindow({
           overscrollBehaviorY: 'contain',
         }}
       >
-        {/* 환영 화면 — embedded 모드에서는 외부 래퍼(/hub TabChatWindow)가 대신 렌더하므로 숨김 */}
+        {/* 환영 화면 — embedded 모드에서는 이름/설명은 외부 래퍼가 렌더하므로 숨김 */}
         {showWelcome && !embedded && (
           <div className="text-center" style={{ padding: '12px 16px' }}>
             <h2 style={{ color: 'rgb(var(--text-primary-rgb))', marginBottom: 8 }}>
@@ -1032,6 +1032,15 @@ export default function ChatWindow({
                 {f.q}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* 준비 상태 문구 — embedded 모드 전용 (FAQ 물방울 밑) */}
+        {showWelcome && embedded && (
+          <div className="text-center" style={{ padding: '4px 16px' }}>
+            <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>
+              ● 대화할 준비가 되었습니다
+            </span>
           </div>
         )}
 

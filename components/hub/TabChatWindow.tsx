@@ -116,7 +116,7 @@ export default function TabChatWindow({ botId }: Props) {
 
   return (
     <div className="flex h-full flex-col">
-      {/* ── 코코봇 헤더 — 중앙 정렬, 이름+상태+설명 ─────────── */}
+      {/* ── 코코봇 헤더 — 중앙 정렬, 이름+인사말만 ─────────── */}
       <header
         className="flex flex-shrink-0 flex-col items-center gap-1 border-b border-border-default bg-surface-1 px-4 py-3 text-center"
         aria-label={`활성 코코봇: ${displayName}`}
@@ -131,9 +131,6 @@ export default function TabChatWindow({ botId }: Props) {
           <h2 className="text-base font-bold text-text-primary [word-break:keep-all]">
             {displayName}
           </h2>
-          <span className="text-xs text-state-success-fg">
-            ● 대화할 준비가 되었습니다
-          </span>
         </div>
         {displayDesc && (
           <p className="max-w-2xl text-xs text-text-secondary [word-break:keep-all]">
