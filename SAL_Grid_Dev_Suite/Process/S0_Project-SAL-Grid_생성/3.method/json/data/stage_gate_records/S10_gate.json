@@ -1,0 +1,24 @@
+{
+  "stage": 10,
+  "stage_name": "마이페이지 Tab2 6도구 연동",
+  "stage_name_en": "MyPage Tab2 6-Tools Integration",
+  "total_tasks": 14,
+  "completed_tasks": 13,
+  "verification_status": "AI Verified",
+  "ai_verification_note": "S10 Stage — 14 Tasks 중 13 Completed+Verified (DB2/BA4/FE7). DB 마이그레이션 2건(mcw_bot_skills 테이블, mcw_bots tone/persona_traits/learning_sources 컬럼) Supabase Management API로 실제 적용 완료. BA 4종(chat-logs CRUD, bot-skills CRUD, community bot_id 필터, bot PATCH 화이트리스트) owner 체크 + Bearer 인증 + RLS 검증 통과. FE 7종 패널 (QR/ChatLog/Kb/SkillsMount/Learning/Community/BotSettings) tsc 클린 + Tab2BotManage 와이어링 완료, '추후 연동 예정' 플레이스홀더 전량 제거. 배포 commit 7eff06c 프로덕션 HTTP 200 확인. 남은 Task: S10QA1 (E2E 스크립트 2종 작성 완료, TEST_USER_EMAIL/PASSWORD env 제공 시 자동 실행). MBO KPI: 플레이스홀더 6→0 ✓ / QR 0%→100% ✓ / 설정 저장 라운드트립 0%→100% ✓ / 6/6 200 응답은 자동 실측 보류. PO 자가 테스트 또는 스모크 실행 후 최종 Approved 전환.",
+  "ai_verification_date": "2026-04-21",
+  "verification_report_path": "stage-gates/S10GATE_verification_report.md",
+  "stage_gate_status": "AI Verified",
+  "po_approval_status": "Not Started",
+  "po_approval_user": "",
+  "po_approval_note": "",
+  "po_approval_date": "",
+  "checklist": {
+    "all_tasks_completed": false,
+    "all_verifications_passed": false,
+    "no_blockers": false,
+    "build_success": true,
+    "test_success": false
+  },
+  "remarks": "2026-04-21: S10 Stage MBO (2026-04-21 12:50 PO 승인) 14 Tasks 중 13 완료. S10QA1 자동 스모크 실행은 테스트 계정 env 미제공으로 보류. 코드/배포/DB 모두 live — PO 자가 테스트 시 즉시 Approved 가능. 빌드(tsc+deploy) 성공, 테스트(E2E 자동 실행) 보류 → test_success=false 로 보수적 기록. no_blockers=false(env 1건). 실제 기능 차단은 없음."
+}
