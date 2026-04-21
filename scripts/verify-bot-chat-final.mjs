@@ -128,14 +128,27 @@ if (await sendBtn.count()) {
 
 console.log('[A-3] 응답 대기 (최대 20초)...');
 let reply = '';
+const USER_MSG = '안녕하세요, 대화가 가능한가요?';
 for (let i = 0; i < 40; i++) {
   await page.waitForTimeout(500);
-  const bubbles = await page.locator('[class*="bubble"], [class*="message"], .whitespace-pre-wrap').allTextContents();
-  const nonUser = bubbles.filter((t) => t && !t.includes('안녕하세요, 대화가 가능') && t.length > 5
-    && !t.includes('대화할 준비') && !t.includes('로그인이 만료'));
-  if (nonUser.length > 0) {
-    reply = nonUser[nonUser.length - 1];
-    if (reply.length > 20) break;
+  // 왼쪽(봇) 버블만 수집 — 오른쪽(user) 버블/안내문은 제외
+  const allText = await page.locator('main, body').innerText().catch(() => '');
+  // 봇 응답 버블 추출: 사용자 메시지를 제외하고, "대화할 준비" 같은 시스템 문구 제외
+  const bubbles = await page.locator('*').filter({ hasText: /./ }).allTextContents().catch(() => []);
+  // 간단히: 전체 텍스트에서 사용자 메시지 이후 나타난 10자 이상 문자열 찾기
+  const idx = allText.indexOf(USER_MSG);
+  if (idx >= 0) {
+    const after = allText.slice(idx + USER_MSG.length);
+    // 다음 의미있는 텍스트 추출 (시스템 문구 제외)
+    const lines = after.split(/[\n\r]+/).map(s => s.trim()).filter(s => s
+      && !s.includes('대화할 준비')
+      && !s.includes('메시지를 입력')
+      && !s.match(/^(텍스트|음성|전송|Send|보내기)$/)
+      && s.length >= 5);
+    if (lines.length > 0) {
+      reply = lines[0];
+      if (reply.length >= 10) break;
+    }
   }
 }
 
@@ -153,25 +166,22 @@ console.log('\n[B-1] /mypage 진입...');
 await page.goto('https://mychatbot.world/mypage', { waitUntil: 'networkidle' });
 await page.waitForTimeout(3000);
 
-// 탭2 (봇 관리)
+// 탭2 (코코봇 관리)
 try {
-  const tab2Btns = await page.locator('button').filter({ hasText: /봇 관리|챗봇/ }).all();
-  for (const b of tab2Btns) {
-    try { await b.click(); break; } catch {}
-  }
+  await page.getByText('코코봇 관리', { exact: false }).first().click();
   await page.waitForTimeout(2000);
-} catch {}
+} catch (e) { console.log('  tab2 click err:', e.message); }
 
-// 봇 카드 모두 확장
+// 첫 봇 카드 클릭해서 확장 (선회계사 찾기)
 try {
-  const expandBtns = await page.locator('button').filter({ hasText: /URL|QR|공유|링크/ }).all();
-  for (const b of expandBtns) {
-    try { await b.click({ timeout: 1000 }); } catch {}
+  const firstCard = page.getByText('선회계사', { exact: false }).first();
+  if (await firstCard.count()) {
+    await firstCard.click();
+    await page.waitForTimeout(2500);
   }
-  await page.waitForTimeout(2000);
-} catch {}
+} catch (e) { console.log('  card click err:', e.message); }
 
-const qrImgs = await page.locator('img[alt*="QR"], img[src*="image/png"]').all();
+const qrImgs = await page.locator('img[alt*="QR"], img[alt*="qr"]').all();
 console.log(`  QR 후보 수: ${qrImgs.length}`);
 
 let qrScanned = 0;
