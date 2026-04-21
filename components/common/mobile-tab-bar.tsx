@@ -54,7 +54,7 @@ export function MobileTabBar() {
   return (
     <nav
       className={clsx(
-        'md:hidden',                   // 데스크탑에서 숨김
+        'lg:hidden',                   // 데스크탑(lg+)에서 숨김, tablet(md)까지 표시
         'fixed bottom-0 left-0 right-0 z-40',
         'flex items-stretch',
         'bg-surface border-t border-border',

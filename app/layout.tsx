@@ -58,7 +58,7 @@ export default function RootLayout({
                 'flex-1',
                 'bg-bg-base',
                 // 모바일 하단 탭바(~48px + safe-area) 위로 컨텐츠가 가려지지 않도록
-                'pb-[calc(env(safe-area-inset-bottom)+64px)] md:pb-0',
+                'pb-[calc(env(safe-area-inset-bottom)+64px)] lg:pb-0',
               ].join(' ')}
             >
               {children}
