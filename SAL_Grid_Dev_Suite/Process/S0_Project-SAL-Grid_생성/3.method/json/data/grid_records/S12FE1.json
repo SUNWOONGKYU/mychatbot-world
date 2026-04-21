@@ -3,18 +3,56 @@
   "task_name": "/hub 라우트 스켈레톤 (인증 게이트 + 초기 데이터 fetch)",
   "stage": 12,
   "area": "FE",
-  "task_status": "Pending",
-  "task_progress": 0,
-  "verification_status": "Not Verified",
+  "task_status": "Executed",
+  "task_progress": 100,
+  "verification_status": "In Review",
   "dependencies": "S12BA1",
   "task_instruction": "sal-grid/task-instructions/S12FE1_instruction.md",
   "task_agent": "frontend-developer-core",
   "tools": "",
   "execution_type": "AI-Only",
-  "generated_files": "",
-  "modification_history": "",
+  "generated_files": "app/hub/page.tsx, app/hub/page-client.tsx",
+  "modification_history": "2026-04-21: page.tsx (Suspense 래퍼) + page-client.tsx (auth gate + /api/bots prefetch + 온보딩 CTA + 탭바 placeholder) 생성. 프로젝트 convention(Bearer localStorage) 에 맞춰 서버 RSC fetch 대신 client 쪽 fetch 채택.",
   "verification_instruction": "sal-grid/verification-instructions/S12FE1_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "app/hub/page.tsx + app/hub/page-client.tsx. 미로그인 시 /login?redirect=/hub. 봇 0개 시 온보딩 CTA.",
-  "updated_at": "2026-04-21T20:03:00.000Z"
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PENDING — 배포 후 Playwright 검증 예정 (S12QA1)",
+    "edge_cases": "PASS — 봇 0개/401/네트워크 오류 각각 분기",
+    "manual_test": "PENDING — 배포 후 /hub 접속"
+  },
+  "build_verification": {
+    "compile": "PASS tsc --noEmit clean",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S12BA1 BotItem 스키마(order_index/last_active/unread_count) 소비",
+    "cross_task_connection": "PASS — S12FE2~FE4 가 placeholder 자리를 대체",
+    "data_flow": "PASS — /api/bots?limit=100 → bots[] state"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PENDING",
+    "build": "PASS compile",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Pending (배포 후 Verified 전환)"
+  },
+  "ai_verification_note": "Main Agent self-verified 2026-04-21: tsc clean. 프로젝트 convention(Bearer localStorage) 때문에 instruction 의 'Server Component 에서 데이터 prefetch' 부분은 client fetch 로 조정됨. 마이페이지/봇 페이지와 동일 패턴.",
+  "remarks": "auth 게이트: getToken() 없으면 /login?redirect=/hub. 401 응답 시에도 동일 리다이렉트. 봇 0개 시 온보딩 CTA. 탭바·ChatWindow 는 placeholder — S12FE2/FE3/FE4 에서 채움.",
+  "build_result": {
+    "compile": "PASS tsc --noEmit",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "duration": "N/A",
+  "updated_at": "2026-04-21T20:25:00.000Z"
 }

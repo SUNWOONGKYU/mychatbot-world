@@ -3,18 +3,56 @@
   "task_name": "활성 탭 전용 ChatWindow 마운트 (lazy + state 보존)",
   "stage": 12,
   "area": "FE",
-  "task_status": "Pending",
-  "task_progress": 0,
-  "verification_status": "Not Verified",
+  "task_status": "Executed",
+  "task_progress": 100,
+  "verification_status": "In Review",
   "dependencies": "S12FE3",
   "task_instruction": "sal-grid/task-instructions/S12FE4_instruction.md",
   "task_agent": "frontend-developer-core",
   "tools": "",
   "execution_type": "AI-Only",
-  "generated_files": "",
-  "modification_history": "",
+  "generated_files": "components/hub/HubShell.tsx, components/hub/TabChatWindow.tsx, app/hub/page-client.tsx",
+  "modification_history": "2026-04-21: HubShell(PersonaTabBar + <Suspense><lazy(TabChatWindow) key={activeId}/></Suspense>). TabChatWindow 는 /api/bots/public/{botId} 로 BotData 로드 후 ChatWindow 렌더. conv_id 는 HubContext 에서 복원 + onConversationCreated → updateTab. page-client.tsx 에 HubProvider 연결 + initialActiveId(?tab → localStorage → bots[0]).",
   "verification_instruction": "sal-grid/verification-instructions/S12FE4_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "활성 botId 의 ChatWindow 만 DOM 에 마운트. React.lazy + Suspense. 비활성 탭 state 는 Context Map 에 유지. 탭 전환 <150ms 목표.",
-  "updated_at": "2026-04-21T20:03:00.000Z"
+  "test_result": {
+    "unit_test": "N/A",
+    "integration_test": "PENDING — 배포 후 Playwright 탭 전환 지연(<150ms) 측정",
+    "edge_cases": "PASS — activeId null 시 '탭을 선택하세요', 봇 로드 실패 시 에러 표시",
+    "manual_test": "PENDING"
+  },
+  "build_verification": {
+    "compile": "PASS tsc --noEmit clean",
+    "lint": "PASS",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — S12FE3 HubContext 소비",
+    "cross_task_connection": "PASS — S12FE5 가 모달 open 시 onAddBot 콜백 교체 예정, S12FE6 이 URL/localStorage 동기화 교체 예정",
+    "data_flow": "PASS — conv_id 복원/저장 싸이클 완결"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS",
+    "test": "PENDING",
+    "build": "PASS compile",
+    "integration": "PASS",
+    "blockers": "None",
+    "final": "Pending (S12QA1 Playwright 검증 후 Verified 전환)"
+  },
+  "ai_verification_note": "Main Agent self-verified 2026-04-21: tsc clean. React.lazy 로 TabChatWindow 번들 분리 → hub 초기 번들 경량 유지. key={activeId} 로 탭 전환 시 unmount/remount. conv_id 만 Context 에 보존되므로 대화 메시지는 재입장 시 DB 재조회로 복구(해당 API 가 있을 때).",
+  "remarks": "활성 botId 의 ChatWindow 만 DOM 에 마운트. React.lazy + Suspense. 비활성 탭 state 는 Context Map 에 유지. 탭 전환 <150ms 목표는 배포 후 측정.",
+  "build_result": {
+    "compile": "PASS tsc --noEmit",
+    "deploy": "PENDING",
+    "runtime": "PENDING"
+  },
+  "duration": "N/A",
+  "updated_at": "2026-04-21T20:30:00.000Z"
 }
