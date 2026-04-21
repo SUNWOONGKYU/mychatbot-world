@@ -25,7 +25,9 @@ export default function QRImage({ value, size = 200, className, alt = 'QR 코드
   useEffect(() => {
     let cancelled = false;
     if (!value) { setDataUrl(''); return; }
-    QRCode.toDataURL(value, { width: size, margin: 1, errorCorrectionLevel: 'M' })
+    // margin: 4 = ISO/IEC 18004 quiet zone 필수 최소값 (기존 1은 스캔 실패 원인)
+    // errorCorrectionLevel: 'H' = 30% 복원력 — 소형 출력 + 브라우저 리샘플링 대비
+    QRCode.toDataURL(value, { width: size, margin: 4, errorCorrectionLevel: 'H' })
       .then((url) => {
         if (cancelled) return;
         setDataUrl(url);
@@ -50,5 +52,15 @@ export default function QRImage({ value, size = 200, className, alt = 'QR 코드
       <div className={className} role="img" aria-label={`${alt} 로딩 중`} />
     );
   }
-  return <img src={dataUrl} alt={alt} className={className} width={size} height={size} />;
+  // imageRendering: pixelated — 브라우저 bilinear 보간 억제, QR 모듈 경계 샤프하게 유지
+  return (
+    <img
+      src={dataUrl}
+      alt={alt}
+      className={className}
+      width={size}
+      height={size}
+      style={{ imageRendering: 'pixelated' }}
+    />
+  );
 }

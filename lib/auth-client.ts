@@ -55,3 +55,23 @@ export function authHeadersFormData(): HeadersInit {
   const token = getToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
+
+/**
+ * 비동기 인증 헤더 — Supabase 공식 API(getSession)로 access_token 획득
+ *
+ * getToken() 의 localStorage 스캔 방식은 키 패턴/파싱 실패/타이밍에 취약.
+ * 이 함수는 supabase-js 인스턴스에게 세션을 물어 안정적으로 토큰을 얻는다.
+ * Bearer 필수 엔드포인트(/api/chat, /api/chat/stream 등)에 사용 권장.
+ */
+export async function authHeadersAsync(json = true): Promise<HeadersInit> {
+  const base: HeadersInit = json ? { 'Content-Type': 'application/json' } : {};
+  try {
+    const { supabase } = await import('@/lib/supabase');
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token || getToken();
+    return token ? { ...base, Authorization: `Bearer ${token}` } : base;
+  } catch {
+    const token = getToken();
+    return token ? { ...base, Authorization: `Bearer ${token}` } : base;
+  }
+}

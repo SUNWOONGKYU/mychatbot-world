@@ -27,7 +27,7 @@ import {
   useCallback,
   KeyboardEvent,
 } from 'react';
-import { authHeaders, authHeadersFormData } from '@/lib/auth-client';
+import { authHeaders, authHeadersAsync, authHeadersFormData } from '@/lib/auth-client';
 
 // ============================================================
 // HTML Sanitizer (XSS 방지)
@@ -673,7 +673,7 @@ export default function ChatWindow({
     try {
       const streamRes = await fetch('/api/chat/stream', {
         method: 'POST',
-        headers: authHeaders(),
+        headers: await authHeadersAsync(),
         body: JSON.stringify(payload),
       });
 
@@ -692,12 +692,17 @@ export default function ChatWindow({
           const lines = buffer.split('\n');
           buffer = lines.pop() ?? '';
 
+          let sseError = '';
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               const raw = line.slice(6).trim();
               if (raw === '[DONE]') continue;
               try {
-                const parsed = JSON.parse(raw) as { text?: string; conversationId?: string };
+                const parsed = JSON.parse(raw) as { text?: string; conversationId?: string; error?: string };
+                if (parsed.error) {
+                  // 서버가 에러 이벤트를 보냄 (401, 402 등) — 조용히 삼키지 말고 UI에 표시
+                  sseError = parsed.error;
+                }
                 if (parsed.text) {
                   fullText += parsed.text;
                   setMessages((prev) =>
@@ -714,6 +719,17 @@ export default function ChatWindow({
                 }
               } catch { /* skip */ }
             }
+          }
+          if (sseError && !fullText) {
+            clearTimeout(safetyTimer);
+            const friendly = sseError === 'Unauthorized'
+              ? '로그인이 만료되었거나 인증이 필요합니다. 페이지를 새로고침 하거나 다시 로그인 해주세요.'
+              : `[서버 오류] ${sseError}`;
+            setMessages((prev) =>
+              prev.map((m) => (m.id === typingId ? { ...m, content: friendly, streaming: false } : m))
+            );
+            setIsSending(false);
+            return;
           }
         }
 
@@ -739,7 +755,7 @@ export default function ChatWindow({
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: authHeaders(),
+        headers: await authHeadersAsync(),
         body: JSON.stringify(payload),
       });
       if (res.ok) {
