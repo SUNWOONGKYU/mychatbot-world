@@ -1,5 +1,6 @@
 /**
  * @task S2FE2, S5F4
+ * @modified-by S11FE8 (2026-04-21): fontSize: '0.7rem'/'0.65rem'/'0.72rem'/'0.625rem' → '0.75rem' (12px 최소 폰트)
  * @description 채팅 창 컴포넌트 — Vanilla chat.js 기능 완전 전환
  *
  * Vanilla → React 전환 항목:
@@ -385,6 +386,13 @@ interface ChatWindowProps {
   /** 대화 ID (선택) */
   conversationId?: string;
   onConversationCreated?: (id: string) => void;
+  /**
+   * 임베디드 모드 — /hub 처럼 외부 컨테이너(탭바 등) 하위에 놓일 때 사용.
+   * - position: fixed 해제 → flex 흐름 안으로 편입
+   * - 기본 헤더(봇이름/홈버튼/테마 토글) 숨김
+   * - 외부 래퍼가 페르소나 정보 영역을 따로 렌더한다고 가정
+   */
+  embedded?: boolean;
 }
 
 // ============================================================
@@ -396,6 +404,7 @@ export default function ChatWindow({
   botId,
   conversationId = '',
   onConversationCreated,
+  embedded = false,
 }: ChatWindowProps) {
   // ── 테마 ──────────────────────────────────────────────────
   const { theme, toggle: toggleTheme } = useTheme();
@@ -834,16 +843,25 @@ export default function ChatWindow({
   return (
     <div
       className={`chat-body-react flex flex-col overflow-hidden`}
-      style={{
-        height: 'var(--chat-vh, 100dvh)',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        background: 'rgb(var(--bg-base))',
-      }}
+      style={
+        embedded
+          ? {
+              height: '100%',
+              width: '100%',
+              background: 'rgb(var(--bg-base))',
+            }
+          : {
+              height: 'var(--chat-vh, 100dvh)',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              background: 'rgb(var(--bg-base))',
+            }
+      }
     >
-      {/* ── 헤더 ────────────────────────────────────────────── */}
+      {/* ── 헤더 (embedded 모드에서는 외부 래퍼가 대신 렌더) ─── */}
+      {!embedded && (
       <header
         className="flex flex-col z-10 flex-shrink-0"
         style={{
@@ -869,7 +887,7 @@ export default function ChatWindow({
               </h1>
               <span
                 style={{
-                  fontSize: '0.7rem',
+                  fontSize: '0.75rem',
                   color: '#22c55e',
                 }}
               >
@@ -890,7 +908,7 @@ export default function ChatWindow({
                 border: '1px solid rgb(var(--border))',
                 borderRadius: 12,
                 color: 'rgb(var(--text-primary-rgb))',
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 padding: '0 6px',
                 outline: 'none',
                 cursor: 'pointer',
@@ -966,6 +984,7 @@ export default function ChatWindow({
           </div>
         )}
       </header>
+      )}
 
       {/* ── 메시지 영역 ─────────────────────────────────────── */}
       <main
@@ -1070,7 +1089,7 @@ export default function ChatWindow({
               ))}
             </select>
             {cpcStatus && (
-              <span style={{ fontSize: '0.65rem', color: '#10b981', flexShrink: 0, fontWeight: 600 }}>
+              <span style={{ fontSize: '0.75rem', color: '#10b981', flexShrink: 0, fontWeight: 600 }}>
                 {cpcStatus}
               </span>
             )}
@@ -1359,7 +1378,7 @@ function PersonaChip({
     justifyContent: 'center',
     padding: '6px 4px',
     borderRadius: 9999,
-    fontSize: '0.72rem',
+    fontSize: '0.75rem',
     cursor: 'pointer',
     whiteSpace: 'nowrap',
     flex: '1 1 0',
@@ -1619,7 +1638,7 @@ function MessageBubble({
                 display: 'inline-block',
                 padding: '2px 8px',
                 borderRadius: 9999,
-                fontSize: '0.625rem',
+                fontSize: '0.75rem',
                 fontWeight: 500,
                 background: msg.ragSource === 'wiki' ? 'rgba(16,185,129,0.15)' : 'rgba(59,130,246,0.15)',
                 color: msg.ragSource === 'wiki' ? '#059669' : '#2563eb',

@@ -221,42 +221,6 @@ export function Navbar() {
           />
         </button>
 
-        {/* 포털 (/hub) — 로그인 사용자 전용 보조 링크, 4대 메뉴에 포함하지 않음 */}
-        {isAuthed === true && (() => {
-          const isActive = pathname === '/hub' || pathname.startsWith('/hub/');
-          return (
-            <Link
-              href="/hub"
-              aria-current={isActive ? 'page' : undefined}
-              aria-label="내 페르소나 포털"
-              className={clsx(
-                'hidden sm:flex items-center gap-1.5 min-w-[44px] min-h-[44px] justify-center px-2 lg:px-3 rounded-lg',
-                'text-xs font-semibold transition-all duration-150',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
-              )}
-              style={{
-                color: isActive ? 'rgb(var(--nav-accent))' : 'rgb(var(--nav-text-muted))',
-                background: isActive ? 'rgb(255 255 255 / 0.12)' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.color = 'rgb(var(--nav-text))';
-                  e.currentTarget.style.background = 'rgb(255 255 255 / 0.08)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.color = 'rgb(var(--nav-text-muted))';
-                  e.currentTarget.style.background = 'transparent';
-                }
-              }}
-            >
-              <span aria-hidden>💬</span>
-              <span className="hidden lg:inline">포털</span>
-            </Link>
-          );
-        })()}
-
         {/* My Page — 우측 액션 영역으로 이동 (아이콘 + 라벨) */}
         {(() => {
           const isActive = pathname === '/mypage' || pathname.startsWith('/mypage/');

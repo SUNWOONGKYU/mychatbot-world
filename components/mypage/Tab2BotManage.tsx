@@ -663,6 +663,38 @@ export default function Tab2BotManage({ bots, onBotsChange }: Tab2BotManageProps
 
   return (
     <div className="space-y-4">
+      {/* 페르소나 포털 진입 배너 — 봇 1개 이상일 때만 */}
+      {bots.length > 0 && (
+        <a
+          href="/hub"
+          className={clsx(
+            'flex items-center justify-between gap-3 px-4 py-3 rounded-[var(--radius-lg)]',
+            'bg-[var(--interactive-primary)]/10 border border-[var(--interactive-primary)]/30',
+            'hover:bg-[var(--interactive-primary)]/20 transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]',
+          )}
+          aria-label="페르소나 포털 — 내 코코봇과 대화하기"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-2xl" aria-hidden="true">💬</span>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-[var(--text-primary)]">
+                페르소나 포털로 이동
+              </div>
+              <div className="text-xs text-[var(--text-secondary)] [word-break:keep-all]">
+                내 코코봇 {bots.length}개를 탭 하나로 오가며 대화하세요
+              </div>
+            </div>
+          </div>
+          <span
+            aria-hidden="true"
+            className="flex-shrink-0 text-[var(--interactive-primary)] text-lg"
+          >
+            →
+          </span>
+        </a>
+      )}
+
       {/* PageToolbar 패턴 헤더 */}
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-[var(--text-primary)]">

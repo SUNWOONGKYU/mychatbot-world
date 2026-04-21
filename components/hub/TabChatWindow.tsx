@@ -110,12 +110,52 @@ export default function TabChatWindow({ botId }: Props) {
     );
   }
 
+  // 페르소나 정보 — 메인 페르소나(공개 + 기본) 우선
+  const primaryPersona = botData.personas.find((p) => p.isPublic !== false && p.isVisible !== false)
+    ?? botData.personas[0];
+  const personaName = primaryPersona?.name || botData.botName;
+  const personaRole = primaryPersona?.role || botData.personality || '';
+
   return (
-    <ChatWindow
-      botData={botData}
-      botId={botId}
-      conversationId={initialConvId}
-      onConversationCreated={(id) => updateTab(botId, { conv_id: id })}
-    />
+    <div className="flex h-full flex-col">
+      {/* ── 페르소나 정보 헤더 ────────────────────────────────── */}
+      <header
+        className="flex flex-shrink-0 items-center gap-3 border-b border-border-default bg-surface-1 px-4 py-3"
+        aria-label={`활성 페르소나: ${personaName}`}
+      >
+        <div
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-surface-2 text-2xl"
+          aria-hidden="true"
+        >
+          🤖
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h2 className="truncate text-base font-semibold text-text-primary">
+              {personaName}
+            </h2>
+            <span className="flex-shrink-0 text-xs text-state-success-fg">
+              ● 대화할 준비가 되었습니다
+            </span>
+          </div>
+          {personaRole && (
+            <p className="truncate text-xs text-text-secondary [word-break:keep-all]">
+              저는 {personaRole}
+            </p>
+          )}
+        </div>
+      </header>
+
+      {/* ── 대화 영역 (embedded 모드) ───────────────────────── */}
+      <div className="min-h-0 flex-1">
+        <ChatWindow
+          botData={botData}
+          botId={botId}
+          conversationId={initialConvId}
+          onConversationCreated={(id) => updateTab(botId, { conv_id: id })}
+          embedded
+        />
+      </div>
+    </div>
   );
 }
