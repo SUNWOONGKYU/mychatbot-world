@@ -124,7 +124,7 @@ function ReviewModal({ skill, onClose, onApprove, onReject }: {
           <button className="amodal__close" onClick={onClose}>✕</button>
         </div>
 
-        <div style={{ background: 'rgba(255,255,255,.04)', borderRadius: '10px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+        <div style={{ background: 'rgb(var(--bg-muted))', borderRadius: '10px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
           {[
             { label: '제출자', value: skill.creator_name },
             { label: '카테고리', value: skill.category ?? '미분류' },
@@ -132,7 +132,7 @@ function ReviewModal({ skill, onClose, onApprove, onReject }: {
             { label: '설명', value: skill.description ?? '없음' },
           ].map(({ label, value }) => (
             <div key={label} style={{ display: 'flex', gap: '1rem', fontSize: '.875rem' }}>
-              <span style={{ minWidth: 70, color: 'rgba(255,255,255,.4)', fontWeight: 500 }}>{label}</span>
+              <span style={{ minWidth: 70, color: 'rgb(var(--text-muted))', fontWeight: 500 }}>{label}</span>
               <span>{value}</span>
             </div>
           ))}

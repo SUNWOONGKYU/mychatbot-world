@@ -5,8 +5,8 @@ import { S } from './ProfileTab';
 
 const darkInput: React.CSSProperties = {
   width: '100%', padding: '10px 14px',
-  background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 10, color: 'white', fontSize: '1rem', outline: 'none', boxSizing: 'border-box',
+  background: 'rgb(var(--bg-muted))', border: '1px solid rgb(var(--border))',
+  borderRadius: 10, color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem', outline: 'none', boxSizing: 'border-box',
 };
 
 type RevenueType = 'consulting' | 'reservation' | 'referral' | 'content';
@@ -27,7 +27,7 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
       <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)}
         style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }} />
       <span style={{
-        position: 'absolute', inset: 0, background: checked ? '#6366f1' : 'rgba(255,255,255,0.1)',
+        position: 'absolute', inset: 0, background: checked ? '#6366f1' : 'rgb(var(--border))',
         borderRadius: 12, transition: '0.3s',
       }} />
       <span style={{
@@ -85,7 +85,7 @@ export function RevenueTab() {
   return (
     <div>
       {toast && (
-        <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, background: '#6366f1', color: 'white', padding: '12px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500 }}>{toast}</div>
+        <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, background: 'rgb(var(--color-primary))', color: 'white', padding: '12px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500 }}>{toast}</div>
       )}
 
       <h1 style={S.h1}>💰 수익활동 관리</h1>
@@ -94,7 +94,7 @@ export function RevenueTab() {
       <div style={{ ...S.card, marginBottom: '1.5rem' }}>
         <div style={S.sectionHeader}>
           <h2 style={S.h2}>수익활동 중개 서비스</h2>
-          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginTop: 4 }}>
+          <p style={{ color: 'rgb(var(--text-muted))', fontSize: '0.85rem', marginTop: 4 }}>
             CoCoBot가 중개하며, 발생 수익의 20%가 수수료로 차감됩니다.
           </p>
         </div>
@@ -102,22 +102,22 @@ export function RevenueTab() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
           {ACTIVITIES.map(act => (
             <div key={act.id} style={{
-              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+              background: 'rgb(var(--bg-subtle))', border: '1px solid rgb(var(--border-subtle-rgb))',
               borderRadius: 12, padding: '1.25rem',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <span style={{ fontSize: '1.5rem' }}>{act.icon}</span>
                   <div>
-                    <div style={{ fontWeight: 600, color: 'white', fontSize: '0.9rem' }}>{act.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{act.desc}</div>
+                    <div style={{ fontWeight: 600, color: 'rgb(var(--text-primary-rgb))', fontSize: '0.9rem' }}>{act.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 2 }}>{act.desc}</div>
                   </div>
                 </div>
                 <ToggleSwitch checked={settings[act.id].enabled} onChange={v => toggleActivity(act.id, v)} />
               </div>
 
               {settings[act.id].enabled && (
-                <div style={{ paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ paddingTop: '0.75rem', borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
                   <label style={{ ...S.label, fontSize: '0.8rem' }}>{act.priceLabel}</label>
                   <input
                     type={act.id === 'content' ? 'text' : 'number'}
@@ -149,15 +149,15 @@ export function RevenueTab() {
             { value: `₩${revenueNet.toLocaleString()}`, label: '정산 예정액' },
           ].map((item, i) => (
             <div key={i} style={{
-              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+              background: 'rgb(var(--bg-subtle))', border: '1px solid rgb(var(--border-subtle-rgb))',
               borderRadius: 12, padding: '1.25rem', textAlign: 'center',
             }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>{item.value}</div>
-              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{item.label}</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'rgb(var(--text-primary-rgb))' }}>{item.value}</div>
+              <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 4 }}>{item.label}</div>
             </div>
           ))}
         </div>
-        <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', marginTop: '1rem' }}>
+        <p style={{ color: 'rgb(var(--text-muted))', fontSize: '0.8rem', marginTop: '1rem' }}>
           * 정산은 매월 말일 기준으로 익월 7일 지급됩니다.
         </p>
       </div>

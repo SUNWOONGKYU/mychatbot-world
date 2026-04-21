@@ -203,15 +203,15 @@ export default function SectionJobs({ adminKey: _ }: Props) {
       <style jsx global>{`
         ${adminSectionStyles}
         .s7-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
-        .s7-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 1rem; text-align: center; }
+        .s7-card { background: rgb(var(--bg-subtle)); border: 1px solid rgb(var(--border-subtle-rgb)); border-radius: 12px; padding: 1rem; text-align: center; }
         .s7-card--red   { border-color: rgba(248,113,113,.3); }
         .s7-card--green { border-color: rgba(52,211,153,.3); }
         .s7-card--amber { border-color: rgba(251,191,36,.3); }
-        .s7-card__val { font-size: 1.5rem; font-weight: 700; color: #e2e8f0; }
+        .s7-card__val { font-size: 1.5rem; font-weight: 700; color: rgb(var(--text-primary-rgb)); }
         .s7-card--red .s7-card__val   { color: #f87171; }
         .s7-card--green .s7-card__val { color: #34d399; }
         .s7-card--amber .s7-card__val { color: #fbbf24; }
-        .s7-card__lbl { font-size: .75rem; color: rgba(255,255,255,.4); margin-top: .25rem; }
+        .s7-card__lbl { font-size: .75rem; color: rgb(var(--text-muted)); margin-top: .25rem; }
         @media (max-width:768px) { .s7-stats { grid-template-columns: repeat(2,1fr); } }
       `}</style>
     </section>

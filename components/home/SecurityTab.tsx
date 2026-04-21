@@ -6,8 +6,8 @@ import { S } from './ProfileTab';
 
 const darkInput: React.CSSProperties = {
   width: '100%', padding: '10px 14px',
-  background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 10, color: 'white', fontSize: '1rem', outline: 'none', boxSizing: 'border-box',
+  background: 'rgb(var(--bg-muted))', border: '1px solid rgb(var(--border))',
+  borderRadius: 10, color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem', outline: 'none', boxSizing: 'border-box',
 };
 
 export function SecurityTab() {
@@ -36,7 +36,7 @@ export function SecurityTab() {
   return (
     <div>
       {toast && (
-        <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, background: '#6366f1', color: 'white', padding: '12px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500 }}>{toast}</div>
+        <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, background: 'rgb(var(--color-primary))', color: 'white', padding: '12px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500 }}>{toast}</div>
       )}
 
       <h1 style={S.h1}>계정 보안 설정</h1>

@@ -846,10 +846,10 @@ export default function ChatWindow({
               title="음성 선택"
               style={{
                 height: 30,
-                background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+                background: 'rgb(var(--bg-subtle))',
+                border: '1px solid rgb(var(--border))',
                 borderRadius: 12,
-                color: isDark ? 'rgba(255,255,255,0.8)' : '#333',
+                color: 'rgb(var(--text-primary-rgb))',
                 fontSize: '0.7rem',
                 padding: '0 6px',
                 outline: 'none',
@@ -857,7 +857,7 @@ export default function ChatWindow({
               }}
             >
               {VOICE_OPTIONS.map((v) => (
-                <option key={v.value} value={v.value} style={{ background: isDark ? '#1e293b' : '#fff', color: isDark ? '#f1f5f9' : '#333' }}>
+                <option key={v.value} value={v.value} style={{ background: 'rgb(var(--bg-surface))', color: 'rgb(var(--text-primary-rgb))' }}>
                   {v.label}
                 </option>
               ))}
@@ -941,10 +941,10 @@ export default function ChatWindow({
         {/* 환영 화면 */}
         {showWelcome && (
           <div className="text-center" style={{ padding: '12px 16px' }}>
-            <h2 style={{ color: isDark ? 'white' : '#1a1a2e', marginBottom: 8 }}>
+            <h2 style={{ color: 'rgb(var(--text-primary-rgb))', marginBottom: 8 }}>
               {welcomeTitle}
             </h2>
-            <p style={{ color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', fontSize: '0.875rem' }}>
+            <p style={{ color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.875rem' }}>
               {welcomeDesc}
             </p>
           </div>
@@ -960,9 +960,9 @@ export default function ChatWindow({
                 style={{
                   padding: '8px 16px',
                   borderRadius: 9999,
-                  background: 'rgba(99,102,241,0.12)',
-                  border: '1px solid rgba(99,102,241,0.2)',
-                  color: isDark ? '#a5b4fc' : '#4f46e5',
+                  background: 'rgb(var(--color-primary) / 0.12)',
+                  border: '1px solid rgb(var(--color-primary) / 0.25)',
+                  color: isDark ? '#a5b4fc' : '#4338ca',
                   fontSize: '0.75rem',
                   cursor: 'pointer',
                   maxWidth: 200,
@@ -1011,10 +1011,10 @@ export default function ChatWindow({
               }}
               style={{
                 flex: 1,
-                background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+                background: 'rgb(var(--bg-subtle))',
                 border: '1px solid rgba(16,185,129,0.25)',
                 borderRadius: 4,
-                color: isDark ? 'rgba(255,255,255,0.85)' : '#1a1a2e',
+                color: 'rgb(var(--text-primary-rgb))',
                 fontSize: '0.8rem',
                 padding: '3px 6px',
                 height: 28,
@@ -1024,7 +1024,7 @@ export default function ChatWindow({
             >
               <option value="">소대 선택...</option>
               {cpcPlatoons.map((p) => (
-                <option key={p.id} value={p.id} style={{ background: isDark ? '#1e293b' : '#fff' }}>
+                <option key={p.id} value={p.id} style={{ background: 'rgb(var(--bg-surface))', color: 'rgb(var(--text-primary-rgb))' }}>
                   {p.name || p.id} {p.status ? `(${p.status})` : ''}
                 </option>
               ))}
@@ -1197,7 +1197,7 @@ export default function ChatWindow({
 function HeaderBtn({
   onClick,
   title,
-  isDark,
+  isDark: _isDark,
   children,
 }: {
   onClick: () => void;
@@ -1216,7 +1216,8 @@ function HeaderBtn({
         minWidth: 44,
         minHeight: 44,
         borderRadius: 12,
-        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+        background: 'rgb(var(--bg-subtle))',
+        color: 'rgb(var(--text-primary-rgb))',
         border: 'none',
         fontSize: '0.85rem',
         cursor: 'pointer',
@@ -1372,8 +1373,8 @@ function MessageBubble({
               ? 'rgba(56,189,248,0.08)'
               : 'transparent',
             color: msg.extraClass === 'cpc-result'
-              ? '#7dd3fc'
-              : isDark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.4)',
+              ? (isDark ? '#7dd3fc' : '#0369a1')
+              : 'rgb(var(--text-secondary-rgb))',
             fontSize: msg.extraClass === 'cpc-result' ? '0.82rem' : '0.78rem',
             textAlign: 'center',
             padding: msg.extraClass === 'cpc-result' ? '6px 12px' : '8px',

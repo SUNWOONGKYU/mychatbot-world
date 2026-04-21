@@ -42,7 +42,7 @@ export default function OnboardingHubPage() {
                   <h2 className="text-lg font-semibold">{step.title}</h2>
                 </div>
                 <p className="ml-8 mt-1 text-sm text-gray-600">{step.hint}</p>
-                <p className="ml-8 mt-1 text-xs text-gray-400">
+                <p className="ml-8 mt-1 text-xs text-gray-600">
                   예상 {step.estimatedSeconds}초 · {step.skippable ? '건너뛰기 가능' : '필수'}
                 </p>
               </div>

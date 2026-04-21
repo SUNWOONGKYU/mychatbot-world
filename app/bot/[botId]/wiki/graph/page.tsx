@@ -203,6 +203,18 @@ export default function WikiGraphPage() {
         .attr('stroke', '#fff')
         .attr('stroke-width', 2);
 
+      // 라벨 색상을 현재 테마의 text-primary로 동적 추출 (라이트/다크 모두 대비 확보)
+      const labelColor = (() => {
+        try {
+          const rgbStr = getComputedStyle(document.documentElement)
+            .getPropertyValue('--text-primary-rgb')
+            .trim();
+          return rgbStr ? `rgb(${rgbStr})` : '#374151';
+        } catch {
+          return '#374151';
+        }
+      })();
+
       nodeGroup
         .append('text')
         .text((d: any) =>
@@ -211,7 +223,7 @@ export default function WikiGraphPage() {
         .attr('x', 14)
         .attr('y', 4)
         .attr('font-size', '11px')
-        .attr('fill', '#374151')
+        .attr('fill', labelColor)
         .attr('pointer-events', 'none');
 
       simulation.on('tick', () => {
@@ -240,19 +252,19 @@ export default function WikiGraphPage() {
   }, [renderGraph]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[rgb(var(--bg-base))] flex flex-col">
       {/* 헤더 */}
-      <div className="bg-white border-b px-6 py-4 flex items-center justify-between flex-shrink-0">
+      <div className="bg-[rgb(var(--bg-surface))] border-b border-[rgb(var(--border))] px-6 py-4 flex items-center justify-between flex-shrink-0">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Wiki Graph View</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-xl font-semibold text-[rgb(var(--text-primary-rgb))]">Wiki Graph View</h1>
+          <p className="text-sm text-[rgb(var(--text-secondary-rgb))] mt-0.5">
             {graphData
               ? `${graphData.nodes.length}개 노드, ${graphData.links.length}개 링크`
               : ''}
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 text-xs text-gray-500">
+          <div className="flex items-center gap-3 text-xs text-[rgb(var(--text-secondary-rgb))]">
             {Object.entries(NODE_COLORS).map(([type, color]) => (
               <span key={type} className="flex items-center gap-1">
                 <span
@@ -265,7 +277,7 @@ export default function WikiGraphPage() {
           </div>
           <a
             href={`/bot/${botId}/wiki`}
-            className="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50"
+            className="px-3 py-1.5 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
           >
             목록으로
           </a>
@@ -276,17 +288,17 @@ export default function WikiGraphPage() {
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 relative">
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+            <div className="absolute inset-0 flex items-center justify-center text-[rgb(var(--text-secondary-rgb))]">
               그래프 로딩 중...
             </div>
           )}
           {error && (
-            <div className="absolute inset-0 flex items-center justify-center text-red-500 px-8 text-center">
+            <div className="absolute inset-0 flex items-center justify-center text-red-600 px-8 text-center">
               {error}
             </div>
           )}
           {!loading && !error && graphData && graphData.nodes.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+            <div className="absolute inset-0 flex items-center justify-center text-[rgb(var(--text-secondary-rgb))]">
               위키 페이지가 없습니다.
             </div>
           )}
@@ -294,24 +306,24 @@ export default function WikiGraphPage() {
         </div>
 
         {selected && (
-          <div className="w-72 bg-white border-l p-4 flex-shrink-0 overflow-y-auto">
+          <div className="w-72 bg-[rgb(var(--bg-surface))] border-l border-[rgb(var(--border))] p-4 flex-shrink-0 overflow-y-auto">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 text-sm">페이지 정보</h3>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="font-semibold text-[rgb(var(--text-primary-rgb))] text-sm">페이지 정보</h3>
+              <button onClick={() => setSelected(null)} className="text-[rgb(var(--text-secondary-rgb))] hover:text-[rgb(var(--text-primary-rgb))]">
                 ×
               </button>
             </div>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="text-gray-500 text-xs">제목</span>
-                <p className="font-medium text-gray-900">{selected.title}</p>
+                <span className="text-[rgb(var(--text-muted))] text-xs">제목</span>
+                <p className="font-medium text-[rgb(var(--text-primary-rgb))]">{selected.title}</p>
               </div>
               <div>
-                <span className="text-gray-500 text-xs">슬러그</span>
-                <p className="text-gray-700 font-mono text-xs">{selected.slug}</p>
+                <span className="text-[rgb(var(--text-muted))] text-xs">슬러그</span>
+                <p className="text-[rgb(var(--text-secondary-rgb))] font-mono text-xs">{selected.slug}</p>
               </div>
               <div>
-                <span className="text-gray-500 text-xs">타입</span>
+                <span className="text-[rgb(var(--text-muted))] text-xs">타입</span>
                 <p>
                   <span
                     className="px-2 py-0.5 rounded text-xs font-medium"
@@ -326,12 +338,12 @@ export default function WikiGraphPage() {
               </div>
               <div className="flex gap-4">
                 <div>
-                  <span className="text-gray-500 text-xs">조회수</span>
-                  <p className="font-medium">{selected.view_count}</p>
+                  <span className="text-[rgb(var(--text-muted))] text-xs">조회수</span>
+                  <p className="font-medium text-[rgb(var(--text-primary-rgb))]">{selected.view_count}</p>
                 </div>
                 <div>
-                  <span className="text-gray-500 text-xs">품질</span>
-                  <p className="font-medium">
+                  <span className="text-[rgb(var(--text-muted))] text-xs">품질</span>
+                  <p className="font-medium text-[rgb(var(--text-primary-rgb))]">
                     {selected.quality_score > 0
                       ? `${Math.round(selected.quality_score * 100)}%`
                       : '-'}

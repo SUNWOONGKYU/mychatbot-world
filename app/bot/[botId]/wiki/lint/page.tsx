@@ -94,33 +94,33 @@ export default function WikiLintPage() {
   };
 
   const STAT_CARD = (label: string, value: number | string, color: string) => (
-    <div className={`bg-white rounded-lg border p-4 ${color}`}>
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="text-sm text-gray-500 mt-1">{label}</div>
+    <div className={`bg-[rgb(var(--bg-surface))] rounded-lg border p-4 ${color}`}>
+      <div className="text-2xl font-bold text-[rgb(var(--text-primary-rgb))]">{value}</div>
+      <div className="text-sm text-[rgb(var(--text-secondary-rgb))] mt-1">{label}</div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[rgb(var(--bg-base))]">
       {/* 헤더 */}
-      <div className="bg-white border-b px-6 py-4 flex items-center justify-between">
+      <div className="bg-[rgb(var(--bg-surface))] border-b border-[rgb(var(--border))] px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Wiki Lint 대시보드</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-xl font-semibold text-[rgb(var(--text-primary-rgb))]">Wiki Lint 대시보드</h1>
+          <p className="text-sm text-[rgb(var(--text-secondary-rgb))] mt-0.5">
             고아 페이지 / 오래된 콘텐츠 / 중복 제목 감지
           </p>
         </div>
         <div className="flex gap-2">
           <a
             href={`/bot/${botId}/wiki`}
-            className="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+            className="px-4 py-2 text-sm border border-[rgb(var(--border))] bg-[rgb(var(--bg-surface))] text-[rgb(var(--text-primary-rgb))] rounded-lg hover:bg-[rgb(var(--bg-subtle))]"
           >
             Wiki 목록
           </a>
           <button
             onClick={runLint}
             disabled={running || !botId}
-            className="px-4 py-2 text-sm bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
+            className="px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
           >
             {running ? 'Lint 실행 중...' : 'Lint 실행'}
           </button>
@@ -130,20 +130,20 @@ export default function WikiLintPage() {
       <div className="px-6 py-4 space-y-6">
         {/* 에러 */}
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
             {error}
           </div>
         )}
 
         {/* Lint 결과 (방금 실행한 경우) */}
         {result && (
-          <div className="bg-white rounded-xl border p-5">
-            <h2 className="font-semibold text-gray-900 mb-4">Lint 결과</h2>
+          <div className="bg-[rgb(var(--bg-surface))] rounded-xl border border-[rgb(var(--border))] p-5">
+            <h2 className="font-semibold text-[rgb(var(--text-primary-rgb))] mb-4">Lint 결과</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-              {STAT_CARD('고아 페이지', result.orphan_pages.length, 'border-red-200')}
-              {STAT_CARD('오래된 페이지', result.stale_pages.length, 'border-orange-200')}
-              {STAT_CARD('중복 제목 그룹', result.conflict_groups.length, 'border-yellow-200')}
-              {STAT_CARD('자동 수정', result.fixed_count, 'border-green-200')}
+              {STAT_CARD('고아 페이지', result.orphan_pages.length, 'border-red-300')}
+              {STAT_CARD('오래된 페이지', result.stale_pages.length, 'border-orange-300')}
+              {STAT_CARD('중복 제목 그룹', result.conflict_groups.length, 'border-yellow-300')}
+              {STAT_CARD('자동 수정', result.fixed_count, 'border-green-300')}
             </div>
 
             {result.orphan_pages.length > 0 && (
@@ -151,7 +151,7 @@ export default function WikiLintPage() {
                 <h3 className="text-sm font-medium text-red-700 mb-2">고아 페이지 (KB 없이 존재)</h3>
                 <div className="space-y-1">
                   {result.orphan_pages.map((p) => (
-                    <div key={p.id} className="text-sm text-gray-700 bg-red-50 px-3 py-1.5 rounded">
+                    <div key={p.id} className="text-sm text-red-900 bg-red-50 border border-red-200 px-3 py-1.5 rounded">
                       {p.title}
                     </div>
                   ))}
@@ -164,7 +164,7 @@ export default function WikiLintPage() {
                 <h3 className="text-sm font-medium text-orange-700 mb-2">오래된 페이지 (30일 이상 미조회)</h3>
                 <div className="space-y-1">
                   {result.stale_pages.map((p) => (
-                    <div key={p.id} className="text-sm text-gray-700 bg-orange-50 px-3 py-1.5 rounded">
+                    <div key={p.id} className="text-sm text-orange-900 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded">
                       {p.title}
                     </div>
                   ))}
@@ -177,9 +177,9 @@ export default function WikiLintPage() {
                 <h3 className="text-sm font-medium text-yellow-700 mb-2">중복 의심 제목</h3>
                 <div className="space-y-1">
                   {result.conflict_groups.map((g) => (
-                    <div key={g.title} className="text-sm text-gray-700 bg-yellow-50 px-3 py-1.5 rounded flex justify-between">
+                    <div key={g.title} className="text-sm text-yellow-900 bg-yellow-50 border border-yellow-200 px-3 py-1.5 rounded flex justify-between">
                       <span>{g.title}</span>
-                      <span className="text-yellow-600">{g.count}개</span>
+                      <span className="text-yellow-700">{g.count}개</span>
                     </div>
                   ))}
                 </div>
@@ -189,7 +189,7 @@ export default function WikiLintPage() {
             {result.orphan_pages.length === 0 &&
               result.stale_pages.length === 0 &&
               result.conflict_groups.length === 0 && (
-                <div className="text-center py-6 text-green-600 font-medium">
+                <div className="text-center py-6 text-green-700 font-medium">
                   문제 없음 — 위키 상태 양호
                 </div>
               )}
@@ -197,13 +197,13 @@ export default function WikiLintPage() {
         )}
 
         {/* Lint 이력 */}
-        <div className="bg-white rounded-xl border p-5">
-          <h2 className="font-semibold text-gray-900 mb-4">Lint 실행 이력</h2>
+        <div className="bg-[rgb(var(--bg-surface))] rounded-xl border border-[rgb(var(--border))] p-5">
+          <h2 className="font-semibold text-[rgb(var(--text-primary-rgb))] mb-4">Lint 실행 이력</h2>
           {loading && (
-            <div className="text-center py-8 text-gray-400">로딩 중...</div>
+            <div className="text-center py-8 text-[rgb(var(--text-secondary-rgb))]">로딩 중...</div>
           )}
           {!loading && logs.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
+            <div className="text-center py-8 text-[rgb(var(--text-secondary-rgb))]">
               아직 Lint 기록이 없습니다. Lint 실행 버튼을 눌러보세요.
             </div>
           )}
@@ -211,7 +211,7 @@ export default function WikiLintPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-gray-500 border-b">
+                  <tr className="text-left text-[rgb(var(--text-secondary-rgb))] border-b border-[rgb(var(--border))]">
                     <th className="pb-2 pr-4">실행 일시</th>
                     <th className="pb-2 pr-4">고아</th>
                     <th className="pb-2 pr-4">오래됨</th>
@@ -222,29 +222,29 @@ export default function WikiLintPage() {
                 </thead>
                 <tbody>
                   {logs.map((log) => (
-                    <tr key={log.id} className="border-b last:border-0">
-                      <td className="py-2 pr-4 text-gray-600">
+                    <tr key={log.id} className="border-b border-[rgb(var(--border))] last:border-0">
+                      <td className="py-2 pr-4 text-[rgb(var(--text-secondary-rgb))]">
                         {new Date(log.created_at).toLocaleString('ko-KR')}
                       </td>
                       <td className="py-2 pr-4">
-                        <span className={log.orphan_count > 0 ? 'text-red-600 font-medium' : 'text-gray-400'}>
+                        <span className={log.orphan_count > 0 ? 'text-red-700 font-medium' : 'text-[rgb(var(--text-muted))]'}>
                           {log.orphan_count}
                         </span>
                       </td>
                       <td className="py-2 pr-4">
-                        <span className={log.stale_count > 0 ? 'text-orange-600 font-medium' : 'text-gray-400'}>
+                        <span className={log.stale_count > 0 ? 'text-orange-700 font-medium' : 'text-[rgb(var(--text-muted))]'}>
                           {log.stale_count}
                         </span>
                       </td>
                       <td className="py-2 pr-4">
-                        <span className={log.conflict_count > 0 ? 'text-yellow-600 font-medium' : 'text-gray-400'}>
+                        <span className={log.conflict_count > 0 ? 'text-yellow-700 font-medium' : 'text-[rgb(var(--text-muted))]'}>
                           {log.conflict_count}
                         </span>
                       </td>
-                      <td className="py-2 pr-4 text-gray-600">
+                      <td className="py-2 pr-4 text-[rgb(var(--text-secondary-rgb))]">
                         {log.quality_avg > 0 ? `${Math.round(log.quality_avg * 100)}%` : '-'}
                       </td>
-                      <td className="py-2 text-green-600">
+                      <td className="py-2 text-green-700">
                         {log.fixed_count > 0 ? log.fixed_count : '-'}
                       </td>
                     </tr>

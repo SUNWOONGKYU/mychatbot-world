@@ -32,26 +32,26 @@ type ToolId = 'logs' | 'data' | 'skills' | 'school' | 'community' | 'psettings';
 
 // ── 공통 인라인 스타일 ──────────────────────────────────────
 const cardStyle: React.CSSProperties = {
-  background: '#1c1c24', border: '1px solid rgba(255,255,255,0.08)',
+  background: 'rgb(var(--surface-1))', border: '1px solid rgb(var(--border-subtle-rgb))',
   borderRadius: 16, overflow: 'hidden', marginBottom: 0,
 };
 
 const darkInput: React.CSSProperties = {
   width: '100%', padding: '10px 14px',
-  background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 10, color: 'white', fontSize: '1rem', outline: 'none',
+  background: 'rgb(var(--bg-muted))', border: '1px solid rgb(var(--border))',
+  borderRadius: 10, color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem', outline: 'none',
   boxSizing: 'border-box',
 };
 
 const btnSmDark: React.CSSProperties = {
   padding: '6px 14px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 600,
-  cursor: 'pointer', background: 'rgba(255,255,255,0.06)',
-  color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.08)',
+  cursor: 'pointer', background: 'rgb(var(--bg-muted))',
+  color: 'rgb(var(--text-secondary-rgb))', border: '1px solid rgb(var(--border-subtle-rgb))',
 };
 
 const btnSmPrimary: React.CSSProperties = {
   padding: '6px 14px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 600,
-  cursor: 'pointer', background: '#6366f1', color: 'white', border: 'none',
+  cursor: 'pointer', background: 'rgb(var(--color-primary))', color: 'white', border: 'none',
 };
 
 // ── LocalStorage 헬퍼 ────────────────────────────────────────
@@ -135,9 +135,9 @@ export function BotsTab({ user }: { user: any }) {
 
         {/* 봇이 없을 때 */}
         {!hasBots && !draft && (
-          <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'rgba(255,255,255,0.4)' }}>
+          <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'rgb(var(--text-muted))' }}>
             <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem', opacity: 0.5 }}>🤖</div>
-            <h3 style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.75rem' }}>
+            <h3 style={{ fontSize: '1.25rem', color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.75rem' }}>
               아직 생성된 코코봇이 없습니다
             </h3>
             <p style={{ fontSize: '0.9rem', marginBottom: '2rem' }}>나만의 코코봇을 생성하고 관리해 보세요.</p>
@@ -164,7 +164,7 @@ function DraftCard({ draft, onClear, onResume }: { draft: any; onClear: () => vo
     <div style={{ ...cardStyle, border: '1px dashed rgba(99,102,241,0.4)', background: 'rgba(99,102,241,0.05)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '1.5rem 2rem' }}>
         <div>
-          <h3 style={{ color: 'white', fontWeight: 700, marginBottom: 4 }}>
+          <h3 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, marginBottom: 4 }}>
             {draft.botName || '이름 미정'}
             <span style={{
               fontSize: '0.7rem', fontWeight: 600, color: '#fbbf24',
@@ -172,10 +172,10 @@ function DraftCard({ draft, onClear, onResume }: { draft: any; onClear: () => vo
               borderRadius: 20, marginLeft: 8,
             }}>작성 중</span>
           </h3>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+          <p style={{ color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.85rem' }}>
             Step {draft.step}: {stepLabel} 단계에서 중단됨
           </p>
-          <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>{savedTime} 저장</div>
+          <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 4 }}>{savedTime} 저장</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button style={btnSmPrimary} onClick={onResume}>이어서 작성</button>
@@ -204,10 +204,10 @@ function BotCard({ bot, onRefresh }: { bot: Bot; onRefresh: () => void }) {
             borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem',
           }}>🤖</div>
           <div>
-            <h3 style={{ color: 'white', fontWeight: 700, fontSize: '1.15rem', marginBottom: 4 }}>{bot.botName}</h3>
-            {bot.botDesc && <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>{bot.botDesc}</p>}
+            <h3 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, fontSize: '1.15rem', marginBottom: 4 }}>{bot.botName}</h3>
+            {bot.botDesc && <p style={{ color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.85rem' }}>{bot.botDesc}</p>}
             {bot.created_at && (
-              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>
+              <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 4 }}>
                 {new Date(bot.created_at).toLocaleDateString('ko-KR')} 생성
               </div>
             )}
@@ -230,9 +230,9 @@ function BotCard({ bot, onRefresh }: { bot: Bot; onRefresh: () => void }) {
       )}
 
       {/* 페르소나 목록 */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
         {personas.length === 0 ? (
-          <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem', padding: '1rem 2rem' }}>
+          <div style={{ color: 'rgb(var(--text-muted))', fontSize: '0.85rem', padding: '1rem 2rem' }}>
             등록된 페르소나가 없습니다.
           </div>
         ) : (
@@ -240,7 +240,7 @@ function BotCard({ bot, onRefresh }: { bot: Bot; onRefresh: () => void }) {
             <PersonaCard key={p.id} bot={bot} persona={p} idx={i} onRefresh={onRefresh} />
           ))
         )}
-        <div style={{ padding: '1rem 2rem', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
+        <div style={{ padding: '1rem 2rem', borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
           <AddPersonaButton bot={bot} onAdded={onRefresh} />
         </div>
       </div>
@@ -258,8 +258,8 @@ function UrlPanel({ bot, botUrl, personas }: { bot: Bot; botUrl: string; persona
 
   return (
     <div style={{
-      padding: '12px 2rem', background: 'rgba(0,0,0,0.15)',
-      borderTop: '1px solid rgba(255,255,255,0.05)',
+      padding: '12px 2rem', background: 'rgb(var(--bg-muted))',
+      borderTop: '1px solid rgb(var(--border-subtle-rgb))',
       display: 'flex', flexDirection: 'column', gap: 8,
     }}>
       <UrlRow label="전체 (봇)" url={botUrl} onCopy={() => copyUrl(botUrl)} />
@@ -267,7 +267,7 @@ function UrlPanel({ bot, botUrl, personas }: { bot: Bot; botUrl: string; persona
         <UrlRow key={p.id} label={p.name} url={`/bot?id=${bot.id}&persona=${p.id}`}
           onCopy={() => copyUrl(`/bot?id=${bot.id}&persona=${p.id}`)} />
       ))}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingTop: 8, borderTop: '1px solid rgb(var(--border-subtle-rgb))', marginTop: 8 }}>
         <button style={btnSmDark} onClick={() => setQrVisible(v => !v)}>📱 QR 코드 보기</button>
         {qrVisible && (
           <img
@@ -283,11 +283,11 @@ function UrlPanel({ bot, botUrl, personas }: { bot: Bot; botUrl: string; persona
 function UrlRow({ label, url, onCopy }: { label: string; url: string; onCopy: () => void }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.5)', minWidth: 100, flexShrink: 0 }}>{label}</span>
+      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))', minWidth: 100, flexShrink: 0 }}>{label}</span>
       <input readOnly value={url} onClick={(e) => (e.target as HTMLInputElement).select()} style={{
         flex: 1, padding: '6px 10px', background: 'rgba(0,0,0,0.3)',
-        border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8,
-        color: 'rgba(255,255,255,0.7)', fontSize: '0.75rem', fontFamily: 'monospace', outline: 'none',
+        border: '1px solid rgb(var(--border-subtle-rgb))', borderRadius: 8,
+        color: 'rgb(var(--text-secondary-rgb))', fontSize: '0.75rem', fontFamily: 'monospace', outline: 'none',
       }} />
       <button style={btnSmPrimary} onClick={onCopy}>복사</button>
     </div>
@@ -334,10 +334,10 @@ function BotSettingsPanel({ bot, onSaved, onClose }: { bot: Bot; onSaved: () => 
   };
 
   return (
-    <div style={{ padding: '2rem', background: 'rgba(0,0,0,0.15)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+    <div style={{ padding: '2rem', background: 'rgb(var(--bg-muted))', borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
       {/* 기본 정보 */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <h4 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>봇 기본 정보 수정</h4>
+        <h4 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, marginBottom: '1rem' }}>봇 기본 정보 수정</h4>
         <div style={{ marginBottom: '1rem' }}>
           <label style={S.label}>봇 이름</label>
           <input style={darkInput} value={botName} onChange={e => setBotName(e.target.value)} />
@@ -350,8 +350,8 @@ function BotSettingsPanel({ bot, onSaved, onClose }: { bot: Bot; onSaved: () => 
       </div>
 
       {/* DM 보안 정책 */}
-      <div style={{ marginBottom: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <h4 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>DM 보안 정책</h4>
+      <div style={{ marginBottom: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
+        <h4 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, marginBottom: '1rem' }}>DM 보안 정책</h4>
         <div style={{ marginBottom: '1rem' }}>
           <label style={S.label}>접근 정책</label>
           <select style={darkInput} value={dmPolicy} onChange={e => setDmPolicy(e.target.value)}>
@@ -386,7 +386,7 @@ function BotSettingsPanel({ bot, onSaved, onClose }: { bot: Bot; onSaved: () => 
         borderRadius: 10, background: 'rgba(239,68,68,0.05)',
       }}>
         <h4 style={{ color: '#ef4444', marginBottom: '0.5rem', fontWeight: 700 }}>봇 삭제</h4>
-        <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>
+        <p style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))', marginBottom: '1rem' }}>
           이 작업은 되돌릴 수 없습니다. 봇과 관련된 모든 데이터가 삭제됩니다.
         </p>
         <button style={{ padding: '8px 20px', background: '#ef4444', color: 'white', border: 'none', borderRadius: 10, fontWeight: 600, cursor: 'pointer' }}
@@ -416,14 +416,14 @@ function PersonaCard({ bot, persona, idx, onRefresh }: { bot: Bot; persona: Pers
   ];
 
   return (
-    <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+    <div style={{ borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
       {/* 헤더 */}
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '1rem 2rem', background: 'rgba(255,255,255,0.02)',
+        padding: '1rem 2rem', background: 'rgb(var(--bg-subtle))',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '1rem', fontWeight: 700, color: 'white' }}>
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: 'rgb(var(--text-primary-rgb))' }}>
             {persona.name || `페르소나 ${idx + 1}`}
           </span>
           <span style={{
@@ -431,7 +431,7 @@ function PersonaCard({ bot, persona, idx, onRefresh }: { bot: Bot; persona: Pers
             background: 'rgba(99,102,241,0.12)', padding: '3px 10px', borderRadius: 20,
           }}>{categoryLabel}</span>
           {persona.role && (
-            <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>{persona.role}</span>
+            <span style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))' }}>{persona.role}</span>
           )}
         </div>
         <a href={`/bot?id=${bot.id}&persona=${persona.id}`}
@@ -441,7 +441,7 @@ function PersonaCard({ bot, persona, idx, onRefresh }: { bot: Bot; persona: Pers
       </div>
 
       {/* 툴바 */}
-      <div style={{ display: 'flex', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ display: 'flex', borderTop: '1px solid rgb(var(--border-subtle-rgb))' }}>
         {tools.map((t, i) => (
           <button
             key={t.id}
@@ -451,9 +451,9 @@ function PersonaCard({ bot, persona, idx, onRefresh }: { bot: Bot; persona: Pers
               gap: 6, padding: '10px 6px', fontSize: '0.75rem', fontWeight: 500,
               cursor: 'pointer', transition: 'all 0.2s',
               background: openTool === t.id ? 'rgba(99,102,241,0.1)' : 'transparent',
-              color: openTool === t.id ? '#818cf8' : 'rgba(255,255,255,0.5)',
+              color: openTool === t.id ? '#818cf8' : 'rgb(var(--text-secondary-rgb))',
               border: 'none',
-              borderRight: i < tools.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+              borderRight: i < tools.length - 1 ? '1px solid rgb(var(--border-subtle-rgb))' : 'none',
             }}
           >
             <span>{t.icon}</span> {t.label}
@@ -472,8 +472,8 @@ function PersonaCard({ bot, persona, idx, onRefresh }: { bot: Bot; persona: Pers
 // ── 툴 패널 ──────────────────────────────────────────────────
 function ToolPanel({ tool, bot, persona, onRefresh }: { tool: ToolId; bot: Bot; persona: Persona; onRefresh: () => void }) {
   const panelStyle: React.CSSProperties = {
-    padding: '2rem', background: 'rgba(0,0,0,0.15)',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
+    padding: '2rem', background: 'rgb(var(--bg-muted))',
+    borderTop: '1px solid rgb(var(--border-subtle-rgb))',
     animation: 'slideDown 0.25s ease-out',
   };
 
@@ -493,7 +493,7 @@ function LogPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
   return (
     <div>
-      <div style={{ fontWeight: 700, color: 'white', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
+      <div style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
         📑 {persona.name}의 대화 로그
       </div>
       <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
@@ -502,14 +502,14 @@ function LogPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: 400, overflowY: 'auto' }}>
         {conversations.length === 0 ? (
-          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem' }}>아직 대화 기록이 없습니다.</div>
+          <div style={{ textAlign: 'center', color: 'rgb(var(--text-muted))', padding: '2rem' }}>아직 대화 기록이 없습니다.</div>
         ) : (
           conversations.slice(-50).map((msg: any, i: number) => (
             <div key={i} style={{
               padding: '10px 14px', borderRadius: 10, fontSize: '0.85rem', lineHeight: 1.5,
               maxWidth: '85%', alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              background: msg.role === 'user' ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
-              color: msg.role === 'user' ? '#a5b4fc' : 'rgba(255,255,255,0.8)',
+              background: msg.role === 'user' ? 'rgba(99,102,241,0.15)' : 'rgb(var(--bg-muted))',
+              color: msg.role === 'user' ? '#a5b4fc' : 'rgb(var(--text-primary-rgb))',
             }}>
               <div>{msg.content}</div>
             </div>
@@ -523,11 +523,11 @@ function LogPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 function StatCard({ value, label }: { value: number; label: string }) {
   return (
     <div style={{
-      flex: 1, padding: '1rem', background: 'rgba(255,255,255,0.03)',
-      border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, textAlign: 'center',
+      flex: 1, padding: '1rem', background: 'rgb(var(--bg-subtle))',
+      border: '1px solid rgb(var(--border-subtle-rgb))', borderRadius: 10, textAlign: 'center',
     }}>
       <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#818cf8' }}>{value}</div>
-      <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{label}</div>
+      <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 4 }}>{label}</div>
     </div>
   );
 }
@@ -599,7 +599,7 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
   return (
     <div>
-      <div style={{ fontWeight: 700, color: 'white', fontSize: '1.05rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', fontSize: '1.05rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: 8 }}>
         💾 {persona.name}의 지식베이스
         {saved && <span style={{ fontSize: '0.75rem', color: '#22c55e' }}>✓ 저장됨</span>}
       </div>
@@ -607,18 +607,18 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
       {/* Q&A */}
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>Q&A 관리</span>
+          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))' }}>Q&A 관리</span>
           <button style={btnSmDark} onClick={addQA}>+ 추가</button>
         </div>
         {(kb.qaPairs || []).length === 0 ? (
-          <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', padding: '8px 0' }}>등록된 Q&A가 없습니다.</div>
+          <div style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))', padding: '8px 0' }}>등록된 Q&A가 없습니다.</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {(kb.qaPairs || []).map((qa: any, i: number) => (
               <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.5rem', alignItems: 'start' }}>
                 <input style={darkInput} placeholder="질문" value={qa.q || ''} onChange={e => updateQA(i, 'q', e.target.value)} />
                 <input style={darkInput} placeholder="답변" value={qa.a || ''} onChange={e => updateQA(i, 'a', e.target.value)} />
-                <button onClick={() => removeQA(i)} style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', borderRadius: 8, background: 'transparent', border: 'none', fontSize: '1rem' }}>✕</button>
+                <button onClick={() => removeQA(i)} style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgb(var(--text-muted))', cursor: 'pointer', borderRadius: 8, background: 'transparent', border: 'none', fontSize: '1rem' }}>✕</button>
               </div>
             ))}
           </div>
@@ -627,7 +627,7 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
       {/* 텍스트 지식 */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem' }}>텍스트 지식</div>
+        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.75rem' }}>텍스트 지식</div>
         <textarea style={{ ...darkInput, resize: 'vertical', minHeight: 80 }}
           placeholder="코코봇이 알아야 할 정보를 자유롭게 입력하세요..."
           value={kb.freeText || ''}
@@ -637,11 +637,11 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
       {/* 파일 업로드 */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem' }}>파일 업로드</div>
+        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.75rem' }}>파일 업로드</div>
         <label style={{
-          border: '2px dashed rgba(255,255,255,0.1)', borderRadius: 10, padding: '2rem',
+          border: '2px dashed rgb(var(--border))', borderRadius: 10, padding: '2rem',
           textAlign: 'center', cursor: 'pointer', display: 'block',
-          color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem',
+          color: 'rgb(var(--text-muted))', fontSize: '0.85rem',
         }}>
           📂 PDF, TXT, CSV 파일을 클릭하여 업로드
           <input type="file" accept=".pdf,.txt,.csv" multiple style={{ display: 'none' }}
@@ -649,10 +649,10 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
         </label>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
           {(kb.files || []).map((f: any, i: number) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgba(0,0,0,0.2)', borderRadius: 8, fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgb(var(--bg-muted))', borderRadius: 8, fontSize: '0.8rem', color: 'rgb(var(--text-secondary-rgb))' }}>
               <span>📄 {f.name}</span>
               <button onClick={() => setKb((prev: any) => ({ ...prev, files: prev.files.filter((_: any, idx: number) => idx !== i) }))}
-                style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem' }}>✕</button>
+                style={{ background: 'transparent', border: 'none', color: 'rgb(var(--text-muted))', cursor: 'pointer', fontSize: '1rem' }}>✕</button>
             </div>
           ))}
         </div>
@@ -661,24 +661,24 @@ function KBPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
       {/* Obsidian */}
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>🗂️ Obsidian 지식베이스</span>
-          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)' }}>마크다운 파일 → RAG 검색</span>
+          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))' }}>🗂️ Obsidian 지식베이스</span>
+          <span style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))' }}>마크다운 파일 → RAG 검색</span>
         </div>
         <label style={{
-          border: '2px dashed rgba(255,255,255,0.1)', borderRadius: 10, padding: '1.5rem',
+          border: '2px dashed rgb(var(--border))', borderRadius: 10, padding: '1.5rem',
           textAlign: 'center', cursor: 'pointer', display: 'block',
-          color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginBottom: '0.75rem',
+          color: 'rgb(var(--text-muted))', fontSize: '0.85rem', marginBottom: '0.75rem',
         }}>
           📁 Obsidian .md 파일을 클릭하여 업로드
           <input type="file" accept=".md,.txt" multiple style={{ display: 'none' }}
             onChange={e => handleObsidianUpload(e.target.files)} />
         </label>
         {obsidianDocs.length === 0 ? (
-          <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)' }}>업로드된 Obsidian 파일이 없습니다.</div>
+          <div style={{ fontSize: '0.8rem', color: 'rgb(var(--text-muted))' }}>업로드된 Obsidian 파일이 없습니다.</div>
         ) : (
           obsidianDocs.map((doc: any, i: number) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgba(0,0,0,0.2)', borderRadius: 8, fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>
-              <span>📝 {doc.fileName} <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>({doc.wordCount || 0}단어)</span></span>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgb(var(--bg-muted))', borderRadius: 8, fontSize: '0.8rem', color: 'rgb(var(--text-secondary-rgb))', marginBottom: 4 }}>
+              <span>📝 {doc.fileName} <span style={{ color: 'rgb(var(--text-muted))', fontSize: '0.75rem' }}>({doc.wordCount || 0}단어)</span></span>
             </div>
           ))
         )}
@@ -704,17 +704,17 @@ function SkillPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
   return (
     <div>
-      <div style={{ fontWeight: 700, color: 'white', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
+      <div style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
         🧩 {persona.name}의 스킬 관리
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
         <div>
-          <h4 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <h4 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
             ✅ 설치된 스킬 ({installed.length})
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: 400, overflowY: 'auto' }}>
             {installed.length === 0 ? (
-              <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', padding: '1rem 0' }}>설치된 스킬이 없습니다.</div>
+              <div style={{ color: 'rgb(var(--text-muted))', fontSize: '0.8rem', padding: '1rem 0' }}>설치된 스킬이 없습니다.</div>
             ) : (
               installed.map((s: any) => (
                 <SkillCard key={s.id} skill={s} action="remove" onAction={() => uninstall(s.id)} />
@@ -723,8 +723,8 @@ function SkillPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
           </div>
         </div>
         <div>
-          <h4 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem' }}>🛒 스킬 마켓</h4>
-          <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', padding: '1rem 0' }}>스킬 목록을 불러오는 중입니다.</div>
+          <h4 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, marginBottom: '1rem' }}>🛒 스킬 마켓</h4>
+          <div style={{ color: 'rgb(var(--text-muted))', fontSize: '0.8rem', padding: '1rem 0' }}>스킬 목록을 불러오는 중입니다.</div>
         </div>
       </div>
     </div>
@@ -735,13 +735,13 @@ function SkillCard({ skill, action, onAction }: { skill: any; action: 'install' 
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 12, padding: 12,
-      background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)',
+      background: 'rgb(var(--bg-subtle))', border: '1px solid rgb(var(--border-subtle-rgb))',
       borderRadius: 10,
     }}>
       <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{skill.icon || '🧩'}</span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white', marginBottom: 2 }}>{skill.name}</div>
-        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.description || ''}</div>
+        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))', marginBottom: 2 }}>{skill.name}</div>
+        <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.description || ''}</div>
       </div>
       <button onClick={onAction} style={action === 'remove' ? {
         padding: '6px 14px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer',
@@ -770,7 +770,7 @@ function SchoolPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
   return (
     <div>
-      <div style={{ fontWeight: 700, color: 'white', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
+      <div style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
         🎓 {persona.name}의 학습 현황
       </div>
       <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
@@ -778,7 +778,7 @@ function SchoolPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
         <StatCard value={installed.length} label="습득한 스킬" />
         <StatCard value={stats.totalMessages || 0} label="대화 경험" />
       </div>
-      <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem' }}>학습 단계별 현황</h4>
+      <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.75rem' }}>학습 단계별 현황</h4>
       <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: 0 }}>
         {[
           { done: hasRole, text: `역할 설정 — ${hasRole ? persona.role : '아직 역할이 지정되지 않았습니다'}` },
@@ -787,8 +787,8 @@ function SchoolPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
           { done: hasConversations, text: `실전 대화 — ${hasConversations ? `${conversations.length}개 메시지 경험` : '아직 대화 경험이 없습니다'}` },
         ].map((item, i) => (
           <li key={i} style={{
-            fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)',
-            padding: '8px 16px', background: 'rgba(255,255,255,0.03)', borderRadius: 8,
+            fontSize: '0.85rem', color: 'rgb(var(--text-secondary-rgb))',
+            padding: '8px 16px', background: 'rgb(var(--bg-subtle))', borderRadius: 8,
           }}>
             {item.done ? '✅' : '⬜'} {item.text}
           </li>
@@ -808,7 +808,7 @@ function CommunityPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
 
   return (
     <div>
-      <div style={{ fontWeight: 700, color: 'white', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
+      <div style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
         💬 {persona.name}의 커뮤니티 활동
       </div>
       <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
@@ -816,16 +816,16 @@ function CommunityPanel({ bot, persona }: { bot: Bot; persona: Persona }) {
         <StatCard value={replies} label="답변 수" />
         <StatCard value={likes} label="받은 좋아요" />
       </div>
-      <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '0.75rem' }}>최근 활동 내역</h4>
+      <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.75rem' }}>최근 활동 내역</h4>
       {activities.length === 0 ? (
-        <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem' }}>아직 커뮤니티 활동 내역이 없습니다.</div>
+        <div style={{ textAlign: 'center', color: 'rgb(var(--text-muted))', padding: '2rem' }}>아직 커뮤니티 활동 내역이 없습니다.</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: 350, overflowY: 'auto' }}>
           {[...activities].reverse().slice(0, 30).map((a: any, i: number) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: 10 }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 12px', background: 'rgb(var(--bg-subtle))', borderRadius: 10 }}>
               <span style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: 2 }}>{a.icon || '💬'}</span>
               <div>
-                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>{a.text || ''}</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgb(var(--text-secondary-rgb))', lineHeight: 1.5 }}>{a.text || ''}</div>
               </div>
             </div>
           ))}
@@ -867,7 +867,7 @@ function PersonaSettingsPanel({ bot, persona, onSaved }: { bot: Bot; persona: Pe
 
   return (
     <div>
-      <div style={{ fontWeight: 700, color: 'white', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
+      <div style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))', fontSize: '1.05rem', marginBottom: '1.25rem' }}>
         🔧 {persona.name} 설정
       </div>
       <div style={{ marginBottom: '1rem' }}>
@@ -894,7 +894,7 @@ function PersonaSettingsPanel({ bot, persona, onSaved }: { bot: Bot; persona: Pe
         <input type="range" min={0} max={100} value={iqEq}
           onChange={e => setIqEq(parseInt(e.target.value))}
           style={{ width: '100%', margin: '0.5rem 0', accentColor: '#6366f1' }} />
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgb(var(--text-muted))' }}>
           <span>IQ (논리적)</span><span>EQ (감성적)</span>
         </div>
       </div>
@@ -960,10 +960,10 @@ function AddPersonaButton({ bot, onAdded }: { bot: Bot; onAdded: () => void }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
         }} onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}>
           <div style={{
-            background: '#1c1c24', border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgb(var(--surface-1))', border: '1px solid rgb(var(--border))',
             borderRadius: 16, padding: '2rem', width: '90%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto',
           }}>
-            <h3 style={{ color: 'white', fontWeight: 700, fontSize: '1.15rem', marginBottom: '1.5rem' }}>페르소나 추가</h3>
+            <h3 style={{ color: 'rgb(var(--text-primary-rgb))', fontWeight: 700, fontSize: '1.15rem', marginBottom: '1.5rem' }}>페르소나 추가</h3>
             <div style={{ marginBottom: '1rem' }}><label style={S.label}>이름 *</label><input style={darkInput} value={name} onChange={e => setName(e.target.value)} placeholder="예: 고객 상담, 업무 비서" /></div>
             <div style={{ marginBottom: '1rem' }}>
               <label style={S.label}>카테고리</label>
@@ -977,7 +977,7 @@ function AddPersonaButton({ bot, onAdded }: { bot: Bot; onAdded: () => void }) {
             <div style={{ marginBottom: '1rem' }}>
               <label style={S.label}>IQ ↔ EQ 밸런스: {iqEq}</label>
               <input type="range" min={0} max={100} value={iqEq} onChange={e => setIqEq(parseInt(e.target.value))} style={{ width: '100%', accentColor: '#6366f1' }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}><span>IQ (논리적)</span><span>EQ (감성적)</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'rgb(var(--text-muted))' }}><span>IQ (논리적)</span><span>EQ (감성적)</span></div>
             </div>
             <div style={{ marginBottom: '1rem' }}>
               <label style={S.label}>AI 모델</label>

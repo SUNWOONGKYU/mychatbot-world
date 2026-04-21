@@ -369,7 +369,7 @@ const adminStyles = `
   }
 
   .admin-table th {
-    background: rgba(255,255,255,0.02);
+    background: rgb(var(--bg-subtle));
     text-align: left;
     padding: 0.75rem 1rem;
     font-size: 0.72rem;
@@ -393,7 +393,7 @@ const adminStyles = `
   }
 
   .admin-table tr:hover td {
-    background: rgba(255,255,255,0.015);
+    background: rgb(var(--bg-subtle));
   }
 
   .admin-table-empty {
@@ -413,7 +413,7 @@ const adminStyles = `
   }
 
   .admin-input {
-    background: rgba(255,255,255,0.05);
+    background: rgb(var(--bg-muted));
     border: 1px solid var(--admin-border);
     border-radius: 8px;
     padding: 0.5rem 0.8rem;
@@ -429,7 +429,7 @@ const adminStyles = `
   }
 
   .admin-select {
-    background: rgba(255,255,255,0.05);
+    background: rgb(var(--bg-muted));
     border: 1px solid var(--admin-border);
     border-radius: 8px;
     padding: 0.5rem 0.8rem;
@@ -441,7 +441,7 @@ const adminStyles = `
   }
 
   .admin-select option {
-    background: #1e1e2e;
+    background: rgb(var(--surface-2));
     color: var(--admin-text);
   }
 
@@ -461,9 +461,9 @@ const adminStyles = `
   .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .admin-btn:hover:not(:disabled) { opacity: 0.85; }
 
-  .admin-btn-primary { background: var(--admin-primary); color: #fff; }
+  .admin-btn-primary { background: var(--admin-primary); color: rgb(var(--text-primary-rgb)); }
   .admin-btn-success { background: var(--admin-success); color: #000; }
-  .admin-btn-danger  { background: var(--admin-danger); color: #fff; }
+  .admin-btn-danger  { background: var(--admin-danger); color: rgb(var(--text-primary-rgb)); }
   .admin-btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text); }
   .admin-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.75rem; border-radius: 6px; }
 
@@ -481,7 +481,7 @@ const adminStyles = `
   .admin-badge-pending  { background: rgba(251,191,36,0.15); color: var(--admin-warning); }
   .admin-badge-success  { background: rgba(52,211,153,0.15); color: var(--admin-success); }
   .admin-badge-danger   { background: rgba(248,113,113,0.15); color: var(--admin-danger); }
-  .admin-badge-muted    { background: rgba(255,255,255,0.06); color: var(--admin-muted); }
+  .admin-badge-muted    { background: rgb(var(--bg-muted)); color: var(--admin-muted); }
   .admin-badge-primary  { background: rgba(129,140,248,0.15); color: var(--admin-primary); }
 
   /* 탭 바 */
@@ -507,7 +507,7 @@ const adminStyles = `
     gap: 0.4rem;
   }
 
-  .admin-tab-btn:hover { color: var(--admin-text); border-color: rgba(255,255,255,0.15); }
+  .admin-tab-btn:hover { color: var(--admin-text); border-color: rgb(var(--border)); }
   .admin-tab-btn.active { background: rgba(129,140,248,0.12); color: var(--admin-primary); border-color: var(--admin-primary); }
 
   /* 페이지네이션 */
@@ -533,13 +533,13 @@ const adminStyles = `
 
   .admin-pagination button.active {
     background: var(--admin-primary);
-    color: #fff;
+    color: rgb(var(--text-primary-rgb));
     border-color: var(--admin-primary);
   }
 
   .admin-pagination button:hover:not(.active) {
-    border-color: rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.04);
+    border-color: rgb(var(--text-muted));
+    background: rgb(var(--bg-muted));
   }
 
   /* 긴급 알림 배너 */
@@ -574,7 +574,7 @@ const adminStyles = `
   }
 
   .admin-modal {
-    background: #1a1a24;
+    background: rgb(var(--surface-1));
     border: 1px solid var(--admin-border);
     border-radius: 16px;
     padding: 1.75rem;
@@ -605,7 +605,7 @@ const adminStyles = `
     font-family: inherit;
   }
 
-  .admin-modal-close:hover { color: var(--admin-text); background: rgba(255,255,255,0.05); }
+  .admin-modal-close:hover { color: var(--admin-text); background: rgb(var(--bg-muted)); }
 
   .admin-field {
     margin-bottom: 1rem;
@@ -625,7 +625,7 @@ const adminStyles = `
   }
 
   .admin-textarea {
-    background: rgba(255,255,255,0.05);
+    background: rgb(var(--bg-muted));
     border: 1px solid var(--admin-border);
     border-radius: 8px;
     padding: 0.6rem 0.8rem;
@@ -645,7 +645,7 @@ const adminStyles = `
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: #1e1e2e;
+    background: rgb(var(--surface-2));
     border: 1px solid var(--admin-border);
     padding: 0.75rem 1.2rem;
     border-radius: 10px;
@@ -749,13 +749,13 @@ const loginStyles = `
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: #0d0d12;
+    background: rgb(var(--bg-base));
     font-family: 'PretendardVariable', 'Pretendard', 'Malgun Gothic', sans-serif;
   }
 
   .admin-login-form {
-    background: #16161c;
-    border: 1px solid rgba(255,255,255,0.07);
+    background: rgb(var(--surface-1));
+    border: 1px solid rgb(var(--border-subtle-rgb));
     border-radius: 16px;
     padding: 2.5rem;
     width: 100%;
@@ -774,7 +774,7 @@ const loginStyles = `
   .admin-login-sub {
     text-align: center;
     font-size: 0.83rem;
-    color: rgba(255,255,255,0.4);
+    color: rgb(var(--text-muted));
     margin-bottom: 2rem;
   }
 
@@ -785,18 +785,18 @@ const loginStyles = `
   .admin-login-field label {
     display: block;
     font-size: 0.78rem;
-    color: rgba(255,255,255,0.5);
+    color: rgb(var(--text-secondary-rgb));
     margin-bottom: 0.35rem;
     font-weight: 500;
   }
 
   .admin-login-field input {
     width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgb(var(--bg-muted));
+    border: 1px solid rgb(var(--border-subtle-rgb));
     border-radius: 8px;
     padding: 0.65rem 0.9rem;
-    color: #e2e8f0;
+    color: rgb(var(--text-primary-rgb));
     font-size: 0.9rem;
     outline: none;
     font-family: inherit;
@@ -819,7 +819,7 @@ const loginStyles = `
     width: 100%;
     padding: 0.7rem;
     background: #818cf8;
-    color: #fff;
+    color: rgb(var(--text-primary-rgb));
     border: none;
     border-radius: 8px;
     font-size: 0.9rem;

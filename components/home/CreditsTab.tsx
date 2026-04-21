@@ -6,8 +6,8 @@ import { S } from './ProfileTab';
 
 const darkInput: React.CSSProperties = {
   width: '100%', padding: '10px 14px',
-  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
-  borderRadius: 10, color: 'white', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box',
+  background: 'var(--surface-1)', border: '1px solid var(--border-default)',
+  borderRadius: 10, color: 'var(--text-primary)', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box',
 };
 
 const PACKAGES = [
@@ -45,7 +45,7 @@ export function CreditsTab({ user }: { user: any }) {
   return (
     <div>
       {toast && (
-        <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, background: '#6366f1', color: 'white', padding: '12px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500 }}>{toast}</div>
+        <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, background: 'rgb(var(--color-primary))', color: 'white', padding: '12px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 500 }}>{toast}</div>
       )}
 
       <h1 style={S.h1}>🪙 크레딧 & 결제</h1>
@@ -57,18 +57,18 @@ export function CreditsTab({ user }: { user: any }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: '1.5rem' }}>
           <div style={{ fontSize: '3rem', fontWeight: 800, color: '#818cf8' }}>{balance.toLocaleString()}</div>
-          <div style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.5)' }}>크레딧</div>
+          <div style={{ fontSize: '1rem', color: 'var(--text-tertiary)' }}>크레딧</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
           {USAGE_ITEMS.map((item, i) => (
             <div key={i} style={{
               display: 'flex', alignItems: 'center', gap: 10,
-              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+              background: 'var(--surface-1)', border: '1px solid var(--border-default)',
               borderRadius: 10, padding: '10px 14px',
             }}>
               <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
-              <span style={{ flex: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>{item.label}</span>
-              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap' }}>{item.cost}</span>
+              <span style={{ flex: 1, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{item.label}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>{item.cost}</span>
             </div>
           ))}
         </div>
@@ -79,7 +79,7 @@ export function CreditsTab({ user }: { user: any }) {
         <div style={S.sectionHeader}>
           <h2 style={S.h2}>크레딧 충전</h2>
         </div>
-        <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>
+        <div style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', marginBottom: '1rem' }}>
           무통장 입금 방식으로 충전합니다. 입금 확인 후 크레딧이 지급됩니다.
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
@@ -97,8 +97,8 @@ export function CreditsTab({ user }: { user: any }) {
                 }
               }}
               style={{
-                position: 'relative', background: 'rgba(255,255,255,0.03)',
-                border: `2px solid ${selectedPkg?.price === pkg.price ? '#6366f1' : pkg.popular ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                position: 'relative', background: 'var(--surface-1)',
+                border: `2px solid ${selectedPkg?.price === pkg.price ? '#6366f1' : pkg.popular ? 'rgba(251,191,36,0.4)' : 'var(--border-default)'}`,
                 borderRadius: 16, padding: '1.5rem', textAlign: 'center', cursor: 'pointer',
               }}>
               {pkg.popular && (
@@ -108,13 +108,13 @@ export function CreditsTab({ user }: { user: any }) {
                   padding: '3px 10px', borderRadius: 20,
                 }}>인기</span>
               )}
-              <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'white', marginBottom: 6 }}>
+              <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>
                 {pkg.credits.toLocaleString()} 크레딧
               </div>
               <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#818cf8' }}>
                 ₩{pkg.price.toLocaleString()}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>1원 = 1크레딧</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: 4 }}>1원 = 1크레딧</div>
             </div>
           ))}
         </div>
@@ -135,18 +135,18 @@ export function CreditsTab({ user }: { user: any }) {
           <h2 style={S.h2}>크레딧 사용 내역</h2>
         </div>
         {history.length === 0 ? (
-          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem', fontSize: '0.9rem' }}>
+          <div style={{ textAlign: 'center', color: 'var(--text-tertiary)', padding: '2rem', fontSize: '0.9rem' }}>
             아직 사용 내역이 없습니다.
           </div>
         ) : (
           history.slice(0, 20).map((h, i) => (
             <div key={i} style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              padding: '12px 0', borderBottom: i < Math.min(history.length, 20) - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+              padding: '12px 0', borderBottom: i < Math.min(history.length, 20) - 1 ? '1px solid var(--border-default)' : 'none',
             }}>
               <div>
-                <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}>{h.note || ''}</div>
-                <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>
+                <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{h.note || ''}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: 2 }}>
                   {new Date(h.timestamp).toLocaleDateString('ko-KR')}
                 </div>
               </div>
@@ -221,11 +221,11 @@ function BankTransferModal({
       backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center',
     }} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div style={{
-        background: '#1a1a24', border: '1px solid rgba(255,255,255,0.1)',
+        background: 'rgb(var(--surface-1))', border: '1px solid rgb(var(--border))',
         borderRadius: 20, padding: '2rem', width: '90%', maxWidth: 480,
         boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
       }}>
-        <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'white', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'rgb(var(--text-primary-rgb))', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 10 }}>
           🏦 무통장 입금 안내
         </div>
 
@@ -239,31 +239,31 @@ function BankTransferModal({
             <div key={i} style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               padding: '6px 0', fontSize: '0.9rem',
-              borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+              borderBottom: i < 2 ? '1px solid rgb(var(--border-subtle-rgb))' : 'none',
             }}>
-              <span style={{ color: 'rgba(255,255,255,0.45)' }}>{row.label}</span>
-              <span style={{ fontWeight: 700, color: 'white' }}>{row.value}</span>
+              <span style={{ color: 'rgb(var(--text-muted))' }}>{row.label}</span>
+              <span style={{ fontWeight: 700, color: 'rgb(var(--text-primary-rgb))' }}>{row.value}</span>
             </div>
           ))}
         </div>
 
         {/* 금액 선택 */}
-        <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.6rem' }}>입금 금액 선택</div>
+        <div style={{ fontSize: '0.82rem', color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.6rem' }}>입금 금액 선택</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
           {AMOUNTS.map(amt => (
             <div key={amt} onClick={() => setSelectedAmount(amt)} style={{
-              background: selectedAmount === amt ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.03)',
-              border: `2px solid ${selectedAmount === amt ? '#6366f1' : 'rgba(255,255,255,0.08)'}`,
+              background: selectedAmount === amt ? 'rgba(99,102,241,0.12)' : 'rgb(var(--bg-subtle))',
+              border: `2px solid ${selectedAmount === amt ? '#6366f1' : 'rgb(var(--bg-muted))'}`,
               borderRadius: 12, padding: '0.9rem 1rem', textAlign: 'center', cursor: 'pointer',
             }}>
               <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#818cf8' }}>₩{amt.toLocaleString()}</div>
-              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: 3 }}>{amt.toLocaleString()} 크레딧</div>
+              <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 3 }}>{amt.toLocaleString()} 크레딧</div>
             </div>
           ))}
         </div>
 
         {/* 입금자명 */}
-        <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem' }}>입금자명</div>
+        <div style={{ fontSize: '0.82rem', color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.5rem' }}>입금자명</div>
         <input type="text" placeholder="실제 입금자 이름을 입력하세요" maxLength={20}
           value={depositorName} onChange={e => setDepositorName(e.target.value)}
           style={{ ...darkInput, marginBottom: '1.25rem' }} />
@@ -272,7 +272,7 @@ function BankTransferModal({
 
         {/* 버튼 */}
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 600 }}
+          <button style={{ flex: 1, padding: '12px', background: 'rgb(var(--bg-muted))', color: 'rgb(var(--text-secondary-rgb))', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 600 }}
             onClick={onClose}>취소</button>
           <button style={{ flex: 1, ...S.btnPrimary, padding: '12px', opacity: submitting ? 0.7 : 1 }}
             onClick={submit} disabled={submitting}>
@@ -280,7 +280,7 @@ function BankTransferModal({
           </button>
         </div>
 
-        <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.35)', marginTop: '1rem', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '0.78rem', color: 'rgb(var(--text-muted))', marginTop: '1rem', lineHeight: 1.6 }}>
           입금 후 영업일 기준 1~2시간 내 확인 후 크레딧이 충전됩니다.<br />
           문의: support@cocobot.world
         </p>

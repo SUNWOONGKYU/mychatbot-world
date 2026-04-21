@@ -294,7 +294,7 @@ export default function SectionUsers({ adminKey }: SectionUsersProps) {
 
             <div
               style={{
-                background: 'rgba(255,255,255,0.03)',
+                background: 'rgb(var(--bg-subtle))',
                 border: '1px solid var(--admin-border)',
                 borderRadius: '8px',
                 padding: '0.75rem 1rem',

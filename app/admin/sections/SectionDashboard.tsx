@@ -79,7 +79,7 @@ function BarChart({
       ctx.fill();
 
       // 라벨
-      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.fillStyle = 'rgb(var(--text-muted))';
       ctx.font = '10px PretendardVariable, Pretendard, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(labels[i] || '', x + barW / 2, H - 6);
@@ -164,7 +164,7 @@ function LineChart({
     });
 
     // 라벨
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillStyle = 'rgb(var(--text-muted))';
     ctx.font = '10px PretendardVariable, Pretendard, sans-serif';
     ctx.textAlign = 'center';
     points.forEach((p, i) => {

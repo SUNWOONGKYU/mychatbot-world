@@ -78,7 +78,7 @@ function SkeletonLine({ width, height, className = '' }: { width: string | numbe
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
-        background: 'linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%)',
+        background: 'linear-gradient(90deg, rgb(var(--bg-muted)) 25%, rgb(var(--bg-surface-hover)) 50%, rgb(var(--bg-muted)) 75%)',
         backgroundSize: '200% 100%',
         animation: 'shimmer 1.4s infinite',
       }}
@@ -117,8 +117,14 @@ function MonthlyBarChart({ data }: { data: MonthlyPoint[] }) {
 
     ctx.clearRect(0, 0, W, H);
 
+    // Canvas text colors: read from CSS custom properties for theme awareness
+    const rootStyle = typeof window !== 'undefined' ? getComputedStyle(document.documentElement) : null;
+    const textMutedRgb  = rootStyle?.getPropertyValue('--text-muted').trim()         || '107 114 128';
+    const textSecondary = rootStyle?.getPropertyValue('--text-secondary-rgb').trim() || '75 85 99';
+    const borderSubtle  = rootStyle?.getPropertyValue('--border-subtle-rgb').trim()  || '229 231 235';
+
     if (!data || data.length === 0) {
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillStyle = `rgb(${textMutedRgb})`;
       ctx.font = '14px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('데이터가 없습니다', W / 2, H / 2);
@@ -131,7 +137,7 @@ function MonthlyBarChart({ data }: { data: MonthlyPoint[] }) {
     const gap = chartW / barCount;
 
     // 그리드 라인
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.strokeStyle = borderSubtle.includes('/') ? `rgba(${borderSubtle.replace('/', ',')})` : `rgb(${borderSubtle})`;
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
       const y = padT + chartH - (chartH / 4) * i;
@@ -141,7 +147,7 @@ function MonthlyBarChart({ data }: { data: MonthlyPoint[] }) {
       ctx.stroke();
 
       const val = Math.round((maxVal / 4) * i);
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillStyle = `rgb(${textMutedRgb})`;
       ctx.font = '11px Inter, sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(val >= 1000 ? (val / 1000).toFixed(1) + 'K' : String(val), padL - 8, y + 4);
@@ -167,7 +173,7 @@ function MonthlyBarChart({ data }: { data: MonthlyPoint[] }) {
       ctx.fill();
 
       // X축 레이블
-      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.fillStyle = `rgb(${textSecondary})`;
       ctx.font = '11px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(d.month || String(i + 1) + '월', x + barWidth / 2, padT + chartH + 20);
@@ -228,7 +234,7 @@ function BotBarRow({ item, idx, maxAmt, total }: BotBarRowProps) {
           width: 140,
           fontSize: '0.875rem',
           fontWeight: 500,
-          color: 'var(--ct-text)',
+          color: 'rgb(var(--text-primary-rgb))',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -240,7 +246,7 @@ function BotBarRow({ item, idx, maxAmt, total }: BotBarRowProps) {
         style={{
           flex: 1,
           height: '0.625rem',
-          background: 'rgba(255,255,255,0.07)',
+          background: 'rgb(var(--bg-muted))',
           borderRadius: 9999,
           overflow: 'hidden',
         }}
@@ -261,7 +267,7 @@ function BotBarRow({ item, idx, maxAmt, total }: BotBarRowProps) {
           width: 80,
           fontSize: '0.8125rem',
           fontWeight: 600,
-          color: 'rgba(255,255,255,0.5)',
+          color: 'rgb(var(--text-secondary-rgb))',
           textAlign: 'right',
         }}
       >
@@ -272,7 +278,7 @@ function BotBarRow({ item, idx, maxAmt, total }: BotBarRowProps) {
           flexShrink: 0,
           width: 44,
           fontSize: '0.75rem',
-          color: 'rgba(255,255,255,0.3)',
+          color: 'rgb(var(--text-muted))',
           textAlign: 'right',
         }}
       >
@@ -387,14 +393,14 @@ export default function BusinessDashboardClient() {
   // ── 스타일 변수 (Vanilla 원본 색상 그대로) ─────────────────────────
 
   const css = {
-    bg:        '#0d0d12',
-    surface:   '#16161c',
-    surface2:  '#1c1c24',
-    border:    'rgba(255,255,255,0.07)',
-    border2:   'rgba(255,255,255,0.04)',
-    text:      '#f1f5f9',
-    textMuted: 'rgba(255,255,255,0.5)',
-    textFaint: 'rgba(255,255,255,0.3)',
+    bg:        'rgb(var(--bg-base))',
+    surface:   'rgb(var(--bg-surface))',
+    surface2:  'rgb(var(--bg-subtle))',
+    border:    'rgb(var(--border-subtle-rgb))',
+    border2:   'rgb(var(--border-subtle-rgb))',
+    text:      'rgb(var(--text-primary-rgb))',
+    textMuted: 'rgb(var(--text-secondary-rgb))',
+    textFaint: 'rgb(var(--text-muted))',
     primary:   '#4f46e5',
     primaryL:  '#6366f1',
     success:   '#10b981',
@@ -414,9 +420,9 @@ export default function BusinessDashboardClient() {
         }
         .skeleton-shimmer {
           background: linear-gradient(90deg,
-            rgba(255,255,255,0.06) 25%,
-            rgba(255,255,255,0.12) 50%,
-            rgba(255,255,255,0.06) 75%);
+            rgb(var(--bg-muted)) 25%,
+            rgb(var(--bg-surface-hover)) 50%,
+            rgb(var(--bg-muted)) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.4s infinite;
           border-radius: 0.25rem;

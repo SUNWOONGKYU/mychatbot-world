@@ -52,7 +52,7 @@ export function UsageTab() {
       <h1 style={S.h1}>📊 AI 사용량</h1>
 
       {loading && (
-        <p style={{ color: 'rgba(255,255,255,0.4)', padding: '2rem 0' }}>불러오는 중...</p>
+        <p style={{ color: 'rgb(var(--text-muted))', padding: '2rem 0' }}>불러오는 중...</p>
       )}
 
       {!loading && error && (
@@ -79,14 +79,14 @@ export function UsageTab() {
                 { label: '처리 토큰',     value: `${fmt(data.total_tokens)}T` },
               ].map((item) => (
                 <div key={item.label} style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgb(var(--bg-subtle))',
+                  border: '1px solid rgb(var(--border-subtle-rgb))',
                   borderRadius: 12, padding: '1.25rem', textAlign: 'center',
                 }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'rgb(var(--text-primary-rgb))' }}>
                     {item.value}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>
+                  <div style={{ fontSize: '0.75rem', color: 'rgb(var(--text-muted))', marginTop: 4 }}>
                     {item.label}
                   </div>
                 </div>
@@ -101,18 +101,18 @@ export function UsageTab() {
             </div>
 
             {data.by_model.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.9rem' }}>
+              <p style={{ color: 'rgb(var(--text-muted))', fontSize: '0.9rem' }}>
                 이번 달 사용 내역이 없습니다.
               </p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                    <tr style={{ borderBottom: '1px solid rgb(var(--border-subtle-rgb))' }}>
                       {['모델', '요청 수', '크레딧', '토큰'].map(h => (
                         <th key={h} style={{
                           padding: '10px 12px', textAlign: h === '모델' ? 'left' : 'right',
-                          color: 'rgba(255,255,255,0.4)', fontWeight: 500,
+                          color: 'rgb(var(--text-muted))', fontWeight: 500,
                         }}>{h}</th>
                       ))}
                     </tr>
@@ -123,20 +123,20 @@ export function UsageTab() {
                         ? Math.round((m.credits / data.total_credits) * 100)
                         : 0;
                       return (
-                        <tr key={m.model} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                          <td style={{ padding: '12px 12px', color: 'white' }}>
+                        <tr key={m.model} style={{ borderBottom: '1px solid rgb(var(--border-subtle-rgb))' }}>
+                          <td style={{ padding: '12px 12px', color: 'rgb(var(--text-primary-rgb))' }}>
                             <div>{m.model}</div>
-                            <div style={{ marginTop: 4, height: 4, background: 'rgba(255,255,255,0.08)', borderRadius: 2, width: 140 }}>
-                              <div style={{ height: '100%', width: `${pct}%`, background: '#6366f1', borderRadius: 2 }} />
+                            <div style={{ marginTop: 4, height: 4, background: 'rgb(var(--bg-muted))', borderRadius: 2, width: 140 }}>
+                              <div style={{ height: '100%', width: `${pct}%`, background: 'rgb(var(--color-primary))', borderRadius: 2 }} />
                             </div>
                           </td>
-                          <td style={{ padding: '12px 12px', textAlign: 'right', color: 'rgba(255,255,255,0.6)' }}>
+                          <td style={{ padding: '12px 12px', textAlign: 'right', color: 'rgb(var(--text-secondary-rgb))' }}>
                             {fmt(m.requests)}
                           </td>
-                          <td style={{ padding: '12px 12px', textAlign: 'right', color: 'rgba(255,255,255,0.6)' }}>
+                          <td style={{ padding: '12px 12px', textAlign: 'right', color: 'rgb(var(--text-secondary-rgb))' }}>
                             {fmt(m.credits)} C
                           </td>
-                          <td style={{ padding: '12px 12px', textAlign: 'right', color: 'rgba(255,255,255,0.6)' }}>
+                          <td style={{ padding: '12px 12px', textAlign: 'right', color: 'rgb(var(--text-secondary-rgb))' }}>
                             {fmt(m.tokens)} T
                           </td>
                         </tr>
@@ -147,7 +147,7 @@ export function UsageTab() {
               </div>
             )}
 
-            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.75rem', marginTop: '1rem' }}>
+            <p style={{ color: 'rgb(var(--text-muted))', fontSize: '0.75rem', marginTop: '1rem' }}>
               * 집계 기준: 매월 1일 00:00 ~ 말일 23:59 (KST 기준 UTC)
             </p>
           </div>

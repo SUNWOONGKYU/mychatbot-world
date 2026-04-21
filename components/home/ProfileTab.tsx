@@ -6,39 +6,39 @@ import supabase from '@/lib/supabase';
 // ── 공통 스타일 헬퍼 ─────────────────────────────────────────
 export const S = {
   card: {
-    background: '#1c1c24',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'rgb(var(--surface-1))',
+    border: '1px solid rgb(var(--border-subtle-rgb))',
     borderRadius: 16,
     padding: '2.5rem',
     maxWidth: 800,
   } as React.CSSProperties,
   sectionHeader: {
     marginBottom: '2rem',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    borderBottom: '1px solid rgb(var(--border-subtle-rgb))',
     paddingBottom: '1.5rem',
   } as React.CSSProperties,
   h1: {
-    fontSize: '2rem', fontWeight: 800, color: 'white',
+    fontSize: '2rem', fontWeight: 800, color: 'rgb(var(--text-primary-rgb))',
     marginBottom: '2rem', textAlign: 'left' as const,
   } as React.CSSProperties,
-  h2: { fontSize: '1.25rem', color: 'white', margin: 0 } as React.CSSProperties,
+  h2: { fontSize: '1.25rem', color: 'rgb(var(--text-primary-rgb))', margin: 0 } as React.CSSProperties,
   label: {
     display: 'block', fontSize: '0.9rem',
-    color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem',
+    color: 'rgb(var(--text-secondary-rgb))', marginBottom: '0.5rem',
   } as React.CSSProperties,
   staticValue: {
-    fontSize: '1.1rem', color: 'white', fontWeight: 600, padding: '10px 0',
+    fontSize: '1.1rem', color: 'rgb(var(--text-primary-rgb))', fontWeight: 600, padding: '10px 0',
   } as React.CSSProperties,
   input: {
     width: '100%', padding: '10px 14px',
-    background: 'rgba(0,0,0,0.2)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: 10, color: 'white', fontSize: '1rem',
+    background: 'rgb(var(--bg-muted))',
+    border: '1px solid rgb(var(--border))',
+    borderRadius: 10, color: 'rgb(var(--text-primary-rgb))', fontSize: '1rem',
     outline: 'none', boxSizing: 'border-box' as const,
   } as React.CSSProperties,
   formRow: { marginBottom: '1.5rem' } as React.CSSProperties,
   btnPrimary: {
-    padding: '10px 24px', background: '#6366f1', color: 'white',
+    padding: '10px 24px', background: 'rgb(var(--color-primary))', color: 'white',
     border: 'none', borderRadius: 10, fontWeight: 600,
     fontSize: '0.9rem', cursor: 'pointer',
   } as React.CSSProperties,

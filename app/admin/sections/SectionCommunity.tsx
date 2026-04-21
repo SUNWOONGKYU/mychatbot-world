@@ -72,7 +72,7 @@ function DeleteModal({ item, onClose, onConfirm }: {
           <button className="amodal__close" onClick={onClose}>✕</button>
         </div>
 
-        <div style={{ background: 'rgba(248,113,113,.08)', border: '1px solid rgba(248,113,113,.2)', borderRadius: 10, padding: '1rem', fontSize: '.875rem', color: 'rgba(255,255,255,.7)' }}>
+        <div style={{ background: 'rgba(248,113,113,.08)', border: '1px solid rgba(248,113,113,.2)', borderRadius: 10, padding: '1rem', fontSize: '.875rem', color: 'rgb(var(--text-secondary-rgb))' }}>
           <strong style={{ color: '#f87171' }}>삭제 대상:</strong>
           <p style={{ margin: '.5rem 0 0', lineHeight: 1.6 }}>
             {item.title && <><strong>{item.title}</strong><br /></>}
@@ -157,12 +157,12 @@ function CategoryManager({ cats, onUpdate }: { cats: Category[]; onUpdate: (cats
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: 'rgba(255,255,255,.8)' }}>마당(카테고리) 목록</h3>
+        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))' }}>마당(카테고리) 목록</h3>
         <button className="abtn abtn--primary" onClick={() => setShowAdd(true)}>+ 마당 추가</button>
       </div>
 
       {showAdd && (
-        <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, padding: '1rem', marginBottom: '1rem', display: 'flex', gap: '.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ background: 'rgb(var(--bg-muted))', border: '1px solid rgb(var(--border))', borderRadius: 10, padding: '1rem', marginBottom: '1rem', display: 'flex', gap: '.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <input className="ainput" style={{ width: 60 }} placeholder="🎯" value={newCat.icon} onChange={(e) => setNewCat((f) => ({ ...f, icon: e.target.value }))} />
           <input className="ainput" style={{ flex: 1, minWidth: 180 }} placeholder="마당 이름" value={newCat.name} onChange={(e) => setNewCat((f) => ({ ...f, name: e.target.value }))} />
           <button className="abtn abtn--primary" onClick={handleAdd} disabled={!newCat.name.trim()}>추가</button>
@@ -267,7 +267,7 @@ export default function SectionCommunity({ onBadgeChange }: Props) {
               <option value="deleted">삭제됨</option>
               <option value="dismissed">무시됨</option>
             </select>
-            <span style={{ fontSize: '.875rem', color: 'rgba(255,255,255,.4)' }}>총 {filtered.length}건</span>
+            <span style={{ fontSize: '.875rem', color: 'rgb(var(--text-muted))' }}>총 {filtered.length}건</span>
           </div>
 
           {/* 테이블 */}

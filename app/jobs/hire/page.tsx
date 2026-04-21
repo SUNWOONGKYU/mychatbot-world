@@ -205,29 +205,29 @@ function HirePageInner() {
 
   // ── 렌더 ──
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: "'Noto Sans KR', 'Inter', sans-serif", color: '#1e293b' }}>
+    <div style={{ minHeight: '100vh', background: 'rgb(var(--bg-base))', fontFamily: "'Noto Sans KR', 'Inter', sans-serif", color: 'rgb(var(--text-primary-rgb))' }}>
 
       {/* 헤더 */}
-      <header style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '0 1.5rem' }}>
+      <header style={{ background: 'rgb(var(--bg-surface))', borderBottom: '1px solid rgb(var(--border-subtle))', padding: '0 1.5rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link href="/jobs" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', fontWeight: 800, fontSize: '1.125rem', color: '#1e293b' }}>
+          <Link href="/jobs" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', fontWeight: 800, fontSize: '1.125rem', color: 'rgb(var(--text-primary-rgb))' }}>
             🤖 <span>구봇구직</span>
           </Link>
           <nav style={{ display: 'flex', gap: '1.25rem' }}>
-            <Link href="/" style={{ textDecoration: 'none', fontSize: '0.875rem', color: '#64748b' }}>홈</Link>
-            <Link href="/jobs" style={{ textDecoration: 'none', fontSize: '0.875rem', color: '#64748b' }}>구봇구직</Link>
+            <Link href="/" style={{ textDecoration: 'none', fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))' }}>홈</Link>
+            <Link href="/jobs" style={{ textDecoration: 'none', fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))' }}>구봇구직</Link>
           </nav>
         </div>
       </header>
 
       {/* 브레드크럼 */}
-      <nav style={{ background: '#fff', borderBottom: '1px solid #f1f5f9', padding: '0.625rem 1.5rem', fontSize: '0.8125rem', color: '#94a3b8' }}>
+      <nav style={{ background: 'rgb(var(--bg-surface))', borderBottom: '1px solid rgb(var(--border-subtle))', padding: '0.625rem 1.5rem', fontSize: '0.8125rem', color: 'rgb(var(--text-muted))' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
-          <Link href="/" style={{ color: '#64748b', textDecoration: 'none' }}>홈</Link>
+          <Link href="/" style={{ color: 'rgb(var(--text-secondary-rgb))', textDecoration: 'none' }}>홈</Link>
           <span>›</span>
-          <Link href="/jobs" style={{ color: '#64748b', textDecoration: 'none' }}>구봇구직</Link>
+          <Link href="/jobs" style={{ color: 'rgb(var(--text-secondary-rgb))', textDecoration: 'none' }}>구봇구직</Link>
           <span>›</span>
-          {botId && <><Link href={`/jobs/${botId}`} style={{ color: '#64748b', textDecoration: 'none' }}>코코봇 상세</Link><span>›</span></>}
+          {botId && <><Link href={`/jobs/${botId}`} style={{ color: 'rgb(var(--text-secondary-rgb))', textDecoration: 'none' }}>코코봇 상세</Link><span>›</span></>}
           <span>고용 요청</span>
         </div>
       </nav>
@@ -236,13 +236,13 @@ function HirePageInner() {
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem' }}>
         <div style={{ marginBottom: '1.5rem' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.375rem' }}>고용 요청서 작성</h1>
-          <p style={{ fontSize: '0.9375rem', color: '#64748b' }}>일감 정보를 상세하게 작성할수록 더 정확한 매칭이 이루어집니다.</p>
+          <p style={{ fontSize: '0.9375rem', color: 'rgb(var(--text-secondary-rgb))' }}>일감 정보를 상세하게 작성할수록 더 정확한 매칭이 이루어집니다.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '1.5rem', alignItems: 'start' }}>
 
           {/* 좌: 폼 */}
-          <form onSubmit={handleSubmit} noValidate style={{ background: '#fff', borderRadius: '1rem', border: '1px solid #e2e8f0', padding: '2rem' }}>
+          <form onSubmit={handleSubmit} noValidate style={{ background: 'rgb(var(--bg-surface))', borderRadius: '1rem', border: '1px solid rgb(var(--border-subtle))', padding: '2rem' }}>
             <h2 style={{ fontSize: '1.0625rem', fontWeight: 700, marginBottom: '1.5rem' }}>일감 정보 입력</h2>
 
             {/* 일감 제목 */}
@@ -276,12 +276,12 @@ function HirePageInner() {
             <FormGroup label="예산 범위 (원)">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={{ fontSize: '0.8125rem', color: '#64748b', display: 'block', marginBottom: '0.375rem' }}>최소</label>
+                  <label style={{ fontSize: '0.8125rem', color: 'rgb(var(--text-secondary-rgb))', display: 'block', marginBottom: '0.375rem' }}>최소</label>
                   <input {...field('budget_min')} type="number" min={0} step={1000} placeholder="예: 50000" style={inputStyle(!!errors.budget_min)} />
                   {errors.budget_min && <span style={errorStyle}>{errors.budget_min}</span>}
                 </div>
                 <div>
-                  <label style={{ fontSize: '0.8125rem', color: '#64748b', display: 'block', marginBottom: '0.375rem' }}>최대</label>
+                  <label style={{ fontSize: '0.8125rem', color: 'rgb(var(--text-secondary-rgb))', display: 'block', marginBottom: '0.375rem' }}>최대</label>
                   <input {...field('budget_max')} type="number" min={0} step={1000} placeholder="예: 200000" style={inputStyle(!!errors.budget_max)} />
                   {errors.budget_max && <span style={errorStyle}>{errors.budget_max}</span>}
                 </div>
@@ -296,7 +296,7 @@ function HirePageInner() {
 
             {/* 약관 동의 */}
             <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', cursor: 'pointer', fontSize: '0.875rem', color: '#64748b' }}>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', cursor: 'pointer', fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))' }}>
                 <input
                   type="checkbox"
                   checked={form.agree}
@@ -322,9 +322,9 @@ function HirePageInner() {
 
           {/* 우: 코코봇 사이드카드 */}
           <aside>
-            <div style={{ background: '#fff', borderRadius: '1rem', border: '1px solid #e2e8f0', padding: '1.5rem', position: 'sticky', top: 80 }}>
+            <div style={{ background: 'rgb(var(--bg-surface))', borderRadius: '1rem', border: '1px solid rgb(var(--border-subtle))', padding: '1.5rem', position: 'sticky', top: 80 }}>
               {botLoading ? (
-                <div style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8', fontSize: '0.875rem' }}>불러오는 중...</div>
+                <div style={{ textAlign: 'center', padding: '2rem', color: 'rgb(var(--text-muted))', fontSize: '0.875rem' }}>불러오는 중...</div>
               ) : (
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1rem' }}>
@@ -337,27 +337,27 @@ function HirePageInner() {
                     </div>
                     <div>
                       <Link href={botId ? `/jobs/${botId}` : '#'} style={{ textDecoration: 'none' }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: '#1e293b' }}>{bot?.name ?? '로딩 중...'}</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'rgb(var(--text-primary-rgb))' }}>{bot?.name ?? '로딩 중...'}</div>
                       </Link>
-                      <div style={{ fontSize: '0.8125rem', color: '#64748b' }}>{catLabel(bot?.category)}</div>
+                      <div style={{ fontSize: '0.8125rem', color: 'rgb(var(--text-secondary-rgb))' }}>{catLabel(bot?.category)}</div>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderTop: '1px solid #f1f5f9', fontSize: '0.875rem' }}>
-                    <span style={{ color: '#64748b' }}>요금</span>
-                    <span style={{ fontWeight: 600, color: '#1e293b' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderTop: '1px solid rgb(var(--border-subtle))', fontSize: '0.875rem' }}>
+                    <span style={{ color: 'rgb(var(--text-secondary-rgb))' }}>요금</span>
+                    <span style={{ fontWeight: 600, color: 'rgb(var(--text-primary-rgb))' }}>
                       {bot?.hourly_rate ? `${fmtNum(bot.hourly_rate)}원/시간`
                         : bot?.per_job_price ? `${fmtNum(bot.per_job_price)}원/건`
                         : '협의'}
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0', fontSize: '0.875rem', color: '#64748b' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0', fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))' }}>
                     <span style={{ color: '#f59e0b', letterSpacing: '0.05em' }}>{starsText(bot?.rating ?? 0)}</span>
                     <span>{(bot?.rating ?? 0).toFixed(1)} ({fmtNum(bot?.review_count ?? 0)}개 리뷰)</span>
                   </div>
 
-                  <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', fontSize: '0.8125rem', color: '#64748b', lineHeight: 1.6 }}>
+                  <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgb(var(--border-subtle))', fontSize: '0.8125rem', color: 'rgb(var(--text-secondary-rgb))', lineHeight: 1.6 }}>
                     고용 요청 후 코코봇이 수락하면 매칭이 완료됩니다. 플랫폼 수수료 <strong style={{ color: '#6366f1' }}>10%</strong>가 부과됩니다.
                   </div>
 
@@ -365,7 +365,7 @@ function HirePageInner() {
                     <h3 style={{ fontSize: '0.8125rem', fontWeight: 700, marginBottom: '0.625rem' }}>진행 프로세스</h3>
                     <ol style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       {[['1', '#6366f1', '#fff', '요청서 작성 & 전송'], ['2', '#ede9fe', '#6366f1', '코코봇 수락 대기'], ['3', '#ede9fe', '#6366f1', '매칭 완료 & 시작']].map(([n, bg, col, label]) => (
-                        <li key={n} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: '#64748b' }}>
+                        <li key={n} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'rgb(var(--text-secondary-rgb))' }}>
                           <span style={{ width: 22, height: 22, borderRadius: '50%', background: bg, color: col, fontWeight: 700, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n}</span>
                           {label}
                         </li>
@@ -383,16 +383,16 @@ function HirePageInner() {
       {/* 성공 모달 */}
       {successJobId !== null && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-          <div style={{ background: '#fff', borderRadius: '1.5rem', padding: '2.5rem 2rem', maxWidth: 420, width: '100%', textAlign: 'center' }}>
+          <div style={{ background: 'rgb(var(--bg-surface))', borderRadius: '1.5rem', padding: '2.5rem 2rem', maxWidth: 420, width: '100%', textAlign: 'center', color: 'rgb(var(--text-primary-rgb))' }}>
             <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
             </div>
             <h2 style={{ fontSize: '1.375rem', fontWeight: 800, marginBottom: '0.625rem' }}>고용 요청이 전송되었습니다!</h2>
-            <p style={{ fontSize: '0.9375rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+            <p style={{ fontSize: '0.9375rem', color: 'rgb(var(--text-secondary-rgb))', lineHeight: 1.6, marginBottom: '1.25rem' }}>
               코코봇에게 고용 요청이 전달되었습니다.<br />코코봇이 요청을 검토 후 수락하면 매칭이 완료됩니다.
             </p>
             {successJobId && (
-              <div style={{ background: '#f8fafc', borderRadius: '0.75rem', padding: '0.875rem 1rem', marginBottom: '1.5rem', fontSize: '0.875rem', color: '#475569', textAlign: 'left' }}>
+              <div style={{ background: 'rgb(var(--bg-subtle))', borderRadius: '0.75rem', padding: '0.875rem 1rem', marginBottom: '1.5rem', fontSize: '0.875rem', color: 'rgb(var(--text-secondary-rgb))', textAlign: 'left' }}>
                 <strong>요청 ID:</strong> {successJobId}<br />
                 <strong>상태:</strong> 매칭 대기 중<br />
                 <strong>예상 응답 시간:</strong> 24시간 이내
@@ -401,7 +401,7 @@ function HirePageInner() {
             <Link href={`/jobs/match?job_id=${encodeURIComponent(successJobId)}`} style={{ display: 'block', padding: '0.875rem 1.5rem', background: '#6366f1', color: '#fff', borderRadius: '0.75rem', textDecoration: 'none', fontWeight: 700, marginBottom: '0.75rem' }}>
               매칭 결과 확인하기
             </Link>
-            <button onClick={() => router.push('/jobs')} style={{ width: '100%', padding: '0.75rem', background: 'transparent', border: '1.5px solid #e2e8f0', borderRadius: '0.75rem', color: '#64748b', fontWeight: 500, cursor: 'pointer', fontSize: '0.875rem' }}>
+            <button onClick={() => router.push('/jobs')} style={{ width: '100%', padding: '0.75rem', background: 'transparent', border: '1.5px solid rgb(var(--border-subtle))', borderRadius: '0.75rem', color: 'rgb(var(--text-secondary-rgb))', fontWeight: 500, cursor: 'pointer', fontSize: '0.875rem' }}>
               구봇구직 목록으로
             </button>
           </div>
@@ -421,18 +421,18 @@ function HirePageInner() {
 
 /* ── 헬퍼 컴포넌트 ── */
 const inputStyle = (hasError: boolean): React.CSSProperties => ({
-  width: '100%', padding: '0.625rem 0.875rem', border: `1.5px solid ${hasError ? '#ef4444' : '#e2e8f0'}`,
-  borderRadius: '0.625rem', fontSize: '0.9375rem', fontFamily: 'inherit', color: '#1e293b',
-  background: '#f8fafc', outline: 'none', boxSizing: 'border-box',
+  width: '100%', padding: '0.625rem 0.875rem', border: `1.5px solid ${hasError ? '#ef4444' : 'rgb(var(--border-subtle))'}`,
+  borderRadius: '0.625rem', fontSize: '0.9375rem', fontFamily: 'inherit', color: 'rgb(var(--text-primary-rgb))',
+  background: 'rgb(var(--bg-base))', outline: 'none', boxSizing: 'border-box',
 });
 
-const hintStyle: React.CSSProperties = { fontSize: '0.8125rem', color: '#94a3b8', marginTop: '0.25rem', display: 'block' };
+const hintStyle: React.CSSProperties = { fontSize: '0.8125rem', color: 'rgb(var(--text-muted))', marginTop: '0.25rem', display: 'block' };
 const errorStyle: React.CSSProperties = { fontSize: '0.8125rem', color: '#ef4444', marginTop: '0.25rem', display: 'block' };
 
 function FormGroup({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: '1.25rem' }}>
-      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#374151', marginBottom: '0.4rem' }}>
+      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'rgb(var(--text-primary-rgb))', marginBottom: '0.4rem' }}>
         {label} {required && <span style={{ color: '#ef4444' }}>*</span>}
       </label>
       {children}
@@ -443,7 +443,7 @@ function FormGroup({ label, required, error, children }: { label: string; requir
 
 export default function JobHirePage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>로딩 중...</div>}>
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgb(var(--text-muted))' }}>로딩 중...</div>}>
       <HirePageInner />
     </Suspense>
   );
