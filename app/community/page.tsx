@@ -146,8 +146,9 @@ function PostCard({ post, madangs }: { post: Post; madangs: Madang[] }) {
             fontWeight: 600,
             padding: '0.1rem 0.45rem',
             borderRadius: '4px',
-            background: `${color}22`,
+            background: `${color}2E`,
             color,
+            border: `1px solid ${color}4D`,
           }}>
             {madangName}
           </span>
@@ -261,9 +262,10 @@ function Pagination({
             style={{
               ...btnBase,
               ...(p === current ? {
-                background: 'rgba(6,182,212,0.15)',
-                color: '#22d3ee',
-                border: '1px solid rgba(6,182,212,0.3)',
+                background: 'rgb(var(--color-primary) / 0.15)',
+                color: 'rgb(var(--color-primary))',
+                border: '1px solid rgb(var(--color-primary) / 0.4)',
+                fontWeight: 700,
               } : {}),
             }}
           >

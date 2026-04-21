@@ -831,17 +831,22 @@ export default function JobsPage() {
         >
           {/* 툴바 */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-            <p className="text-sm text-white/40">
+            <p className="text-sm" style={{ color: 'rgb(var(--text-muted))' }}>
               <span>{botTotal.toLocaleString('ko-KR')}</span>개의 코코봇을 찾았습니다
             </p>
             <div className="flex items-center gap-2">
-              <label htmlFor="botSort" className="text-sm text-white/40">정렬:</label>
+              <label htmlFor="botSort" className="text-sm" style={{ color: 'rgb(var(--text-muted))' }}>정렬:</label>
               <select
                 id="botSort"
                 value={botSort}
                 onChange={e => handleBotSortChange(e.target.value as BotSort)}
                 aria-label="정렬 기준"
-                className="bg-white/[0.06] border border-white/10 text-white px-3 py-2 rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
+                className="px-3 py-2 rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
+                style={{
+                  background: 'rgb(var(--bg-surface))',
+                  border: '1px solid rgb(var(--border))',
+                  color: 'rgb(var(--text-primary-rgb))',
+                }}
               >
                 <option value="popular">인기순</option>
                 <option value="latest">최신순</option>
@@ -908,17 +913,22 @@ export default function JobsPage() {
         >
           {/* 툴바 */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-            <p className="text-sm text-white/40">
+            <p className="text-sm" style={{ color: 'rgb(var(--text-muted))' }}>
               <span>{jobTotal.toLocaleString('ko-KR')}</span>개의 일감을 찾았습니다
             </p>
             <div className="flex items-center gap-2">
-              <label htmlFor="jobSort" className="text-sm text-white/40">정렬:</label>
+              <label htmlFor="jobSort" className="text-sm" style={{ color: 'rgb(var(--text-muted))' }}>정렬:</label>
               <select
                 id="jobSort"
                 value={jobSort}
                 onChange={e => handleJobSortChange(e.target.value as JobSort)}
                 aria-label="정렬 기준"
-                className="bg-white/[0.06] border border-white/10 text-white px-3 py-2 rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
+                className="px-3 py-2 rounded-lg text-sm font-sans cursor-pointer focus:outline-none"
+                style={{
+                  background: 'rgb(var(--bg-surface))',
+                  border: '1px solid rgb(var(--border))',
+                  color: 'rgb(var(--text-primary-rgb))',
+                }}
               >
                 <option value="latest">최신순</option>
                 <option value="budget-high">예산 높은순</option>
@@ -939,8 +949,8 @@ export default function JobsPage() {
             ) : (
               <div className="text-center py-16" role="status">
                 <div className="text-5xl mb-4">💼</div>
-                <h3 className="text-xl font-bold text-white mb-2">일감을 찾을 수 없습니다</h3>
-                <p className="text-white/50 mb-4">다른 카테고리나 검색어를 시도해보세요.</p>
+                <h3 className="text-xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary-rgb))' }}>일감을 찾을 수 없습니다</h3>
+                <p className="mb-4" style={{ color: 'rgb(var(--text-secondary-rgb))' }}>다른 카테고리나 검색어를 시도해보세요.</p>
                 <button
                   onClick={() => handleCategoryChange('all')}
                   className="px-5 py-2 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 font-semibold hover:bg-blue-500/25 transition-colors"

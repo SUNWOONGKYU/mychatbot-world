@@ -593,16 +593,20 @@
   --color-accent-hover: var(--amber-600);
   --color-accent-muted: var(--amber-50);
 
+  /* S7FE9 — 라이트 모드 가독성 강화: 흰 배경 WCAG AA 충족
+     secondary: neutral-500(4.5:1) → neutral-600(7.2:1)
+     muted:     neutral-400(2.8:1, AA 실패) → neutral-500(4.5:1, AA 통과)
+     border:    neutral-200(거의 불가시) → neutral-300(가시 경계선) */
   --text-primary-rgb:   17  24  39;
-  --text-secondary-rgb: var(--neutral-500);
-  --text-muted:         var(--neutral-400);
+  --text-secondary-rgb: var(--neutral-600);
+  --text-muted:         var(--neutral-500);
   --text-on-primary: 255 255 255;
   --text-on-accent:   17  17  17;
 
-  --border:             var(--neutral-200);
-  --border-subtle-rgb:  var(--neutral-100);
-  --border-strong-rgb:  var(--neutral-300);
-  --border-primary:     var(--primary-300);
+  --border:             var(--neutral-300);
+  --border-subtle-rgb:  var(--neutral-200);
+  --border-strong-rgb:  var(--neutral-400);
+  --border-primary:     var(--primary-400);
 
   --color-success:  16 185 129;
   --color-warning: 245 158  11;
