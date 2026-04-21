@@ -56,7 +56,7 @@ function GalleryCard({ post }: { post: GalleryPost }) {
       }}
       className="gallery-card"
       onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = '#06b6d4';
+        (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--color-primary))';
         (e.currentTarget as HTMLElement).style.transform = 'scale(1.02)';
       }}
       onMouseLeave={e => {
@@ -228,12 +228,12 @@ export default function CommunityGalleryPage() {
           onClick={() => router.push('/community/write')}
           style={{
             padding: '0.4rem 1rem', borderRadius: '8px',
-            background: '#06b6d4', color: 'white', border: 'none',
+            background: 'rgb(var(--color-primary))', color: 'white', border: 'none',
             fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer',
             transition: 'background 0.15s',
           }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#0891b2'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#06b6d4'; }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(var(--color-primary-hover))'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(var(--color-primary))'; }}
         >
           글쓰기
         </button>
@@ -284,7 +284,7 @@ export default function CommunityGalleryPage() {
           <p style={{ fontSize: '0.875rem' }}>이미지 게시글이 없습니다.</p>
           <Link
             href="/community/write"
-            style={{ display: 'inline-block', marginTop: '0.75rem', fontSize: '0.875rem', color: '#06b6d4', textDecoration: 'none' }}
+            style={{ display: 'inline-block', marginTop: '0.75rem', fontSize: '0.875rem', color: 'rgb(var(--color-primary))', textDecoration: 'none' }}
           >
             첫 이미지 게시글 작성하기 →
           </Link>
