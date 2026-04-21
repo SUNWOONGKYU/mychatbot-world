@@ -66,7 +66,10 @@ export default function AuthCallbackPage() {
             setErrMsg(error.message);
             return;
           }
-          if (!cancelled) router.replace('/reset-password');
+          // ?flow=recovery 플래그를 붙여 /reset-password가 명시적으로
+          // '새 비밀번호 입력' 모드로 진입하도록 한다. (일반 로그인 상태의
+          // 사용자가 우연히 /reset-password 로 오는 경우와 구분)
+          if (!cancelled) router.replace('/reset-password?flow=recovery');
           return;
         }
 

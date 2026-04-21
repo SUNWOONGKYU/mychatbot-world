@@ -14,7 +14,7 @@
 
 
 
-import { Suspense, useState, useEffect, FormEvent } from 'react';
+import { Suspense, useState, useEffect, useRef, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import supabase from '@/lib/supabase';
@@ -112,16 +112,21 @@ export default function ResetPasswordPageInner() {
   }>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  // setSession이 single-use refresh_token으로 두 번 호출되지 않도록 보호
+  const setSessionDoneRef = useRef(false);
+
   // ── URL 파라미터 / 해시로 복구 링크 감지 ────────────────────────────────────
+  //    의존성 배열을 비워 마운트 시 1회만 실행. (이전에는 [searchParams]로
+  //    리렌더마다 재실행되어 setSession이 소진된 refresh_token으로 재호출 → 오류)
   useEffect(() => {
-    // Next.js App Router에서는 hash를 직접 읽어야 함
     const hash = window.location.hash;
     const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
-    const code = searchParams?.get('code');
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get('code');
 
-    // 만료/거부 에러 먼저 확인 — 이전 재설정 링크를 나중에 클릭한 경우 등
-    const errorCode = hashParams.get('error_code') ?? searchParams?.get('error_code');
-    const errorDescription = hashParams.get('error_description') ?? searchParams?.get('error_description');
+    // 만료/거부 에러 먼저 확인
+    const errorCode = hashParams.get('error_code') ?? url.searchParams.get('error_code');
+    const errorDescription = hashParams.get('error_description') ?? url.searchParams.get('error_description');
     if (errorCode || errorDescription) {
       const msg = decodeURIComponent(errorDescription || errorCode || '링크 오류');
       const friendly =
@@ -129,23 +134,31 @@ export default function ResetPasswordPageInner() {
           ? '재설정 링크가 만료되었습니다. 아래에서 이메일을 다시 입력해 새 링크를 받아주세요.'
           : msg;
       setErrors({ general: friendly });
-      // 이메일 입력 모드로 유지
       return;
     }
 
     const hasAccessToken = hashParams.get('access_token');
+    const flowParam = url.searchParams.get('flow');
     const isRecovery =
       hashParams.get('type') === 'recovery' ||
       !!hasAccessToken ||
-      !!code;
+      !!code ||
+      flowParam === 'recovery';
 
-    // hash 에 access_token 이 있으면 (recovery 링크) 세션을 명시 확립
-    // lib/supabase.ts 에서 detectSessionInUrl=false 이므로 수동 setSession 필요
-    if (hasAccessToken) {
+    // Legacy 경로: redirectTo가 /reset-password로 직행하던 시절의 이메일 링크.
+    // detectSessionInUrl=false 이므로 수동 setSession — **once-guard 필수**.
+    if (hasAccessToken && !setSessionDoneRef.current) {
+      setSessionDoneRef.current = true;
       const refreshToken = hashParams.get('refresh_token');
       if (refreshToken) {
         supabase.auth
           .setSession({ access_token: hasAccessToken, refresh_token: refreshToken })
+          .then(() => {
+            // 세션 수립 후 hash 제거 — 재실행/새로고침 시 재사용 시도 방지
+            try {
+              window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            } catch {}
+          })
           .catch(() => {
             setErrors({ general: '재설정 링크가 만료되었거나 이미 사용되었습니다. 이메일에서 새 링크를 요청해 주세요.' });
           });
@@ -156,7 +169,7 @@ export default function ResetPasswordPageInner() {
       setMode('reset');
     }
 
-    // Supabase auth 이벤트 리스너 (PASSWORD_RECOVERY)
+    // PASSWORD_RECOVERY 이벤트 리스너
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setMode('reset');
@@ -164,7 +177,9 @@ export default function ResetPasswordPageInner() {
     });
 
     return () => subscription.unsubscribe();
-  }, [searchParams]);
+    // 의도적 빈 배열 — 페이지 라이프사이클 동안 1회만 실행
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Mode 1: 이메일 입력 → 재설정 링크 발송 ──────────────────────────────────
 
@@ -184,8 +199,11 @@ export default function ResetPasswordPageInner() {
     setIsLoading(true);
 
     try {
+      // /auth/callback 경유: 콜백이 setSession 후 router.replace('/reset-password')로
+      // hash를 제거하므로, /reset-password의 useEffect가 재실행되어도 setSession이
+      // 소진된 토큰으로 재호출되는 경로가 차단된다.
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       });
 
       if (error) {

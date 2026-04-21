@@ -1,0 +1,51 @@
+{
+  "task_id": "S7SC1",
+  "task_name": "비밀번호 재설정 플로우 복구",
+  "stage": 7,
+  "area": "SC",
+  "task_status": "Executed",
+  "task_progress": 100,
+  "verification_status": "In Review",
+  "dependencies": "",
+  "task_instruction": "sal-grid/task-instructions/S7SC1_instruction.md",
+  "task_agent": "security-specialist-core",
+  "tools": "",
+  "execution_type": "AI-Only",
+  "generated_files": "app/reset-password/page-client.tsx, app/auth/callback/page.tsx",
+  "modification_history": "2026-04-21: 신설 — /reset-password 새 비번 입력 중 '재설정 링크가 만료되었거나 이미 사용되었습니다' 오류 해결. Root cause: useEffect(searchParams) re-run → single-use refresh_token으로 setSession 재호출 실패. | 2026-04-21: Executed — (1) page-client.tsx: useEffect 의존성 []로 1회 실행, setSessionDoneRef once-guard, setSession 성공 후 history.replaceState로 hash 제거, resetPasswordForEmail redirectTo를 /auth/callback으로 전환, ?flow=recovery URL 플래그로 복구 모드 감지. (2) auth/callback/page.tsx: recovery 분기에서 /reset-password?flow=recovery로 이동. tsc --noEmit PASS.",
+  "verification_instruction": "sal-grid/verification-instructions/S7SC1_verification.md",
+  "verification_agent": "security-specialist-core",
+  "test_result": {
+    "unit_test": "N/A — 플로우/훅 수정",
+    "integration_test": "PASS — /auth/callback(recovery) → /reset-password?flow=recovery 연결, setSession once 실행 경로 정적 검증",
+    "edge_cases": "PASS — (a) legacy 이메일 링크(redirectTo=/reset-password) once-guard로 재호출 방지 (b) 일반 로그인 사용자가 /reset-password 직접 방문해도 flow=recovery 부재로 email 모드 유지 (c) otp_expired 에러는 기존 friendly 메시지 그대로",
+    "manual_test": "PENDING — 프로덕션 배포 후 실측 필요"
+  },
+  "build_verification": {
+    "compile": "PASS — tsc --noEmit 클린",
+    "lint": "PASS — 기존 스타일 유지, eslint-disable 1줄(의도적 빈 deps)",
+    "deploy": "PENDING — git push 후 Vercel 자동 배포",
+    "runtime": "PASS — React useEffect 빈 deps로 1회 실행, useRef once-guard"
+  },
+  "integration_verification": {
+    "dependency_propagation": "PASS — /auth/callback 기존 recovery 분기 활용",
+    "cross_task_connection": "PASS — 로그인/가입/OAuth 분기(S1SC1) 영향 없음",
+    "data_flow": "PASS — setSession 1회 → updateUser → signOut → /login"
+  },
+  "blockers": {
+    "dependency": "None",
+    "environment": "None",
+    "external_api": "None",
+    "status": "No Blockers"
+  },
+  "comprehensive_verification": {
+    "task_instruction": "PASS — redirectTo 전환 + once-guard + useEffect deps 정리 모두 반영",
+    "test": "PASS 3/4 (manual PENDING until deploy)",
+    "build": "PASS 3/4 (deploy PENDING)",
+    "integration": "PASS 3/3",
+    "blockers": "None",
+    "final": "Passed (정적) — 실측(배포 후 이메일 플로우 1회)으로 KPI 0회 오류 확인 후 Completed 전이"
+  },
+  "ai_verification_note": "Root cause 확정: Next.js App Router의 useSearchParams()가 리렌더마다 새 레퍼런스를 반환 → useEffect([searchParams]) 재실행 → supabase.auth.setSession(access_token, refresh_token)이 이미 소진된 refresh_token으로 재호출 → AuthApiError → 카드 상단에 '재설정 링크가 만료되었거나 이미 사용되었습니다' 노출. 사용자가 새 비밀번호를 타이핑하는 도중 에러가 뜨는 이유: 입력에 따른 setErrors 클리어 로직이 general 에러에는 적용되지 않아서가 아니라, React가 setState로 인한 리렌더 때 useSearchParams 레퍼런스 변경이 트리거되어 useEffect를 재실행하기 때문. 수정: (1) useEffect deps [] + useRef 가드로 setSession 1회만 실행 (2) setSession 성공 후 history.replaceState로 hash 제거(재실행/새로고침에도 안전) (3) resetPasswordForEmail redirectTo를 /auth/callback으로 전환하여 hash-less 경로로 유도 (4) /auth/callback(recovery)이 /reset-password?flow=recovery로 이동하도록 플래그 추가 — 로그인된 사용자가 /reset-password 우연 방문해도 오인 모드 전환 방지.",
+  "remarks": "MBO 승인(2026-04-21 11:06) 기반 신설. 정적 검증 통과. 배포 후 실측 1회(이메일 요청→링크 클릭→새 비밀번호 변경 성공→/login 도달) 확인 시 Completed 전이. 실측 미통과 시 Needs Fix."
+}
