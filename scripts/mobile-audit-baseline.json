@@ -1,41 +1,37 @@
 {
-  "generated_at": "2026-04-21T10:57:09.303Z",
+  "generated_at": "2026-04-21T11:17:24.625Z",
   "base": "https://mychatbot.world",
   "summary": {
     "v390": {
       "total": 38,
-      "ok": 20,
+      "ok": 21,
       "skipped": 17,
       "horizontal_scroll_pages": [],
-      "small_touch_total": 90,
+      "small_touch_total": 50,
       "small_font_total": 60,
       "top_offenders_touch": [
         {
           "page": "signup",
-          "count": 9
+          "count": 5
         },
         {
-          "page": "jobs",
-          "count": 9
+          "page": "skills",
+          "count": 4
         },
         {
-          "page": "login",
-          "count": 7
+          "page": "jobs-search",
+          "count": 4
         },
         {
-          "page": "bot-faq",
-          "count": 7
+          "page": "marketplace",
+          "count": 4
         },
         {
-          "page": "onboarding",
-          "count": 6
+          "page": "refund",
+          "count": 4
         }
       ],
       "top_offenders_font": [
-        {
-          "page": "jobs",
-          "count": 6
-        },
         {
           "page": "reset-password",
           "count": 4
@@ -46,6 +42,10 @@
         },
         {
           "page": "skills",
+          "count": 4
+        },
+        {
+          "page": "learning",
           "count": 4
         },
         {
@@ -59,35 +59,31 @@
       "ok": 21,
       "skipped": 17,
       "horizontal_scroll_pages": [],
-      "small_touch_total": 115,
-      "small_font_total": 64,
+      "small_touch_total": 69,
+      "small_font_total": 60,
       "top_offenders_touch": [
         {
           "page": "learning",
-          "count": 11
+          "count": 10
         },
         {
           "page": "learning-curriculum",
-          "count": 11
-        },
-        {
-          "page": "jobs",
           "count": 10
         },
         {
           "page": "signup",
-          "count": 9
+          "count": 5
         },
         {
-          "page": "root",
-          "count": 7
+          "page": "skills",
+          "count": 4
+        },
+        {
+          "page": "jobs-search",
+          "count": 4
         }
       ],
       "top_offenders_font": [
-        {
-          "page": "jobs",
-          "count": 6
-        },
         {
           "page": "reset-password",
           "count": 4
@@ -102,6 +98,10 @@
         },
         {
           "page": "learning",
+          "count": 4
+        },
+        {
+          "page": "learning-curriculum",
           "count": 4
         }
       ]
@@ -117,14 +117,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 3,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 1,
@@ -138,7 +132,7 @@
             "text": "Admin"
           }
         ],
-        "smallFontCount": 2
+        "smallFontCount": 0
       },
       "console_errors": [
         "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
@@ -153,7 +147,7 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 7,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
           {
             "tag": "a",
@@ -162,28 +156,16 @@
             "text": "CoCoBot"
           },
           {
-            "tag": "input",
-            "w": 343,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 48,
+            "h": 16,
+            "text": "이용약관"
           },
           {
             "tag": "a",
-            "w": 77,
-            "h": 18,
-            "text": "비밀번호 찾기"
-          },
-          {
-            "tag": "input",
-            "w": 343,
-            "h": 43,
-            "text": ""
-          },
-          {
-            "tag": "a",
-            "w": 56,
-            "h": 18,
-            "text": "회원가입"
+            "w": 97,
+            "h": 16,
+            "text": "개인정보처리방침"
           }
         ],
         "smallFontCount": 0
@@ -199,7 +181,7 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 9,
+        "smallTouchTargets": 5,
         "smallTouchSamples": [
           {
             "tag": "a",
@@ -208,28 +190,28 @@
             "text": "CoCoBot"
           },
           {
-            "tag": "input",
-            "w": 293,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 42,
+            "h": 18,
+            "text": "로그인"
           },
           {
-            "tag": "input",
-            "w": 293,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 105,
+            "h": 16,
+            "text": "← 홈으로 돌아가기"
           },
           {
-            "tag": "input",
-            "w": 293,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 48,
+            "h": 16,
+            "text": "이용약관"
           },
           {
-            "tag": "input",
-            "w": 293,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 97,
+            "h": 16,
+            "text": "개인정보처리방침"
           }
         ],
         "smallFontCount": 0
@@ -245,26 +227,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 4,
+        "smallTouchTargets": 1,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
-          {
-            "tag": "input",
-            "w": 293,
-            "h": 43,
-            "text": ""
-          },
-          {
-            "tag": "button",
-            "w": 293,
-            "h": 41,
-            "text": "재설정 링크 보내기"
-          },
           {
             "tag": "a",
             "w": 151,
@@ -287,39 +251,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 6,
-        "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
-          {
-            "tag": "a",
-            "w": 88,
-            "h": 37,
-            "text": "시작하기"
-          },
-          {
-            "tag": "a",
-            "w": 93,
-            "h": 37,
-            "text": "대화 시작"
-          },
-          {
-            "tag": "a",
-            "w": 112,
-            "h": 37,
-            "text": "내 봇 만들기"
-          },
-          {
-            "tag": "a",
-            "w": 93,
-            "h": 37,
-            "text": "대화 시작"
-          }
-        ],
+        "smallTouchTargets": 0,
+        "smallTouchSamples": [],
         "smallFontCount": 4
       },
       "console_errors": [
@@ -353,14 +286,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 14,
@@ -408,9 +335,25 @@
       "page": "learning",
       "path": "/learning",
       "viewport": "v390",
-      "status": "error:page.evaluate: Execution context was destroyed, most likely because of a navigat",
-      "metrics": null,
-      "console_errors": []
+      "status": "ok",
+      "metrics": {
+        "scrollWidth": 375,
+        "viewportWidth": 390,
+        "horizontalScroll": false,
+        "smallTouchTargets": 1,
+        "smallTouchSamples": [
+          {
+            "tag": "a",
+            "w": 74,
+            "h": 37,
+            "text": "로그인"
+          }
+        ],
+        "smallFontCount": 4
+      },
+      "console_errors": [
+        "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ]
     },
     {
       "page": "learning-curriculum",
@@ -421,14 +364,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 2,
+        "smallTouchTargets": 1,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 74,
@@ -457,40 +394,16 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 9,
+        "smallTouchTargets": 1,
         "smallTouchSamples": [
           {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
-          {
-            "tag": "button",
-            "w": 68,
-            "h": 37,
-            "text": "검색"
-          },
-          {
-            "tag": "button",
-            "w": 62,
-            "h": 39,
-            "text": "전체"
-          },
-          {
-            "tag": "button",
-            "w": 104,
-            "h": 39,
-            "text": "고객서비스"
-          },
-          {
-            "tag": "button",
-            "w": 62,
-            "h": 39,
-            "text": "교육"
+            "tag": "select",
+            "w": 122,
+            "h": 38,
+            "text": "인기순최신순평점순가격 낮은순가격 높은순"
           }
         ],
-        "smallFontCount": 6
+        "smallFontCount": 4
       },
       "console_errors": [
         "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
@@ -511,14 +424,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 75,
@@ -571,14 +478,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 4,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "button",
             "w": 69,
@@ -619,14 +520,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 4,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "button",
             "w": 60,
@@ -661,7 +556,7 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 7,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
           {
             "tag": "a",
@@ -670,28 +565,16 @@
             "text": "CoCoBot"
           },
           {
-            "tag": "input",
-            "w": 343,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 48,
+            "h": 16,
+            "text": "이용약관"
           },
           {
             "tag": "a",
-            "w": 77,
-            "h": 18,
-            "text": "비밀번호 찾기"
-          },
-          {
-            "tag": "input",
-            "w": 343,
-            "h": 43,
-            "text": ""
-          },
-          {
-            "tag": "a",
-            "w": 56,
-            "h": 18,
-            "text": "회원가입"
+            "w": 97,
+            "h": 16,
+            "text": "개인정보처리방침"
           }
         ],
         "smallFontCount": 0
@@ -737,14 +620,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 14,
@@ -791,14 +668,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 2,
+        "smallTouchTargets": 1,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 55,
@@ -821,15 +692,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 1,
-        "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          }
-        ],
+        "smallTouchTargets": 0,
+        "smallTouchSamples": [],
         "smallFontCount": 4
       },
       "console_errors": [
@@ -845,14 +709,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 59,
@@ -893,14 +751,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 3,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "select",
             "w": 245,
@@ -929,14 +781,8 @@
         "scrollWidth": 375,
         "viewportWidth": 390,
         "horizontalScroll": false,
-        "smallTouchTargets": 3,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 285,
@@ -1041,14 +887,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 7,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 1,
@@ -1057,24 +897,12 @@
           },
           {
             "tag": "a",
-            "w": 56,
-            "h": 23,
-            "text": "이용약관"
-          },
-          {
-            "tag": "a",
-            "w": 112,
-            "h": 23,
-            "text": "개인정보처리방침"
-          },
-          {
-            "tag": "a",
-            "w": 56,
-            "h": 23,
-            "text": "환불정책"
+            "w": 27,
+            "h": 15,
+            "text": "Admin"
           }
         ],
-        "smallFontCount": 2
+        "smallFontCount": 0
       },
       "console_errors": [
         "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
@@ -1089,7 +917,7 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 7,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
           {
             "tag": "a",
@@ -1098,28 +926,16 @@
             "text": "CoCoBot"
           },
           {
-            "tag": "input",
-            "w": 384,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 48,
+            "h": 16,
+            "text": "이용약관"
           },
           {
             "tag": "a",
-            "w": 77,
-            "h": 18,
-            "text": "비밀번호 찾기"
-          },
-          {
-            "tag": "input",
-            "w": 384,
-            "h": 43,
-            "text": ""
-          },
-          {
-            "tag": "a",
-            "w": 56,
-            "h": 18,
-            "text": "회원가입"
+            "w": 97,
+            "h": 16,
+            "text": "개인정보처리방침"
           }
         ],
         "smallFontCount": 0
@@ -1135,7 +951,7 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 9,
+        "smallTouchTargets": 5,
         "smallTouchSamples": [
           {
             "tag": "a",
@@ -1144,28 +960,28 @@
             "text": "CoCoBot"
           },
           {
-            "tag": "input",
-            "w": 334,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 42,
+            "h": 18,
+            "text": "로그인"
           },
           {
-            "tag": "input",
-            "w": 334,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 105,
+            "h": 16,
+            "text": "← 홈으로 돌아가기"
           },
           {
-            "tag": "input",
-            "w": 334,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 48,
+            "h": 16,
+            "text": "이용약관"
           },
           {
-            "tag": "input",
-            "w": 334,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 97,
+            "h": 16,
+            "text": "개인정보처리방침"
           }
         ],
         "smallFontCount": 0
@@ -1181,26 +997,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 4,
+        "smallTouchTargets": 1,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
-          {
-            "tag": "input",
-            "w": 334,
-            "h": 43,
-            "text": ""
-          },
-          {
-            "tag": "button",
-            "w": 334,
-            "h": 41,
-            "text": "재설정 링크 보내기"
-          },
           {
             "tag": "a",
             "w": 151,
@@ -1223,39 +1021,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 6,
-        "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
-          {
-            "tag": "a",
-            "w": 88,
-            "h": 37,
-            "text": "시작하기"
-          },
-          {
-            "tag": "a",
-            "w": 93,
-            "h": 37,
-            "text": "대화 시작"
-          },
-          {
-            "tag": "a",
-            "w": 112,
-            "h": 37,
-            "text": "내 봇 만들기"
-          },
-          {
-            "tag": "a",
-            "w": 93,
-            "h": 37,
-            "text": "대화 시작"
-          }
-        ],
+        "smallTouchTargets": 0,
+        "smallTouchSamples": [],
         "smallFontCount": 4
       },
       "console_errors": [
@@ -1289,14 +1056,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 14,
@@ -1349,14 +1110,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 11,
+        "smallTouchTargets": 10,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 74,
@@ -1380,6 +1135,12 @@
             "w": 703,
             "h": 41,
             "text": "📚코코봇 학습"
+          },
+          {
+            "tag": "button",
+            "w": 703,
+            "h": 41,
+            "text": "⚡스킬 관리"
           }
         ],
         "smallFontCount": 4
@@ -1397,14 +1158,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 11,
+        "smallTouchTargets": 10,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 74,
@@ -1428,6 +1183,12 @@
             "w": 703,
             "h": 41,
             "text": "📚코코봇 학습"
+          },
+          {
+            "tag": "button",
+            "w": 703,
+            "h": 41,
+            "text": "⚡스킬 관리"
           }
         ],
         "smallFontCount": 4
@@ -1451,40 +1212,22 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 10,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
           {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
-          {
             "tag": "button",
-            "w": 68,
+            "w": 93,
             "h": 37,
-            "text": "검색"
+            "text": "공고 등록"
           },
           {
-            "tag": "button",
-            "w": 62,
-            "h": 39,
-            "text": "전체"
-          },
-          {
-            "tag": "button",
-            "w": 104,
-            "h": 39,
-            "text": "고객서비스"
-          },
-          {
-            "tag": "button",
-            "w": 62,
-            "h": 39,
-            "text": "교육"
+            "tag": "select",
+            "w": 122,
+            "h": 38,
+            "text": "인기순최신순평점순가격 낮은순가격 높은순"
           }
         ],
-        "smallFontCount": 6
+        "smallFontCount": 4
       },
       "console_errors": [
         "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
@@ -1505,14 +1248,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 75,
@@ -1565,14 +1302,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 4,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "button",
             "w": 69,
@@ -1613,14 +1344,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 4,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "button",
             "w": 60,
@@ -1655,7 +1380,7 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 7,
+        "smallTouchTargets": 3,
         "smallTouchSamples": [
           {
             "tag": "a",
@@ -1664,28 +1389,16 @@
             "text": "CoCoBot"
           },
           {
-            "tag": "input",
-            "w": 384,
-            "h": 43,
-            "text": ""
+            "tag": "a",
+            "w": 48,
+            "h": 16,
+            "text": "이용약관"
           },
           {
             "tag": "a",
-            "w": 77,
-            "h": 18,
-            "text": "비밀번호 찾기"
-          },
-          {
-            "tag": "input",
-            "w": 384,
-            "h": 43,
-            "text": ""
-          },
-          {
-            "tag": "a",
-            "w": 56,
-            "h": 18,
-            "text": "회원가입"
+            "w": 97,
+            "h": 16,
+            "text": "개인정보처리방침"
           }
         ],
         "smallFontCount": 0
@@ -1731,14 +1444,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 14,
@@ -1785,14 +1492,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 2,
+        "smallTouchTargets": 1,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 55,
@@ -1815,15 +1516,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 1,
-        "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          }
-        ],
+        "smallTouchTargets": 0,
+        "smallTouchSamples": [],
         "smallFontCount": 4
       },
       "console_errors": [
@@ -1839,14 +1533,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 5,
+        "smallTouchTargets": 4,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 59,
@@ -1887,14 +1575,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 3,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "select",
             "w": 623,
@@ -1923,14 +1605,8 @@
         "scrollWidth": 753,
         "viewportWidth": 768,
         "horizontalScroll": false,
-        "smallTouchTargets": 3,
+        "smallTouchTargets": 2,
         "smallTouchSamples": [
-          {
-            "tag": "a",
-            "w": 124,
-            "h": 28,
-            "text": "CoCoBotCoCoBotCoCoBotCoCoBot"
-          },
           {
             "tag": "a",
             "w": 663,

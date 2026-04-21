@@ -3,16 +3,18 @@
   "task_name": "Bot/Wiki 모바일 최적화",
   "stage": 11,
   "area": "FE",
-  "task_status": "Pending",
-  "task_progress": 0,
-  "verification_status": "Not Verified",
+  "task_status": "Executed",
+  "task_progress": 70,
+  "verification_status": "In Review",
   "dependencies": "S11FE1",
   "task_instruction": "sal-grid/task-instructions/S11FE8_instruction.md",
   "task_agent": "frontend-developer-core",
   "tools": "Next.js, Tailwind CSS",
   "execution_type": "AI-Only",
-  "generated_files": "",
+  "generated_files": "components/bot/faq-manager.tsx",
   "verification_instruction": "sal-grid/verification-instructions/S11FE8_verification.md",
   "verification_agent": "code-reviewer-core",
-  "remarks": "bot/[botId] + wiki + lint + graph + faq — graph는 예외 정책 명시 허용"
+  "remarks": "bot/[botId] + wiki + lint + graph + faq — graph는 예외 정책 명시 허용",
+  "ai_verification_note": "FAQ 관리 AI 생성/추가/저장/취소/삭제 버튼 py-1.5 컴팩트 → inline-flex + min-h-[44px]. Wiki/Graph/Lint은 서브 페이지 (추가 검증 필요).",
+  "updated_at": "2026-04-21T11:20:24.349Z"
 }
